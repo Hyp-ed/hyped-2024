@@ -1,0 +1,43 @@
+{
+  "name": "@hyped/telemetry",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ],
+    "nohoist": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "Run": "===========================================================================================================",
+    "start": "turbo run start --parallel",
+    "Development": "===================================================================================================",
+    "dev": "turbo run dev --parallel",
+    "Test": "==========================================================================================================",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch --parallel",
+    "Lint": "==========================================================================================================",
+    "fix": "turbo run fix --parallel",
+    "flightcheck": "turbo run flightcheck",
+    "Build": "=========================================================================================================",
+    "build": "turbo run build",
+    "postinstall": "patch-package"
+  },
+  "devDependencies": {
+    "@types/is-ci": "^3.0.0",
+    "@types/node": "^18.11.18",
+    "@types/prettier": "^2.7.2",
+    "@types/rimraf": "^3.0.2",
+    "@typescript-eslint/eslint-plugin": "^5.48.2",
+    "@typescript-eslint/parser": "^5.48.2",
+    "lerna": "^6.4.1",
+    "prettier": "2.8.3",
+    "turbo": "^1.7.0",
+    "typescript": "^5.1.6"
+  },
+  "dependencies": {
+    "patch-package": "^6.5.1",
+    "postinstall-postinstall": "^2.1.0"
+  }
+}

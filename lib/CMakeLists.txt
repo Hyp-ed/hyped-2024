@@ -1,0 +1,8 @@
+add_subdirectory(core)
+add_subdirectory(debug)
+add_subdirectory(io)
+add_subdirectory(motors)
+add_subdirectory(navigation)
+add_subdirectory(sensors)
+add_subdirectory(utils)
+add_subdirectory(state_machine)

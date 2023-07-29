@@ -1,0 +1,66 @@
+name: Linter
+
+on:
+  push:
+    paths-ignore: 
+      - "telemetry/**"
+
+jobs:
+  clang-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run clang-format style check
+        uses: jidicula/clang-format-action@v4.9.0
+        with:
+          clang-format-version: "13"
+          style: "file"
+
+  find-todos-fixme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run todo check
+        run: |
+          if grep -riE -n 'TODO|FIXME' * | grep -v -i 'TODOLater'; then
+            exit 1
+          else
+            echo "All good"
+          fi
+
+  find-missing-std:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run check for missing std namespace prefix
+        run: |
+          IDENTIFIERS="uint8_t uint16_t uint32_t uint64_t int8_t int16_t int32_t int64_t size_t"
+          for identifier in $IDENTIFIERS; do
+            if grep -r -n "$identifier" | grep -v "std::" | grep -v "ssize_t" | grep -v "lint.yml"; then
+              echo "[ERROR] found $identifier without std:: prefix"
+              exit 1
+            fi
+          done
+
+  find-redundant-hyped:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run check for extra hyped namespace prefix
+        run: |
+          if grep -riE -n "hyped::" | grep -v "namespace"; then
+            echo "[ERROR] found redundant hyped:: prefix"
+            exit 1
+          fi
+        working-directory: lib
+
+  check-header-pragma-once:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run check for missing header pragma once
+        run: |
+          if grep -rL "#pragma once" --include \*.hpp | grep -v "lint.yml"; then
+            echo "[ERROR] found header without #pragma once"
+            exit 1
+          fi

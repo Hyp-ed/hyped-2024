@@ -1,0 +1,23 @@
+{
+  "name": "@hyped/telemetry-constants",
+  "private": true,
+  "version": "1.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "module": "dist/telemetry-constants.esm.js",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "prepare": "tsdx build"
+  },
+  "devDependencies": {
+    "@hyped/telemetry-types": "*",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.5.3",
+    "typescript": "^5.1.6"
+  }
+}

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+FILES=$(git diff --cached --name-only | grep "*.[ch]pp$")
+clang-format -Werror --dry-run $FILES
+
+cmake -S . -B build
+cmake --build build -j
+ctest --test-dir build -j

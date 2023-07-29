@@ -1,0 +1,32 @@
+name: Build
+
+on:
+  push:
+    paths-ignore: 
+      - "telemetry/**"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install dependencies
+        uses: jrl-umi3218/github-actions/install-dependencies@master
+        with:
+          compiler: clang
+          ubuntu: |
+            apt: libeigen3-dev libboost-all-dev
+          macos: |
+            brew: eigen boost
+      - name: CMake
+        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(which clang++)
+      - name: Build hyped
+        run: make -j
+        working-directory: build
+      - name: Test
+        run: ctest
+        working-directory: build

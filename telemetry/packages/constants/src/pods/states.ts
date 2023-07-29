@@ -1,0 +1,31 @@
+export type PodStateType = keyof typeof ALL_POD_STATES;
+
+export const FAILURE_STATES = {
+  FAILURE_BRAKING: 'FAILURE_BRAKING',
+  FAILURE_STOPPED: 'FAILURE_STOPPED',
+  FAILURE_CALIBRATING: 'FAILURE_CALIBRATING',
+} as const;
+
+export const PASSIVE_STATES = {
+  IDLE: 'IDLE',
+  CALIBRATING: 'CALIBRATING',
+  READY: 'READY',
+  STOPPED: 'STOPPED',
+  OFF: 'OFF',
+} as const;
+
+export const ACTIVE_STATES = {
+  ACCELERATING: 'ACCELERATING',
+  NOMINAL_BRAKING: 'NOMINAL_BRAKING',
+} as const;
+
+export const NULL_STATES = {
+  UNKNOWN: 'UNKNOWN',
+} as const;
+
+export const ALL_POD_STATES = {
+  ...FAILURE_STATES,
+  ...PASSIVE_STATES,
+  ...ACTIVE_STATES,
+  ...NULL_STATES,
+};

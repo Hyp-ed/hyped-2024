@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HYPED23 | Telemetry</title>
+    <style>
+      body {
+        margin: 0;
+        height: 100%;
+        width: 100%;
+      }
+      html {
+        height: 100%;
+        width: 100%;
+      }
+      #resizeBar {
+        width: 5px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin: 0 0 0 auto;
+        background: #535353;
+        cursor: col-resize;
+      }
+      .split-view {
+        display: flex;
+        border: 1px black solid;
+        width: 100%;
+        height: 100%;
+        overflow-x: hidden;
+      }
+      #openmct {
+        flex-grow: 1;
+        flex-shrink: 0;
+        flex-basis: 85%; /* initial status */
+        border: none;
+      }
+      #root {
+        flex-grow: 0;
+        flex-shrink: 1;
+        overflow-x: auto;
+        width: 100%;
+      }
+      #resizeBar {
+        width: 5px;
+        flex-grow: 0;
+        flex-shrink: 0;
+        margin: 0 0 0 auto;
+        background: #535353;
+        cursor: col-resize;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="split-view">
+      <iframe id="openmct" src="../openmct/index.html"></iframe>
+      <div id="resizeBar">&nbsp;</div>
+      <div id="root"></div>
+    </div>
+    <script type="module" src="./main.tsx"></script>
+    <script>
+      function emergencyStop() {
+        console.log('Emergency stop');
+        // send post request
+        fetch('http://localhost:3000/pods/pod_1/controls/stop', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({}),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log('Success:', data);
+          })
+          .catch((error) => {
+            console.error('Error:', error);
+          });
+      }
+      document.onkeypress = function (e) {
+        if (e.key === 'q') emergencyStop();
+      };
+      // Capture keypresses inside openmct iframe
+      const openmct = document.getElementById('openmct');
+      openmct.onload = function () {
+        openmct.contentDocument.onkeypress = function (e) {
+          if (e.key === 'q') emergencyStop();
+        };
+      };
+    </script>
+    <script>
+      // https://stackoverflow.com/questions/12194469/best-way-to-do-a-split-pane-in-html
+      let isMouseDown = false;
+      resizeBar.addEventListener('mousedown', mouseDown);
+
+      function mouseDown() {
+        isMouseDown = true;
+        openmct.style.pointerEvents = 'none';
+        document.body.addEventListener('mousemove', mouseMove);
+        document.body.addEventListener('mouseup', end);
+      }
+
+      function mouseMove(e) {
+        isMouseDown ? (openmct.style.flexBasis = e.clientX + 'px') : end();
+      }
+
+      const end = () => {
+        isMouseDown = false;
+        openmct.style.pointerEvents = 'auto';
+        document.body.removeEventListener('mouseup', end);
+        resizeBar.removeEventListener('mousemove', mouseMove);
+      };
+    </script>
+  </body>
+</html>

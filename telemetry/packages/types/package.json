@@ -1,0 +1,13 @@
+{
+  "name": "@hyped/telemetry-types",
+  "private": true,
+  "version": "0.0.0",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "typescript": "^5.1.6"
+  },
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  }
+}

@@ -1,0 +1,8 @@
+/* Default cursor on flow chart */
+.react-flow__pane {
+  cursor: default;
+}
+
+.react-flow__attribution {
+  display: none;
+}
