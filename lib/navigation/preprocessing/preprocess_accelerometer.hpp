@@ -13,11 +13,7 @@
 #include <core/types.hpp>
 #include <navigation/control/consts.hpp>
 
-#if defined(__linux__)
-#include <eigen3/Eigen/Dense>
-//#else
-// TODO: add appropriate eigen include for mac here
-#endif
+#include <Eigen/Dense>
 
 namespace hyped::navigation {
 class AccelerometerPreprocessor {

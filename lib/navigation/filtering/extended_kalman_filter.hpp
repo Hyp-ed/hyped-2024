@@ -7,11 +7,7 @@
 #include <core/time.hpp>
 #include <core/types.hpp>
 
-#if defined(__linux__)
-#include <eigen3/Eigen/Dense>
-//#else
-// TODO: add appropriate eigen include for mac here
-#endif
+#include <Eigen/Dense>
 
 namespace hyped::navigation {
 
