@@ -4,10 +4,9 @@
 #include <functional>
 #include <memory>
 
+#include <Eigen/Dense>
 #include <core/time.hpp>
 #include <core/types.hpp>
-
-#include <Eigen/Dense>
 
 namespace hyped::navigation {
 

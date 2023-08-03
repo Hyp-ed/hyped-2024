@@ -7,13 +7,12 @@
 #include <cstdint>
 #include <optional>
 
+#include <Eigen/Dense>
 #include <core/logger.hpp>
 #include <core/time.hpp>
 #include <core/timer.hpp>
 #include <core/types.hpp>
 #include <navigation/control/consts.hpp>
-
-#include <Eigen/Dense>
 
 namespace hyped::navigation {
 class AccelerometerPreprocessor {
