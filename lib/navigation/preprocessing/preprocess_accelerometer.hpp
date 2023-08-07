@@ -7,17 +7,12 @@
 #include <cstdint>
 #include <optional>
 
+#include <Eigen/Dense>
 #include <core/logger.hpp>
 #include <core/time.hpp>
 #include <core/timer.hpp>
 #include <core/types.hpp>
 #include <navigation/control/consts.hpp>
-
-#if defined(__linux__)
-#include <eigen3/Eigen/Dense>
-//#else
-// TODO: add appropriate eigen include for mac here
-#endif
 
 namespace hyped::navigation {
 class AccelerometerPreprocessor {

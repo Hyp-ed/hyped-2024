@@ -13,6 +13,7 @@ project(${project} CXX)
 enable_testing()
 
 find_package (Eigen3 REQUIRED NO_MODULE)
+include_directories(${EIGEN3_INCLUDE_DIR})
 find_package(Boost REQUIRED)
 include(FetchContent)
 FetchContent_Declare(
