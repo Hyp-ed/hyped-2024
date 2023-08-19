@@ -30,7 +30,7 @@ core::Result Scheduler::run()
   return result;
 }
 
-void Scheduler::addTask(std::function<core::Result(void)> task, uint32_t delay)
+void Scheduler::addTask(uint32_t delay, std::function<core::Result(void)> task)
 {
   const auto execution_timepoint
     = std::chrono::time_point_cast<std::chrono::microseconds>(time_.now())

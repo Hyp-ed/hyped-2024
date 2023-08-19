@@ -29,7 +29,7 @@ class Scheduler {
    * @param task a function that returns a Result
    * @param delay the minimum delay in microseconds before the task can called
    */
-  void addTask(std::function<core::Result(void)> task, uint32_t delay);
+  void addTask(uint32_t delay, std::function<core::Result(void)> task);
 
  private:
   core::ILogger &logger_;
