@@ -8,3 +8,5 @@ test/navigation @pkhudov
 telemetry @davidbeechey
 lib/motors
 test/motors
+lib/state_machine @DylanCavers
+test/state_machine @DylanCavers
