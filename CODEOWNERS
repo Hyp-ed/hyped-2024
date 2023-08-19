@@ -1,11 +1,10 @@
-* @mifrandir
-* @kshxtij
-lib/sensors @SnickeyX
-test/sensors @SnickeyX
-lib/io @SnickeyX
-test/io @SnickeyX
-lib/navigation @maxguy2001
-test/navigation @maxguy2001
-telemetry @arjunnaha
-lib/motors @TomLonergan03
-test/motors @TomLonergan03
+* @TomLonergan03
+lib/sensors @licornes-fluos
+test/sensors @licornes-fluos
+lib/io @licornes-fluos
+test/io @licornes-fluos
+lib/navigation @pkhudov
+test/navigation @pkhudov
+telemetry @davidbeechey
+lib/motors
+test/motors
