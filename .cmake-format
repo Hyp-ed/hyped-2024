@@ -1,0 +1,3 @@
+dangle_parens: True
+max_pargs_hwrap: 3
+line_width: 80
