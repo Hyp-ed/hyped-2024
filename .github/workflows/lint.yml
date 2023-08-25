@@ -21,6 +21,9 @@ jobs:
     steps:
       - name: cmake-format lint action
         uses: puneetmatharu/cmake-format-lint-action@v1.0.4
+        with:
+          args: --check
+        
 
   find-todos-fixme:
     runs-on: ubuntu-latest
