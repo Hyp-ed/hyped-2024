@@ -16,6 +16,14 @@ jobs:
           clang-format-version: "13"
           style: "file"
 
+  cmake-format:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run cmake-format style check
+        uses: TomLonergan03/cmake-format-lint-action
+        with:
+          args: --check
+
   find-todos-fixme:
     runs-on: ubuntu-latest
     steps:
