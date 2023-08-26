@@ -5,5 +5,6 @@ file(GLOB code "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_library(${target} STATIC ${headers} ${code})
 include_directories(
   ${target} "${CMAKE_SOURCE_DIR}/lib" "${CMAKE_CURRENT_SOURCE_DIR}"
-  ${rapidjson_SOURCE_DIR}/include)
+  ${rapidjson_SOURCE_DIR}/include
+)
 target_link_libraries(${target} hyped_io hyped_sensors hyped_motors)
