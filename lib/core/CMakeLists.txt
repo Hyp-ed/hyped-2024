@@ -5,3 +5,5 @@ add_library(${target} STATIC ${headers} ${code})
 target_include_directories(${target}
     INTERFACE "${CMAKE_SOURCE_DIR}/lib"
 )
+target_link_libraries(${target}
+PahoMqttCpp::paho-mqttpp3)

@@ -15,6 +15,8 @@ enable_testing()
 find_package (Eigen3 REQUIRED NO_MODULE)
 include_directories(${EIGEN3_INCLUDE_DIR})
 find_package(Boost REQUIRED)
+find_package(PahoMqttCpp REQUIRED)
+include_directories(${PahoMqttCpp_INCLUDE_DIRS})
 include(FetchContent)
 FetchContent_Declare(
   rapidjson
