@@ -1,3 +1,5 @@
+#pragma once
+
 #include "logger.hpp"
 #include "mqtt_topics.hpp"
 #include "types.hpp"
@@ -25,7 +27,7 @@ enum MqttMessageQos {
 
 struct MqttMessage {
   struct Header {
-    uint64_t timestamp;
+    std::uint64_t timestamp;
     MqttMessagePriority priority;
   };
   Header header;
@@ -54,7 +56,7 @@ class Mqtt : public IMqtt {
   static std::optional<std::shared_ptr<Mqtt>> create(ILogger &logger,
                                                      const std::string &id,
                                                      const std::string &host,
-                                                     const uint16_t port);
+                                                     const std::uint16_t port);
   Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client);
   ~Mqtt();
   core::Result publish(const MqttTopic &topic,
