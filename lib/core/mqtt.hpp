@@ -46,7 +46,7 @@ class IMqtt {
                                const MqttMessage &message,
                                const MqttMessageQos qos)
     = 0;
-  // virtual core::Result subscribe(const core::MqttTopic &topic)                             = 0;
+  virtual core::Result subscribe(const core::MqttTopic topic) = 0;
   // virtual core::Result consume()                                                           = 0;
   // virtual MqttMessage getMessage()                                                         = 0;
 };
@@ -62,7 +62,7 @@ class Mqtt : public IMqtt {
   core::Result publish(const MqttTopic &topic,
                        const MqttMessage &message,
                        const MqttMessageQos qos);
-  // core::Result subscribe(const core::MqttTopic &topic);
+  core::Result subscribe(const core::MqttTopic topic);
   // core::Result consume();
 
  private:

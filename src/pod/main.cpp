@@ -36,6 +36,7 @@ int main(int argc, char **argv)
       .payload = message_payload,
     };
     mqtt->publish(topic, message, hyped::core::MqttMessageQos::kAtLeastOnce);
+    mqtt->subscribe(hyped::core::MqttTopic::kTest);
   });
   std::cout << "Ran for " << execution_time.count() << " ns" << std::endl;
 }

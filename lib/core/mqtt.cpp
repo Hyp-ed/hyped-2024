@@ -56,6 +56,27 @@ core::Result Mqtt::publish(const MqttTopic &topic,
   return core::Result::kSuccess;
 }
 
+core::Result Mqtt::subscribe(const core::MqttTopic topic)
+{
+  const auto topic_string = mqtt_topic_strings.find(topic);
+  if (topic_string == mqtt_topic_strings.end()) {
+    logger_.log(core::LogLevel::kFatal, "Attempted to subscribe to nonexistent MQTT topic");
+    return core::Result::kSuccess;
+  }
+  const auto result       = client_->subscribe(topic_string->second);
+  const auto reason_codes = result.get_reason_codes();
+  for (mqtt::ReasonCode code : reason_codes) {
+    if (code != mqtt::ReasonCode::SUCCESS && code != mqtt::ReasonCode::GRANTED_QOS_0
+        && code != mqtt::ReasonCode::GRANTED_QOS_1 && code != mqtt::ReasonCode::GRANTED_QOS_2) {
+      logger_.log(
+        core::LogLevel::kFatal, "Failed to subscribe to MQTT topic with error code %i", code);
+      return core::Result::kFailure;
+    }
+  }
+  logger_.log(core::LogLevel::kInfo, "Subscribed to topic");
+  return core::Result::kSuccess;
+}
+
 // core::Result Mqtt::consume()
 // {
 //   const auto message = client_->consume_message();
