@@ -26,6 +26,7 @@ enum MqttMessageQos {
 };
 
 struct MqttMessage {
+  MqttTopic topic;
   struct Header {
     std::uint64_t timestamp;
     MqttMessagePriority priority;
@@ -42,13 +43,27 @@ struct MqttMessage {
 };
 class IMqtt {
  public:
-  virtual core::Result publish(const core::MqttTopic &topic,
-                               const MqttMessage &message,
-                               const MqttMessageQos qos)
-    = 0;
-  virtual core::Result subscribe(const core::MqttTopic topic) = 0;
-  // virtual core::Result consume()                                                           = 0;
-  // virtual MqttMessage getMessage()                                                         = 0;
+  /**
+   * @brief Sends a message to its topic
+   *
+   * @param message
+   * @param qos
+   * @return core::Result
+   */
+  virtual void publish(const MqttMessage &message, const MqttMessageQos qos) = 0;
+  virtual core::Result subscribe(const core::MqttTopic topic)                = 0;
+  /**
+   * @brief Pulls all pending MQTT messages into internal queue
+   *
+   * @returns kFailure if any message received is invalid, kSuccess otherwise
+   */
+  virtual core::Result consume() = 0;
+  /**
+   * @returns next message to be processed, sorted by priority then delivery time. i.e. The highest
+   * priority message is always selected, then the oldest in that priority is returned
+   *
+   */
+  virtual std::optional<MqttMessage> getMessage() = 0;
 };
 
 class Mqtt : public IMqtt {
@@ -59,22 +74,36 @@ class Mqtt : public IMqtt {
                                                      const std::uint16_t port);
   Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client);
   ~Mqtt();
-  core::Result publish(const MqttTopic &topic,
-                       const MqttMessage &message,
-                       const MqttMessageQos qos);
+  void publish(const MqttMessage &message, const MqttMessageQos qos);
   core::Result subscribe(const core::MqttTopic topic);
-  // core::Result consume();
+  core::Result consume();
+  std::optional<MqttMessage> getMessage();
 
  private:
+  /**
+   * @brief Creates an mqtt:message_ptr from an MqttMessage
+   *
+   * @param message
+   * @return mqtt::message_ptr
+   */
+  mqtt::message_ptr messageToMessagePtr(const MqttMessage &message);
+  /**
+   * @brief Creates an MqttMessage from an mqtt:message_ptr
+   *
+   * @param message
+   * @return MqttMessage if message contains valid header, nullopt otherwise
+   */
+  std::optional<MqttMessage> messagePtrToMessage(mqtt::const_message_ptr *message);
+
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;
-  // std::priority_queue<MqttMessage> incoming_message_queue_;
-  bool message_available_;
+  std::priority_queue<MqttMessage> incoming_message_queue_;
+  std::uint32_t messages_in_queue;
 };
 
 // class MqttCallback : public mqtt::callback {
 //  public:
-//   MqttCallback(ILogger &logger, std::shared_ptr<Mqtt> mqtt);
+//   MqttCallback(ILogger &logger);
 //   void connection_lost(const std::string &cause) override;
 //   void delivery_complete(mqtt::delivery_token_ptr token) override;
 //   void message_arrived(mqtt::const_message_ptr msg) override;
