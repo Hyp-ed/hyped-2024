@@ -6,7 +6,7 @@
 				"pins": []
 			},
 			"can": {
-				"enabled": true,
+				"enabled": false,
 				"buses": [
 					"can1"
 				]
@@ -46,7 +46,7 @@
 				"device_address": 56
 			},
 			"bms": {
-				"enabled": true,
+				"enabled": false,
 				"bus": "can1"
 			}
 		},

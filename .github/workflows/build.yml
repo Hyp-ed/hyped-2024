@@ -19,9 +19,9 @@ jobs:
         with:
           compiler: clang
           ubuntu: |
-            apt: libeigen3-dev libboost-all-dev
+            apt: libeigen3-dev libboost-all-dev libncurses5-dev
           macos: |
-            brew: eigen boost
+            brew: eigen boost ncurses
       - name: CMake
         run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(which clang++)
       - name: Build hyped
