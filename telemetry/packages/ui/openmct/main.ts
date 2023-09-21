@@ -42,7 +42,7 @@ openmct.install(openmct.plugins.Timer());
 openmct.install(openmct.plugins.Timelist());
 openmct.install(openmct.plugins.BarChart());
 openmct.install(openmct.plugins.ScatterPlot());
-openmct.install(ConductorPlugin())
+openmct.install(ConductorPlugin());
 
 // Data
 openmct.install(DictionaryPlugin());
