@@ -19,7 +19,7 @@ export default defineConfig(({ command, mode }) => {
       viteStaticCopy({
         targets: [
           {
-            src: '../../node_modules/openmct/dist/*',
+            src: './node_modules/openmct/dist/*',
             dest: 'openmct-lib',
           },
         ],
