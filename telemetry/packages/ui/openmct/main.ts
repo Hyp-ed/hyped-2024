@@ -54,7 +54,13 @@ openmct.install(LimitPlugin());
 openmct.install(FaultsPlugin());
 
 // Dashboards
-// openmct.install(openmct.plugins.StaticRootPlugin('dashboards', 'data/dashboards.json'));
+// https://github.com/nasa/openmct/tree/master/src/plugins/staticRootPlugin
+openmct.install(
+  openmct.plugins.StaticRootPlugin({
+    namespace: 'dashboards',
+    exportUrl: 'data/dashboards.json',
+  }),
+);
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
