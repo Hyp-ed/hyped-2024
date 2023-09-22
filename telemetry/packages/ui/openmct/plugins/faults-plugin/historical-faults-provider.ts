@@ -6,17 +6,17 @@ import { http } from 'openmct/core/http';
 const POD_ID = 'pod_1';
 
 export function HistoricalFaultsProvider() {
-    return {
-      supportsRequest(domainObject: AugmentedDomainObject) {
-        return domainObject.type === FAULT_MANAGEMENT_DOMAIN_TYPE;
-      },
-      request: () => {
-        const url = `openmct/faults/historical/pods/${POD_ID}`
+  return {
+    supportsRequest(domainObject: AugmentedDomainObject) {
+      return domainObject.type === FAULT_MANAGEMENT_DOMAIN_TYPE;
+    },
+    request: () => {
+      const url = `openmct/faults/historical/pods/${POD_ID}`;
 
-        return http
-          .get(url)
-          .json()
-          .then((data: any) => data.map((fault: any) => fault.fault));
-      },
-    };
+      return http
+        .get(url)
+        .json()
+        .then((data: any) => data.map((fault: any) => fault.fault));
+    },
+  };
 }

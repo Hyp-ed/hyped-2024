@@ -17,12 +17,22 @@ export class InfluxService implements OnModuleInit {
 
   async $connect() {
     this.connection = new InfluxDB({ url: INFLUX_URL, token: INFLUX_TOKEN });
-    this.telemetryWrite = this.connection.getWriteApi(INFLUX_ORG, INFLUX_TELEMETRY_BUCKET, 'ns', {
-      batchSize: 1,
-    });
-    this.faultsWrite = this.connection.getWriteApi(INFLUX_ORG, INFLUX_FAULTS_BUCKET, 'ns', {
-      batchSize: 1,
-    });
+    this.telemetryWrite = this.connection.getWriteApi(
+      INFLUX_ORG,
+      INFLUX_TELEMETRY_BUCKET,
+      'ns',
+      {
+        batchSize: 1,
+      },
+    );
+    this.faultsWrite = this.connection.getWriteApi(
+      INFLUX_ORG,
+      INFLUX_FAULTS_BUCKET,
+      'ns',
+      {
+        batchSize: 1,
+      },
+    );
     this.query = this.connection.getQueryApi(INFLUX_ORG);
   }
 

@@ -16,6 +16,9 @@
     "fix": {
       "cache": false
     },
+    "format": {
+      "cache": false
+    },
     "flightcheck": {
       "outputs": []
     },

@@ -12,6 +12,7 @@
     "test:watch": "turbo run test:watch --parallel",
     "Lint": "==========================================================================================================",
     "fix": "turbo run fix --parallel",
+    "format": "turbo run format --parallel",
     "flightcheck": "turbo run flightcheck",
     "Build": "=========================================================================================================",
     "build": "turbo run build"

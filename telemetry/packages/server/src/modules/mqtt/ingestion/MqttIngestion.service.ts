@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Params, Payload, Subscribe } from 'nest-mqtt';
 import { MeasurementService } from '@/modules/measurement/Measurement.service';
 import { currentTime } from '@influxdata/influxdb-client';
+
 @Injectable()
 export class MqttIngestionService {
   constructor(private measurementService: MeasurementService) {}
@@ -30,7 +31,7 @@ export class MqttIngestionService {
       podId,
       measurementKey,
       value,
-      timestamp
+      timestamp,
     });
   }
 }
