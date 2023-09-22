@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useMQTT } from './mqtt';
 import { MQTT_CONNECTION_STATUS } from '@/types/MQTTConnectionStatus';
 import { getTopic } from '@/lib/utils';
-import { ALL_POD_STATES, PodStateType } from '@hyped/telemetry-constants';
+import { ALL_POD_STATES, PodStateType } from '@hyped/constants';
 import { http } from 'openmct/core/http';
 
 /**

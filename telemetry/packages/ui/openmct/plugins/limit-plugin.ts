@@ -1,4 +1,4 @@
-import { OpenMctMeasurement } from '@hyped/telemetry-types';
+import { OpenMctMeasurement } from '@hyped/types';
 import { OpenMCT } from 'openmct/dist/openmct';
 import { Datum } from 'openmct/types/Datum';
 import { Unpacked } from 'openmct/types/Unpacked';
@@ -87,18 +87,20 @@ export function LimitPlugin() {
         return {
           limits: function () {
             return Promise.resolve({
-              ...(limits.warning ? {
-                WARNING: {
-                  low: {
-                    color: 'yellow',
-                    value: limits.warning.low,
-                  },
-                  high: {
-                    color: 'yellow',
-                    value: limits.warning.high,
-                  },
-                }
-              } : {}),
+              ...(limits.warning
+                ? {
+                    WARNING: {
+                      low: {
+                        color: 'yellow',
+                        value: limits.warning.low,
+                      },
+                      high: {
+                        color: 'yellow',
+                        value: limits.warning.high,
+                      },
+                    },
+                  }
+                : {}),
               CRITICAL: {
                 low: {
                   color: 'red',

@@ -1,6 +1,6 @@
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { MeasurementReading } from '@/modules/measurement/MeasurementReading.types';
-import { socket as socketConstants } from '@hyped/telemetry-constants';
+import { socket as socketConstants } from '@hyped/constants';
 import { LoggerService } from '@nestjs/common';
 import {
   ConnectedSocket,
@@ -45,7 +45,10 @@ export class RealtimeTelemetryDataGateway {
   sendMeasurementReading(props: MeasurementReading) {
     const { podId, measurementKey, value, timestamp } = props;
 
-    const measurementRoom = socketConstants.getMeasurementRoomName(podId, measurementKey);
+    const measurementRoom = socketConstants.getMeasurementRoomName(
+      podId,
+      measurementKey,
+    );
     this.socket.to(measurementRoom).emit(socketConstants.MEASUREMENT_EVENT, {
       podId,
       measurementKey,

@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { PodDisconnectError } from './components/pod-disconnect-error';
 import { useMQTT } from './context/mqtt';
 import { Latency } from './components/latency';
-import { POD_IDS } from '@hyped/telemetry-constants';
+import { POD_IDS } from '@hyped/constants';
 import { usePod } from './context/pods';
 
 const DEFAULT_POD = POD_IDS[0];

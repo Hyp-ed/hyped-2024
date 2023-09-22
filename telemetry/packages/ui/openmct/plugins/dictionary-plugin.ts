@@ -1,4 +1,4 @@
-import { OpenMctMeasurement } from '@hyped/telemetry-types';
+import { OpenMctMeasurement } from '@hyped/types';
 import { OpenMCT } from 'openmct/dist/openmct';
 import { DomainObject } from 'openmct/dist/src/api/objects/ObjectAPI';
 import { ObjectIdentitifer } from '../types/ObjectIdentifier';
@@ -27,7 +27,7 @@ const measurementsObjectProvider = {
         throw new Error('Measurement not found');
       }
 
-      const telemetryValue = measurement.values.find(m => m?.key === 'value');
+      const telemetryValue = measurement.values.find((m) => m?.key === 'value');
       if (!telemetryValue) {
         throw new Error('Measurement does not have a telemetry source value');
       }

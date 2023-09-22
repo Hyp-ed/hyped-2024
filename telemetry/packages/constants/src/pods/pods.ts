@@ -1,4 +1,4 @@
-import type { Pods } from '@hyped/telemetry-types';
+import type { Pods } from '@hyped/types';
 import {
   accelerometerCommon,
   hallEffectCommon,
@@ -95,8 +95,8 @@ export const pods: Pods = {
           warning: {
             low: -0.19,
             high: 5.2,
-          }
-        }
+          },
+        },
       },
       pressure_front_pull: {
         name: 'Pressure – Front Pull',
@@ -110,8 +110,8 @@ export const pods: Pods = {
           warning: {
             low: -0.19,
             high: 5.2,
-          }
-        }
+          },
+        },
       },
       pressure_front_push: {
         name: 'Pressure – Front Push',
@@ -125,8 +125,8 @@ export const pods: Pods = {
           warning: {
             low: -0.19,
             high: 5.2,
-          }
-        }
+          },
+        },
       },
       pressure_back_push: {
         name: 'Pressure – Back Push',
@@ -140,8 +140,8 @@ export const pods: Pods = {
           warning: {
             low: -0.19,
             high: 5.2,
-          }
-        }
+          },
+        },
       },
       pressure_brakes_reservoir: {
         name: 'Pressure – Brakes Reservoir',
@@ -155,8 +155,8 @@ export const pods: Pods = {
           warning: {
             low: 3.5,
             high: 6.9,
-          }
-        }
+          },
+        },
       },
       pressure_active_suspension_reservoir: {
         name: 'Pressure – Active Suspension Reservoir',
@@ -170,8 +170,8 @@ export const pods: Pods = {
           warning: {
             low: 3.5,
             high: 6.9,
-          }
-        }
+          },
+        },
       },
       pressure_front_brake: {
         name: 'Pressure – Front Brake',
@@ -185,8 +185,8 @@ export const pods: Pods = {
           warning: {
             low: -0.19,
             high: 4,
-          }
-        }
+          },
+        },
       },
       pressure_back_brake: {
         name: 'Pressure – Back Brake',
@@ -200,8 +200,8 @@ export const pods: Pods = {
           warning: {
             low: -0.19,
             high: 4,
-          }
-        }
+          },
+        },
       },
 
       // ************************************ THERMISTORS ************************************ //

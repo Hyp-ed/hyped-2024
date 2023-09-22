@@ -7,7 +7,7 @@ import '@fontsource/raleway';
 import { Toaster } from 'react-hot-toast';
 import { MQTTProvider } from './context/mqtt';
 import { PodsProvider } from './context/pods';
-import { POD_IDS } from '@hyped/telemetry-constants';
+import { POD_IDS } from '@hyped/constants';
 
 const MQTT_BROKER = 'ws://localhost:8080';
 const QOS = 0;

@@ -1,5 +1,5 @@
 {
-  "name": "@hyped/telemetry-server",
+  "name": "@hyped/server",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -17,8 +17,8 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@hyped/telemetry-constants": "*",
-    "@hyped/telemetry-types": "*",
+    "@hyped/constants": "*",
+    "@hyped/types": "*",
     "@influxdata/influxdb-client": "^1.33.1",
     "@nestjs/common": "^9.2.1",
     "@nestjs/core": "^9.2.1",

@@ -19,7 +19,7 @@ import {
 import { usePod } from '@/context/pods';
 import { http } from 'openmct/core/http';
 import { log } from '@/lib/logger';
-import { ALL_POD_STATES } from '@hyped/telemetry-constants';
+import { ALL_POD_STATES } from '@hyped/constants';
 
 interface PodControlsProps {
   podId: string;

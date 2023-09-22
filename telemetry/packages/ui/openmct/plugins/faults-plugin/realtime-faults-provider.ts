@@ -1,4 +1,4 @@
-import { socket as socketConstants } from '@hyped/telemetry-constants';
+import { socket as socketConstants } from '@hyped/constants';
 import { SERVER_ENDPOINT } from 'openmct/core/config';
 import { AugmentedDomainObject } from 'openmct/types/AugmentedDomainObject';
 import { io } from 'socket.io-client';

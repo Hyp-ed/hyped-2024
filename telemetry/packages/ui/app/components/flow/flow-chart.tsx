@@ -1,6 +1,6 @@
 import ReactFlow, { Position } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
+import { PodStateType, ALL_POD_STATES } from '@hyped/constants';
 import { PassiveNode, FailureNode, ActiveNode, TextNode } from './nodes';
 import { useMemo } from 'react';
 import './styles.css';

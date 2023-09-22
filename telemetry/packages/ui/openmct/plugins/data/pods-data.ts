@@ -1,4 +1,4 @@
-import { OpenMctMeasurement, OpenMctPod } from '@hyped/telemetry-types';
+import { OpenMctMeasurement, OpenMctPod } from '@hyped/types';
 import { http } from '../../core/http';
 
 export function fetchPodIds() {

@@ -1,4 +1,4 @@
-import { Measurement, OpenMctMeasurement } from '@hyped/telemetry-types';
+import { Measurement, OpenMctMeasurement } from '@hyped/types';
 
 export function mapMeasurementToOpenMct(
   measurement: Measurement,

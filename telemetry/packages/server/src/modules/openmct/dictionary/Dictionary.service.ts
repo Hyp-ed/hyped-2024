@@ -1,5 +1,5 @@
-import { POD_IDS, pods } from '@hyped/telemetry-constants';
-import { OpenMctDictionary, OpenMctPod } from '@hyped/telemetry-types';
+import { POD_IDS, pods } from '@hyped/constants';
+import { OpenMctDictionary, OpenMctPod } from '@hyped/types';
 import { Injectable } from '@nestjs/common';
 import { mapMeasurementToOpenMct } from './utils/mapMeasurementToOpenMct';
 

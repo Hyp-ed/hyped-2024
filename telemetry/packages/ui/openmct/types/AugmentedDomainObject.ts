@@ -1,7 +1,7 @@
-import { Limits } from "@hyped/telemetry-types/dist/pods/pods.types";
-import { DomainObject } from "openmct/dist/src/api/objects/ObjectAPI";
+import { Limits } from '@hyped/types/dist/pods/pods.types';
+import { DomainObject } from 'openmct/dist/src/api/objects/ObjectAPI';
 
 export type AugmentedDomainObject = DomainObject & {
   podId: string;
-  limits?: Limits
-}
+  limits?: Limits;
+};

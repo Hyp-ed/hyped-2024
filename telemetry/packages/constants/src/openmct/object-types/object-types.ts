@@ -1,4 +1,4 @@
-import type { OpenMctObjectTypes } from "@hyped/telemetry-types";
+import type { OpenMctObjectTypes } from '@hyped/types';
 
 export const openMctObjectTypes: OpenMctObjectTypes = [
   {

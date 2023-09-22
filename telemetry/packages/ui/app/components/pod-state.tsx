@@ -5,7 +5,7 @@ import {
   PASSIVE_STATES,
   NULL_STATES,
   ACTIVE_STATES,
-} from '@hyped/telemetry-constants';
+} from '@hyped/constants';
 import { Button } from './ui/button';
 import {
   Dialog,

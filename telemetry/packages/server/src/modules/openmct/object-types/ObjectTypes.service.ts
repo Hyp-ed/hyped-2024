@@ -1,5 +1,5 @@
-import { openMctObjectTypes } from '@hyped/telemetry-constants';
-import { OpenMctObjectTypes } from '@hyped/telemetry-types';
+import { openMctObjectTypes } from '@hyped/constants';
+import { OpenMctObjectTypes } from '@hyped/types';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()

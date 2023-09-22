@@ -1,7 +1,7 @@
 import { INFLUX_FAULTS_BUCKET } from '@/core/config';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
-import { OpenMctFault } from '@hyped/telemetry-types';
+import { OpenMctFault } from '@hyped/types';
 import {
   flux,
   fluxBool,

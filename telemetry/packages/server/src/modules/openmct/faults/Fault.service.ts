@@ -1,9 +1,9 @@
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { MeasurementReading } from '@/modules/measurement/MeasurementReading.types';
-import { FaultLevel } from '@hyped/telemetry-constants';
-import { OpenMctFault, Unpacked } from '@hyped/telemetry-types';
-import { RangeMeasurement } from '@hyped/telemetry-types/dist/pods/pods.types';
+import { FaultLevel } from '@hyped/constants';
+import { OpenMctFault, Unpacked } from '@hyped/types';
+import { RangeMeasurement } from '@hyped/types/dist/pods/pods.types';
 import { Point } from '@influxdata/influxdb-client';
 import { Injectable, LoggerService } from '@nestjs/common';
 import {

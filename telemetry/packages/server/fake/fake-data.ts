@@ -2,8 +2,8 @@
 /* eslint-disable no-console */
 import mqtt from 'mqtt';
 import random from 'random';
-import { pods } from '@hyped/telemetry-constants';
-import { Measurement } from '@hyped/telemetry-types';
+import { pods } from '@hyped/constants';
+import { Measurement } from '@hyped/types';
 
 const client = mqtt.connect('mqtt://localhost:1883');
 
