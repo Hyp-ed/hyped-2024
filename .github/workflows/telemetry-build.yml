@@ -25,6 +25,7 @@ jobs:
         with:
           node-version: 18
           cache: 'pnpm'
+          cache-dependency-path: 'telemetry/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install
