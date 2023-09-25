@@ -4,7 +4,8 @@
 
 namespace hyped::test {
 
-TEST(StateMachine, initalize){
+TEST(StateMachine, initalize)
+{
   std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
 }
 
