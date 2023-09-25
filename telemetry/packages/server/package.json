@@ -20,7 +20,7 @@
     "@hyped/constants": "*",
     "@hyped/types": "*",
     "@influxdata/influxdb-client": "^1.33.1",
-    "@nestjs/common": "^9.2.1",
+    "@nestjs/common": "^9.4.2",
     "@nestjs/core": "^9.2.1",
     "@nestjs/microservices": "^9.2.1",
     "@nestjs/platform-express": "^9.2.1",

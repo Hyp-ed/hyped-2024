@@ -71,7 +71,7 @@ importers:
         specifier: ^1.33.1
         version: 1.33.2
       '@nestjs/common':
-        specifier: ^9.2.1
+        specifier: ^9.4.2
         version: 9.4.2(patch_hash=7gsnam3ozl5gnswsbuzbuctghi)(reflect-metadata@0.1.13)(rxjs@7.8.1)
       '@nestjs/core':
         specifier: ^9.2.1
