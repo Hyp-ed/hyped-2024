@@ -33,7 +33,7 @@
     "lerna": "^6.6.2",
     "lucide-react": "^0.233.0",
     "mqtt": "4.1.0",
-    "openmct": "github:nasa/openmct#v2.2.5",
+    "openmct": "git+https://github.com/nasa/openmct.git#v2.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hot-toast": "^2.4.1",
