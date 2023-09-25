@@ -264,7 +264,7 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       openmct:
-        specifier: github:nasa/openmct#v2.2.5
+        specifier: git+https://github.com/nasa/openmct.git#v2.2.5
         version: github.com/nasa/openmct/55d0efa510ad1da827f969e46cb8d0f0f8325bf5(patch_hash=wymmvtnn64t74tnqwzk5rkwube)
       react:
         specifier: ^18.2.0
