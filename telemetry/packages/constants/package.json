@@ -15,9 +15,9 @@
     "format": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {
-    "@hyped/types": "^0.0.0",
+    "@hyped/types": "*",
     "tsdx": "^0.14.1",
-    "tslib": "^2.6.2",
-    "typescript": "^5.2.2"
+    "tslib": "^2.5.3",
+    "typescript": "^5.1.6"
   }
 }
