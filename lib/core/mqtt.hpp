@@ -32,7 +32,7 @@ struct MqttMessage {
     MqttMessagePriority priority;
   };
   Header header;
-  rapidjson::Document &payload;
+  std::shared_ptr<rapidjson::Document> payload;
   bool operator<(const MqttMessage &other) const
   {
     if (header.priority == other.header.priority) {
@@ -40,7 +40,12 @@ struct MqttMessage {
     }
     return header.priority < other.header.priority;
   }
+  MqttMessage(MqttTopic topic, Header &header, std::shared_ptr<rapidjson::Document> payload)
+      : topic(topic),
+        header(header),
+        payload(std::move(payload)){};
 };
+
 class IMqtt {
  public:
   /**

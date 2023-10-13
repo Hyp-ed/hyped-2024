@@ -99,9 +99,7 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
   header.AddMember("priority", message.header.priority, payload.GetAllocator());
   header.AddMember("timestamp", message.header.timestamp, payload.GetAllocator());
   payload.AddMember("header", header, payload.GetAllocator());
-  rapidjson::Value payload_json;
-  payload_json.CopyFrom(message.payload, payload.GetAllocator());
-  payload.AddMember("payload", payload_json, payload.GetAllocator());
+  payload.CopyFrom(*message.payload, payload.GetAllocator());
   rapidjson::StringBuffer buffer;
   auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
   payload.Accept(writer);
@@ -136,9 +134,10 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(mqtt::const_message_ptr *me
     return std::nullopt;
   }
   MqttMessagePriority mqtt_priority = static_cast<MqttMessagePriority>(priority);
-  rapidjson::Document mqtt_payload;
-  mqtt_payload.CopyFrom(message_contents_json["payload"], message_contents_json.GetAllocator());
-  return MqttMessage{mqtt_topic, timestamp, mqtt_priority, mqtt_payload};
+  std::shared_ptr mqtt_payload      = std::make_shared<rapidjson::Document>();
+  mqtt_payload->CopyFrom(message_contents_json["payload"], mqtt_payload->GetAllocator());
+  MqttMessage::Header mqtt_header{timestamp, mqtt_priority};
+  return MqttMessage{mqtt_topic, mqtt_header, mqtt_payload};
 }
 
 // MqttCallback::MqttCallback(ILogger &logger) : logger_(logger)
