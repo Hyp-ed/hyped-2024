@@ -37,7 +37,7 @@ void Mqtt::publish(const MqttMessage &message, const MqttMessageQos qos)
 {
   auto constructed_message = messageToMessagePtr(message);
   logger_.log(
-    core::LogLevel::kDebug, "Publishing message %s", constructed_message->get_payload_str());
+    core::LogLevel::kDebug, "Publishing message %s", constructed_message->get_payload_str().c_str());
   constructed_message->set_qos(qos);
   client_->publish(constructed_message);
 }
