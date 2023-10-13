@@ -17,21 +17,22 @@ int main(int argc, char **argv)
   hyped::core::Timer timer(time);
   const auto execution_time = timer.measureExecutionTime([time]() {
     hyped::core::Logger logger("MQTT", hyped::core::LogLevel::kDebug, time);
-    const std::string id   = "test";
-    const uint16_t port    = 1883;
-    const std::string host = "localhost";
-    auto optional_mqtt     = hyped::core::Mqtt::create(logger, id, host, port);
+    const std::string id     = "test";
+    const std::uint16_t port = 8080;
+    const std::string host   = "localhost";
+    auto optional_mqtt       = hyped::core::Mqtt::create(logger, id, host, port);
     if (!optional_mqtt) {
       std::cout << "Failed to connect to MQTT broker" << std::endl;
       return;
     }
-    auto mqtt        = *optional_mqtt;
-    const auto topic = hyped::core::MqttTopic::kTest;
+    auto mqtt                       = *optional_mqtt;
+    const auto topic                = hyped::core::MqttTopic::kTest;
     std::shared_ptr message_payload = std::make_unique<rapidjson::Document>();
     message_payload->SetObject();
     message_payload->AddMember("word", "Hello world!", message_payload->GetAllocator());
     message_payload->AddMember("number", 42, message_payload->GetAllocator());
-    hyped::core::MqttMessage::Header header{.timestamp = 0, .priority = hyped::core::MqttMessagePriority::kCritical};
+    hyped::core::MqttMessage::Header header{
+      .timestamp = 0, .priority = hyped::core::MqttMessagePriority::kCritical};
     const hyped::core::MqttMessage message{topic, header, message_payload};
     mqtt->publish(message, hyped::core::MqttMessageQos::kAtLeastOnce);
     mqtt->subscribe(hyped::core::MqttTopic::kTest);
