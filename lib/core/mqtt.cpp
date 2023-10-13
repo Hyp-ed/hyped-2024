@@ -9,7 +9,7 @@ namespace hyped::core {
 std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
                                                   const std::string &id,
                                                   const std::string &host,
-                                                  const uint16_t port)
+                                                  const std::uint16_t port)
 {
   std::string address = "tcp://" + host + ":" + std::to_string(port);
   mqtt::connect_options connection_options;
@@ -36,8 +36,9 @@ Mqtt::~Mqtt()
 void Mqtt::publish(const MqttMessage &message, const MqttMessageQos qos)
 {
   auto constructed_message = messageToMessagePtr(message);
-  logger_.log(
-    core::LogLevel::kDebug, "Publishing message %s", constructed_message->get_payload_str().c_str());
+  logger_.log(core::LogLevel::kDebug,
+              "Publishing message %s",
+              constructed_message->get_payload_str().c_str());
   constructed_message->set_qos(qos);
   client_->publish(constructed_message);
 }
@@ -99,7 +100,9 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
   header.AddMember("priority", message.header.priority, payload.GetAllocator());
   header.AddMember("timestamp", message.header.timestamp, payload.GetAllocator());
   payload.AddMember("header", header, payload.GetAllocator());
-  payload.CopyFrom(*message.payload, payload.GetAllocator());
+  rapidjson::Value payload_json;
+  payload_json.CopyFrom(*message.payload, payload.GetAllocator());
+  payload.AddMember("payload", payload_json, payload.GetAllocator());
   rapidjson::StringBuffer buffer;
   auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
   payload.Accept(writer);
