@@ -11,7 +11,11 @@ export class PublicDataController {
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
   ) {
-    return this.publicDataService.getVelocity(podId, startTimestamp, endTimestamp);
+    return this.publicDataService.getVelocity(
+      podId,
+      startTimestamp,
+      endTimestamp,
+    );
   }
 
   @Get('displacement')
@@ -20,6 +24,15 @@ export class PublicDataController {
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
   ) {
-    return this.publicDataService.getDisplacement(podId, startTimestamp, endTimestamp);
+    return this.publicDataService.getDisplacement(
+      podId,
+      startTimestamp,
+      endTimestamp,
+    );
+  }
+
+  @Get('state')
+  async getState(@Param('podId') podId: string) {
+    return this.publicDataService.getState(podId);
   }
 }
