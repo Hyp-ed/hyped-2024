@@ -31,25 +31,27 @@ export class MeasurementService {
     }
 
     const { measurement, reading } = validatedMeasurement;
-    const { podId, measurementKey, value, timestamp } = reading
+    const { podId, measurementKey, value, timestamp } = reading;
 
     // First, get the data to the client ASAP
     this.realtimeDataGateway.sendMeasurementReading({
       podId,
       measurementKey,
       value,
-      timestamp
+      timestamp,
     });
 
     // Then check if it breaches limits
     if (measurement.format === 'float' || measurement.format === 'integer') {
       const breachLevel = doesMeasurementBreachLimits(measurement, reading);
       if (breachLevel) {
-        this.logger.debug(`Measurement breached limits {${props.podId}/${props.measurementKey}}: ${breachLevel} with value ${props.value}`)
+        this.logger.debug(
+          `Measurement breached limits {${props.podId}/${props.measurementKey}}: ${breachLevel} with value ${props.value}`,
+        );
         await this.faultService.addLimitBreachFault({
           level: breachLevel,
           measurement,
-          tripReading: reading
+          tripReading: reading,
         });
       }
     }
@@ -85,6 +87,8 @@ export class MeasurementService {
     }
 
     const { podId, measurementKey, value } = result.data;
+
+    // TODO: Add the below checks to the Zod schema instead...
 
     const pod = pods[podId];
     if (!pod) {
