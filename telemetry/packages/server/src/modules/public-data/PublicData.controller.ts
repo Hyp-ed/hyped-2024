@@ -35,4 +35,17 @@ export class PublicDataController {
   async getState(@Param('podId') podId: string) {
     return this.publicDataService.getState(podId);
   }
+
+  @Get('levitation-height')
+  async getLevitationHeight(
+    @Param('podId') podId: string,
+    @Query('start') startTimestamp: string,
+    @Query('end') endTimestamp?: string,
+  ) {
+    return this.publicDataService.getLevitationHeight(
+      podId,
+      startTimestamp,
+      endTimestamp,
+    );
+  }
 }

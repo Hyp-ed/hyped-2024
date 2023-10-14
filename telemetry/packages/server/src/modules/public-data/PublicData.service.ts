@@ -47,6 +47,19 @@ export class PublicDataService {
     );
   }
 
+  public async getLevitationHeight(
+    podId: string,
+    startTimestamp: string,
+    endTimestamp?: string,
+  ) {
+    return this.historicalTelemetryDataService.getHistoricalReading(
+      podId,
+      'levitation_height',
+      startTimestamp,
+      endTimestamp ?? new Date().getTime().toString(),
+    );
+  }
+
   public async getState(podId: string) {
     // Get the last state reading (measurement name should be 'state')
     const query = flux`
