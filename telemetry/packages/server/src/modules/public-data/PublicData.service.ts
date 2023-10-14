@@ -4,6 +4,7 @@ import { HistoricalTelemetryDataService } from '../openmct/data/historical/Histo
 import { INFLUX_TELEMETRY_BUCKET } from '../core/config';
 import { flux } from '@influxdata/influxdb-client';
 import { InfluxService } from '../influx/Influx.service';
+import { ACTIVE_STATES } from '@hyped/telemetry-constants';
 
 type InfluxRow = {
   _time: string;
@@ -90,6 +91,45 @@ export class PublicDataService {
     } catch (e) {
       this.logger.error(
         `Failed to get historical reading for ${podId}'s state`,
+        e,
+        PublicDataService.name,
+      );
+    }
+  }
+
+  // We defined "launched" as when the pod's state changes from "READY" to "ACCELERATING", and we must currently be in active state.
+  public async getLaunchTime(podId: string) {
+    const currentState = await this.getState(podId);
+    if (
+      !Object.keys(ACTIVE_STATES).includes(
+        currentState?.currentState.state as string,
+      )
+    ) {
+      return {
+        launchTime: null,
+      };
+    }
+
+    const query = flux`
+      from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
+        |> range(start: -1d)
+        |> filter(fn: (r) => r["_measurement"] == "state")
+        |> filter(fn: (r) => r["podId"] == "${podId}")
+        |> filter(fn: (r) => r["_value"] == "ACCELERATING")
+        |> group()
+        |> sort(columns: ["_time"], desc: true)
+        |> limit(n: 1)
+    `;
+
+    try {
+      const data = await this.influxService.query.collectRows<InfluxRow>(query);
+
+      return {
+        launchTime: new Date(data[0]['_time']).getTime(),
+      };
+    } catch (e) {
+      this.logger.error(
+        `Failed to get launch time for ${podId}`,
         e,
         PublicDataService.name,
       );

@@ -48,4 +48,9 @@ export class PublicDataController {
       endTimestamp,
     );
   }
+
+  @Get('launch-time')
+  async getLaunchTime(@Param('podId') podId: string) {
+    return this.publicDataService.getLaunchTime(podId);
+  }
 }
