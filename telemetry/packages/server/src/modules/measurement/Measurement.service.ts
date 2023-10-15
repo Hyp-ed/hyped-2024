@@ -82,35 +82,16 @@ export class MeasurementService {
 
   private validateMeasurementReading(props: MeasurementReading) {
     const result = MeasurementReadingSchema.safeParse(props);
+
     if (!result.success) {
       throw new MeasurementReadingValidationError(result.error.message);
     }
 
-    const { podId, measurementKey, value } = result.data;
-
-    // TODOLater: Add the below checks to the Zod schema instead...
-
-    const pod = pods[podId];
-    if (!pod) {
-      throw new MeasurementReadingValidationError('Pod not found');
-    }
-
-    const measurement = pods[podId]['measurements'][measurementKey];
-    if (!measurement) {
-      throw new MeasurementReadingValidationError('Measurement not found');
-    }
-
-    if (measurement.format === 'enum') {
-      const enumValue = measurement.enumerations.find((e) => e.value === value);
-
-      if (!enumValue) {
-        throw new MeasurementReadingValidationError('Invalid enum value');
-      }
-    }
+    const { podId, measurementKey } = result.data;
 
     return {
       reading: result.data,
-      measurement,
+      measurement: pods[podId]['measurements'][measurementKey],
     };
   }
 }

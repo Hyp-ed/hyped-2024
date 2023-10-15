@@ -51,6 +51,7 @@ export class StateService {
 
   private validateStateUpdate(props: StateUpdate) {
     const result = StateUpdateSchema.safeParse(props);
+
     if (!result.success) {
       throw new StateUpdateValidationError(result.error.message);
     }

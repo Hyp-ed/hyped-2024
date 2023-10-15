@@ -1,4 +1,5 @@
 import { ALL_POD_STATES, pods } from '@hyped/telemetry-constants';
+import { zodEnumFromObjKeys } from 'src/utils/zodEnumFromObjKeys';
 import { z } from 'zod';
 
 export const StateUpdateSchema = z.object({
@@ -8,10 +9,3 @@ export const StateUpdateSchema = z.object({
 });
 
 export type StateUpdate = z.infer<typeof StateUpdateSchema>;
-
-function zodEnumFromObjKeys<K extends string>(
-  obj: Record<K, any>,
-): z.ZodEnum<[K, ...K[]]> {
-  const [firstKey, ...otherKeys] = Object.keys(obj) as K[];
-  return z.enum([firstKey, ...otherKeys]);
-}

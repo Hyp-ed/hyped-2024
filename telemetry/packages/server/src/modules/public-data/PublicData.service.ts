@@ -20,8 +20,13 @@ export class PublicDataService {
     private influxService: InfluxService,
   ) {}
 
+  /**
+   * Get the current state of a pod.
+   * @param podId The pod's ID.
+   * @returns The current state and the previous state of the pod.
+   */
   public async getState(podId: string) {
-    // Get the last state reading (measurement name should be 'state')
+    // Get the last state reading from InfluxDB (measurement name should be 'state')
     const query = flux`
       from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
         |> range(start: -1d)
@@ -56,9 +61,16 @@ export class PublicDataService {
     }
   }
 
-  // We defined "launched" as when the pod's state changes from "READY" to "ACCELERATING", and we must currently be in active state or "STOPPED".
+  /**
+   * Get the launch time of a pod.
+   * We consider the launch time to be when the pod's state changes from "READY" to "ACCELERATING", and we must currently be in active state or "STOPPED".
+   * @param podId The pod's ID.
+   * @returns The launch time of the pod.
+   */
   public async getLaunchTime(podId: string) {
     const currentState = await this.getState(podId);
+
+    // If the pod is not in an active state or stopped, launch time isn't defined
     if (
       !(
         Object.keys(ACTIVE_STATES).includes(
@@ -71,6 +83,7 @@ export class PublicDataService {
       };
     }
 
+    // Get the last "ACCELERATING" state reading from InfluxDB
     const query = flux`
       from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
         |> range(start: -1d)
@@ -84,9 +97,10 @@ export class PublicDataService {
 
     try {
       const data = await this.influxService.query.collectRows<InfluxRow>(query);
+      const launchTime = new Date(data[0]['_time']).getTime();
 
       return {
-        launchTime: new Date(data[0]['_time']).getTime(),
+        launchTime,
       };
     } catch (e) {
       this.logger.error(
