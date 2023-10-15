@@ -1,6 +1,5 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { Logger } from '../logger/Logger.decorator';
-import { HistoricalTelemetryDataService } from '../openmct/data/historical/HistoricalTelemetryData.service';
 import { INFLUX_TELEMETRY_BUCKET } from '../core/config';
 import { flux } from '@influxdata/influxdb-client';
 import { InfluxService } from '../influx/Influx.service';
@@ -18,48 +17,8 @@ export class PublicDataService {
   constructor(
     @Logger()
     private readonly logger: LoggerService,
-    private historicalTelemetryDataService: HistoricalTelemetryDataService,
     private influxService: InfluxService,
   ) {}
-
-  public async getVelocity(
-    podId: string,
-    startTimestamp: string,
-    endTimestamp?: string,
-  ) {
-    return this.historicalTelemetryDataService.getHistoricalReading(
-      podId,
-      'velocity',
-      startTimestamp,
-      endTimestamp ?? new Date().getTime().toString(),
-    );
-  }
-
-  public async getDisplacement(
-    podId: string,
-    startTimestamp: string,
-    endTimestamp?: string,
-  ) {
-    return this.historicalTelemetryDataService.getHistoricalReading(
-      podId,
-      'displacement',
-      startTimestamp,
-      endTimestamp ?? new Date().getTime().toString(),
-    );
-  }
-
-  public async getLevitationHeight(
-    podId: string,
-    startTimestamp: string,
-    endTimestamp?: string,
-  ) {
-    return this.historicalTelemetryDataService.getHistoricalReading(
-      podId,
-      'levitation_height',
-      startTimestamp,
-      endTimestamp ?? new Date().getTime().toString(),
-    );
-  }
 
   public async getState(podId: string) {
     // Get the last state reading (measurement name should be 'state')
@@ -97,12 +56,14 @@ export class PublicDataService {
     }
   }
 
-  // We defined "launched" as when the pod's state changes from "READY" to "ACCELERATING", and we must currently be in active state.
+  // We defined "launched" as when the pod's state changes from "READY" to "ACCELERATING", and we must currently be in active state or "STOPPED".
   public async getLaunchTime(podId: string) {
     const currentState = await this.getState(podId);
     if (
-      !Object.keys(ACTIVE_STATES).includes(
-        currentState?.currentState.state as string,
+      !(
+        Object.keys(ACTIVE_STATES).includes(
+          currentState?.currentState.state as string,
+        ) || currentState?.currentState.state === 'STOPPED'
       )
     ) {
       return {
