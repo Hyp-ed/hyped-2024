@@ -1,15 +1,28 @@
 import { Module } from '@nestjs/common';
 import { utilities, WinstonModule, WinstonModuleOptions } from 'nest-winston';
-import path from 'path';
 import { format, transports } from 'winston';
 import { ENV } from '../core/config';
 
-// Same level as src
-const LOGGING_DIRECTORY = path.join(__dirname, '..', '..', 'logs');
+// In top-level 'telemetry' directory
+const LOGGING_DIRECTORY = '../../logs';
+
+const customFormat = format((info) => {
+  if (info[Symbol.for('level')] === 'error') {
+    return {
+      context: info['error']['name'],
+      message: `\n${info['error']['message']}`,
+      stack: info['error']['stack'],
+      level: 'error',
+      [Symbol.for('level')]: 'error',
+    };
+  }
+  return info;
+});
 
 const loggerOptions: WinstonModuleOptions = {
   level: ENV === 'development' ? 'debug' : 'info',
   format: format.combine(
+    customFormat(),
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
@@ -35,10 +48,12 @@ const loggerOptions: WinstonModuleOptions = {
                 prettyPrint: true,
               }),
             ),
+            handleExceptions: true,
           }),
         ]
       : []),
   ],
+  exitOnError: false,
 };
 
 const logger = WinstonModule.forRoot(loggerOptions);

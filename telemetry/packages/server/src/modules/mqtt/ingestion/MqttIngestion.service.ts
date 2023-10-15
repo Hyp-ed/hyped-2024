@@ -1,9 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import { Params, Payload, Subscribe } from 'nest-mqtt';
 import { MeasurementService } from '@/modules/measurement/Measurement.service';
 import { currentTime } from '@influxdata/influxdb-client';
 import { StateService } from '@/modules/state/State.service';
-import { isValidState } from '@/modules/state/utils/isValidState';
+import { MqttIngestionError } from './errors/MqttIngestionError';
+import { Logger } from '@/modules/logger/Logger.decorator';
 
 @Injectable()
 export class MqttIngestionService {
@@ -22,15 +23,7 @@ export class MqttIngestionService {
     const measurementKey = rawParams[1];
     const value = rawValue;
 
-    if (
-      !podId ||
-      !measurementKey ||
-      value === undefined ||
-      value === null ||
-      isNaN(value)
-    ) {
-      throw new Error('Invalid MQTT message');
-    }
+    this.validateMqttMessage({ podId, measurementKey, value });
 
     await this.measurementService.addMeasurementReading({
       podId,
@@ -49,14 +42,26 @@ export class MqttIngestionService {
     const podId = rawParams[0];
     const value = rawValue;
 
-    if (!podId || value === undefined || value === null) {
-      throw new Error('Invalid MQTT message');
-    }
+    this.validateMqttMessage({ podId, measurementKey: 'state', value });
 
     await this.stateService.addStateReading({
       podId,
       value,
       timestamp,
     });
+  }
+
+  private validateMqttMessage({
+    podId,
+    measurementKey,
+    value,
+  }: {
+    podId: string;
+    measurementKey: string;
+    value: number;
+  }) {
+    if (!podId || !measurementKey || value === undefined || isNaN(value)) {
+      throw new MqttIngestionError('Invalid MQTT message');
+    }
   }
 }

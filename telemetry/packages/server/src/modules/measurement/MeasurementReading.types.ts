@@ -9,21 +9,14 @@ export const MeasurementReadingSchema = z
     timestamp: z.string(), // to handle nanoseconds timestamp
     value: z.number(),
   })
-  // Validate measurement exists
-  .refine(
-    ({ podId, measurementKey }) => {
-      const measurement = pods[podId]['measurements'][measurementKey];
-      return measurement;
-    },
-    {
-      message: 'Invalid measurement value',
-      path: ['measurementKey'],
-    },
-  )
-  // Validate enum values
+  // Validate measurement exists and enum value is valid (if applicable)
   .refine(
     ({ podId, measurementKey, value }) => {
       const measurement = pods[podId]['measurements'][measurementKey];
+
+      if (!measurement) {
+        return false;
+      }
 
       if (measurement.format === 'enum') {
         const enumValue = measurement.enumerations.find(
@@ -38,8 +31,8 @@ export const MeasurementReadingSchema = z
       return true;
     },
     {
-      message: 'Invalid enum value',
-      path: ['value'],
+      message:
+        'Invalid measurement reading - measurement does not exist or invalid enum value',
     },
   );
 
