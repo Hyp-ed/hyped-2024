@@ -6,12 +6,12 @@ import { ENV } from '../core/config';
 // In top-level 'telemetry' directory
 const LOGGING_DIRECTORY = '../../logs';
 
-const customFormat = format((info) => {
+const unhandledErrorFormat = format((info) => {
   if (info[Symbol.for('level')] === 'error' && info['error']) {
     return {
       context: info['error']['name'],
       message: `${info['error']['message']}`,
-      // stack: info['error']['stack'],
+      // stack: info['error']['stack'], - not using this for now
       level: 'error',
       [Symbol.for('level')]: 'error',
     };
@@ -22,7 +22,7 @@ const customFormat = format((info) => {
 const loggerOptions: WinstonModuleOptions = {
   level: ENV === 'development' ? 'debug' : 'info',
   format: format.combine(
-    customFormat(),
+    unhandledErrorFormat(),
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
