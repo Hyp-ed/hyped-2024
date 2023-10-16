@@ -106,16 +106,15 @@ class Mqtt : public IMqtt {
   std::uint32_t messages_in_queue;
 };
 
-// class MqttCallback : public mqtt::callback {
-//  public:
-//   MqttCallback(ILogger &logger);
-//   void connection_lost(const std::string &cause) override;
-//   void delivery_complete(mqtt::delivery_token_ptr token) override;
-//   void message_arrived(mqtt::const_message_ptr msg) override;
+class MqttCallback : public mqtt::callback {
+ public:
+  MqttCallback(ILogger &logger);
+  void connection_lost(const std::string &cause) override;
+  void delivery_complete(mqtt::delivery_token_ptr token) override;
+  void message_arrived(mqtt::const_message_ptr msg) override;
 
-//  private:
-//   ILogger &logger_;
-//   std::shared_ptr<Mqtt> mqtt_;
-// };
+ private:
+  ILogger &logger_;
+};
 
 }  // namespace hyped::core

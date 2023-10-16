@@ -18,7 +18,7 @@ int main(int argc, char **argv)
   const auto execution_time = timer.measureExecutionTime([time]() {
     hyped::core::Logger logger("MQTT", hyped::core::LogLevel::kDebug, time);
     const std::string id     = "test";
-    const std::uint16_t port = 1883;
+    const std::uint16_t port = 8080;
     const std::string host   = "localhost";
     auto optional_mqtt       = hyped::core::Mqtt::create(logger, id, host, port);
     if (!optional_mqtt) {

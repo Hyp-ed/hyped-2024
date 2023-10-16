@@ -16,6 +16,8 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
   connection_options.set_keep_alive_interval(1);
   connection_options.set_clean_session(true);
   auto mqtt_client = std::make_unique<mqtt::client>(address, id);
+  // auto cb = MqttCallback(logger);
+  // mqtt_client->set_callback(cb);
   mqtt_client->connect(connection_options);
   if (!mqtt_client->is_connected()) { return std::nullopt; }
   return std::make_shared<Mqtt>(logger, std::move(mqtt_client));
@@ -143,22 +145,24 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(mqtt::const_message_ptr *me
   return MqttMessage{mqtt_topic, mqtt_header, mqtt_payload};
 }
 
-// MqttCallback::MqttCallback(ILogger &logger) : logger_(logger)
-// {
-// }
+MqttCallback::MqttCallback(ILogger &logger) : logger_(logger)
+{
+}
 
-// void MqttCallback::connection_lost(const std::string &cause)
-// {
-//   logger_.log(core::LogLevel::kFatal, "Connection lost with MQTT broker: %s", cause.c_str());
-// }
+void MqttCallback::connection_lost(const std::string &cause)
+{
+  if (!cause.empty()) {
+    logger_.log(core::LogLevel::kFatal, "Connection lost with MQTT broker: %s", cause.c_str());
+  }
+}
 
-// void MqttCallback::delivery_complete(mqtt::delivery_token_ptr token)
-// {
-//   logger_.log(core::LogLevel::kDebug, "Message delivery complete");
-// }
+void MqttCallback::delivery_complete(mqtt::delivery_token_ptr token)
+{
+  logger_.log(core::LogLevel::kDebug, "Message delivery complete");
+}
 
-// void MqttCallback::message_arrived(mqtt::const_message_ptr msg)
-// {
-//   logger_.log(core::LogLevel::kDebug, "Message arrived");
-// }
+void MqttCallback::message_arrived(mqtt::const_message_ptr msg)
+{
+  logger_.log(core::LogLevel::kDebug, "Message arrived");
+}
 }  // namespace hyped::core
