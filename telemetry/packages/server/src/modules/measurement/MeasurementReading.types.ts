@@ -1,5 +1,5 @@
 import { pods } from '@hyped/telemetry-constants';
-import { zodEnumFromObjKeys } from 'src/utils/zodEnumFromObjKeys';
+import { zodEnumFromObjKeys } from '@/modules/common/utils/zodEnumFromObjKeys';
 import { z } from 'zod';
 
 export const MeasurementReadingSchema = z
@@ -18,6 +18,7 @@ export const MeasurementReadingSchema = z
         return false;
       }
 
+      // Validate enum values
       if (measurement.format === 'enum') {
         const enumValue = measurement.enumerations.find(
           (e) => e.value === value,
@@ -26,6 +27,14 @@ export const MeasurementReadingSchema = z
         if (!enumValue) {
           return false;
         }
+      }
+
+      // Validate integers and floats
+      if (
+        (measurement.format === 'float' && isNaN(value)) ||
+        (measurement.format === 'integer' && !Number.isInteger(value))
+      ) {
+        return false;
       }
 
       return true;

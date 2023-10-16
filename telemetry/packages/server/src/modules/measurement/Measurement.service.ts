@@ -47,6 +47,7 @@ export class MeasurementService {
       if (breachLevel) {
         this.logger.debug(
           `Measurement breached limits {${props.podId}/${props.measurementKey}}: ${breachLevel} with value ${props.value}`,
+          MeasurementService.name,
         );
         await this.faultService.addLimitBreachFault({
           level: breachLevel,

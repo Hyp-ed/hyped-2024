@@ -1,5 +1,5 @@
 import { ALL_POD_STATES, pods } from '@hyped/telemetry-constants';
-import { zodEnumFromObjKeys } from 'src/utils/zodEnumFromObjKeys';
+import { zodEnumFromObjKeys } from '@/modules/common/utils/zodEnumFromObjKeys';
 import { z } from 'zod';
 
 export const StateUpdateSchema = z.object({

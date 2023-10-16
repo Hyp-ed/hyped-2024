@@ -1,16 +1,14 @@
 import { HttpException, Injectable, LoggerService } from '@nestjs/common';
-import { Logger } from '../logger/Logger.decorator';
+import { Logger } from '@/modules/logger/Logger.decorator';
 import { INFLUX_TELEMETRY_BUCKET } from '../core/config';
 import { flux } from '@influxdata/influxdb-client';
-import { InfluxService } from '../influx/Influx.service';
+import { InfluxService } from '@/modules/influx/Influx.service';
 import { ACTIVE_STATES } from '@hyped/telemetry-constants';
+import { InfluxRow } from '@/modules/common/types/InfluxRow';
 
-type InfluxRow = {
-  _time: string;
-  _value: string;
-  podId: string;
+interface InfluxStateRow extends InfluxRow {
   stateType: string;
-};
+}
 
 @Injectable()
 export class PublicDataService {
@@ -38,7 +36,9 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxRow>(query);
+      const data = await this.influxService.query.collectRows<InfluxStateRow>(
+        query,
+      );
 
       return {
         currentState: data[0]
@@ -101,7 +101,9 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxRow>(query);
+      const data = await this.influxService.query.collectRows<InfluxStateRow>(
+        query,
+      );
       const launchTime = new Date(data[0]['_time']).getTime();
 
       return {
