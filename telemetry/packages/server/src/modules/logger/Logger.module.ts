@@ -7,11 +7,11 @@ import { ENV } from '../core/config';
 const LOGGING_DIRECTORY = '../../logs';
 
 const customFormat = format((info) => {
-  if (info[Symbol.for('level')] === 'error') {
+  if (info[Symbol.for('level')] === 'error' && info['error']) {
     return {
       context: info['error']['name'],
-      message: `\n${info['error']['message']}`,
-      stack: info['error']['stack'],
+      message: `${info['error']['message']}`,
+      // stack: info['error']['stack'],
       level: 'error',
       [Symbol.for('level')]: 'error',
     };
@@ -26,7 +26,7 @@ const loggerOptions: WinstonModuleOptions = {
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
-    format.errors({ stack: true }),
+    format.errors({ stack: false }),
     format.splat(),
     format.json(),
   ),

@@ -1,10 +1,9 @@
-import { Injectable, LoggerService } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Params, Payload, Subscribe } from 'nest-mqtt';
 import { MeasurementService } from '@/modules/measurement/Measurement.service';
 import { currentTime } from '@influxdata/influxdb-client';
 import { StateService } from '@/modules/state/State.service';
 import { MqttIngestionError } from './errors/MqttIngestionError';
-import { Logger } from '@/modules/logger/Logger.decorator';
 
 @Injectable()
 export class MqttIngestionService {
@@ -58,9 +57,9 @@ export class MqttIngestionService {
   }: {
     podId: string;
     measurementKey: string;
-    value: number;
+    value: unknown;
   }) {
-    if (!podId || !measurementKey || value === undefined || isNaN(value)) {
+    if (!podId || !measurementKey || value === undefined) {
       throw new MqttIngestionError('Invalid MQTT message');
     }
   }

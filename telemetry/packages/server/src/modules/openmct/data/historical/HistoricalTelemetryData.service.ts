@@ -1,5 +1,5 @@
 import { flux, fluxDateTime } from '@influxdata/influxdb-client';
-import { Injectable, LoggerService } from '@nestjs/common';
+import { HttpException, Injectable, LoggerService } from '@nestjs/common';
 import { INFLUX_TELEMETRY_BUCKET } from '@/core/config';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
@@ -53,6 +53,7 @@ export class HistoricalTelemetryDataService {
         e,
         HistoricalTelemetryDataService.name,
       );
+      throw new HttpException("Couldn't get historical reading", 500);
     }
   }
 }
