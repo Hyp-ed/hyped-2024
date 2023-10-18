@@ -1,16 +1,16 @@
 import { pods } from '@hyped/telemetry-constants';
 import { Point } from '@influxdata/influxdb-client';
 import { Injectable, LoggerService } from '@nestjs/common';
-import { InfluxService } from '../influx/Influx.service';
-import { Logger } from '../logger/Logger.decorator';
-import { RealtimeTelemetryDataGateway } from '../openmct/data/realtime/RealtimeTelemetryData.gateway';
+import { InfluxService } from '@/modules/influx/Influx.service';
+import { Logger } from '@/modules/logger/Logger.decorator';
+import { RealtimeTelemetryDataGateway } from '@/modules/openmct/data/realtime/RealtimeTelemetryData.gateway';
 import {
   MeasurementReading,
   MeasurementReadingSchema,
 } from './MeasurementReading.types';
 import { MeasurementReadingValidationError } from './errors/MeasurementReadingValidationError';
 import { doesMeasurementBreachLimits } from './utils/doesMeasurementBreachLimits';
-import { FaultService } from '../openmct/faults/Fault.service';
+import { FaultService } from '@/modules/openmct/faults/Fault.service';
 
 @Injectable()
 export class MeasurementService {

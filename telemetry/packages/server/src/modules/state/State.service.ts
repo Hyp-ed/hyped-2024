@@ -1,9 +1,9 @@
 import { Injectable, LoggerService } from '@nestjs/common';
-import { Logger } from '../logger/Logger.decorator';
+import { Logger } from '@/modules/logger/Logger.decorator';
 import { StateUpdate, StateUpdateSchema } from './StateUpdate.types';
 import { StateUpdateValidationError } from './errors/MeasurementReadingValidationError';
 import { Point } from '@influxdata/influxdb-client';
-import { InfluxService } from '../influx/Influx.service';
+import { InfluxService } from '@/modules/influx/Influx.service';
 import { getStateType } from '@hyped/telemetry-constants';
 
 @Injectable()

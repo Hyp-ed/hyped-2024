@@ -6,8 +6,8 @@ import {
   INFLUX_TOKEN,
   INFLUX_URL,
   INFLUX_FAULTS_BUCKET,
-} from '../core/config';
-import { Logger } from '../logger/Logger.decorator';
+} from '@/modules/core/config';
+import { Logger } from '@/modules/logger/Logger.decorator';
 import { InfluxServiceError } from './errors/InfluxServiceError';
 
 @Injectable()

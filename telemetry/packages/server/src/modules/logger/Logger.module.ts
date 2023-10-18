@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { utilities, WinstonModule, WinstonModuleOptions } from 'nest-winston';
 import { format, transports } from 'winston';
-import { ENV } from '../core/config';
+import { ENV } from '@/modules/core/config';
 
 // In top-level 'telemetry' directory
 const LOGGING_DIRECTORY = '../../logs';
