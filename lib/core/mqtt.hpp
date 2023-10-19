@@ -77,7 +77,7 @@ class Mqtt : public IMqtt {
                                                      const std::string &id,
                                                      const std::string &host,
                                                      const std::uint16_t port);
-  Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client);
+  Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client, mqtt::callback_ptr cb);
   ~Mqtt();
   void publish(const MqttMessage &message, const MqttMessageQos qos);
   core::Result subscribe(const core::MqttTopic topic);
@@ -104,9 +104,10 @@ class Mqtt : public IMqtt {
   std::unique_ptr<mqtt::client> client_;
   std::priority_queue<MqttMessage> incoming_message_queue_;
   std::uint32_t messages_in_queue;
+  mqtt::callback_ptr cb;
 };
 
-class MqttCallback : public mqtt::callback {
+class MqttCallback : public virtual mqtt::callback {
  public:
   MqttCallback(ILogger &logger);
   void connection_lost(const std::string &cause) override;

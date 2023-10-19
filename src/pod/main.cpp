@@ -34,8 +34,8 @@ int main(int argc, char **argv)
     hyped::core::MqttMessage::Header header{
       .timestamp = 0, .priority = hyped::core::MqttMessagePriority::kCritical};
     const hyped::core::MqttMessage message{topic, header, message_payload};
-    mqtt->publish(message, hyped::core::MqttMessageQos::kAtLeastOnce);
     mqtt->subscribe(hyped::core::MqttTopic::kTest);
+    mqtt->publish(message, hyped::core::MqttMessageQos::kAtLeastOnce);
   });
   std::cout << "Ran for " << execution_time.count() << " ns" << std::endl;
 }
