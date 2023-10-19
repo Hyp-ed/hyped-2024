@@ -1,13 +1,18 @@
-"use client";
+'use client';
 
-import { BadgeDelta, Card, Flex, Metric, ProgressBar, Text } from "@tremor/react";
-import { inFocus } from "./gridDisplay";
+import {
+  BadgeDelta,
+  Card,
+  Flex,
+  Metric,
+  ProgressBar,
+  Text,
+} from '@tremor/react';
 
 // Single KPI card in the demo dashboard with sample inputs
 export default function KpiCard() {
   return (
-    <Card className="max-w-lg mx-auto" >
-      <div className = 'kpi-card' onClick={inFocus} >
+    <Card className="max-w-lg mx-auto">
       <Flex alignItems="start">
         <div>
           <Text>Sales</Text>
@@ -20,8 +25,6 @@ export default function KpiCard() {
         <Text>$ 220,500</Text>
       </Flex>
       <ProgressBar value={15.9} className="mt-2" />
-      </div>
-      
     </Card>
   );
 }
