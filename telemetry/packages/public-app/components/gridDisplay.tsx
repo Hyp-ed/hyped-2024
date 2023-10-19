@@ -14,18 +14,6 @@ type Card = keyof typeof CARDS;
 
 export default function GridDsiplay() {
   const ColorInverter = () => {
-    document.documentElement.style.setProperty(
-      '--bg-color',
-      document.documentElement.style.getPropertyValue('--bg-color') === 'black'
-        ? 'white'
-        : 'black',
-    );
-    document.documentElement.style.setProperty(
-      '--invert-color',
-      document.documentElement.style.getPropertyValue('--bg-color') === 'black'
-        ? 'white'
-        : 'black',
-    );
   };
 
   const [selected, setSelected] = useState<Card>('VELOCITY');
@@ -51,11 +39,11 @@ export default function GridDsiplay() {
         {(Object.keys(CARDS) as Card[])
           .filter((c) => c !== selected)
           .map((c) => (
-            <button onClick={() => setSelected(c)}>
+            <button key={c} onClick={() => setSelected(c)}>
               {/* <Card> */}
-                {/* Placeholder to set height */}
-                <div className="h-0" />
-                {CARDS[c]}
+              {/* Placeholder to set height */}
+              <div className="h-0" />
+              {CARDS[c]}
               {/* </Card> */}
             </button>
           ))}

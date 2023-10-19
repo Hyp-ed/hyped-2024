@@ -37,7 +37,6 @@ export default function PreLoader(): JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-      document.documentElement.style.setProperty('--bg-color', 'white');
     }, 10000);
   }, []);
 
