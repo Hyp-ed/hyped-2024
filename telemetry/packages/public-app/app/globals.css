@@ -2,38 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-    --bg-color: black; /* Default background color */
+/* :root {
+    --bg-color: black;
     --invert-color: black;
-  }
-  
-  /* Use the variable for background color */
-* {
+  }*/
+
+/* Use the variable for background color */
+/* * {
     background-color: var(--bg-color);
-  }
-  
-.fade-in-image { animation: fadeIn 6s; }
+  } */
+
+.fade-in-image {
+  animation: fadeIn 6s;
+}
 
 @keyframes fadeIn {
-    0% { opacity: 0; }
-    100% { opacity: 1; }
+  0% {
+    opacity: 0;
   }
-  
+  100% {
+    opacity: 1;
+  }
+}
+
 .processing {
   color: white;
   font-size: small;
   margin-top: -10px;
 }
 
-.btn{
+.btn {
   color: black;
 }
 
 .inverted {
   filter: invert(100%);
-  color:black;
+  color: black;
 }
 
 .invert-mode {
-  color: var(--invert-color)
+  color: var(--invert-color);
 }

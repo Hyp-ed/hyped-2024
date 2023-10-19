@@ -1,36 +1,47 @@
-import { Card, Title, LineChart } from '@tremor/react';
-import inFocus from './gridDisplay';
+'use client';
 
-const chartdata3 = [
-  {
-    date: 'Jan 23',
-    velocity: 167,
-  },
-  // ...
-  {
-    date: 'Sep 23',
-    velocity: 132,
-  },
-  {
-    date: 'Sep 24',
-    velocity: 145,
-  },
-  {
-    date: 'Sep 25',
-    velocity: 155,
-  },
-];
-// export var inversion = (document.documentElement.style.getPropertyValue('--bg-color')=='black')?('inverted'):('')
-//export var inversion1 = document.documentElement.style.getPropertyValue('--bg-color')=='black'?('inverted'):('')
+import { Card, Title, LineChart } from '@tremor/react';
+import { format } from 'date-fns';
+import { useQuery } from 'react-query';
+
 export const VelocityGraph = () => {
+  const { data, isLoading, isError } = useQuery(
+    'velocity',
+    async () =>
+      (await fetch(
+        `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/velocity?start=0`,
+      ).then((res) => res.json())) as {
+        id: 'velocity';
+        timestamp: string;
+        value: number;
+      }[],
+    {
+      refetchInterval: 1000,
+    },
+  );
+
+  const velocityData = data
+    ? data.map((d) => {
+        const time = new Date(d.timestamp);
+        return {
+          time: format(time, 'HH:mm:ss'),
+          velocity: d.value,
+        };
+      })
+    : [];
+
+  if (isError) return <div>Error loading velocity</div>;
+
+  if (isLoading) return <div>Loading...</div>;
+
   return (
     <>
-      <Card className="v-graph" onClick={inFocus}>
+      <Card className="v-graph">
         <Title>Velocity</Title>
         <LineChart
           className="h-72 mt-4"
-          data={chartdata3}
-          index="date"
+          data={velocityData}
+          index="time"
           categories={['velocity']}
           colors={['red']}
           yAxisWidth={30}
