@@ -12,26 +12,20 @@ set(project HYPED)
 project(${project} CXX)
 enable_testing()
 
-find_package(Eigen3 REQUIRED NO_MODULE)
+find_package (Eigen3 REQUIRED NO_MODULE)
 include_directories(${EIGEN3_INCLUDE_DIR})
 find_package(Boost REQUIRED)
 include(FetchContent)
 FetchContent_Declare(
   rapidjson
   GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
-  GIT_TAG master)
+  GIT_TAG        master
+)
 FetchContent_GetProperties(rapidjson)
 if(NOT rapidjson_POPULATED)
-  FetchContent_Populate(rapidjson)
+    FetchContent_Populate(rapidjson)
 endif()
-FetchContent_Declare(
-  tomlplusplus
-  GIT_REPOSITORY https://github.com/marzer/tomlplusplus.git
-  GIT_TAG v3.4.0)
-FetchContent_MakeAvailable(tomlplusplus)
-if(NOT tomlplusplus_POPULATED)
-  FetchContent_Populate(tomlplusplus)
-endif()
+
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(${CMAKE_SOURCE_DIR}/test)
