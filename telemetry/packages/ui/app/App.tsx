@@ -9,10 +9,10 @@ import {
 } from './components/ui/select';
 import { useState } from 'react';
 import { PodDisconnectError } from './components/pod-disconnect-error';
-import { useMQTT } from './context/mqtt';
 import { Latency } from './components/latency';
 import { POD_IDS } from '@hyped/telemetry-constants';
 import { usePod } from './context/pods';
+import { LiveLogsDialog } from './components/live-logs-dialog';
 
 const DEFAULT_POD = POD_IDS[0];
 
@@ -32,6 +32,7 @@ const App = () => {
           </div>
           <h1 className="text-5xl font-title font-black my-2">Controls</h1>
         </div>
+        <LiveLogsDialog />
         <div className="flex flex-col justify-start h-full mt-4">
           {/* Select component to decide which pod to show the controls for */}
           <Select

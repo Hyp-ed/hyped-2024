@@ -8,6 +8,7 @@ import { Toaster } from 'react-hot-toast';
 import { MQTTProvider } from './context/mqtt';
 import { PodsProvider } from './context/pods';
 import { POD_IDS } from '@hyped/telemetry-constants';
+import { LiveLogsProvider } from './context/live-logs';
 
 const MQTT_BROKER = 'ws://localhost:8080';
 const QOS = 0;
@@ -17,14 +18,16 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <MQTTProvider broker={MQTT_BROKER} qos={QOS}>
       <PodsProvider podIds={POD_IDS as unknown as string[]}>
-        <App />
-        <Toaster
-          position="bottom-center"
-          reverseOrder={false}
-          toastOptions={{
-            className: 'bg-gray-100 text-gray-900 shadow-xl',
-          }}
-        />
+        <LiveLogsProvider>
+          <App />
+          <Toaster
+            position="bottom-center"
+            reverseOrder={false}
+            toastOptions={{
+              className: 'bg-gray-100 text-gray-900 shadow-xl',
+            }}
+          />
+        </LiveLogsProvider>
       </PodsProvider>
     </MQTTProvider>
   </React.StrictMode>,
