@@ -29,26 +29,27 @@ export const ControlsUI = () => {
             <PodDisconnectError status={connectionStatus} podId={currentPod} />
             <Latency podId={currentPod} />
           </div>
-          <h1 className="text-5xl font-title font-black my-2">Controls</h1>
+          <h1 className="text-5xl font-title font-black mt-2">Controls</h1>
         </div>
-        <div className="flex flex-col justify-start h-full mt-4">
+        <div className="flex flex-col justify-start h-full">
           {/* Select component to decide which pod to show the controls for */}
-          <Select
+          {/* TODO: Think about new way to handle multiple pod support */}
+          {/* <Select
             onValueChange={(podId) => setCurrentPod(podId)}
             defaultValue={currentPod}
             style={{ width: 'full' }}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Pod" />
+              <SelectValue className="bg-[#222222]" placeholder="Pod" />
             </SelectTrigger>
             <SelectContent>
               {POD_IDS.map((podId) => (
-                <SelectItem key={podId} value={podId}>
+                <SelectItem key={podId} value={podId} className="bg-[#222222]">
                   {podId}
                 </SelectItem>
               ))}
             </SelectContent>
-          </Select>
+          </Select> */}
           {POD_IDS.map((podId) => (
             <PodControls
               key={podId}

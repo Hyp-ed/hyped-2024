@@ -103,7 +103,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-4 py-10 rounded-md shadow-lg transition text-white text-3xl font-bold',
               clamped && 'bg-blue-600 hover:bg-blue-700',
-              !clamped && 'bg-gray-600 hover:bg-gray-700',
+              !clamped && 'bg-[#535353] hover:bg-[#222222]',
             )}
             onClick={() => {
               if (clamped) retract(podId);
@@ -117,7 +117,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-4 py-10 rounded-md shadow-lg transition text-white text-3xl font-bold',
               raised && 'bg-blue-600 hover:bg-blue-700',
-              !raised && 'bg-gray-600 hover:bg-gray-700',
+              !raised && 'bg-[#535353] hover:bg-[#222222]',
             )}
             onClick={() => {
               if (raised) lower(podId);
@@ -131,7 +131,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-4 py-10 rounded-md shadow-lg transition text-white text-3xl font-bold',
               deadmanSwitch && 'bg-red-600 hover:bg-red-700',
-              !deadmanSwitch && 'bg-gray-600 hover:bg-gray-700',
+              !deadmanSwitch && 'bg-[#535353] hover:bg-[#222222]',
             )}
             onClick={() => {
               if (deadmanSwitch) stopHP(podId);
@@ -146,7 +146,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-4 py-10 rounded-md shadow-lg transition text-white text-3xl font-bold',
               deadmanSwitch && 'bg-red-600 hover:bg-red-700',
-              !deadmanSwitch && 'bg-gray-600 hover:bg-gray-700',
+              !deadmanSwitch && 'bg-[#535353] hover:bg-[#222222]',
             )}
             onClick={() => {
               tilt(podId);

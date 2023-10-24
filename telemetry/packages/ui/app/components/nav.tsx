@@ -30,13 +30,13 @@ export default function Nav() {
         {/* <button onClick={() => setShowSidebar(!showSidebar)}>
           <Menu width={18} />
         </button> */}
-        <div className="flex flex-col justify-start gap-2 mt-4 px-2">
+        <div className="flex flex-col justify-start gap-2 mt-4 pl-2">
           {COMPONENTS.map((component, index) => (
             <button
               className={cn(
                 'flex items-start justify-start rounded-md px-3 py-2 gap-2',
-                index === selectedComponent ? 'bg-[#535353]' : '',
-                'hover:bg-[#535353] transition',
+                index === selectedComponent ? 'bg-[#222222]' : '',
+                'hover:bg-[#222222] transition',
               )}
               onClick={() => setSelectedComponent(index)}
             >
@@ -50,7 +50,7 @@ export default function Nav() {
           <div
             className={cn(
               COMPONENTS.indexOf(component) === selectedComponent
-                ? 'h-full border border-[#535353] rounded-xl p-2'
+                ? 'h-full border-[2px] border-[#222222] rounded-xl p-2'
                 : 'hidden',
             )}
           >
