@@ -3,7 +3,7 @@ import { ControlsUI } from './components/controls';
 
 const App = () => {
   return (
-    <div className="grid grid-cols-6 w-full">
+    <div className="grid grid-cols-9 w-full">
       <Nav />
       <ControlsUI />
     </div>

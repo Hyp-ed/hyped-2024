@@ -23,14 +23,14 @@ export default function Nav() {
   const [selectedComponent, setSelectedComponent] = useState(0);
 
   return (
-    <div className="col-span-5 bg-black flex">
+    <div className="col-span-8 bg-black flex">
       <div
         className={cn('h-[100vh] min-w-max border-r-[0px] border-r-[#535353] ')}
       >
         {/* <button onClick={() => setShowSidebar(!showSidebar)}>
           <Menu width={18} />
         </button> */}
-        <div className="flex flex-col justify-start gap-2 mt-4 pl-2">
+        <div className="flex flex-col justify-start gap-2 py-8 px-4">
           {COMPONENTS.map((component, index) => (
             <button
               className={cn(
@@ -45,7 +45,7 @@ export default function Nav() {
           ))}
         </div>
       </div>
-      <div className="h-full w-full p-4">
+      <div className="h-full w-full py-4">
         {COMPONENTS.map((component) => (
           <div
             className={cn(
