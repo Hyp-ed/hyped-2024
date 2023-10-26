@@ -29,7 +29,7 @@ export const ControlsUI = () => {
   }, [podState]);
 
   return (
-    <main className="col-span-1 h-[100vh] border-l-[0px] border-l-[#535353] px-4 py-8 flex flex-col gap-2 justify-between bg-black select-none text-gray-100">
+    <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col gap-2 justify-between bg-hyped-background select-none text-gray-100">
       <div className="flex flex-col gap-12 h-full">
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">

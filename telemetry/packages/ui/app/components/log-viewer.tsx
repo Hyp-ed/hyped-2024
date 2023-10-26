@@ -20,7 +20,7 @@ export const LogViewer = () => {
       {isConnected ? (
         <div
           id="log-viewer"
-          className="max-h-[88vh] overflow-y-scroll scrollbar-track-transparent scrollbar-thumb-[#222222] scrollbar-thin scrollbar-thumb-rounded-full"
+          className="max-h-[88vh] overflow-y-scroll scrollbar-track-transparent scrollbar-thumb-openmct-dark-gray scrollbar-thin scrollbar-thumb-rounded-full"
         >
           {logs.map((log, index) => {
             let colour = 'text-white';

@@ -18,6 +18,13 @@ module.exports = {
     },
     extend: {
       colors: {
+        // HYPED COLORS
+        'hyped-foreground': '#ffffff',
+        'hyped-background': '#000000',
+        'hyped-red': '#af1f24',
+        'hyped-light-gray': '#edeeec',
+        'openmct-light-gray': '#535353',
+        'openmct-dark-gray': '#222222',
         tremor: {
           brand: {
             faint: '#eff6ff', // blue-50

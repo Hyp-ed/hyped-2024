@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { LogViewer } from './log-viewer';
 import { OpenMCT } from './openmct-iframe';
 
-// TODO: could add state machine here
+// TODO: could add state machine diagram here
 const COMPONENTS = [
   {
     name: 'OpenMCT',
@@ -19,13 +19,14 @@ const COMPONENTS = [
 ];
 
 export default function Nav() {
-  const [showSidebar, setShowSidebar] = useState(false);
   const [selectedComponent, setSelectedComponent] = useState(0);
 
   return (
-    <div className="col-span-8 bg-black flex">
+    <div className="col-span-8 bg-hyped-background flex">
       <div
-        className={cn('h-[100vh] min-w-max border-r-[0px] border-r-[#535353] ')}
+        className={cn(
+          'h-[100vh] min-w-max border-r-[0px] border-r-openmct-light-gray ',
+        )}
       >
         {/* <button onClick={() => setShowSidebar(!showSidebar)}>
           <Menu width={18} />
@@ -35,8 +36,8 @@ export default function Nav() {
             <button
               className={cn(
                 'flex items-start justify-start rounded-md px-3 py-2 gap-2',
-                index === selectedComponent ? 'bg-[#222222]' : '',
-                'hover:bg-[#222222] transition',
+                index === selectedComponent ? 'bg-openmct-dark-gray' : '',
+                'hover:bg-openmct-dark-gray transition',
               )}
               onClick={() => setSelectedComponent(index)}
             >
@@ -50,7 +51,7 @@ export default function Nav() {
           <div
             className={cn(
               COMPONENTS.indexOf(component) === selectedComponent
-                ? 'h-full border-[2px] border-[#222222] rounded-xl p-2'
+                ? 'h-full border-[2px] border-openmct-dark-gray rounded-xl p-2'
                 : 'hidden',
             )}
           >

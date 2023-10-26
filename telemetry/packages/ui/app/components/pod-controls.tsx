@@ -11,7 +11,7 @@ import {
   startHP,
   startPod,
   stopHP,
-  stopPod
+  stopPod,
 } from '@/controls/controls';
 import { cn } from '@/lib/utils';
 import { ALL_POD_STATES } from '@hyped/telemetry-constants';
@@ -23,7 +23,7 @@ import {
   Plug,
   PlugZap,
   Rocket,
-  Siren
+  Siren,
 } from 'lucide-react';
 import { http } from 'openmct/core/http';
 import { useState } from 'react';
@@ -111,7 +111,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
               clamped && 'bg-blue-600 hover:bg-blue-700',
-              !clamped && 'bg-[#535353] hover:bg-[#222222]',
+              !clamped && 'bg-openmct-light-gray hover:bg-openmct-dark-gray',
             )}
             onClick={() => {
               if (clamped) retract(podId);
@@ -125,7 +125,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
               raised && 'bg-blue-600 hover:bg-blue-700',
-              !raised && 'bg-[#535353] hover:bg-[#222222]',
+              !raised && 'bg-openmct-light-gray hover:bg-openmct-dark-gray',
             )}
             onClick={() => {
               if (raised) lower(podId);
@@ -140,7 +140,8 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
             className={cn(
               'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
               deadmanSwitch && 'bg-red-600 hover:bg-red-700',
-              !deadmanSwitch && 'bg-[#535353] hover:bg-[#222222]',
+              !deadmanSwitch &&
+                'bg-openmct-light-gray hover:bg-openmct-dark-gray',
             )}
             onClick={() => {
               if (deadmanSwitch) stopHP(podId);
