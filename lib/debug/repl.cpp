@@ -21,9 +21,9 @@ void Repl::run()
   while (true) {
     terminal_.refresh_line(input, ">> ");
     const auto &[key, letter] = terminal_.prompt();
-    if (key == hyped::debug::KeyPress::kASCII) {
+    if (key == debug::KeyPress::kASCII) {
       input += letter;
-    } else if (key == hyped::debug::KeyPress::kEnter) {
+    } else if (key == debug::KeyPress::kEnter) {
       terminal_.cr();
       // Print input
       for (auto &command : commands_) {
@@ -35,19 +35,19 @@ void Repl::run()
       history_.push_back(input);
       input = "";
       i     = 0;
-    } else if (key == hyped::debug::KeyPress::kUp) {
+    } else if (key == debug::KeyPress::kUp) {
       if (i < history_.size()) {
         input = history_[history_.size() - 1 - i];
         i++;
       }
-    } else if (key == hyped::debug::KeyPress::kDown) {
+    } else if (key == debug::KeyPress::kDown) {
       if (i > 0) {
         i--;
         input = history_[history_.size() - i];
       }
-    } else if (key == hyped::debug::KeyPress::kBackspace) {
+    } else if (key == debug::KeyPress::kBackspace) {
       if (input.size() > 0) { input.pop_back(); }
-    } else if (key == hyped::debug::KeyPress::kTab) {
+    } else if (key == debug::KeyPress::kTab) {
       std::vector<std::string> matches = autoComplete(input);
       if (matches.size() == 1) {
         input = matches[0];
@@ -58,7 +58,7 @@ void Repl::run()
         }
         terminal_.refresh_line(input, ">> ");
       }
-    } else if (key == hyped::debug::KeyPress::kEscape) {
+    } else if (key == debug::KeyPress::kEscape) {
       input = "";
       terminal_.cr();
     }
@@ -90,19 +90,22 @@ void Repl::printHelp()
   }
 }
 
-void Repl::addHelpCommand(){
-  addCommand(std::make_unique<ICommand>("help", "Print this help message", [this]() -> core::Result { 
-    printHelp(); 
-    return core::Result::kSuccess;
+void Repl::addHelpCommand()
+{
+  addCommand(
+    std::make_unique<ICommand>("help", "Print this help message", [this]() -> core::Result {
+      printHelp();
+      return core::Result::kSuccess;
     }));
 }
 
-void Repl::addQuitCommand(){
-  addCommand(std::make_unique<ICommand>("quit", "Quit the program", [this]() -> core::Result { 
+void Repl::addQuitCommand()
+{
+  addCommand(std::make_unique<ICommand>("quit", "Quit the program", [this]() -> core::Result {
     terminal_.quit();
     exit(0);
     return core::Result::kSuccess;
-    }));
+  }));
 }
 
 }  // namespace hyped::debug

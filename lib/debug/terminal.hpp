@@ -15,27 +15,27 @@ class Terminal {
  public:
   void initialize_window()
   {
-    initscr(); // initialize ncurses
-    cbreak();  // break with ctrl + c
-    noecho();  // dont echo inputs
+    initscr();  // initialize ncurses
+    cbreak();   // break with ctrl + c
+    noecho();   // dont echo inputs
 
     int height, width, start_y, start_x;
-    getmaxyx(stdscr, height, width); // get terminal size
+    getmaxyx(stdscr, height, width);  // get terminal size
 
     start_y = 0;
     start_x = 0;
 
-    WINDOW *window = newwin(height, width, start_y, start_x); // create window
+    WINDOW *window = newwin(height, width, start_y, start_x);  // create window
 
-    keypad(window, true);  // Use keypad
-    nodelay(window, true); // Non-blocking getch
+    keypad(window, true);    // Use keypad
+    nodelay(window, true);   // Non-blocking getch
     scrollok(window, TRUE);  // Enable scroll
 
-    set_escdelay(25); // Set escape delay to 25ms
+    set_escdelay(25);  // Set escape delay to 25ms
 
-    wclrtobot(window); // Clear window
-    wrefresh(window); // Refresh window
-    window_ = window; 
+    wclrtobot(window);  // Clear window
+    wrefresh(window);   // Refresh window
+    window_ = window;
   };
 
   ~Terminal() {}
@@ -110,11 +110,8 @@ class Terminal {
     }
     return std::make_pair(KeyPress::kNone, ' ');
   }
-  
-  void quit()
-  {
-    endwin();
-  }
+
+  void quit() { endwin(); }
 
  private:
   WINDOW *window_;

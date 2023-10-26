@@ -1,3 +1,4 @@
+#pragma once
 #include "terminal.hpp"
 
 #include <ncurses.h>
