@@ -21,6 +21,9 @@ class Repl {
   void addCommand(std::unique_ptr<ICommand> command);
   void printHelp();
 
+  void addHelpCommand();
+  void addQuitCommand();
+
  private:
   core::ILogger &logger_;
   Terminal terminal_;

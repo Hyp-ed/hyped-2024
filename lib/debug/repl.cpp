@@ -9,7 +9,8 @@ namespace hyped::debug {
 
 Repl::Repl(core::ILogger &logger, Terminal &terminal) : logger_(logger), terminal_(terminal)
 {
-  logger_.log(core::LogLevel::kDebug, "Repl::Repl()");
+  addHelpCommand();
+  addQuitCommand();
 }
 
 void Repl::run()
@@ -81,13 +82,27 @@ void Repl::addCommand(std::unique_ptr<ICommand> command)
 
 void Repl::printHelp()
 {
-  logger_.log(core::LogLevel::kDebug, "Repl::printHelp()");
   for (auto &command : commands_) {
     logger_.log(core::LogLevel::kDebug,
                 "%s: %s",
                 command->getName().c_str(),
                 command->getDescription().c_str());
   }
+}
+
+void Repl::addHelpCommand(){
+  addCommand(std::make_unique<ICommand>("help", "Print this help message", [this]() -> core::Result { 
+    printHelp(); 
+    return core::Result::kSuccess;
+    }));
+}
+
+void Repl::addQuitCommand(){
+  addCommand(std::make_unique<ICommand>("quit", "Quit the program", [this]() -> core::Result { 
+    terminal_.quit();
+    exit(0);
+    return core::Result::kSuccess;
+    }));
 }
 
 }  // namespace hyped::debug

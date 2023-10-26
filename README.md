@@ -12,6 +12,7 @@
 - `eigen3`
 - `boost`
 - `rapidjson`
+- `ncurses`
 
 ## Usage
 
