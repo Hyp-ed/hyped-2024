@@ -1,36 +1,32 @@
-import { toast } from 'react-hot-toast';
-import { useEffect, useState } from 'react';
-import { PodState } from './pod-state';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { cn } from '@/lib/utils';
+import { usePod } from '@/context/pods';
 import {
   clamp,
+  levitate,
   lower,
   raise,
   retract,
-  startPod,
-  stopPod,
   startHP,
+  startPod,
   stopHP,
-  tilt,
+  stopPod
 } from '@/controls/controls';
-import { usePod } from '@/context/pods';
-import { http } from 'openmct/core/http';
-import { log } from '@/lib/logger';
+import { cn } from '@/lib/utils';
 import { ALL_POD_STATES } from '@hyped/telemetry-constants';
 import {
+  ArrowUpFromLine,
   Ban,
-  ChevronDown,
-  ChevronUp,
   ChevronsDown,
   ChevronsUp,
   Plug,
   PlugZap,
   Rocket,
-  Siren,
+  Siren
 } from 'lucide-react';
+import { http } from 'openmct/core/http';
+import { useState } from 'react';
 
 interface PodControlsProps {
   podId: string;
@@ -79,6 +75,17 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
           <Button
             className={cn(
               'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
+              'bg-blue-600 hover:bg-blue-700',
+            )}
+            onClick={() => {
+              levitate(podId);
+            }}
+          >
+            <ArrowUpFromLine /> LEVITATE
+          </Button>
+          <Button
+            className={cn(
+              'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
               'bg-green-600 hover:bg-green-700',
             )}
             onClick={() => {
@@ -86,9 +93,8 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               setStopped(false);
             }}
           >
-            <Rocket /> START
+            <Rocket /> LAUNCH
           </Button>
-
           <Button
             className={cn(
               'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
@@ -99,7 +105,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               setStopped(true);
             }}
           >
-            <Siren /> STOP
+            <Siren /> EMERGENCY STOP
           </Button>
           <Button
             className={cn(
