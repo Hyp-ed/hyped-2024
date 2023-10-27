@@ -18,13 +18,14 @@ int main(int argc, char **argv)
   const auto execution_time = timer.measureExecutionTime([time]() {
     hyped::core::Logger logger("MQTT", hyped::core::LogLevel::kDebug, time);
     const std::string id     = "test";
-    const std::uint16_t port = 8080;
+    const std::uint16_t port = 1883;
     const std::string host   = "localhost";
     auto optional_mqtt       = hyped::core::Mqtt::create(logger, id, host, port);
     if (!optional_mqtt) {
       std::cout << "Failed to connect to MQTT broker" << std::endl;
       return;
     }
+    std::cout << "Connected to MQTT broker" << std::endl;
     auto mqtt                       = *optional_mqtt;
     const auto topic                = hyped::core::MqttTopic::kTest;
     std::shared_ptr message_payload = std::make_unique<rapidjson::Document>();
@@ -36,6 +37,7 @@ int main(int argc, char **argv)
     const hyped::core::MqttMessage message{topic, header, message_payload};
     mqtt->subscribe(hyped::core::MqttTopic::kTest);
     mqtt->publish(message, hyped::core::MqttMessageQos::kAtLeastOnce);
+    mqtt->consume();
   });
   std::cout << "Ran for " << execution_time.count() << " ns" << std::endl;
 }

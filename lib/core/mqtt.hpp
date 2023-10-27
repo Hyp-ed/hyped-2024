@@ -98,7 +98,7 @@ class Mqtt : public IMqtt {
    * @param message
    * @return MqttMessage if message contains valid header, nullopt otherwise
    */
-  std::optional<MqttMessage> messagePtrToMessage(mqtt::const_message_ptr *message);
+  std::optional<MqttMessage> messagePtrToMessage(std::shared_ptr<const mqtt::message> message);
 
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;

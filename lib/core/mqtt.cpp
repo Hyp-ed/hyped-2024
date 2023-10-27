@@ -17,8 +17,12 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
   connection_options.set_clean_session(true);
   auto mqtt_client = std::make_unique<mqtt::client>(address, id);
   auto cb          = std::make_shared<MqttCallback>(logger);
-  mqtt_client->set_callback(*cb);  // have a feeling there is a problem with the mqtt client being a
-                                   // pointer and setting the cb
+  mqtt_client->set_callback(*cb);
+
+  // mqtt_client->set_message_callback([&](mqtt::const_message_ptr msg) {
+  // 	  logger.log(core::LogLevel::kInfo, "Message arrived");
+  // });
+
   mqtt_client->connect(connection_options);
   if (!mqtt_client->is_connected()) { return std::nullopt; }
   return std::make_shared<Mqtt>(logger, std::move(mqtt_client), std::move(cb));
@@ -70,21 +74,15 @@ core::Result Mqtt::subscribe(const core::MqttTopic topic)
 
 core::Result Mqtt::consume()
 {
-  for (std::uint32_t i; i < 100; i++) {
-    mqtt::const_message_ptr *message;
-    const bool message_received = client_->try_consume_message(message);
-    if (!message_received) {
-      logger_.log(core::LogLevel::kDebug, "Consumed %i MQTT messages", i);
-      break;
-    }
-    const auto parsed_message = messagePtrToMessage(message);
-    if (!parsed_message) {
-      logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message");
-      return core::Result::kFailure;
-    }
-    incoming_message_queue_.push(*parsed_message);
+  auto msg = client_->consume_message();  // makes a blocking call till a message arrives
+  if (msg) {
+    // auto parsed_msg = messagePtrToMessage(msg); // returns a shared_ptr<mqtt::message>
+    // incoming_message_queue_.push(*parsed_msg);
+    logger_.log(core::LogLevel::kInfo, "Recieved message");
+    return core::Result::kSuccess;
   }
-  return core::Result::kSuccess;
+  logger_.log(core::LogLevel::kInfo, "No message recieved");
+  return core::Result::kFailure;
 }
 
 std::optional<MqttMessage> Mqtt::getMessage()
@@ -113,11 +111,11 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
   return mqtt::make_message(mqtt_topic_to_string[message.topic], buffer.GetString());
 }
 
-std::optional<MqttMessage> Mqtt::messagePtrToMessage(mqtt::const_message_ptr *message)
+std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt::message> message)
 {
-  const auto topic            = message->get()->get_topic();
+  const auto topic            = message->get_topic();
   const auto mqtt_topic       = mqtt_string_to_topic[topic];
-  const auto message_contents = message->get()->to_string().c_str();
+  const auto message_contents = message->to_string().c_str();
   rapidjson::Document message_contents_json;
   message_contents_json.Parse(message_contents);
   if (!message_contents_json.HasMember("header")) {
