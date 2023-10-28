@@ -30,7 +30,7 @@ jobs:
           sudo ./llvm.sh 17
         if: runner.os == 'Linux'
       - name: CMake
-        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(clang++-17)
+        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=clang++-17
       - name: Build hyped
         run: make -j
         working-directory: build
