@@ -43,7 +43,7 @@ void Repl::run()
     } else if (key == debug::KeyPress::kDown) {
       if (i > 0) {
         i--;
-        input = history_[history_.size() - i];
+        input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
       if (input.size() > 0) { input.pop_back(); }
