@@ -28,6 +28,7 @@ jobs:
           wget https://apt.llvm.org/llvm.sh
           chmod +x ./llvm.sh
           sudo ./llvm.sh 17
+        if: runner.os == 'Linux'
       - name: CMake
         run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(clang++-17)
       - name: Build hyped
