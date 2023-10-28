@@ -55,7 +55,7 @@ class Terminal {
    **/
   void println(const std::string &msg)
   {
-    wprintw(window_, msg.c_str());
+    wprintw(window_, "%s", msg.c_str());
     cr();
   }
 
