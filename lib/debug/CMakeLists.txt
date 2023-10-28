@@ -12,5 +12,5 @@ target_link_libraries(${target}
   hyped_io
   hyped_sensors
   hyped_motors
-  Curses
+  ${CURSES_LIBRARIES}
 )
