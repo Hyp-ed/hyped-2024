@@ -22,8 +22,14 @@ jobs:
             apt: libeigen3-dev libboost-all-dev
           macos: |
             brew: eigen boost
+      # TODOLater this is a workaround due to https://github.com/actions/runner-images/issues/8659, remove once fixed
+      - name: Install newer Clang
+        run: |
+          wget https://apt.llvm.org/llvm.sh
+          chmod +x ./llvm.sh
+          sudo ./llvm.sh 17
       - name: CMake
-        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(which clang++)
+        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(clang++-17)
       - name: Build hyped
         run: make -j
         working-directory: build
