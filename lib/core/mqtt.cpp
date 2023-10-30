@@ -74,14 +74,15 @@ core::Result Mqtt::subscribe(const core::MqttTopic topic)
 
 core::Result Mqtt::consume()
 {
-  auto msg = client_->consume_message();  // makes a blocking call till a message arrives
-  if (msg) {
-    // auto parsed_msg = messagePtrToMessage(msg); // returns a shared_ptr<mqtt::message>
-    // incoming_message_queue_.push(*parsed_msg);
-    logger_.log(core::LogLevel::kInfo, "Recieved message");
+  mqtt::const_message_ptr received_msg;
+  auto received = client_->try_consume_message(&received_msg);
+  if (received) {
+    logger_.log(core::LogLevel::kInfo, "Received message");
+    // auto parsed_message = messagePtrToMessage(received_msg);
+    // incoming_message_queue_.push(*parsed_message);
     return core::Result::kSuccess;
   }
-  logger_.log(core::LogLevel::kInfo, "No message recieved");
+  logger_.log(core::LogLevel::kInfo, "No message received");
   return core::Result::kFailure;
 }
 
