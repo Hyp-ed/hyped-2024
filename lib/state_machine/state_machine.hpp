@@ -14,11 +14,9 @@ namespace hyped::state_machine {
 class StateMachine {
  public:
   StateMachine();
-  bool handleMessage(const Message &message);
   Message stringToMessage(const std::string &message_name);
   std::string messageToString(const Message &message);
   State getCurrentState();
-  Message getPreviousMessage();
 
  private:
   const std::unordered_map<std::string, Message> string_to_message_
@@ -79,7 +77,6 @@ class StateMachine {
        {{State::kCapacitorDischarge, Message::kSafe}, State::kSafe}};
 
   State current_state_;
-  std::queue<Message> previous_message_;
 };
 
 }  // namespace hyped::state_machine
