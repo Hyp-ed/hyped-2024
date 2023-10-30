@@ -18,11 +18,6 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
   auto mqtt_client = std::make_unique<mqtt::client>(address, id);
   auto cb          = std::make_shared<MqttCallback>(logger);
   mqtt_client->set_callback(*cb);
-
-  // mqtt_client->set_message_callback([&](mqtt::const_message_ptr msg) {
-  // 	  logger.log(core::LogLevel::kInfo, "Message arrived");
-  // });
-
   mqtt_client->connect(connection_options);
   if (!mqtt_client->is_connected()) { return std::nullopt; }
   return std::make_shared<Mqtt>(logger, std::move(mqtt_client), std::move(cb));
