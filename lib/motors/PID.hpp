@@ -1,6 +1,11 @@
-struct PIDController {
+class PIDController {
 
+	public:
 
+	void  PIDController_Init();
+	float PIDController_Update(float setpoint, float measurement);
+
+	private:
     // Controller Gains for tuning
     double Kp;
     double Ki;
@@ -29,6 +34,3 @@ struct PIDController {
 	/* Controller output */
 	double out;
 } ;
-
-void  PIDController_Init(PIDController *pid);
-float PIDController_Update(PIDController *pid, float setpoint, float measurement);

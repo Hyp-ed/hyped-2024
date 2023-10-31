@@ -1,66 +1,66 @@
 #include "PID.hpp"
 
 
-void PIDController_Init(PIDController *pid) {
+void PIDController::PIDController_Init() {
     	
     /* Clear controller variables */
-	pid->integrator = 0.0f;
-	pid->prevError  = 0.0f;
-	pid->differentiator  = 0.0f;
-	pid->prevMeasurement = 0.0f;
-
-	pid->out = 0.0f;
+	integrator = 0.0f;
+	prevError  = 0.0f;
+	differentiator  = 0.0f;
+	prevMeasurement = 0.0f;
+    
+    out = 0.0f;
 
 };
 
-float PIDController_Update(PIDController *pid, float setpoint, float measurement) {
+float PIDController::PIDController_Update(float setpoint, float measurement) {
 
 	// Error signal 
     float error = setpoint - measurement;
 
 	// Proportional term
-    float proportional = pid->Kp * error;
+    float proportional = Kp * error;
 
 	// Integral term
-	pid->integrator = pid->integrator + 0.5f * pid->Ki * pid->T * (error + pid->prevError);
+	integrator = integrator + 0.5f * Ki * T * (error + prevError);
 
 	// Integrator Anti wind-up (dynamic integrator clamping)
-    if (pid->integrator > pid->limMaxInt) {
+    if (integrator > limMaxInt) {
 
-        pid->integrator = pid->limMaxInt;
+        integrator = limMaxInt;
 
-    } else if (pid->integrator < pid->limMinInt) {
+    } else if (integrator < limMinInt) {
 
-        pid->integrator = pid->limMinInt;
+        integrator = limMinInt;
 
     }
 
 
 	// Derivative Term (optional) with low pass filter		
-    pid->differentiator = -(2.0f * pid->Kd * (measurement - pid->prevMeasurement)	/* Note: derivative on measurement, therefore minus sign in front of equation! */
-                        + (2.0f * pid->tau - pid->T) * pid->differentiator)
-                        / (2.0f * pid->tau + pid->T);
+    differentiator = -(2.0f * Kd * (measurement - prevMeasurement)	/* Note: derivative on measurement, therefore minus sign in front of equation! */
+                        + (2.0f * tau - T) * differentiator)
+                        / (2.0f * tau + T);
 
 
 
 	// Set controller output and limit outputs if needed
-    pid->out = proportional + pid->integrator + pid->differentiator;
+    out = proportional + integrator + differentiator;
 
-    if (pid->out > pid->limMax) {
+    if (out > limMax) {
 
-        pid->out = pid->limMax;
+        out = limMax;
 
-    } else if (pid->out < pid->limMin) {
+    } else if (out < limMin) {
 
-        pid->out = pid->limMin;
+        out = limMin;
 
     }
 
 	// Store error and measurement for later use 
-    pid->prevError       = error;
-    pid->prevMeasurement = measurement;
+    prevError       = error;
+    prevMeasurement = measurement;
 
 	// Return controller output 
-    return pid->out;
+    return out;
 
 };
