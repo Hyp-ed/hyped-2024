@@ -2,6 +2,11 @@
 dist
 node_modules
 
+# docker config
+Dockerfile
+docker-compose.yml
+.dockerignore
+
 # Logs
 logs
 *.log
@@ -27,14 +32,3 @@ lerna-debug.log*
 .settings/
 *.sublime-workspace
 .turbo
-
-# .env files
-.env
-.env.docker
-
-# influx data
-influxdb/data
-
-# mosquitto persistence & logs
-mosquitto/data
-mosquitto/log
