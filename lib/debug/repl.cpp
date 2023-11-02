@@ -4,10 +4,24 @@
 #include "commands/ICommand.hpp"
 #include <core/logger.hpp>
 #include <core/wall_clock.hpp>
+#include <io/hardware_adc.hpp>
+#include <io/hardware_can.hpp>
+#include <io/hardware_gpio.hpp>
+#include <io/hardware_i2c.hpp>
+#include <io/hardware_spi.hpp>
+#include <io/hardware_uart.hpp>
 
 namespace hyped::debug {
 
-Repl::Repl(core::ILogger &logger, Terminal &terminal) : logger_(logger), terminal_(terminal)
+Repl::Repl(core::ILogger &logger, Terminal &terminal)
+    : logger_(logger),
+      terminal_(terminal),
+      i2c_(),
+      spi_(),
+      pwm_(),
+      adc_(),
+      uart_(),
+      gpio_(io::HardwareGpio(logger))
 {
   addHelpCommand();
   addQuitCommand();
@@ -106,6 +120,87 @@ void Repl::addQuitCommand()
     exit(0);
     return core::Result::kSuccess;
   }));
+}
+
+std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t bus)
+{
+  const auto adc = adc_.find(bus);
+  if (adc == adc_.end()) {
+    const auto new_adc = io::HardwareAdc::create(logger_, bus);
+    if (!new_adc) { return std::nullopt; }
+    adc_.emplace(bus, *new_adc);
+    return *new_adc;
+  }
+  return adc->second;
+}
+
+std::optional<std::shared_ptr<io::ICan>> Repl::getCan(const std::string &bus)
+{
+  const auto can = can_.find(bus);
+  if (can == can_.end()) {
+    const auto new_can = io::HardwareCan::create(logger_, bus);
+    if (!new_can) { return std::nullopt; }
+    can_.emplace(bus, *new_can);
+    return *new_can;
+  }
+  return can->second;
+}
+
+std::optional<std::shared_ptr<io::II2c>> Repl::getI2c(const std::uint8_t bus)
+{
+  const auto i2c = i2c_.find(bus);
+  if (i2c == i2c_.end()) {
+    const auto new_i2c = io::HardwareI2c::create(logger_, bus);
+    if (!new_i2c) { return std::nullopt; }
+    i2c_.emplace(bus, *new_i2c);
+    return *new_i2c;
+  }
+  return i2c->second;
+}
+
+std::optional<std::shared_ptr<io::Pwm>> Repl::getPwm(const io::PwmModule pwm_module,
+                                                     const std::uint32_t period,
+                                                     const io::Polarity polarity)
+{
+  const auto pwm = pwm_.find(pwm_module);
+  if (pwm == pwm_.end()) {
+    const auto new_pwm = io::Pwm::create(logger_, pwm_module, period, polarity);
+    if (!new_pwm) { return std::nullopt; }
+    pwm_.emplace(pwm_module, *new_pwm);
+    return *new_pwm;
+  }
+  return pwm->second;
+}
+
+std::optional<std::shared_ptr<io::ISpi>> Repl::getSpi(const io::SpiBus bus,
+                                                      const io::SpiMode mode,
+                                                      const io::SpiWordSize word_size,
+                                                      const io::SpiBitOrder bit_order,
+                                                      const io::SpiClock clock)
+{
+  const auto spi = spi_.find(bus);
+  if (spi == spi_.end()) {
+    const auto new_spi = io::HardwareSpi::create(logger_, bus, mode, word_size, bit_order, clock);
+    if (!new_spi) { return std::nullopt; }
+    spi_.emplace(bus, *new_spi);
+    return *new_spi;
+  }
+  return spi->second;
+}
+
+std::optional<std::shared_ptr<io::IUart>> Repl::getUart(const io::UartBus bus,
+                                                        const io::UartBaudRate baud_rate,
+                                                        const io::UartBitsPerByte bits_per_byte)
+{
+  const auto uart = uart_.find(bus);
+  if (uart == uart_.end()) {
+    const auto new_uart
+      = io::Uart::create(logger_, static_cast<io::UartBus>(bus), baud_rate, bits_per_byte);
+    if (!new_uart) { return std::nullopt; }
+    uart_.emplace(bus, *new_uart);
+    return *new_uart;
+  }
+  return uart->second;
 }
 
 }  // namespace hyped::debug
