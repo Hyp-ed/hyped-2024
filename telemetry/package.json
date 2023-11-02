@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "patch-package": "^6.5.1",
-    "postinstall-postinstall": "^2.1.0"
+    "postinstall-postinstall": "^2.1.0",
+    "react-query": "^3.39.3"
   }
 }
