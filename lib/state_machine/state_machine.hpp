@@ -2,12 +2,12 @@
 
 #include "state.hpp"
 #include "types.hpp"
-#include "core/types.hpp"
 
 #include <optional>
 #include <queue>
 #include <unordered_map>
 
+#include "core/types.hpp"
 #include <boost/unordered_map.hpp>
 
 namespace hyped::state_machine {
@@ -24,7 +24,7 @@ class StateMachine {
   const std::unordered_map<std::string, Message> string_to_message_
     = {{"kCalibrating", Message::kCalibrating},
        {"kPrecharge", Message::kPrecharge},
-       {"kReadyForLeviation", Message::kReadyForLevitation}, 
+       {"kReadyForLeviation", Message::kReadyForLevitation},
        {"kBeginLevitation", Message::kBeginLevitation},
        {"kReady", Message::kReady},
        {"kAccelerate", Message::kAccelerate},
@@ -80,6 +80,5 @@ class StateMachine {
 
   State current_state_;
 };
-
 
 }  // namespace hyped::state_machine

@@ -25,8 +25,8 @@ State StateMachine::getCurrentState()
 
 core::Result StateMachine::handleMessage(const Message &message)
 {
-  const auto temp =  transition_to_state_.find({current_state_, message});
-  if (temp != transition_to_state_.end()){
+  const auto temp = transition_to_state_.find({current_state_, message});
+  if (temp != transition_to_state_.end()) {
     current_state_ = temp->second;
     return core::Result::kSuccess;
   }
