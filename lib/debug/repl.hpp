@@ -4,6 +4,7 @@
 
 #include <ncurses.h>
 
+#include <cstdint>
 #include <unordered_map>
 #include <vector>
 
@@ -12,6 +13,9 @@
 #include <io/adc.hpp>
 #include <io/can.hpp>
 #include <io/gpio.hpp>
+#include <io/hardware_gpio.hpp>
+#include <io/hardware_spi.hpp>
+#include <io/hardware_uart.hpp>
 #include <io/i2c.hpp>
 #include <io/pwm.hpp>
 #include <io/spi.hpp>
