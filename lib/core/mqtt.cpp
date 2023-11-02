@@ -72,9 +72,10 @@ core::Result Mqtt::consume()
   mqtt::const_message_ptr received_msg;
   auto received = client_->try_consume_message(&received_msg);
   if (received) {
-    logger_.log(core::LogLevel::kInfo, "Received message");
-    // auto parsed_message = messagePtrToMessage(received_msg);
-    // incoming_message_queue_.push(*parsed_message);
+    auto parsed_message = messagePtrToMessage(received_msg);
+    logger_.log(
+      core::LogLevel::kInfo, "Received message: %s", received_msg->get_payload_str().c_str());
+    incoming_message_queue_.push(*parsed_message);
     return core::Result::kSuccess;
   }
   logger_.log(core::LogLevel::kInfo, "No message received");
@@ -111,14 +112,18 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
 {
   const auto topic            = message->get_topic();
   const auto mqtt_topic       = mqtt_string_to_topic[topic];
-  const auto message_contents = message->to_string().c_str();
+  const auto message_contents = message->get_payload().c_str();
   rapidjson::Document message_contents_json;
   message_contents_json.Parse(message_contents);
+  if (message_contents_json.HasParseError()) {
+    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: parse error");
+    return std::nullopt;
+  }
   if (!message_contents_json.HasMember("header")) {
     logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing header");
     return std::nullopt;
   }
-  const auto header = message_contents_json["header"].GetObject();
+  const auto header = message_contents_json["header"].GetObject();  // error here
   if (!header.HasMember("timestamp")) {
     logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing timestamp");
   }
