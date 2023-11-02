@@ -1,3 +1,7 @@
+#pragma once
+
+#include "logger.hpp"
+
 #include <optional>
 #include <string>
 
@@ -7,11 +11,12 @@ namespace hyped::core {
 
 class Config {
  public:
-  Config(const std::string &path);
-  std::optional<Config> create(const std::string &path);
+  Config(core::ILogger &logger, toml::table config);
+  static std::optional<Config> create(core::ILogger &logger, const std::string &path);
 
  private:
-  toml::table config;
+  core::ILogger &logger_;
+  toml::table config_;
 };
 
 }  // namespace hyped::core
