@@ -34,7 +34,7 @@ const data: Tracker[] = [
 ];
 
 export const TrackerExample = () => (
-  <Card className="max-w-sm mx-auto">
+  <Card className=" max-w-sm mx-auto card-1">
     <Title>Status</Title>
     <Text>Lena&apos;s Webshop &bull; May 2022</Text>
     <Flex justifyContent="end" className="mt-4">

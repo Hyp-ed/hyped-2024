@@ -2,15 +2,15 @@
 @tailwind components;
 @tailwind utilities;
 
-/* :root {
+:root {
     --bg-color: black;
     --invert-color: black;
-  }*/
+  }
 
 /* Use the variable for background color */
-/* * {
+* {
     background-color: var(--bg-color);
-  } */
+  } 
 
 .fade-in-image {
   animation: fadeIn 6s;
@@ -43,3 +43,69 @@
 .invert-mode {
   color: var(--invert-color);
 }
+
+.levitation {
+  transform: rotate(90deg);
+  /* margin-bottom: 100px; */
+}
+
+.levitate {
+  /* padding-right: 150px; */
+  /*position: absolute;*/
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  align-self: center;
+  justify-self: center;
+  /* padding-top: -15px; */
+  margin-bottom: 10px;
+  
+}
+
+.levitate-2 {
+  transform: rotate(-90deg);
+  /* padding-left: 50px; */
+  padding-left: 170px;
+  
+  
+}
+
+.levitate-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  justify-self: center;
+  align-self: center;
+  width: 540px;
+  height: 410px;
+
+}
+
+.combined {
+  display: flex;
+  flex-direction:column;
+  gap: 30px;
+  
+}
+
+.v-graph {
+  height: 410px;
+}
+
+.grid-display {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+  
+  
+
+
+}
+
+.heading {
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+}
+
