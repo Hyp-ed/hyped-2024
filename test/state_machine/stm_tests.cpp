@@ -12,6 +12,7 @@ void testTransition(std::unique_ptr<state_machine::StateMachine> &stm,
   ASSERT_TRUE(stm->getCurrentState() == expected_state);
 }
 
+
 TEST(StateMachine, cleanRun)
 {
   std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();

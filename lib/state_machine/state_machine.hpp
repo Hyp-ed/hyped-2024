@@ -2,6 +2,7 @@
 
 #include "state.hpp"
 #include "types.hpp"
+#include "core/types.hpp"
 
 #include <optional>
 #include <queue>
@@ -17,6 +18,7 @@ class StateMachine {
   Message stringToMessage(const std::string &message_name);
   std::string messageToString(const Message &message);
   State getCurrentState();
+  core::Result handleMessage(const Message &message);
 
  private:
   const std::unordered_map<std::string, Message> string_to_message_
@@ -78,5 +80,6 @@ class StateMachine {
 
   State current_state_;
 };
+
 
 }  // namespace hyped::state_machine
