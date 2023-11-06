@@ -26,8 +26,7 @@ TEST(StateMachine, cleanRun)
   testTransition(stm, state_machine::State::kAccelerate, state_machine::State::kAccelerate);
   testTransition(stm, state_machine::State::kLimBrake, state_machine::State::kLimBrake);
   testTransition(stm, state_machine::State::kFrictionBrake, state_machine::State::kFrictionBrake);
-  testTransition(
-    stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
+  testTransition(stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
   testTransition(stm, state_machine::State::kStopped, state_machine::State::kStopped);
   testTransition(
     stm, state_machine::State::kBatteryRecharge, state_machine::State::kBatteryRecharge);
@@ -61,10 +60,8 @@ TEST(StateMachine, cleanRunDuplicatedMessages)
   testTransition(stm, state_machine::State::kLimBrake, state_machine::State::kLimBrake);
   testTransition(stm, state_machine::State::kFrictionBrake, state_machine::State::kFrictionBrake);
   testTransition(stm, state_machine::State::kFrictionBrake, state_machine::State::kFrictionBrake);
-  testTransition(
-    stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
-  testTransition(
-    stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
+  testTransition(stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
+  testTransition(stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
   testTransition(stm, state_machine::State::kStopped, state_machine::State::kStopped);
   testTransition(stm, state_machine::State::kStopped, state_machine::State::kStopped);
   testTransition(
