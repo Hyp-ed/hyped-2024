@@ -15,68 +15,68 @@ namespace hyped::state_machine {
 class StateMachine {
  public:
   StateMachine();
-  Message stringToMessage(const std::string &message_name);
-  std::string messageToString(const Message &message);
+  State stringToState(const std::string &state_name);
+  std::string stateToString(const State &state);
   State getCurrentState();
-  core::Result handleMessage(const Message &message);
+  core::Result handleTransition(const State &state);
 
  private:
-  const std::unordered_map<std::string, Message> string_to_message_
-    = {{"kCalibrating", Message::kCalibrating},
-       {"kPrecharge", Message::kPrecharge},
-       {"kReadyForLeviation", Message::kReadyForLevitation},
-       {"kBeginLevitation", Message::kBeginLevitation},
-       {"kReady", Message::kReady},
-       {"kAccelerate", Message::kAccelerate},
-       {"kLIMBrake", Message::kLIMBrake},
-       {"kFrictionBrake", Message::kFrictionBrake},
-       {"kStopLevitation", Message::kStopLevitation},
-       {"kStopped", Message::kStopped},
-       {"kBatteryRecharge", Message::kBatteryRecharge},
-       {"kCapacitorDischarge", Message::kCapacitorDischarge},
-       {"kFailureBrake", Message::kFailureBrake},
-       {"kFailure", Message::kFailure},
-       {"kSafe", Message::kSafe}};
-  const std::unordered_map<Message, std::string> message_to_string_
-    = {{Message::kCalibrating, "kCalibrating"},
-       {Message::kPrecharge, "kPrecharge"},
-       {Message::kReadyForLevitation, "kReadyForLevitation"},
-       {Message::kBeginLevitation, "kBeginLevitation"},
-       {Message::kReady, "kReady"},
-       {Message::kAccelerate, "kAccelerate"},
-       {Message::kLIMBrake, "kLIMBrake"},
-       {Message::kFrictionBrake, "kFrictionBrake"},
-       {Message::kStopLevitation, "kStopLevitation"},
-       {Message::kStopped, "kStopped"},
-       {Message::kBatteryRecharge, "kBatteryRecharge"},
-       {Message::kCapacitorDischarge, "kCapacitorDischarge"},
-       {Message::kFailureBrake, "kFailureBrake"},
-       {Message::kFailure, "kFailure"},
-       {Message::kSafe, "kSafe"}};
+  const std::unordered_map<std::string, State> string_to_state_
+    = {{"kCalibrate", State::kCalibrate},
+       {"kPrecharge", State::kPrecharge},
+       {"kReadyForLeviation", State::kReadyForLevitation},
+       {"kBeginLevitation", State::kBeginLevitation},
+       {"kReady", State::kReady},
+       {"kAccelerate", State::kAccelerate},
+       {"kLimBrake", State::kLimBrake},
+       {"kFrictionBrake", State::kFrictionBrake},
+       {"kStopLevitation", State::kStopLevitation},
+       {"kStopped", State::kStopped},
+       {"kBatteryRecharge", State::kBatteryRecharge},
+       {"kCapacitorDischarge", State::kCapacitorDischarge},
+       {"kFailureBrake", State::kFailureBrake},
+       {"kFailure", State::kFailure},
+       {"kSafe", State::kSafe}};
+  const std::unordered_map<State, std::string> state_to_string_
+    = {{State::kCalibrate, "kCalibrate"},
+       {State::kPrecharge, "kPrecharge"},
+       {State::kReadyForLevitation, "kReadyForLevitation"},
+       {State::kBeginLevitation, "kBeginLevitation"},
+       {State::kReady, "kReady"},
+       {State::kAccelerate, "kAccelerate"},
+       {State::kLimBrake, "kLimBrake"},
+       {State::kFrictionBrake, "kFrictionBrake"},
+       {State::kStopLevitation, "kStopLevitation"},
+       {State::kStopped, "kStopped"},
+       {State::kBatteryRecharge, "kBatteryRecharge"},
+       {State::kCapacitorDischarge, "kCapacitorDischarge"},
+       {State::kFailureBrake, "kFailureBrake"},
+       {State::kFailure, "kFailure"},
+       {State::kSafe, "kSafe"}};
   const boost::unordered_map<SourceAndMessage, State, source_and_message_hash> transition_to_state_
-    = {{{State::kIdle, Message::kCalibrating}, State::kCalibrating},
-       {{State::kIdle, Message::kFailure}, State::kFailure},
-       {{State::kCalibrating, Message::kPrecharge}, State::kPrecharge},
-       {{State::kCalibrating, Message::kFailure}, State::kFailure},
-       {{State::kPrecharge, Message::kReadyForLevitation}, State::kReadyForLevitation},
-       {{State::kPrecharge, Message::kFailure}, State::kFailure},
-       {{State::kReadyForLevitation, Message::kBeginLevitation}, State::kBeginLevitation},
-       {{State::kReadyForLevitation, Message::kFailure}, State::kFailure},
-       {{State::kBeginLevitation, Message::kReady}, State::kReady},
-       {{State::kBeginLevitation, Message::kFailure}, State::kFailure},
-       {{State::kReady, Message::kAccelerate}, State::kAccelerate},
-       {{State::kAccelerate, Message::kLIMBrake}, State::kLIMBrake},
-       {{State::kAccelerate, Message::kFailureBrake}, State::kFailureBrake},
-       {{State::kLIMBrake, Message::kFrictionBrake}, State::kFrictionBrake},
-       {{State::kLIMBrake, Message::kFailureBrake}, State::kFailureBrake},
-       {{State::kFrictionBrake, Message::kStopLevitation}, State::kStopLevitation},
-       {{State::kFrictionBrake, Message::kFailureBrake}, State::kFailureBrake},
-       {{State::kStopLevitation, Message::kStopped}, State::kStopped},
-       {{State::kStopped, Message::kBatteryRecharge}, State::kBatteryRecharge},
-       {{State::kBatteryRecharge, Message::kCapacitorDischarge}, State::kCapacitorDischarge},
-       {{State::kFailureBrake, Message::kCapacitorDischarge}, State::kCapacitorDischarge},
-       {{State::kFailure, Message::kCapacitorDischarge}, State::kCapacitorDischarge},
-       {{State::kCapacitorDischarge, Message::kSafe}, State::kSafe}};
+    = {{{State::kIdle, State::kCalibrate}, State::kCalibrate},
+       {{State::kIdle, State::kFailure}, State::kFailure},
+       {{State::kCalibrate, State::kPrecharge}, State::kPrecharge},
+       {{State::kCalibrate, State::kFailure}, State::kFailure},
+       {{State::kPrecharge, State::kReadyForLevitation}, State::kReadyForLevitation},
+       {{State::kPrecharge, State::kFailure}, State::kFailure},
+       {{State::kReadyForLevitation, State::kBeginLevitation}, State::kBeginLevitation},
+       {{State::kReadyForLevitation, State::kFailure}, State::kFailure},
+       {{State::kBeginLevitation, State::kReady}, State::kReady},
+       {{State::kBeginLevitation, State::kFailure}, State::kFailure},
+       {{State::kReady, State::kAccelerate}, State::kAccelerate},
+       {{State::kAccelerate, State::kLimBrake}, State::kLimBrake},
+       {{State::kAccelerate, State::kFailureBrake}, State::kFailureBrake},
+       {{State::kLimBrake, State::kFrictionBrake}, State::kFrictionBrake},
+       {{State::kLimBrake, State::kFailureBrake}, State::kFailureBrake},
+       {{State::kFrictionBrake, State::kStopLevitation}, State::kStopLevitation},
+       {{State::kFrictionBrake, State::kFailureBrake}, State::kFailureBrake},
+       {{State::kStopLevitation, State::kStopped}, State::kStopped},
+       {{State::kStopped, State::kBatteryRecharge}, State::kBatteryRecharge},
+       {{State::kBatteryRecharge, State::kCapacitorDischarge}, State::kCapacitorDischarge},
+       {{State::kFailureBrake, State::kCapacitorDischarge}, State::kCapacitorDischarge},
+       {{State::kFailure, State::kCapacitorDischarge}, State::kCapacitorDischarge},
+       {{State::kCapacitorDischarge, State::kSafe}, State::kSafe}};
 
   State current_state_;
 };

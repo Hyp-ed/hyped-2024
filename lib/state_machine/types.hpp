@@ -1,6 +1,5 @@
 #pragma once
 
-#include "message.hpp"
 #include "state.hpp"
 
 #include <cstdint>
@@ -10,7 +9,7 @@
 namespace hyped::state_machine {
 struct SourceAndMessage {
   State source;
-  Message message;
+  State message;
 
   bool operator==(const SourceAndMessage &key) const
   {

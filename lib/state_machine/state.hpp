@@ -4,13 +4,13 @@ namespace hyped::state_machine {
 
 enum class State {
   kIdle,
-  kCalibrating,
+  kCalibrate,
   kPrecharge,
   kReadyForLevitation,
   kBeginLevitation,
   kReady,
   kAccelerate,
-  kLIMBrake,
+  kLimBrake,
   kFrictionBrake,
   kStopLevitation,
   kStopped,
