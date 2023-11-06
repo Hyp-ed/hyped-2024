@@ -7,13 +7,14 @@
 #include <queue>
 #include <unordered_map>
 
+#include "core/mqtt.hpp"
 #include <boost/unordered_map.hpp>
 
 namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine();
+  StateMachine(std::shared_ptr<core::Mqtt> mqtt);
   bool handleMessage(const Message &message);
   Message stringToMessage(const std::string &message_name);
   std::string messageToString(const Message &message);
@@ -75,6 +76,7 @@ class StateMachine {
 
   State current_state_;
   std::queue<Message> previous_message_;
+  std::shared_ptr<core::Mqtt> mqtt_;
 };
 
 }  // namespace hyped::state_machine

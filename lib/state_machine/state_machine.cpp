@@ -4,7 +4,9 @@
 
 namespace hyped::state_machine {
 
-StateMachine::StateMachine() : current_state_{State::kIdle}
+StateMachine::StateMachine(std::shared_ptr<core::Mqtt> mqtt)
+    : current_state_(State::kIdle),
+      mqtt_(std::move(mqtt))
 {
 }
 
