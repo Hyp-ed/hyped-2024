@@ -1,18 +1,55 @@
-import { Badge, Card, Flex, MarkerBar, Text, Title } from '@tremor/react';
+'use client';
 
-export default () => (
-  <Card className="levitate-card">
-    <Title>Levitation Height</Title>
-    <div className="levitate">
-      <div className="levitation">
-        <Card className="w-[280px] pt-[170px]  h-[330px]">
-          <div className="levitate-2">
-            <Text className="mb-3">Levitation Height</Text>
-            <Badge>live</Badge>
-          </div>
-          <MarkerBar value={45} color="fuchsia" className="mt-4" />
-        </Card>
+import { Badge, Card, Flex, MarkerBar, Text, Title } from '@tremor/react';
+import { useQuery } from 'react-query';
+import format from 'date-fns/format';
+
+export default () => {
+  const { data, isLoading, isError } = useQuery(
+    'levitation_height',
+    async () =>
+      (await fetch(
+        `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/levitation_height?start=0`,
+      ).then(res => res.json())) as {
+        id: 'levitation_height';
+        timestamp: string;
+        value: number;
+      }[],
+    {
+      refetchInterval: 1000,
+    },
+  );
+
+  const levitationHeight = Array.isArray(data)
+    ? data.map(d => {
+        return {
+          levitation: d.value,
+        };
+      })
+    : [];
+  const levitation1 = levitationHeight[0]?.levitation;
+  console.log(levitation1);
+
+  return (
+    <Card className="levitate-card">
+      <Title className="mb-[-10px] z-10"> Levitation Height</Title>
+      <div className="levitate">
+        <div className="levitation">
+          <Card
+            className=" 
+          levitate-1
+         lg:w-[230px] pt-[160px]  h-[330px]
+        "
+          >
+            <div className="levitate-2">
+              <Text className="mb-3">Levitation Height</Text>
+              <Badge>live</Badge>
+              <Text>{levitation1}mm</Text>
+            </div>
+            <MarkerBar value={levitation1} color="fuchsia" className="mt-4" />
+          </Card>
+        </div>
       </div>
-    </div>
-  </Card>
-);
+    </Card>
+  );
+};

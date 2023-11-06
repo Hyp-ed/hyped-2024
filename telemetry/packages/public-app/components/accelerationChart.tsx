@@ -1,3 +1,5 @@
+'use client';
+
 import { Card, LineChart, Title } from '@tremor/react';
 import { useQuery } from 'react-query';
 import format from 'date-fns/format';

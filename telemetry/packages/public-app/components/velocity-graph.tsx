@@ -48,7 +48,7 @@ export const VelocityGraph = () => {
 
   return (
     <>
-      <Card className="v-graph">
+      <Card className="v-graph ">
         <Title>Velocity</Title>
         <LineChart
           className="h-72 mt-6"

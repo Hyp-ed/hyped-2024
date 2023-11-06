@@ -10,9 +10,9 @@ import Image from 'next/image';
 
 const CARDS = {
   //VELOCITY: <VelocityGraph />,
-  KPI_CARD: <KpiCard />,
+  //KPI_CARD: <KpiCard />,
   // TRACKER: <TrackerExample />,
-  MEASUREMENTS: <MeasurementChart />,
+  //MEASUREMENTS: <MeasurementChart />,
   VELOCITY: <VelocityGraph />,
   ACCELERATION: <AccelerationChart />,
   LEVITATION: <LevitationBar />,
@@ -23,11 +23,11 @@ type Card = keyof typeof CARDS;
 export default function GridDsiplay() {
   const ColorInverter = () => {};
 
-  const [selected, setSelected] = useState<Card>('MEASUREMENTS');
+  const [selected, setSelected] = useState<Card>('VELOCITY');
 
   return (
     <main className="invert-mode">
-      <div className="heading">
+      <div className="heading p-2">
         <div>
           <Image
             alt="Hyped logo"
@@ -50,13 +50,24 @@ export default function GridDsiplay() {
       </div>
 
       {/* Main section */}
-      <Card className="mt-6 sm:w-[370px] md:w-[640px] lg:w-[1100px] grid-display">
+      <Card
+        className="mt-6 
+        w-[360px]
+
+      sm:w-[360px]
+       md:w-[720px]
+        lg:w-[1000px] 
+        grid-display"
+      >
         <div className="h-0" />
         {CARDS[selected]}
       </Card>
 
       {/* KPI section */}
-      <Grid numItemsMd={2} className="mt-6 gap-6">
+      <Grid
+        numItemsMd={2}
+        className="mt-6 gap-6 w-[360px] md:w-[720px] lg:w-[1000px]"
+      >
         {(Object.keys(CARDS) as Card[])
           .filter(c => c !== selected)
           .map(c => (
