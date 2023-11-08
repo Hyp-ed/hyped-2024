@@ -1,36 +1,34 @@
 class PIDController {
+ public:
+  void PIDController_Init();
+  float PIDController_Update(float setpoint, float measurement);
 
-	public:
+ private:
+  // Controller Gains for tuning
+  double Kp;
+  double Ki;
+  double Kd;
 
-	void  PIDController_Init();
-	float PIDController_Update(float setpoint, float measurement);
+  // Derivative low-pass filter time constant
+  double tau;
 
-	private:
-    // Controller Gains for tuning
-    double Kp;
-    double Ki;
-    double Kd;
+  // Output limits
+  double limMin;
+  double limMax;
 
-    // Derivative low-pass filter time constant
-    double tau;
+  // Integrator limits
+  double limMinInt;
+  double limMaxInt;
 
-    // Output limits
-    double limMin;
-    double limMax;
+  /* Sample time (in seconds) */
+  double T;
 
-    // Integrator limits
-	double limMinInt;
-	double limMaxInt;
+  /* Controller memory */
+  double integrator;
+  double prevError; /* Required for integrator */
+  double differentiator;
+  double prevMeasurement; /* Required for differentiator */
 
-	/* Sample time (in seconds) */
-	double T;
-
-	/* Controller memory */
-	double integrator;
-	double prevError;			/* Required for integrator */
-	double differentiator;
-	double prevMeasurement;		/* Required for differentiator */
-
-	/* Controller output */
-	double out;
-} ;
+  /* Controller output */
+  double out;
+};
