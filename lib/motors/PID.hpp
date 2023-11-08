@@ -1,3 +1,5 @@
+#pragma once
+
 class PIDController {
  public:
   void PIDController_Init();
