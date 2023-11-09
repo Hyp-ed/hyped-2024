@@ -13,9 +13,9 @@ const style: React.CSSProperties = {
   alignItems: 'center', // corrected property name from alignContent to alignItems
   display: 'flex',
   flexDirection: 'column', // added display property to center content horizontally
-  height: '70vh', // added height to center content vertically
+  height: '100vh', // added height to center content vertically
   width: '100vw',
-  margin: 'auto',
+  // margin: 'auto',
 };
 
 export default function PreLoader(): JSX.Element {
@@ -36,13 +36,6 @@ export default function PreLoader(): JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-      document.documentElement.style.setProperty(
-        '--bg-color',
-        document.documentElement.style.getPropertyValue('--bg-color') ===
-          'black'
-          ? 'white'
-          : 'black',
-      );
     }, 5000);
   }, []);
 

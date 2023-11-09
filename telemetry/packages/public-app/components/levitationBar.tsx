@@ -6,12 +6,12 @@ import format from 'date-fns/format';
 
 export default () => {
   const { data, isLoading, isError } = useQuery(
-    'levitation_height',
+    'levitation-height',
     async () =>
       (await fetch(
-        `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/levitation_height?start=0`,
+        `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/levitation-height?start=0`,
       ).then(res => res.json())) as {
-        id: 'levitation_height';
+        id: 'levitation-height';
         timestamp: string;
         value: number;
       }[],
@@ -27,11 +27,11 @@ export default () => {
         };
       })
     : [];
-  const levitation1 = levitationHeight[0]?.levitation;
+  const levitation1 = levitationHeight[levitationHeight.length - 1]?.levitation;
   console.log(levitation1);
 
   return (
-    <Card className="levitate-card">
+    <Card className="levitate-card dark:bg-black">
       <Title className="mb-[-10px] z-10"> Levitation Height</Title>
       <div className="levitate">
         <div className="levitation">
@@ -39,6 +39,7 @@ export default () => {
             className=" 
           levitate-1
          lg:w-[230px] pt-[160px]  h-[330px]
+         dark:bg-black
         "
           >
             <div className="levitate-2">
@@ -46,7 +47,11 @@ export default () => {
               <Badge>live</Badge>
               <Text>{levitation1}mm</Text>
             </div>
-            <MarkerBar value={levitation1} color="fuchsia" className="mt-4" />
+            <MarkerBar
+              value={levitation1}
+              color="fuchsia"
+              className="mt-4 marker-bar"
+            />
           </Card>
         </div>
       </div>

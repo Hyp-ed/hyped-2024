@@ -48,10 +48,10 @@ export const VelocityGraph = () => {
 
   return (
     <>
-      <Card className="v-graph ">
-        <Title>Velocity</Title>
+      <Card className="v-graph dark:bg-black">
+        <Title className="">Velocity</Title>
         <LineChart
-          className="h-72 mt-6"
+          className="h-72 mt-6 dark:text-white"
           data={velocityData}
           // data={chartdata3}
           index="time"
