@@ -7,8 +7,8 @@
 #include <queue>
 #include <unordered_map>
 
-#include "core/types.hpp"
 #include <boost/unordered_map.hpp>
+#include <core/types.hpp>
 
 namespace hyped::state_machine {
 
