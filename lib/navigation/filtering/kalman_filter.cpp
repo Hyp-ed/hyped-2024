@@ -11,8 +11,8 @@ KalmanFilter::KalmanFilter(std::shared_ptr<core::ITimeSource> time_source,
       state_estimate_(initial_state),
       error_covariance_(initial_error_covariance)
 {
-  assert(state_dimension > 0);
-  assert(measurement_dimension > 0);
+  static_assert(state_dimension > 0);
+  static_assert(measurement_dimension > 0);
   
 }
 
