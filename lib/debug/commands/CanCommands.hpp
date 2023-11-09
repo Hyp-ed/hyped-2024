@@ -2,6 +2,7 @@
 #include "ICommand.hpp"
 
 #include <memory>
+#include <vector>
 
 #include <io/can.hpp>
 
