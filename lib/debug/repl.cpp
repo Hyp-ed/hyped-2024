@@ -79,6 +79,11 @@ void Repl::run()
   }
 }
 
+std::optional<std::unique_ptr<Repl>> Repl::fromFile(const std::string &filename)
+{
+  return std::optional<std::unique_ptr<Repl>>();
+}
+
 std::vector<std::string> Repl::autoComplete(const std::string &partial)
 {
   std::vector<std::string> matches;
@@ -120,6 +125,11 @@ void Repl::addQuitCommand()
     exit(0);
     return core::Result::kSuccess;
   }));
+}
+
+core::Result Repl::addCanCommands()
+{
+  return core::Result();
 }
 
 std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t bus)

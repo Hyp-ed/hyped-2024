@@ -27,7 +27,7 @@ class Repl {
  public:
   Repl(core::ILogger &logger, Terminal &terminal);
   void run();
-
+  std::optional<std::unique_ptr<Repl>> fromFile(const std::string &filename);
   std::vector<std::string> autoComplete(const std::string &partial);
 
   void addCommand(std::unique_ptr<ICommand> command);
@@ -35,6 +35,7 @@ class Repl {
 
   void addHelpCommand();
   void addQuitCommand();
+  core::Result addCanCommands();
 
  private:
   /**

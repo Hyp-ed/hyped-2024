@@ -12,7 +12,13 @@ int main(const int argc, char **argv)
   hyped::debug::ReplLogger logger("REPL", hyped::core::LogLevel::kDebug, time, terminal);
   hyped::debug::Repl repl(logger, terminal);
   if (argc > 1) {
-    repl.run();
+    auto optional_repl = repl.fromFile(argv[1]);
+    if (!optional_repl) {
+      logger.log(hyped::core::LogLevel::kFatal, "Failed to load config file %s", argv[1]);
+      return 1;
+    }
+    auto repl = std::move(*optional_repl);
+    repl->run();
   } else {
     logger.log(hyped::core::LogLevel::kFatal, "Usage: %s [config_file]", argv[0]);
     return 1;
