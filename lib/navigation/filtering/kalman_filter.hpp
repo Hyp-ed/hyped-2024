@@ -32,6 +32,19 @@ class KalmanFilter {
    core::TimePoint last_update_time_;
    StateVector state_estimate_;  
    ErrorCovarianceMatrix error_covariance_;  
+
+
+   inline const StateVector& KalmanFilter::getStateEstimate() const
+{
+  return state_estimate_;
+}
+
+   inline const ErrorCovarianceMatrix& KalmanFilter::getErrorCovariance() const
+{
+  return error_covariance_;
+}
+
+
 };
   
 }  // namespace hyped::navigation

@@ -40,17 +40,4 @@ void KalmanFilter::filter(const StateTransitionMatrix &transition_matrix,
                       + kalman_gain * (measurement - measurement_matrix * prop_state_estimate);
   }
 
-  const StateVector& KalmanFilter::getStateEstimate() const
-{
-  return state_estimate_;
-}
-
-const ErrorCovarianceMatrix& KalmanFilter::getErrorCovariance() const
-{
-  return error_covariance_;
-}
-
-
-    
-
 }  // namespace hyped::navigation
