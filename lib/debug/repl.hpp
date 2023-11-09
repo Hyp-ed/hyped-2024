@@ -20,6 +20,7 @@
 #include <io/pwm.hpp>
 #include <io/spi.hpp>
 #include <io/uart.hpp>
+#include <toml++/toml.hpp>
 
 namespace hyped::debug {
 

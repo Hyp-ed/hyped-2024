@@ -81,6 +81,13 @@ void Repl::run()
 
 std::optional<std::unique_ptr<Repl>> Repl::fromFile(const std::string &filename)
 {
+  toml::table table;
+  try {
+    table = toml::parse_file(filename);
+  } catch (const toml::parse_error &e) {
+    logger_.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
+    return std::nullopt;
+  }
   return std::optional<std::unique_ptr<Repl>>();
 }
 
