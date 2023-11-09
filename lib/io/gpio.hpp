@@ -9,6 +9,10 @@
 
 namespace hyped::io {
 
+// Edge is used to set the interrupt trigger for the pin.
+enum class Edge { kNone = 0, kRising, kFalling, kBoth };
+enum class Direction { kIn = 0, kOut };
+
 /**
  * An abstract interface to read from a GPIO pin. This is to be used whenever read access
  * to GPIO is required.

@@ -12,10 +12,6 @@
 
 namespace hyped::io {
 
-// Edge is used to set the interrupt trigger for the pin.
-enum class Edge { kNone = 0, kRising, kFalling, kBoth };
-enum class Direction { kIn = 0, kOut };
-
 class HardwareGpioReader : public IGpioReader {
  public:
   HardwareGpioReader(core::ILogger &logger, const int read_file_descritor);
