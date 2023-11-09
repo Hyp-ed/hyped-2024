@@ -4,7 +4,7 @@
 
 namespace hyped::test {
 
-void testTransition(std::unique_ptr<state_machine::StateMachine> &stm,
+void testTransition(std::shared_ptr<state_machine::StateMachine> stm,
                     state_machine::State transition_state,
                     state_machine::State expected_state)
 {
@@ -14,7 +14,7 @@ void testTransition(std::unique_ptr<state_machine::StateMachine> &stm,
 
 TEST(StateMachine, cleanRun)
 {
-  std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -37,7 +37,7 @@ TEST(StateMachine, cleanRun)
 
 TEST(StateMachine, cleanRunDuplicatedMessages)
 {
-  std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -78,7 +78,7 @@ TEST(StateMachine, cleanRunDuplicatedMessages)
 
 TEST(StateMachine, failureBrakeFromAccelerating)
 {
-  std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -96,7 +96,7 @@ TEST(StateMachine, failureBrakeFromAccelerating)
 
 TEST(StateMachine, failureBrakeFromLIMBrake)
 {
-  std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -115,7 +115,7 @@ TEST(StateMachine, failureBrakeFromLIMBrake)
 
 TEST(StateMachine, failureBrakeFrictionBrake)
 {
-  std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -135,7 +135,7 @@ TEST(StateMachine, failureBrakeFrictionBrake)
 
 TEST(StateMachine, duplicatedMessagesFailureStates)
 {
-  std::unique_ptr stm = std::make_unique<state_machine::StateMachine>();
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -164,5 +164,15 @@ TEST(StateMachine, duplicatedMessagesFailureStates)
     stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+}
+
+TEST(StateMachine, duplicatedMessageAfterStateChange)
+{
+  std::shared_ptr stm = std::make_shared<state_machine::StateMachine>();
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kPrecharge);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
 }
 }  // namespace hyped::test
