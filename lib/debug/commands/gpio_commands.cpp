@@ -5,8 +5,13 @@ core::Result GpioCommands::addCommands(core::ILogger &logger,
                                        std::shared_ptr<Repl> repl,
                                        toml::v3::node_view<toml::v3::node> config)
 {
-  const auto read_pins = config["read_pins"].as_array();
-  const auto gpio      = repl->getGpio();
+  const auto read_pins  = config["read_pins"].as_array();
+  const auto write_pins = config["write_pins"].as_array();
+  if (!read_pins && !write_pins) {
+    logger.log(core::LogLevel::kFatal, "No GPIO pins specified");
+    return core::Result::kFailure;
+  }
+  const auto gpio = repl->getGpio();
   for (const auto &read_pin : *read_pins) {
     const auto optional_read_pin = read_pin.value<std::uint8_t>();
     if (!optional_read_pin) {
@@ -37,7 +42,6 @@ core::Result GpioCommands::addCommands(core::ILogger &logger,
       gpio_read_command_name, gpio_read_command_description, gpio_read_command_handler);
     repl->addCommand(std::move(gpio_read_command));
   }
-  const auto write_pins = config["write_pins"].as_array();
   for (const auto &write_pin : *write_pins) {
     const auto optional_write_pin = write_pin.value<std::uint8_t>();
     if (!optional_write_pin) {
