@@ -4,6 +4,7 @@
 #include "commands/adc_commands.hpp"
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
+#include "commands/i2c_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>
@@ -41,6 +42,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result = GpioCommands::addCommands(logger, repl, config["io"]["gpio"]);
     if (result != core::Result::kSuccess) {
       logger.log(core::LogLevel::kFatal, "Error adding GPIO commands");
+      return std::nullopt;
+    }
+  }
+  if (config["io"]["i2c"]) {
+    const auto result = I2cCommands::addCommands(logger, repl, config["io"]["i2c"]);
+    if (result != core::Result::kSuccess) {
+      logger.log(core::LogLevel::kFatal, "Error adding I2C commands");
       return std::nullopt;
     }
   }
