@@ -5,7 +5,6 @@ add_library(${target} STATIC ${headers} ${code})
 include_directories(${target}
   "${CMAKE_SOURCE_DIR}/lib"
   "${CMAKE_CURRENT_SOURCE_DIR}"
-  ${rapidjson_SOURCE_DIR}/include
 )
 target_link_libraries(${target} 
   hyped_core
