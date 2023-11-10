@@ -9,9 +9,11 @@
 #include <core/types.hpp>
 
 namespace hyped::debug {
-class ICommand {
+class Command {
  public:
-  ICommand(std::string name, std::string description, std::function<core::Result()> handler)
+  Command(const std::string &name,
+          const std::string &description,
+          const std::function<void()> handler)
       : name_(name),
         description_(description),
         handler_(handler)
@@ -21,12 +23,9 @@ class ICommand {
   std::string getDescription() { return description_; }
   void execute() { handler_(); }
 
-  static std::optional<std::unique_ptr<ICommand>> parse(
-    rapidjson::GenericObject<true, rapidjson::Value> config);
-
  private:
-  std::string name_;
-  std::string description_;
-  std::function<void()> handler_;
+  const std::string name_;
+  const std::string description_;
+  const std::function<void()> handler_;
 };
 }  // namespace hyped::debug

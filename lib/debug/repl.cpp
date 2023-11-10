@@ -1,17 +1,35 @@
 #include "repl.hpp"
 #include "repl_logger.hpp"
 
-#include "commands/ICommand.hpp"
-#include <core/logger.hpp>
+#include "commands/CanCommands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>
-#include <io/hardware_gpio.hpp>
 #include <io/hardware_i2c.hpp>
-#include <io/hardware_spi.hpp>
-#include <io/hardware_uart.hpp>
 
 namespace hyped::debug {
+
+std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
+                                                  Terminal &terminal,
+                                                  const std::string &filename)
+{
+  auto repl = std::make_shared<Repl>(logger, terminal);
+  toml::table config;
+  try {
+    config = toml::parse_file(filename);
+  } catch (const toml::parse_error &e) {
+    logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
+    return std::nullopt;
+  }
+  if (config["io"]["can"]["enabled"].value_or(false)) {
+    const auto result = CanCommands::addCommands(logger, repl, config["io"]["can"]);
+    if (result != core::Result::kSuccess) {
+      logger.log(core::LogLevel::kFatal, "Error adding CAN commands");
+      return std::nullopt;
+    }
+  }
+  return repl;
+}
 
 Repl::Repl(core::ILogger &logger, Terminal &terminal)
     : logger_(logger),
@@ -79,18 +97,6 @@ void Repl::run()
   }
 }
 
-std::optional<std::unique_ptr<Repl>> Repl::fromFile(const std::string &filename)
-{
-  toml::table table;
-  try {
-    table = toml::parse_file(filename);
-  } catch (const toml::parse_error &e) {
-    logger_.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
-    return std::nullopt;
-  }
-  return std::optional<std::unique_ptr<Repl>>();
-}
-
 std::vector<std::string> Repl::autoComplete(const std::string &partial)
 {
   std::vector<std::string> matches;
@@ -100,7 +106,7 @@ std::vector<std::string> Repl::autoComplete(const std::string &partial)
   return matches;
 }
 
-void Repl::addCommand(std::unique_ptr<ICommand> command)
+void Repl::addCommand(std::unique_ptr<Command> command)
 {
   logger_.log(core::LogLevel::kDebug, "Adding command: %s", command->getName().c_str());
   commands_.push_back(std::move(command));
@@ -118,25 +124,18 @@ void Repl::printHelp()
 
 void Repl::addHelpCommand()
 {
-  addCommand(
-    std::make_unique<ICommand>("help", "Print this help message", [this]() -> core::Result {
-      printHelp();
-      return core::Result::kSuccess;
-    }));
-}
-
-void Repl::addQuitCommand()
-{
-  addCommand(std::make_unique<ICommand>("quit", "Quit the program", [this]() -> core::Result {
-    terminal_.quit();
-    exit(0);
+  addCommand(std::make_unique<Command>("help", "Print this help message", [this]() {
+    printHelp();
     return core::Result::kSuccess;
   }));
 }
 
-core::Result Repl::addCanCommands()
+void Repl::addQuitCommand()
 {
-  return core::Result();
+  addCommand(std::make_unique<Command>("quit", "Quit the program", [this]() {
+    terminal_.quit();
+    exit(0);
+  }));
 }
 
 std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t bus)

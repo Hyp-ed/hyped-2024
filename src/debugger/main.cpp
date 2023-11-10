@@ -10,11 +10,11 @@ int main(const int argc, char **argv)
   hyped::debug::Terminal terminal;
   terminal.initialize_window();
   hyped::debug::ReplLogger logger("REPL", hyped::core::LogLevel::kDebug, time, terminal);
-  hyped::debug::Repl repl(logger, terminal);
   if (argc > 1) {
-    auto optional_repl = repl.fromFile(argv[1]);
+    auto optional_repl = hyped::debug::Repl::create(logger, terminal, argv[1]);
     if (!optional_repl) {
-      logger.log(hyped::core::LogLevel::kFatal, "Failed to load config file %s", argv[1]);
+      logger.log(
+        hyped::core::LogLevel::kFatal, "Failed to create debugger using file: %s", argv[1]);
       return 1;
     }
     auto repl = std::move(*optional_repl);

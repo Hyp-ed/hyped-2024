@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "commands/ICommand.hpp"
+#include "commands/Command.hpp"
 #include <core/logger.hpp>
 #include <io/adc.hpp>
 #include <io/can.hpp>
@@ -26,19 +26,19 @@ namespace hyped::debug {
 
 class Repl {
  public:
+  static std::optional<std::shared_ptr<Repl>> create(core::ILogger &logger,
+                                                     Terminal &terminal,
+                                                     const std::string &filename);
   Repl(core::ILogger &logger, Terminal &terminal);
   void run();
-  std::optional<std::unique_ptr<Repl>> fromFile(const std::string &filename);
   std::vector<std::string> autoComplete(const std::string &partial);
 
-  void addCommand(std::unique_ptr<ICommand> command);
+  void addCommand(std::unique_ptr<Command> command);
   void printHelp();
 
   void addHelpCommand();
   void addQuitCommand();
-  core::Result addCanCommands();
 
- private:
   /**
    * @brief Get the Adc object associated with the given pin or create a new one if it
    * doesn't exist
@@ -106,10 +106,11 @@ class Repl {
                                                     const io::UartBaudRate baud_rate,
                                                     const io::UartBitsPerByte bits_per_byte);
 
+ private:
   core::ILogger &logger_;
   Terminal terminal_;
   std::vector<std::string> history_;
-  std::vector<std::unique_ptr<ICommand>> commands_;
+  std::vector<std::unique_ptr<Command>> commands_;
 
   std::unordered_map<std::uint8_t, std::shared_ptr<io::IAdc>> adc_;
   std::unordered_map<std::string, std::shared_ptr<io::ICan>> can_;
