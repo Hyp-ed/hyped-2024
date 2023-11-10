@@ -7,6 +7,7 @@
 #include "commands/i2c_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
+#include "commands/uart_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>
@@ -65,6 +66,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result = SpiCommands::addCommands(logger, repl, config["io"]["spi"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding SPI commands");
+      return std::nullopt;
+    }
+  }
+  if (config["io"]["uart"]["enabled"].value_or(false)) {
+    const auto result = UartCommands::addCommands(logger, repl, config["io"]["uart"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding UART commands");
       return std::nullopt;
     }
   }
