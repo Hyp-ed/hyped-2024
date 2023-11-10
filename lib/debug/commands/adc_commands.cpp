@@ -19,8 +19,8 @@ core::Result AdcCommands::addCommands(core::ILogger &logger,
     const auto pin_number   = *optional_pin;
     const auto optional_adc = repl->getAdc(pin_number);
     if (!optional_adc) {
-      logger.log(core::LogLevel::kFatal, "Failed to create ADC instance on pin %d", pin);
-      return;
+      logger.log(core::LogLevel::kFatal, "Failed to create ADC instance on pin %d", pin_number);
+      return core::Result::kFailure;
     }
     const auto adc                          = std::move(*optional_adc);
     const auto adc_read_command_name        = "adc " + std::to_string(pin_number) + " read";
