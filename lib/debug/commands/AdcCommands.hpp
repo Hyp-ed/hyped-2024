@@ -9,7 +9,7 @@
 #include <io/can.hpp>
 
 namespace hyped::debug {
-class CanCommands {
+class AdcCommands {
  public:
   static core::Result addCommands(core::ILogger &logger,
                                   std::shared_ptr<Repl> repl,

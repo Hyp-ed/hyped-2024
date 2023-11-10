@@ -1,6 +1,7 @@
 #include "repl.hpp"
 #include "repl_logger.hpp"
 
+#include "commands/AdcCommands.hpp"
 #include "commands/CanCommands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
@@ -20,6 +21,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
   } catch (const toml::parse_error &e) {
     logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
     return std::nullopt;
+  }
+  if (config["io"]["adc"]) {
+    const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
+    if (result != core::Result::kSuccess) {
+      logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
+      return std::nullopt;
+    }
   }
   if (config["io"]["can"]["enabled"].value_or(false)) {
     const auto result = CanCommands::addCommands(logger, repl, config["io"]["can"]);
