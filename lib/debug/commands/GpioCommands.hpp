@@ -8,7 +8,7 @@
 #include <debug/repl.hpp>
 
 namespace hyped::debug {
-class CanCommands {
+class GpioCommands {
  public:
   static core::Result addCommands(core::ILogger &logger,
                                   std::shared_ptr<Repl> repl,

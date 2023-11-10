@@ -3,6 +3,7 @@
 
 #include "commands/AdcCommands.hpp"
 #include "commands/CanCommands.hpp"
+#include "commands/GpioCommands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>
@@ -36,6 +37,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       return std::nullopt;
     }
   }
+  if (config["io"]["gpio"]) {
+    const auto result = GpioCommands::addCommands(logger, repl, config["io"]["gpio"]);
+    if (result != core::Result::kSuccess) {
+      logger.log(core::LogLevel::kFatal, "Error adding GPIO commands");
+      return std::nullopt;
+    }
+  }
   return repl;
 }
 
@@ -47,7 +55,7 @@ Repl::Repl(core::ILogger &logger, Terminal &terminal)
       pwm_(),
       adc_(),
       uart_(),
-      gpio_(io::HardwareGpio(logger))
+      gpio_(std::make_shared<io::HardwareGpio>(logger))
 {
   addHelpCommand();
   addQuitCommand();

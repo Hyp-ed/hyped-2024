@@ -1,9 +1,9 @@
 #include "AdcCommands.hpp"
 
 namespace hyped::debug {
-core::Result addCommands(core::ILogger &logger,
-                         std::shared_ptr<Repl> repl,
-                         toml::v3::node_view<toml::v3::node> config)
+core::Result AdcCommands::addCommands(core::ILogger &logger,
+                                      std::shared_ptr<Repl> repl,
+                                      toml::v3::node_view<toml::v3::node> config)
 {
   const auto pins = config["pins"].as_array();
   if (!pins) {

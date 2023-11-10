@@ -6,7 +6,6 @@
 #include <core/logger.hpp>
 #include <core/types.hpp>
 #include <debug/repl.hpp>
-#include <io/can.hpp>
 
 namespace hyped::debug {
 class AdcCommands {

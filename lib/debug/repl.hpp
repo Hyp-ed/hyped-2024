@@ -55,6 +55,12 @@ class Repl {
    */
   std::optional<std::shared_ptr<io::ICan>> getCan(const std::string &bus);
   /**
+   * @brief Get the Gpio object
+   *
+   * @return std::shared_ptr<io::HardwareGpio> containing the Gpio object
+   */
+  std::shared_ptr<io::HardwareGpio> getGpio();
+  /**
    * @brief Get the I2c object associated with the given bus or create a new one if it doesn't exist
    * @param bus target bus for the I2c object
    * @return std::optional<std::shared_ptr<io::II2c>> containing the I2c object at bus or
@@ -114,7 +120,7 @@ class Repl {
 
   std::unordered_map<std::uint8_t, std::shared_ptr<io::IAdc>> adc_;
   std::unordered_map<std::string, std::shared_ptr<io::ICan>> can_;
-  io::HardwareGpio gpio_;
+  std::shared_ptr<io::HardwareGpio> gpio_;
   std::unordered_map<std::uint8_t, std::shared_ptr<io::II2c>> i2c_;
   std::unordered_map<io::PwmModule, std::shared_ptr<io::Pwm>> pwm_;
   std::unordered_map<io::SpiBus, std::shared_ptr<io::ISpi>> spi_;
