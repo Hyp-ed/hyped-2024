@@ -78,8 +78,8 @@ core::Result PwmCommands::addCommands(core::ILogger &logger,
         pwm_stop_command_name, pwm_stop_command_description, pwm_stop_command_handler);
       repl->addCommand(std::move(pwm_stop_command));
     }
-    return core::Result::kSuccess;
   }
+  return core::Result::kSuccess;
 }
 
 }  // namespace hyped::debug
