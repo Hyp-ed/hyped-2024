@@ -1,5 +1,5 @@
 #pragma once
-#include "Command.hpp"
+#include "command.hpp"
 
 #include <memory>
 
@@ -8,7 +8,7 @@
 #include <debug/repl.hpp>
 
 namespace hyped::debug {
-class AdcCommands {
+class GpioCommands {
  public:
   static core::Result addCommands(core::ILogger &logger,
                                   std::shared_ptr<Repl> repl,

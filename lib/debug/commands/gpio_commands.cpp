@@ -1,4 +1,4 @@
-#include "GpioCommands.hpp"
+#include "gpio_commands.hpp"
 
 namespace hyped::debug {
 core::Result GpioCommands::addCommands(core::ILogger &logger,

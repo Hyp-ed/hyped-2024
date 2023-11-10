@@ -1,9 +1,9 @@
 #include "repl.hpp"
 #include "repl_logger.hpp"
 
-#include "commands/AdcCommands.hpp"
-#include "commands/CanCommands.hpp"
-#include "commands/GpioCommands.hpp"
+#include "commands/adc_commands.hpp"
+#include "commands/can_commands.hpp"
+#include "commands/gpio_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>

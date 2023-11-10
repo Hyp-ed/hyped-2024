@@ -1,4 +1,4 @@
-#include "AdcCommands.hpp"
+#include "adc_commands.hpp"
 
 namespace hyped::debug {
 core::Result AdcCommands::addCommands(core::ILogger &logger,

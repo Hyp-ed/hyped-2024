@@ -8,7 +8,7 @@
 #include <unordered_map>
 #include <vector>
 
-#include "commands/Command.hpp"
+#include "commands/command.hpp"
 #include <core/logger.hpp>
 #include <io/adc.hpp>
 #include <io/can.hpp>

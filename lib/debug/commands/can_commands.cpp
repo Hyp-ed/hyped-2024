@@ -1,4 +1,4 @@
-#include "CanCommands.hpp"
+#include "can_commands.hpp"
 
 namespace hyped::debug {
 core::Result CanCommands::addCommands(core::ILogger &logger,
