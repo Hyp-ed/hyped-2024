@@ -58,8 +58,8 @@ export class PublicDataController {
     );
   }
 
-  @Get('levitation-height')
-  async getLevitationHeight(
+  @Get('acceleration')
+  async getAcceleration(
     @Param('podId') podId: string,
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
@@ -70,10 +70,66 @@ export class PublicDataController {
     this.validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
-      'levitation_height',
+      'acceleration',
       startTimestamp,
       endTimestamp ?? new Date().getTime().toString(),
     );
+  }
+
+  @Get('levitation-height')
+  async getLevitationHeight(
+    @Param('podId') podId: string,
+    @Query('start') startTimestamp: string,
+    @Query('end') endTimestamp?: string,
+  ) {
+    if (!startTimestamp) {
+      throw new HttpException("Missing 'start' query parameter", 400);
+    }
+    this.validatePodId(podId);
+    return {
+      levitation_height_1:
+        this.historialTelemetryDataService.getHistoricalReading(
+          podId,
+          'levitation_height_1',
+          startTimestamp,
+          endTimestamp ?? new Date().getTime().toString(),
+        ),
+      levitation_height_2:
+        this.historialTelemetryDataService.getHistoricalReading(
+          podId,
+          'levitation_height_2',
+          startTimestamp,
+          endTimestamp ?? new Date().getTime().toString(),
+        ),
+      levitation_height_3:
+        this.historialTelemetryDataService.getHistoricalReading(
+          podId,
+          'levitation_height_3',
+          startTimestamp,
+          endTimestamp ?? new Date().getTime().toString(),
+        ),
+      levitation_height_4:
+        this.historialTelemetryDataService.getHistoricalReading(
+          podId,
+          'levitation_height_4',
+          startTimestamp,
+          endTimestamp ?? new Date().getTime().toString(),
+        ),
+      levitation_height_lateral_1:
+        this.historialTelemetryDataService.getHistoricalReading(
+          podId,
+          'levitation_height_lateral_1',
+          startTimestamp,
+          endTimestamp ?? new Date().getTime().toString(),
+        ),
+      levitation_height_lateral_2:
+        this.historialTelemetryDataService.getHistoricalReading(
+          podId,
+          'levitation_height_lateral_2',
+          startTimestamp,
+          endTimestamp ?? new Date().getTime().toString(),
+        ),
+    };
   }
 
   private validatePodId(podId: string) {
