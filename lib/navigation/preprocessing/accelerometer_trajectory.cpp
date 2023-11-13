@@ -23,24 +23,13 @@ void AccelerometerTrajectoryEstimator::update(const core::Float acceleration,
   const auto time_elapsed                = timer_.elapsed(timestamp, previous_timestamp_);
   const core::Float time_elapsed_seconds = timer_.elapsedTimeInSeconds(time_elapsed);
 
-  // from equation v=u+at
-  const core::Float velocity_estimate = velocity_estimate_ + (acceleration * time_elapsed_seconds);
-
-  // from equation s = ut + 0.5*a*(t^2)
-  displacement_estimate_ = (velocity_estimate_ * time_elapsed_seconds)
+  // from equation s = s_0 + ut + 0.5*a*(t^2)
+  displacement_estimate_ = displacement_estimate_ + (velocity_estimate_ * time_elapsed_seconds)
                            + (0.5 * acceleration * time_elapsed_seconds * time_elapsed_seconds);
-  velocity_estimate_  = velocity_estimate;
+
+  // from equation v=u+at
+  velocity_estimate_  = velocity_estimate_ + (acceleration * time_elapsed_seconds);
   previous_timestamp_ = timestamp;
-}
-
-core::Float AccelerometerTrajectoryEstimator::getDisplacementEstimate() const
-{
-  return displacement_estimate_;
-}
-
-core::Float AccelerometerTrajectoryEstimator::getVelocityEstimate() const
-{
-  return velocity_estimate_;
 }
 
 }  // namespace hyped::navigation
