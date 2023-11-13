@@ -3,16 +3,15 @@
 namespace hyped::motors {
 PidController::PidController(
 
-  /* Clear controller variables */
-  const core::float kp,
-  const core::float ki,
-  const core::float kd,
-  const core::float minimum_output,
-  const core::float maximum_output,
-  const core::float minimum_integrator,
-  const core::float maximum_integrator,
-
-  const core::float output = 0.0f;)
+  const core::Float kp,
+  const core::Float ki,
+  const core::Float kd,
+  const core::Float tau,
+  const core::Float minimum_output,
+  const core::Float maximum_output,
+  const core::Float minimum_integrator,
+  const core::Float maximum_integrator,
+  const core::Float sample_time)
     : integrator_{0},
       previous_error_{0},
       differentiator_{0},
@@ -20,18 +19,18 @@ PidController::PidController(
       kp_(kp),
       ki_(ki),
       kd_(kd),
+      tau_(tau),
       minimum_output_(minimum_output),
       maximum_output_(maximum_output),
       minimum_integrator_(minimum_integrator),
-      maximum_integrator_(maximum_integrator);
-{
-}
+      maximum_integrator_(maximum_integrator),
+      sample_time_(sample_time){};
 
-core::float PidController::update(core::float setpoint, core::float measurement)
+core::Float PidController::update(core::Float setpoint, core::Float measurement)
 {
-  const core::float error = setpoint - measurement;
+  const core::Float error = setpoint - measurement;
 
-  const core::float proportional = kp_ * error;
+  const core::Float proportional = kp_ * error;
 
   integrator_ = integrator_ + 0.5f * ki_ * sample_time_ * (error + previous_error_);
 
@@ -55,7 +54,7 @@ core::float PidController::update(core::float setpoint, core::float measurement)
   previous_measurement_ = measurement;
 
   // Set controller output and limit outputs if needed
-  const core::float output = proportional + integrator_ + differentiator_;
+  core::Float output = proportional + integrator_ + differentiator_;
 
   if (output > maximum_output_) {
     output = maximum_output_;

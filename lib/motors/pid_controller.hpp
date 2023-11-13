@@ -4,33 +4,44 @@
 namespace hyped::motors {
 class PidController {
  public:
-  PidController();
-  core::float update(core::float setpoint, core::float measurement)
+  PidController(
 
-    private :
-      // Controller gains for tuning
-      const core::float kp_;
-  const core::float ki_;
-  const core::float kd_;
+    const core::Float kp,
+    const core::Float ki,
+    const core::Float kd,
+    const core::Float tau,
+    const core::Float minimum_output,
+    const core::Float maximum_output,
+    const core::Float minimum_integrator,
+    const core::Float maximum_integrator,
+    const core::Float sample_time);
+
+  core::Float update(core::Float setpoint, core::Float measurement);
+
+ private:
+  // Controller gains for tuning
+  const core::Float kp_;
+  const core::Float ki_;
+  const core::Float kd_;
 
   // Derivative low-pass filter time constant
-  const core::float tau_;
+  const core::Float tau_;
 
   // Output limits
-  const core::float minimum_output_;
-  const core::float maximum_output_;
+  const core::Float minimum_output_;
+  const core::Float maximum_output_;
 
   // Integrator limits
-  const core::float minimum_integrator_;
-  const core::float maximum_integrator_;
+  const core::Float minimum_integrator_;
+  const core::Float maximum_integrator_;
 
   /* Sample time (in seconds) */
-  const core::float sample_time_;
+  const core::Float sample_time_;
 
   /* Controller memory */
-  core::float integrator_;
-  core::float previous_error_; /* Required for integrator */
-  core::float differentiator_;
-  core::float previous_measurement_; /* Required for differentiator */
+  core::Float integrator_;
+  core::Float previous_error_; /* Required for integrator */
+  core::Float differentiator_;
+  core::Float previous_measurement_; /* Required for differentiator */
 };
 }  // namespace hyped::motors
