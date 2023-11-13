@@ -24,27 +24,21 @@ class KalmanFilter {
               const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance,
               const MeasurementVector &measurement);
 
-  const StateVector &getStateEstimate() const;
-  const ErrorCovarianceMatrix &getErrorCovariance() const;
+   inline const StateVector& getStateEstimate() const
+{
+  return state_estimate_;
+}
+
+   inline const ErrorCovarianceMatrix& getErrorCovariance() const
+{
+  return error_covariance_;
+}
 
   private:
    std::shared_ptr<core::ITimeSource> time_source_;
    core::TimePoint last_update_time_;
    StateVector state_estimate_;  
    ErrorCovarianceMatrix error_covariance_;  
-
-
-   inline const StateVector& KalmanFilter::getStateEstimate() const
-{
-  return state_estimate_;
-}
-
-   inline const ErrorCovarianceMatrix& KalmanFilter::getErrorCovariance() const
-{
-  return error_covariance_;
-}
-
-
 };
   
 }  // namespace hyped::navigation
