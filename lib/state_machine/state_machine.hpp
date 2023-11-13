@@ -53,7 +53,7 @@ class StateMachine {
        {State::kFailureBrake, "kFailureBrake"},
        {State::kFailure, "kFailure"},
        {State::kSafe, "kSafe"}};
-  const boost::unordered_map<SourceAndMessage, State, source_and_message_hash> transition_to_state_
+  const boost::unordered_map<SourceAndTarget, State, source_and_target_hash> transition_to_state_
     = {{{State::kIdle, State::kCalibrate}, State::kCalibrate},
        {{State::kIdle, State::kFailure}, State::kFailure},
        {{State::kCalibrate, State::kPrecharge}, State::kPrecharge},

@@ -7,22 +7,22 @@
 #include <boost/functional/hash/hash.hpp>
 
 namespace hyped::state_machine {
-struct SourceAndMessage {
+struct SourceAndTarget {
   State source;
-  State message;
+  State target;
 
-  bool operator==(const SourceAndMessage &key) const
+  bool operator==(const SourceAndTarget &key) const
   {
-    return key.source == source && key.message == message;
+    return key.source == source && key.target == target;
   }
 };
 
-struct source_and_message_hash {
-  std::size_t operator()(SourceAndMessage const &key) const
+struct source_and_target_hash {
+  std::size_t operator()(SourceAndTarget const &key) const
   {
     std::size_t seed = 0;
     boost::hash_combine(seed, key.source);
-    boost::hash_combine(seed, key.message);
+    boost::hash_combine(seed, key.target);
     return seed;
   }
 };
