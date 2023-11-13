@@ -20,6 +20,7 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
   mqtt_client->set_callback(*cb);
   mqtt_client->connect(connection_options);
   if (!mqtt_client->is_connected()) { return std::nullopt; }
+  logger.log(core::LogLevel::kInfo, "Successfully created MQTT client and connected to broker");
   return std::make_shared<Mqtt>(logger, std::move(mqtt_client), std::move(cb));
 }
 
@@ -69,17 +70,21 @@ core::Result Mqtt::subscribe(const core::MqttTopic topic)
 
 core::Result Mqtt::consume()
 {
-  mqtt::const_message_ptr received_msg;
-  auto received = client_->try_consume_message(&received_msg);
-  if (received) {
+  for (std::uint32_t i = 0; i < 100; i++) {
+    mqtt::const_message_ptr received_msg;
+    auto received = client_->try_consume_message(&received_msg);
+    if (!received) {
+      logger_.log(core::LogLevel::kDebug, "Consumed %i messages", i);
+      return core::Result::kSuccess;
+    }
     auto parsed_message = messagePtrToMessage(received_msg);
-    logger_.log(
-      core::LogLevel::kInfo, "Received message: %s", received_msg->get_payload_str().c_str());
+    if (!parsed_message) {
+      logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message");
+      return core::Result::kFailure;
+    }
     incoming_message_queue_.push(*parsed_message);
-    return core::Result::kSuccess;
   }
-  logger_.log(core::LogLevel::kInfo, "No message received");
-  return core::Result::kFailure;
+  return core::Result::kSuccess;
 }
 
 std::optional<MqttMessage> Mqtt::getMessage()
@@ -164,6 +169,6 @@ void MqttCallback::delivery_complete(mqtt::delivery_token_ptr token)
 
 void MqttCallback::message_arrived(mqtt::const_message_ptr msg)
 {
-  logger_.log(core::LogLevel::kInfo, "Message arrived");
+  logger_.log(core::LogLevel::kDebug, "Message arrived");
 }
 }  // namespace hyped::core
