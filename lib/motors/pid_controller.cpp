@@ -25,6 +25,7 @@ PidController::PidController(const core::Float kp,
       sample_time_(sample_time)
 {
 }
+
 core::Float PidController::update(core::Float setpoint, core::Float measurement)
 {
   const core::Float error        = setpoint - measurement;
