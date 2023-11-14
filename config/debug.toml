@@ -47,3 +47,6 @@ bus = "can1"
 [motors]
 enabled = false
 bus = "can1"
+
+[aliases]
+"example" = "help"

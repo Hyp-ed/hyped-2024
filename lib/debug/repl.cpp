@@ -76,6 +76,18 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       return std::nullopt;
     }
   }
+  const auto aliases = config["aliases"].as_table();
+  for (auto [alias, command] : *aliases) {
+    const std::string alias_alias     = static_cast<std::string>(alias.str());
+    const auto optional_alias_command = command.value<std::string>();
+    if (!optional_alias_command) {
+      logger.log(core::LogLevel::kFatal, "Error parsing alias command: %s", alias_alias.c_str());
+      return std::nullopt;
+    }
+    const std::string alias_command = *optional_alias_command;
+    const auto result               = repl->addAlias(alias_alias, alias_command);
+    if (result == core::Result::kFailure) { return std::nullopt; }
+  }
   return repl;
 }
 
@@ -105,14 +117,15 @@ void Repl::run()
       input += letter;
     } else if (key == debug::KeyPress::kEnter) {
       terminal_.cr();
-      // Print input
+      history_.push_back(input);
+      const auto alias = aliases_.find(input);
+      if (alias != aliases_.end()) { input = alias->second; }
       for (auto &command : commands_) {
         if (command->getName() == input) {
           command->execute();
           break;
         }
       }
-      history_.push_back(input);
       input = "";
       i     = 0;
     } else if (key == debug::KeyPress::kUp) {
@@ -158,6 +171,21 @@ void Repl::addCommand(std::unique_ptr<Command> command)
 {
   logger_.log(core::LogLevel::kDebug, "Adding command: %s", command->getName().c_str());
   commands_.push_back(std::move(command));
+}
+
+core::Result Repl::addAlias(const std::string &alias, const std::string &alias_command)
+{
+  logger_.log(
+    core::LogLevel::kDebug, "Adding alias: %s -> %s", alias.c_str(), alias_command.c_str());
+  for (auto &command : commands_) {
+    const auto command_name = command->getName();
+    if (command_name == alias_command) {
+      aliases_.emplace(alias, command_name);
+      return core::Result::kSuccess;
+    }
+  }
+  logger_.log(core::LogLevel::kFatal, "Alias command not found: %s", alias_command.c_str());
+  return core::Result::kFailure;
 }
 
 void Repl::printHelp()

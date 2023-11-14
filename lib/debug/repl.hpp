@@ -39,6 +39,8 @@ class Repl {
   void addHelpCommand();
   void addQuitCommand();
 
+  core::Result addAlias(const std::string &alias, const std::string &command);
+
   /**
    * @brief Get the Adc object associated with the given pin or create a new one if it
    * doesn't exist
@@ -117,6 +119,7 @@ class Repl {
   Terminal terminal_;
   std::vector<std::string> history_;
   std::vector<std::unique_ptr<Command>> commands_;
+  std::unordered_map<std::string, std::string> aliases_;
 
   std::unordered_map<std::uint8_t, std::shared_ptr<io::IAdc>> adc_;
   std::unordered_map<std::string, std::shared_ptr<io::ICan>> can_;
