@@ -24,15 +24,15 @@ PidController::PidController(
       maximum_output_(maximum_output),
       minimum_integrator_(minimum_integrator),
       maximum_integrator_(maximum_integrator),
-      sample_time_(sample_time){};
+      sample_time_(sample_time)
+{
+}
 
 core::Float PidController::update(core::Float setpoint, core::Float measurement)
 {
-  const core::Float error = setpoint - measurement;
-
+  const core::Float error        = setpoint - measurement;
   const core::Float proportional = kp_ * error;
-
-  integrator_ = integrator_ + 0.5f * ki_ * sample_time_ * (error + previous_error_);
+  integrator_ = integrator_ + 0.5 * ki_ * sample_time_ * (error + previous_error_);
 
   // Integrator anti wind-up (dynamic integrator clamping)
   if (integrator_ > maximum_integrator_) {
@@ -42,12 +42,10 @@ core::Float PidController::update(core::Float setpoint, core::Float measurement)
     integrator_ = minimum_integrator_;
   }
 
-  // Derivative term (optional) with low pass filter
-  differentiator_
-    // Derivative on measurement, hence minus sign in front of equation
-    = -(2.0f * kd_ * (measurement - previous_measurement_)
-        + (2.0f * tau_ - sample_time_) * differentiator_)
-      / (2.0f * tau_ + sample_time_);
+  // Derivative term (optional and on measurement, hence minus sign) with low pass filter
+  differentiator_ = -(2.0f * kd_ * (measurement - previous_measurement_)
+                      + (2.0f * tau_ - sample_time_) * differentiator_)
+                    / (2.0f * tau_ + sample_time_);
 
   // Store error and measurement for later use
   previous_error_       = error;
@@ -65,5 +63,5 @@ core::Float PidController::update(core::Float setpoint, core::Float measurement)
 
   // Return controller output
   return output;
-};
+}
 }  // namespace hyped::motors

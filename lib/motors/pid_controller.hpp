@@ -1,20 +1,17 @@
 #include "core/types.hpp"
 #pragma once
-
 namespace hyped::motors {
 class PidController {
  public:
-  PidController(
-
-    const core::Float kp,
-    const core::Float ki,
-    const core::Float kd,
-    const core::Float tau,
-    const core::Float minimum_output,
-    const core::Float maximum_output,
-    const core::Float minimum_integrator,
-    const core::Float maximum_integrator,
-    const core::Float sample_time);
+  PidController(const core::Float kp,
+                const core::Float ki,
+                const core::Float kd,
+                const core::Float tau,
+                const core::Float minimum_output,
+                const core::Float maximum_output,
+                const core::Float minimum_integrator,
+                const core::Float maximum_integrator,
+                const core::Float sample_time);
 
   core::Float update(core::Float setpoint, core::Float measurement);
 
@@ -35,7 +32,7 @@ class PidController {
   const core::Float minimum_integrator_;
   const core::Float maximum_integrator_;
 
-  /* Sample time (in seconds) */
+  // Sample time (in seconds)
   const core::Float sample_time_;
 
   /* Controller memory */
