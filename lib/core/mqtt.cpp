@@ -19,7 +19,10 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
   auto cb          = std::make_shared<MqttCallback>(logger);
   mqtt_client->set_callback(*cb);
   mqtt_client->connect(connection_options);
-  if (!mqtt_client->is_connected()) { return std::nullopt; }
+  if (!mqtt_client->is_connected()) {
+    logger.log(core::LogLevel::kFatal, "Failed to connect to MQTT broker");
+    return std::nullopt;
+  }
   logger.log(core::LogLevel::kInfo, "Successfully created MQTT client and connected to broker");
   return std::make_shared<Mqtt>(logger, std::move(mqtt_client), std::move(cb));
 }
@@ -52,19 +55,21 @@ core::Result Mqtt::subscribe(const core::MqttTopic topic)
   const auto topic_string = mqtt_topic_to_string.find(topic);
   if (topic_string == mqtt_topic_to_string.end()) {
     logger_.log(core::LogLevel::kFatal, "Attempted to subscribe to nonexistent MQTT topic");
-    return core::Result::kSuccess;
+    return core::Result::kFailure;
   }
   const auto result       = client_->subscribe(topic_string->second);
   const auto reason_codes = result.get_reason_codes();
   for (mqtt::ReasonCode code : reason_codes) {
     if (code != mqtt::ReasonCode::SUCCESS && code != mqtt::ReasonCode::GRANTED_QOS_0
         && code != mqtt::ReasonCode::GRANTED_QOS_1 && code != mqtt::ReasonCode::GRANTED_QOS_2) {
-      logger_.log(
-        core::LogLevel::kFatal, "Failed to subscribe to MQTT topic with error code %i", code);
+      logger_.log(core::LogLevel::kFatal,
+                  "Failed to subscribe to MQTT topic [%s] with error code: %i",
+                  topic_string->second.c_str(),
+                  code);
       return core::Result::kFailure;
     }
   }
-  logger_.log(core::LogLevel::kInfo, "Subscribed to topic");
+  logger_.log(core::LogLevel::kInfo, "Subscribed to topic: %s", topic_string->second.c_str());
   return core::Result::kSuccess;
 }
 
@@ -74,7 +79,7 @@ core::Result Mqtt::consume()
     mqtt::const_message_ptr received_msg;
     auto received = client_->try_consume_message(&received_msg);
     if (!received) {
-      logger_.log(core::LogLevel::kDebug, "Consumed %i messages", i);
+      logger_.log(core::LogLevel::kDebug, "Consumed %i message(s)", i);
       return core::Result::kSuccess;
     }
     auto parsed_message = messagePtrToMessage(received_msg);

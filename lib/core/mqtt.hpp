@@ -13,6 +13,7 @@
 
 namespace hyped::core {
 
+// all messages with a higher priority are processed before any lower priority message is processed
 enum MqttMessagePriority {
   kCritical = 0,
   kNormal   = 1,
@@ -56,17 +57,24 @@ class IMqtt {
    * @return core::Result
    */
   virtual void publish(const MqttMessage &message, const MqttMessageQos qos) = 0;
-  virtual core::Result subscribe(const core::MqttTopic topic)                = 0;
   /**
-   * @brief Pulls all pending MQTT messages into internal queue
+   * @brief Subscribes to a topic
+   *
+   * @param topic
+   * @return core::Result
+   */
+  virtual core::Result subscribe(const core::MqttTopic topic) = 0;
+  /**
+   * @brief Pulls next 100 MQTT messages into internal queue
    *
    * @returns kFailure if any message received is invalid, kSuccess otherwise
    */
   virtual core::Result consume() = 0;
   /**
+   * @brief Returns the next message to be processed
+   *
    * @returns next message to be processed, sorted by priority then delivery time. i.e. The highest
    * priority message is always selected, then the oldest in that priority is returned
-   *
    */
   virtual std::optional<MqttMessage> getMessage() = 0;
 };
