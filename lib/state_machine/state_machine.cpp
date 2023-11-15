@@ -8,19 +8,29 @@ StateMachine::StateMachine() : current_state_{State::kIdle}
 {
 }
 
-Message StateMachine::stringToMessage(const std::string &message_name)
+State StateMachine::stringToState(const std::string &state_name)
 {
-  return string_to_message_.at(message_name);
+  return string_to_state_.at(state_name);
 }
 
-std::string StateMachine::messageToString(const Message &message)
+std::string StateMachine::stateToString(const State &state)
 {
-  return message_to_string_.at(message);
+  return state_to_string_.at(state);
 }
 
 State StateMachine::getCurrentState()
 {
   return current_state_;
+}
+
+core::Result StateMachine::handleTransition(const State &state)
+{
+  const auto next_state = transition_to_state_.find({current_state_, state});
+  if (next_state != transition_to_state_.end()) {
+    current_state_ = next_state->second;
+    return core::Result::kSuccess;
+  }
+  return core::Result::kFailure;
 }
 
 }  // namespace hyped::state_machine
