@@ -10,10 +10,10 @@ PidController::PidController(const core::Float kp,
                              const core::Float minimum_integrator,
                              const core::Float maximum_integrator,
                              const core::Float sample_time)
-    : integrator_{0},
-      previous_error_{0},
-      differentiator_{0},
-      previous_measurement_{0},
+    : integrator_(0),
+      previous_error_(0),
+      differentiator_(0),
+      previous_measurement_(0),
       kp_(kp),
       ki_(ki),
       kd_(kd),
@@ -38,9 +38,9 @@ core::Float PidController::update(core::Float setpoint, core::Float measurement)
     integrator_ = minimum_integrator_;
   }
   // Derivative term (optional and on measurement, hence minus sign) with low pass filter
-  differentiator_ = -(2.0f * kd_ * (measurement - previous_measurement_)
-                      + (2.0f * tau_ - sample_time_) * differentiator_)
-                    / (2.0f * tau_ + sample_time_);
+  differentiator_ = -(2.0 * kd_ * (measurement - previous_measurement_)
+                      + (2.0 * tau_ - sample_time_) * differentiator_)
+                    / (2.0 * tau_ + sample_time_);
   previous_error_       = error;
   previous_measurement_ = measurement;
   core::Float output    = proportional + integrator_ + differentiator_;
