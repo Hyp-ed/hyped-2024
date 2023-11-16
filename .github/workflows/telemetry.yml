@@ -17,16 +17,15 @@ jobs:
 
       - uses: pnpm/action-setup@v2
         with:
-          version: 8
+          version: 8.6.12
 
       - uses: actions/setup-node@v3
         with:
-          node-version: '18.14.0'
+          node-version: '18.17.0'
           cache: 'pnpm'
-          cache-dependency-path: 'telemetry/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Build
         run: pnpm build
