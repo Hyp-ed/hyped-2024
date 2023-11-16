@@ -13,6 +13,7 @@ class Keyence {
   static std::optional<Keyence> create(core::ILogger &logger,
                                        std::shared_ptr<io::IGpio> gpio,
                                        const std::uint8_t new_pin);
+  
   ~Keyence();
 
   std::uint8_t getStripeCount();

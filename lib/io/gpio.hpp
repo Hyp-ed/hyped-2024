@@ -39,9 +39,11 @@ class IGpioWriter {
 class IGpio {
  public:
   virtual std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin,
-                                                                const Edge edge) = 0;
+                                                                const Edge edge)
+    = 0;
   virtual std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin,
-                                                                const Edge edge) = 0;
+                                                                const Edge edge)
+    = 0;
 };
 
 }  // namespace hyped::io

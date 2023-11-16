@@ -47,7 +47,7 @@ class HardwareGpioWriter : public IGpioWriter {
  * be instantiated at the top level and then provided to users through the IGpio interface.
  * Ensure inputted pins are defined as pin = 32*X + Y (GPIOX_Y)
  */
-class HardwareGpio : public IGpio {
+class HardwareGpio {
  public:
   HardwareGpio(core::ILogger &logger);
 
