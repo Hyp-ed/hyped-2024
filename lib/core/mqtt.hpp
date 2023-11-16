@@ -111,7 +111,6 @@ class Mqtt : public IMqtt {
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;
   std::priority_queue<MqttMessage> incoming_message_queue_;
-  std::uint32_t messages_in_queue;
   mqtt::callback_ptr cb;
 };
 

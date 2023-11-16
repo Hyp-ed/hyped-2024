@@ -30,7 +30,6 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
 Mqtt::Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client, mqtt::callback_ptr cb)
     : logger_(logger),
       client_(std::move(client)),
-      messages_in_queue(0),
       cb(std::move(cb))
 {
 }
@@ -115,13 +114,23 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
   rapidjson::StringBuffer buffer;
   auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
   payload.Accept(writer);
-  return mqtt::make_message(mqtt_topic_to_string[message.topic], buffer.GetString());
+  const auto topic_string = mqtt_topic_to_string.find(message.topic);
+  if (topic_string == mqtt_topic_to_string.end()) {
+    logger_.log(core::LogLevel::kFatal, "Attempted to publish to nonexistent MQTT topic");
+    return nullptr;
+  }
+  return mqtt::make_message(topic_string->second, buffer.GetString());
 }
 
 std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt::message> message)
 {
-  const auto topic            = message->get_topic();
-  const auto mqtt_topic       = mqtt_string_to_topic[topic];
+  const auto topic      = message->get_topic();
+  const auto mqtt_topic = mqtt_string_to_topic.find(topic);
+  if (mqtt_topic == mqtt_string_to_topic.end()) {
+    logger_.log(
+      core::LogLevel::kFatal, "Received message on nonexistent MQTT topic: %s", topic.c_str());
+    return std::nullopt;
+  }
   const auto message_contents = message->get_payload().c_str();
   rapidjson::Document message_contents_json;
   message_contents_json.Parse(message_contents);
@@ -153,7 +162,7 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
   std::shared_ptr mqtt_payload      = std::make_shared<rapidjson::Document>();
   mqtt_payload->CopyFrom(message_contents_json["payload"], mqtt_payload->GetAllocator());
   MqttMessage::Header mqtt_header{timestamp, mqtt_priority};
-  return MqttMessage{mqtt_topic, mqtt_header, mqtt_payload};
+  return MqttMessage{mqtt_topic->second, mqtt_header, mqtt_payload};
 }
 
 MqttCallback::MqttCallback(ILogger &logger) : logger_(logger)
