@@ -3,7 +3,8 @@ name: Telemetry Build
 on:
   push:
     paths:
-      - "telemetry/**"
+      - 'telemetry/**'
+      - '.github/workflows/telemetry.yml'
 
 jobs:
   telemetry-build:
@@ -16,12 +17,12 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: "18.14.0"
-          cache: "yarn"
-          cache-dependency-path: "telemetry/yarn.lock"
+          node-version: '18.14.0'
+          cache: 'pnpm'
+          cache-dependency-path: 'telemetry/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: yarn install
+        run: pnpm install
 
       - name: Build
-        run: yarn build
+        run: pnpm build
