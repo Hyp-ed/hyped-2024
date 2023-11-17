@@ -9,6 +9,7 @@
 #include <core/types.hpp>
 
 namespace hyped::debug {
+
 class Command {
  public:
   Command(const std::string &name,
@@ -28,4 +29,5 @@ class Command {
   const std::string description_;
   const std::function<void()> handler_;
 };
+
 }  // namespace hyped::debug

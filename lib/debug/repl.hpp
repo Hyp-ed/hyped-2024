@@ -129,4 +129,5 @@ class Repl {
   std::unordered_map<io::SpiBus, std::shared_ptr<io::ISpi>> spi_;
   std::unordered_map<io::UartBus, std::shared_ptr<io::IUart>> uart_;
 };
+
 }  // namespace hyped::debug

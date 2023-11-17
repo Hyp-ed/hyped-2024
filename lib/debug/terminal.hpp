@@ -116,4 +116,5 @@ class Terminal {
  private:
   WINDOW *window_;
 };
+
 }  // namespace hyped::debug

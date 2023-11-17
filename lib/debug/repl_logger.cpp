@@ -63,4 +63,5 @@ void ReplLogger::log(const core::LogLevel level, const char *format, ...)
     terminal_.println(buffer);
   }
 }
+
 }  // namespace hyped::debug

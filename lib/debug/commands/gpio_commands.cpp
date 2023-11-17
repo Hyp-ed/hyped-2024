@@ -1,6 +1,7 @@
 #include "gpio_commands.hpp"
 
 namespace hyped::debug {
+
 core::Result GpioCommands::addCommands(core::ILogger &logger,
                                        std::shared_ptr<Repl> repl,
                                        toml::v3::node_view<toml::v3::node> config)
@@ -88,4 +89,5 @@ core::Result GpioCommands::addCommands(core::ILogger &logger,
   }
   return core::Result::kSuccess;
 }
+
 }  // namespace hyped::debug

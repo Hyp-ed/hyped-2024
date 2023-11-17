@@ -1,6 +1,7 @@
 #include "spi_commands.hpp"
 
 namespace hyped::debug {
+
 core::Result SpiCommands::addCommands(core::ILogger &logger,
                                       std::shared_ptr<Repl> repl,
                                       toml::v3::node_view<toml::v3::node> config)
