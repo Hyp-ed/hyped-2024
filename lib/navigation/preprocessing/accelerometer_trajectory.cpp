@@ -33,14 +33,6 @@ void AccelerometerTrajectoryEstimator::update(const core::Float acceleration,
   previous_timestamp_ = timestamp;
 }
 
-core::Float AccelerometerTrajectoryEstimator::getDisplacementEstimate() const
-{
-  return displacement_estimate_;
-}
 
-core::Float AccelerometerTrajectoryEstimator::getVelocityEstimate() const
-{
-  return velocity_estimate_;
-}
 
 }  // namespace hyped::navigation

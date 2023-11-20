@@ -24,8 +24,15 @@ class KalmanFilter {
               const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance,
               const MeasurementVector &measurement);
 
-  const StateVector &getStateEstimate() const;
-  const ErrorCovarianceMatrix &getErrorCovariance() const;
+   inline const StateVector& getStateEstimate() const
+{
+  return state_estimate_;
+}
+
+   inline const ErrorCovarianceMatrix& getErrorCovariance() const
+{
+  return error_covariance_;
+}
 
   private:
    std::shared_ptr<core::ITimeSource> time_source_;
