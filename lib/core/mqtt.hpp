@@ -111,6 +111,7 @@ class Mqtt : public IMqtt {
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;
   std::priority_queue<MqttMessage> incoming_message_queue_;
+  // callback_ptr is here to ensure that the callback object is not destroyed
   mqtt::callback_ptr cb;
 };
 

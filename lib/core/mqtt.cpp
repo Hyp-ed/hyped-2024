@@ -103,13 +103,13 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
 {
   rapidjson::Document payload;
   payload.SetObject();
-  rapidjson::Value header;
+  rapidjson::Document header;
   header.SetObject();
-  header.AddMember("priority", message.header.priority, payload.GetAllocator());
-  header.AddMember("timestamp", message.header.timestamp, payload.GetAllocator());
+  header.AddMember("priority", message.header.priority, header.GetAllocator());
+  header.AddMember("timestamp", message.header.timestamp, header.GetAllocator());
   payload.AddMember("header", header, payload.GetAllocator());
-  rapidjson::Value payload_json;
-  payload_json.CopyFrom(*message.payload, payload.GetAllocator());
+  rapidjson::Document payload_json;
+  payload_json.CopyFrom(*message.payload, payload_json.GetAllocator());
   payload.AddMember("payload", payload_json, payload.GetAllocator());
   rapidjson::StringBuffer buffer;
   auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
