@@ -21,9 +21,9 @@ void KalmanFilter::filter(const StateTransitionMatrix &transition_matrix,
                           const MeasurementVector &measurement)
 {
   // TODOLater: figure out how to make transition matrix given time delta - in main nav section
-  const auto prop_state_estimate = transition_matrix * state_estimate_;
-  const auto innovation_covariance
-    = prop_error_covariance * measurement_matrix.transpose() const auto prop_error_covariance
+  const auto prop_state_estimate   = transition_matrix * state_estimate_;
+  const auto innovation_covariance = prop_error_covariance * measurement_matrix.transpose();
+  const auto prop_error_covariance
     = (transition_matrix.transpose() * error_covariance_ * transition_matrix)
       + transition_covariance;
   // TODOLater: Some optimisation is to be found here:
