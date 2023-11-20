@@ -27,14 +27,13 @@ void ExtendedKalmanFilter::filter(
   // TODOLater: add noise to propogation step
   const auto prop_state_estimate
     = transition_matrix * state_estimate_ + jacobian_matrix * extended_state_vector;
-  const auto prop_error_covariance
+  const auto innovation_covariance
+    = prop_error_covariance * measurement_matrix.transpose() const auto prop_error_covariance
     = (transition_matrix.transpose() * error_covariance_ * transition_matrix)
       + transition_covariance;
   const auto kalman_gain
-    = prop_error_covariance * measurement_matrix.transpose()
-      * (measurement_matrix * prop_error_covariance * measurement_matrix.transpose()
-         + measurement_noise_covariance)
-          .inverse();
+    = innovation_covariance
+      * (measurement_matrix * innovation_covariance + measurement_noise_covariance).inverse();
   state_estimate_
     = prop_state_estimate + kalman_gain * (measurement - measurement_matrix * prop_state_estimate);
 }
