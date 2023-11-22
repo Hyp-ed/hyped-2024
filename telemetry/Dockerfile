@@ -18,7 +18,6 @@ EXPOSE 5173
 EXPOSE 3000
 
 # Entrypoint
-COPY entry.sh /usr/src/app/entry.sh
-RUN chmod +x /usr/src/app/entry.sh
+COPY entry.sh ./
 
 ENTRYPOINT [ "/usr/src/app/entry.sh" ]
