@@ -8,26 +8,14 @@ StateMachine::StateMachine() : current_state_{State::kIdle}
 {
 }
 
-// Transition to next state
-bool StateMachine::handleMessage(const Message &message)
+State StateMachine::stringToState(const std::string &state_name)
 {
-  previous_message_.push(message);
-  const auto transition = transition_to_state_.find({current_state_, message});
-  if (transition != transition_to_state_.end()) {
-    current_state_ = transition->second;
-    return true;
-  }
-  return false;
+  return string_to_state_.at(state_name);
 }
 
-Message StateMachine::stringToMessage(const std::string &message_name)
+std::string StateMachine::stateToString(const State &state)
 {
-  return string_to_message_.at(message_name);
-}
-
-std::string StateMachine::messageToString(const Message &message)
-{
-  return message_to_string_.at(message);
+  return state_to_string_.at(state);
 }
 
 State StateMachine::getCurrentState()
@@ -35,15 +23,14 @@ State StateMachine::getCurrentState()
   return current_state_;
 }
 
-Message StateMachine::getPreviousMessage()
+core::Result StateMachine::handleTransition(const State &state)
 {
-  if (previous_message_.empty()) {
-    return Message::kNone;
-  } else {
-    Message previous_message = previous_message_.front();
-    previous_message_.pop();
-    return previous_message;
+  const auto next_state = transition_to_state_.find({current_state_, state});
+  if (next_state != transition_to_state_.end()) {
+    current_state_ = next_state->second;
+    return core::Result::kSuccess;
   }
+  return core::Result::kFailure;
 }
 
 }  // namespace hyped::state_machine
