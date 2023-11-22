@@ -9,6 +9,9 @@ export default defineConfig(({ command, mode }) => {
   return {
     server: {
       host: process.env.HOST || 'localhost',
+      watch: {
+        usePolling: true,
+      },
     },
     build: {
       rollupOptions: {
