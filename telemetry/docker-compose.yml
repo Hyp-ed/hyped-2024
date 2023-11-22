@@ -7,6 +7,8 @@ services:
     ports:
       - 5173:5173
       - 3000:3000
+    environment:
+      - YARN_SCRIPT
   influxdb:
     container_name: influxdb
     image: influxdb:2.7

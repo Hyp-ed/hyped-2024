@@ -27,5 +27,5 @@ RUN yarn build
 EXPOSE 5173
 EXPOSE 3000
 
-# Start app
-CMD [ "yarn", "dev" ]
+# Run the yarn script specified in the YARN_SCRIPT environment variable
+CMD ["sh", "-c", "yarn \"$YARN_SCRIPT\""]
