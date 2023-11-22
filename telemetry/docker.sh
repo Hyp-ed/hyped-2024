@@ -9,4 +9,10 @@ export YARN_SCRIPT=$1
 
 echo "Running with yarn script: $YARN_SCRIPT"
 
-docker-compose up --build
+if [ "$2" == "--build" ]; then
+  echo "Building docker image"
+  docker-compose up --build
+else
+  echo "Using cached docker image"
+  docker-compose up
+fi
