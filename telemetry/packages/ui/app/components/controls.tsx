@@ -1,23 +1,25 @@
-import { Logo, ConnectionStatus, PodState } from '.';
-import { PodControls } from './pod-controls';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from './ui/select';
-import { useEffect, useState } from 'react';
-import { PodDisconnectError } from './pod-disconnect-error';
-import { Latency } from './latency';
-import { POD_IDS } from '@hyped/telemetry-constants';
-import { usePod } from '../context/pods';
-import toast from 'react-hot-toast';
+import { COMPONENTS } from '@/components';
 import { log } from '@/lib/logger';
+import { cn } from '@/lib/utils';
+import { POD_IDS } from '@hyped/telemetry-constants';
+import { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
+import { usePod } from '../context/pods';
+import { Latency } from './latency';
+import { PodControls } from './pod-controls';
+import { PodDisconnectError } from './pod-disconnect-error';
+import { PodConnectionStatus } from './connection-status';
+import { Logo } from './logo';
 
 const DEFAULT_POD = POD_IDS[0];
 
-export const ControlsUI = () => {
+export const ControlsUI = ({
+  selectedComponent,
+  setSelectedComponent,
+}: {
+  selectedComponent: number;
+  setSelectedComponent: React.Dispatch<React.SetStateAction<number>>;
+}) => {
   const [currentPod, setCurrentPod] = useState<string>(DEFAULT_POD);
   const { connectionStatus } = usePod(currentPod);
   const { podState } = usePod(currentPod);
@@ -34,14 +36,12 @@ export const ControlsUI = () => {
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">
           <p className="font-bold text-xl">Connection</p>
-          <ConnectionStatus podId={currentPod} />
+          <PodConnectionStatus podId={currentPod} />
           <PodDisconnectError status={connectionStatus} podId={currentPod} />
           <Latency podId={currentPod} />
         </div>
-        <PodState state={podState} />
         <div className="flex flex-col justify-start">
           <p className="font-bold text-xl">Controls</p>
-          {/* <h1 className="text-4xl font-title font-black mt-2">Controls</h1> */}
           {POD_IDS.map((podId) => (
             <PodControls
               key={podId}
@@ -49,6 +49,23 @@ export const ControlsUI = () => {
               show={currentPod === podId}
             />
           ))}
+        </div>
+        <div>
+          <p className="font-bold text-xl">View</p>
+          <div className="h-full py-2 flex flex-col justify-start gap-2">
+            {COMPONENTS.map((component, index) => (
+              <button
+                className={cn(
+                  'flex items-start justify-start rounded-md px-3 py-2 gap-2',
+                  index === selectedComponent ? 'bg-openmct-dark-gray' : '',
+                  'hover:ring-1 hover:ring-openmct-light-gray transition',
+                )}
+                onClick={() => setSelectedComponent(index)}
+              >
+                {component.icon} {component.name}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
       <Logo />

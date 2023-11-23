@@ -1,10 +1,17 @@
 import { useState, useEffect, createContext, useContext } from 'react';
 import { socket } from '../lib/socket';
 
+export const LOG_LEVELS = {
+  INFO: 'info',
+  WARN: 'warn',
+  ERROR: 'error',
+  DEBUG: 'debug',
+} as const;
+
 export type Log = {
   context: string;
   stack?: any;
-  level: 'info' | 'warn' | 'error' | 'debug';
+  level: (typeof LOG_LEVELS)[keyof typeof LOG_LEVELS];
   message: string;
   timestamp: string;
 };
