@@ -1,16 +1,16 @@
 import { pods } from '@hyped/telemetry-constants';
 import { Point } from '@influxdata/influxdb-client';
 import { Injectable, LoggerService } from '@nestjs/common';
-import { InfluxService } from '../influx/Influx.service';
-import { Logger } from '../logger/Logger.decorator';
-import { RealtimeTelemetryDataGateway } from '../openmct/data/realtime/RealtimeTelemetryData.gateway';
+import { InfluxService } from '@/modules/influx/Influx.service';
+import { Logger } from '@/modules/logger/Logger.decorator';
+import { RealtimeTelemetryDataGateway } from '@/modules/openmct/data/realtime/RealtimeTelemetryData.gateway';
 import {
   MeasurementReading,
   MeasurementReadingSchema,
 } from './MeasurementReading.types';
 import { MeasurementReadingValidationError } from './errors/MeasurementReadingValidationError';
 import { doesMeasurementBreachLimits } from './utils/doesMeasurementBreachLimits';
-import { FaultService } from '../openmct/faults/Fault.service';
+import { FaultService } from '@/modules/openmct/faults/Fault.service';
 
 @Injectable()
 export class MeasurementService {
@@ -31,25 +31,28 @@ export class MeasurementService {
     }
 
     const { measurement, reading } = validatedMeasurement;
-    const { podId, measurementKey, value, timestamp } = reading
+    const { podId, measurementKey, value, timestamp } = reading;
 
     // First, get the data to the client ASAP
     this.realtimeDataGateway.sendMeasurementReading({
       podId,
       measurementKey,
       value,
-      timestamp
+      timestamp,
     });
 
     // Then check if it breaches limits
     if (measurement.format === 'float' || measurement.format === 'integer') {
       const breachLevel = doesMeasurementBreachLimits(measurement, reading);
       if (breachLevel) {
-        this.logger.debug(`Measurement breached limits {${props.podId}/${props.measurementKey}}: ${breachLevel} with value ${props.value}`)
+        this.logger.debug(
+          `Measurement breached limits {${props.podId}/${props.measurementKey}}: ${breachLevel} with value ${props.value}`,
+          MeasurementService.name,
+        );
         await this.faultService.addLimitBreachFault({
           level: breachLevel,
           measurement,
-          tripReading: reading
+          tripReading: reading,
         });
       }
     }
@@ -80,33 +83,16 @@ export class MeasurementService {
 
   private validateMeasurementReading(props: MeasurementReading) {
     const result = MeasurementReadingSchema.safeParse(props);
+
     if (!result.success) {
       throw new MeasurementReadingValidationError(result.error.message);
     }
 
-    const { podId, measurementKey, value } = result.data;
-
-    const pod = pods[podId];
-    if (!pod) {
-      throw new MeasurementReadingValidationError('Pod not found');
-    }
-
-    const measurement = pods[podId]['measurements'][measurementKey];
-    if (!measurement) {
-      throw new MeasurementReadingValidationError('Measurement not found');
-    }
-
-    if (measurement.format === 'enum') {
-      const enumValue = measurement.enumerations.find((e) => e.value === value);
-
-      if (!enumValue) {
-        throw new MeasurementReadingValidationError('Invalid enum value');
-      }
-    }
+    const { podId, measurementKey } = result.data;
 
     return {
       reading: result.data,
-      measurement,
+      measurement: pods[podId]['measurements'][measurementKey],
     };
   }
 }

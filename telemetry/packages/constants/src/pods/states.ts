@@ -29,3 +29,20 @@ export const ALL_POD_STATES = {
   ...ACTIVE_STATES,
   ...NULL_STATES,
 };
+
+export const ALL_POD_STATE_TYPES = [
+  'FAILURE',
+  'PASSIVE',
+  'ACTIVE',
+  'NULL',
+] as const;
+
+export const getStateType = (
+  state: string,
+): (typeof ALL_POD_STATE_TYPES)[number] => {
+  if (FAILURE_STATES[state as keyof typeof FAILURE_STATES]) return 'FAILURE';
+  if (PASSIVE_STATES[state as keyof typeof PASSIVE_STATES]) return 'PASSIVE';
+  if (ACTIVE_STATES[state as keyof typeof ACTIVE_STATES]) return 'ACTIVE';
+  if (NULL_STATES[state as keyof typeof NULL_STATES]) return 'NULL';
+  throw new Error(`Unknown state: ${state}`);
+};
