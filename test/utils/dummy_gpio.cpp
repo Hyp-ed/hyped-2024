@@ -15,10 +15,11 @@ TEST(DummyGpio, construct)
 
 void testRead(utils::DummyGpio &dummy_gpio,
               const std::uint8_t pin,
+              const io::Edge edge,
               const std::string expected_output)
 {
   testing::internal::CaptureStdout();
-  auto dummy_gpio_reader_opt = dummy_gpio.getReader(pin);
+  auto dummy_gpio_reader_opt = dummy_gpio.getReader(pin, edge);
   ASSERT_TRUE(dummy_gpio_reader_opt);
   auto dummy_gpio_reader = *dummy_gpio_reader_opt;
   ASSERT_TRUE(dummy_gpio_reader);
@@ -29,11 +30,12 @@ void testRead(utils::DummyGpio &dummy_gpio,
 
 void testWrite(utils::DummyGpio &dummy_gpio,
                const std::uint8_t pin,
+               const io::Edge edge,
                const core::DigitalSignal state,
                const std::string expected_output)
 {
   testing::internal::CaptureStdout();
-  auto dummy_gpio_writer_opt = dummy_gpio.getWriter(pin);
+  auto dummy_gpio_writer_opt = dummy_gpio.getWriter(pin, edge);
   ASSERT_TRUE(dummy_gpio_writer_opt);
   auto dummy_gpio_writer = *dummy_gpio_writer_opt;
   ASSERT_TRUE(dummy_gpio_writer);
