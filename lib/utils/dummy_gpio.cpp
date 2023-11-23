@@ -38,7 +38,7 @@ std::optional<std::shared_ptr<io::IGpioReader>> DummyGpio::getReader(const std::
   return std::make_shared<DummyGpioReader>(DummyGpioReader(pin, read_handler_));
 }
 
-std::optional<std::shared_ptr<io::IGpioWriter>> DummyGpio::getWriter(const std::uint8_t pin, 
+std::optional<std::shared_ptr<io::IGpioWriter>> DummyGpio::getWriter(const std::uint8_t pin,
                                                                      const io::Edge edge)
 {
   return std::make_shared<DummyGpioWriter>(DummyGpioWriter(pin, write_handler_));
