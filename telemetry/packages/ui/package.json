@@ -45,6 +45,7 @@
     "turbo": "^1.7.0",
     "typescript": "^5.1.6",
     "victormono": "^1.5.4",
+    "vite-plugin-react": "^4.0.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
