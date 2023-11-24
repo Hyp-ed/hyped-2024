@@ -13,7 +13,7 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
 {
   std::string address = "tcp://" + host + ":" + std::to_string(port);
   mqtt::connect_options connection_options;
-  connection_options.set_keep_alive_interval(1);
+  connection_options.set_keep_alive_interval(kKeepAliveInterval);
   connection_options.set_clean_session(true);
   auto mqtt_client = std::make_unique<mqtt::client>(address, id);
   auto cb          = std::make_shared<MqttCallback>(logger);

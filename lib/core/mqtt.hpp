@@ -91,6 +91,7 @@ class Mqtt : public IMqtt {
   core::Result subscribe(const core::MqttTopic topic);
   core::Result consume();
   std::optional<MqttMessage> getMessage();
+  static constexpr std::uint8_t kKeepAliveInterval = 1;
 
  private:
   /**
