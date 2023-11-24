@@ -6,7 +6,7 @@ std::optional<Keyence> Keyence::create(core::ILogger &logger,
                                        std::shared_ptr<io::IGpio> gpio,
                                        const std::uint8_t new_pin)
 {
-  const auto reader = gpio->getReader(new_pin);
+  const auto reader = gpio->getReader(new_pin, io::Edge::kNone);
   if (!reader) {
     logger.log(core::LogLevel::kFatal, "Failed to create Keyence instance");
     return std::nullopt;
