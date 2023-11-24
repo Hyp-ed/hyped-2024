@@ -416,9 +416,74 @@ export const pods: Pods = {
       },
 
       // ************************************ LEVITATION ************************************ //
-      levitation_height: {
-        name: 'Levitation Height',
-        key: 'levitation_height',
+      levitation_height_1: {
+        name: 'Levitation Height 1',
+        key: 'levitation_height_1',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+      },
+      levitation_height_2: {
+        name: 'Levitation Height 2',
+        key: 'levitation_height_2',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+      },
+      levitation_height_3: {
+        name: 'Levitation Height 3',
+        key: 'levitation_height_3',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+      },
+      levitation_height_4: {
+        name: 'Levitation Height 4',
+        key: 'levitation_height_4',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+      },
+      levitation_height_lateral_1: {
+        name: 'Levitation Height Lateral 1',
+        key: 'levitation_height_lateral_1',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+      },
+      levitation_height_lateral_2: {
+        name: 'Levitation Height 2',
+        key: 'levitation_height_lateral_2',
         format: 'float',
         type: 'levitation',
         unit: 'mm',
