@@ -27,16 +27,16 @@ export default function PreLoader(): JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       setProcessing(false);
-    }, 1500);
+    }, 0);
     setTimeout(() => {
       setProcessed(false);
-    }, 3000);
+    }, 0);
   }, []);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 5000);
+    }, 0);
   }, []);
 
   return (

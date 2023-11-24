@@ -1,23 +1,28 @@
-import { Card, Title, Text, Grid } from '@tremor/react';
+import { Card, Title, Text, Grid, Badge } from '@tremor/react';
 import { VelocityGraph } from './velocity-graph';
 
 import { TrackerExample } from './tracker';
 import { useState } from 'react';
 import { MeasurementChart } from './measurementsGraph';
 import { DisplacementChart } from './DisplacementChart';
-import LevitationBar from './levitationBar';
+
 import Image from 'next/image';
 import { useEffect } from 'react';
+import { DigitalTimer } from './timer';
+import Switch from 'react-switch';
+import LevitationHeight from './levitationHeight';
+import { SocialIcons } from './socialIcons';
 
 const CARDS = {
   VELOCITY: <VelocityGraph />,
   ACCELERATION: <DisplacementChart />,
-  LEVITATION: <LevitationBar />,
+  LEVITATION: <LevitationHeight />,
+  // TIMER: <DigitalTimer />,
 };
 
 type Card = keyof typeof CARDS;
 
-const ColorInverter = () => {
+export const ColorInverter = () => {
   if (localStorage.getItem('color-theme')) {
     if (localStorage.getItem('color-theme') === 'light') {
       localStorage.setItem('color-theme', 'dark');
@@ -34,43 +39,84 @@ const ColorInverter = () => {
   }
 };
 
-const refreshStorage = () => {
-  localStorage.clear;
-};
-window.onload = refreshStorage;
+// const refreshStorage = () => {
+//   localStorage.clear;
+// };
+// window.onload = refreshStorage;
 export default function GridDsiplay() {
   const [selected, setSelected] = useState<Card>('VELOCITY');
+  const [clicked, setClicked] = useState(false);
+
+  const switched = () => {
+    ColorInverter();
+    !clicked && localStorage.getItem('color-theme') === 'dark'
+      ? setClicked(true)
+      : setClicked(false);
+  };
 
   return (
     <main className="w-[360px] md:w-[720px] lg:w-[1000px] mx-auto py-12">
-      <div className="heading p-2">
-        <div>
-          <Image
-            alt="Hyped logo"
-            src="/hyped.svg"
-            width="50"
-            height="50"
-            className="mt-2"
-          />
-        </div>
-        <div>
+      <div className="nav p-2 mb-3">
+        <div className="heading  p-2">
           {' '}
-          <Title>Dashboard</Title>
-          <Text>Lorem ipsum dolor sit amet, consetetur sadipscing elitr.</Text>
-          <button onClick={ColorInverter} className="dark:text-white">
+          <div>
+            {/* <Image
+              alt="Hyped logo"
+              src="/new.svg"
+              width="50"
+              height="50"
+              className="mt-2"
+            /> */}
+
+            <Image
+              alt="Hyped logo"
+              src={
+                clicked === false ? '/hypedLogoLight.png' : '/hypedLogoDark.png'
+              }
+              width="200"
+              height="50"
+              className="mt-2 logo-hyped1 "
+            />
+          </div>
+          <div></div>
+          <div className="dashboard-title mt-2">
             {' '}
-            MODE
-          </button>
+            <Title>Dashboard</Title>
+            <Text>
+              Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
+            </Text>
+          </div>
+        </div>
+        <div className="pt-[60px] flex flex-row-reverse gap-5 switch">
+          <Switch
+            onChange={switched}
+            checked={clicked}
+            offColor="#808080"
+            onColor="#c91c10"
+            onHandleColor="#FFFFFF"
+            offHandleColor="#FFFFF"
+            uncheckedIcon={false}
+            checkedIcon={false}
+            boxShadow="#c91c10"
+            activeBoxShadow="#c91c10"
+          />
+          {clicked === false ? (
+            <Badge size="xl">Light</Badge>
+          ) : (
+            <Badge size="xl" color="red">
+              Dark
+            </Badge>
+          )}
         </div>
       </div>
-
+      <DigitalTimer />
       <div className="mt-5 top-card"> {CARDS[selected]}</div>
       {/* KPI section */}
       <div className="top-card">
         <Grid numItemsMd={2} className="mt-6 gap-6 w-full">
           {(Object.keys(CARDS) as Card[])
-            .filter(c => c !== selected)
-            .map(c => (
+            .filter((c) => c !== selected)
+            .map((c) => (
               <button key={c} onClick={() => setSelected(c)}>
                 {/* <Card> */}
                 {/* Placeholder to set height */}
@@ -81,6 +127,15 @@ export default function GridDsiplay() {
             ))}
         </Grid>
       </div>
+
+      <Image
+        alt="Hyped logo"
+        src={clicked === false ? '/hypedLogoLight.png' : '/hypedLogoDark.png'}
+        width="150"
+        height="50"
+        className="mt-5"
+      />
+      <SocialIcons />
     </main>
   );
 }

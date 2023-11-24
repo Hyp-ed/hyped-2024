@@ -13,7 +13,7 @@ export const DisplacementChart = () => {
     async () =>
       (await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/displacement?start=0`,
-      ).then(res => res.json())) as {
+      ).then((res) => res.json())) as {
         id: 'displacement';
         timestamp: string;
         value: number;
@@ -23,8 +23,8 @@ export const DisplacementChart = () => {
     },
   );
 
-  const displacementData = data
-    ? data.map(d => {
+  const displacementData = Array.isArray(data)
+    ? data.map((d) => {
         const time = new Date(d.timestamp);
         return {
           time: format(time, 'HH:mm:ss'),
@@ -35,7 +35,11 @@ export const DisplacementChart = () => {
 
   //if (isLoading) return <div>Currently loading acceleration...</div>;
   return (
-    <Card className="dark:bg-black">
+    <Card
+      //  className="dark:bg-black"
+      decoration="top"
+      decorationColor="red"
+    >
       <Title>Displacement</Title>
 
       <LineChart

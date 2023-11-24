@@ -31,8 +31,9 @@ export const VelocityGraph = () => {
       refetchInterval: 1000,
     },
   );
+  console.log(typeof data, data);
 
-  const velocityData = data
+  const velocityData = Array.isArray(data)
     ? data.map(d => {
         const time = new Date(d.timestamp);
         return {
@@ -48,7 +49,7 @@ export const VelocityGraph = () => {
 
   return (
     <>
-      <Card className="v-graph dark:bg-black">
+      <Card className="v-graph " decoration="top" decorationColor="red">
         <Title className="">Velocity</Title>
         <LineChart
           className="h-72 mt-6 dark:text-white"

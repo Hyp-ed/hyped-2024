@@ -93,7 +93,7 @@ export const MeasurementChart = () => {
     async () =>
       (await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/velocity?start=0`,
-      ).then((res) => res.json())) as {
+      ).then(res => res.json())) as {
         id: 'velocity';
         timestamp: string;
         value: number;
@@ -108,7 +108,7 @@ export const MeasurementChart = () => {
     async () =>
       (await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/displacement?start=0`,
-      ).then((res) => res.json())) as {
+      ).then(res => res.json())) as {
         id: 'displacement';
         timestamp: string;
         value: number;
@@ -120,7 +120,7 @@ export const MeasurementChart = () => {
 
   const measurementData = [
     ...(velocityData
-      ? velocityData.map((d) => {
+      ? velocityData.map(d => {
           const time = new Date(d.timestamp);
           return {
             time: format(time, 'HH:mm:ss'),
@@ -130,7 +130,7 @@ export const MeasurementChart = () => {
         })
       : []),
     ...(displacementData
-      ? displacementData.map((d) => {
+      ? displacementData.map(d => {
           const time = new Date(d.timestamp);
           return {
             time: format(time, 'HH:mm:ss'),
@@ -152,7 +152,7 @@ export const MeasurementChart = () => {
 
   return (
     <>
-      <Card>
+      <Card decoration="top" decorationColor="red">
         <Badge>live</Badge>
         <Title>Average BPM</Title>
         <AreaChart

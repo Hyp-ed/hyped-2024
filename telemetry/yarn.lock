@@ -1185,6 +1185,13 @@
   dependencies:
     regenerator-runtime "^0.13.11"
 
+"@babel/runtime@^7.23.1":
+  version "7.23.2"
+  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.23.2.tgz"
+  integrity sha512-mM8eg4yl5D6i3lu2QKPuPH4FArvJ8KhTofbE7jwMUv9KX5mBvwPAqnV3MlyBNqdp9RyRKP6Yck8TrfYrPvX3bg==
+  dependencies:
+    regenerator-runtime "^0.14.0"
+
 "@babel/template@^7.20.7", "@babel/template@^7.21.9", "@babel/template@^7.3.3":
   version "7.21.9"
   resolved "https://registry.npmjs.org/@babel/template/-/template-7.21.9.tgz"
@@ -1453,6 +1460,13 @@
   version "8.51.0"
   resolved "https://registry.npmjs.org/@eslint/js/-/js-8.51.0.tgz"
   integrity sha512-HxjQ8Qn+4SI3/AFv6sOrDB+g6PpUTDwSJiQqOrnneEk8L71161srI9gjzzZvYVbzHiVg/BvcH95+cK/zfIt4pg==
+
+"@flaticon/flaticon-uicons@^3.0.0":
+  version "3.0.0"
+  resolved "https://registry.npmjs.org/@flaticon/flaticon-uicons/-/flaticon-uicons-3.0.0.tgz"
+  integrity sha512-dHBQN8vpn+04uLzsMLmK9dW0Fk+28A6809/PAteKVtXrAaZ6R2VOtqXoy9PqkrFIvFj7HOMDh1zFLKTCspz5Ug==
+  optionalDependencies:
+    esbuild-linux-64 "^0.14.5"
 
 "@floating-ui/core@^1.2.6":
   version "1.2.6"
@@ -2686,6 +2700,19 @@
   version "0.11.0"
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
+
+"@preact/signals-core@^1.4.0":
+  version "1.5.0"
+  resolved "https://registry.npmjs.org/@preact/signals-core/-/signals-core-1.5.0.tgz"
+  integrity sha512-U2diO1Z4i1n2IoFgMYmRdHWGObNrcuTRxyNEn7deSq2cru0vj0583HYQZHsAqcs7FE+hQyX3mjIV7LAfHCvy8w==
+
+"@preact/signals-react@^1.3.6":
+  version "1.3.6"
+  resolved "https://registry.npmjs.org/@preact/signals-react/-/signals-react-1.3.6.tgz"
+  integrity sha512-jr/4lhcRo5W3hfieCJGDPbxq3YjfZDvpmTcisJ+lRhjWvnoYrgMKBoTiLsFPACO8VIEATaIBZXYiGAV08YvnfQ==
+  dependencies:
+    "@preact/signals-core" "^1.4.0"
+    use-sync-external-store "^1.2.0"
 
 "@radix-ui/number@1.0.1":
   version "1.0.1"
@@ -5436,6 +5463,13 @@ class-variance-authority@^0.6.0:
   dependencies:
     clsx "1.2.1"
 
+class-variance-authority@^0.7.0:
+  version "0.7.0"
+  resolved "https://registry.npmjs.org/class-variance-authority/-/class-variance-authority-0.7.0.tgz"
+  integrity sha512-jFI8IQw4hczaL4ALINxqLEXQbWcNjoSkloa4IaufXCJr6QawJyw7tuRysRsrE8w2p/4gGaxKIt/hX3qz/IbD1A==
+  dependencies:
+    clsx "2.0.0"
+
 classcat@^5.0.3, classcat@^5.0.4:
   version "5.0.4"
   resolved "https://registry.npmjs.org/classcat/-/classcat-5.0.4.tgz"
@@ -5544,6 +5578,11 @@ clsx@1.2.1, clsx@^1.2.1:
   version "1.2.1"
   resolved "https://registry.npmjs.org/clsx/-/clsx-1.2.1.tgz"
   integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+
+clsx@2.0.0, clsx@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-2.0.0.tgz"
+  integrity sha512-rQ1+kcj+ttHG0MKVGBUXwayCCF1oh39BF5COIpRzuCEv8Mwjv0XucrI2ExNTOn9IlLifGClWQcU9BrZORvtw6Q==
 
 cmd-shim@5.0.0:
   version "5.0.0"
@@ -6862,6 +6901,11 @@ es6-symbol@^3.1.1, es6-symbol@^3.1.3, es6-symbol@~3.1.1:
   dependencies:
     d "^1.0.1"
     ext "^1.1.2"
+
+esbuild-linux-64@^0.14.5:
+  version "0.14.54"
+  resolved "https://registry.yarnpkg.com/esbuild-linux-64/-/esbuild-linux-64-0.14.54.tgz#de5fdba1c95666cf72369f52b40b03be71226652"
+  integrity sha512-EgjAgH5HwTbtNsTqQOXWApBaPVdDn7XcK+/PtJwZLT1UmpLoznPd8c5CxqsH2dQK3j05YsB3L17T8vE7cp4cCg==
 
 esbuild@^0.17.5:
   version "0.17.19"
@@ -8707,7 +8751,7 @@ humanize-ms@^1.2.1:
 
 i@^0.3.7:
   version "0.3.7"
-  resolved "https://registry.yarnpkg.com/i/-/i-0.3.7.tgz#2a7437a923d59c14b17243dc63a549af24d85799"
+  resolved "https://registry.npmjs.org/i/-/i-0.3.7.tgz"
   integrity sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==
 
 iconv-lite@0.4.24, iconv-lite@^0.4.24:
@@ -8794,7 +8838,7 @@ inflight@^1.0.4:
 
 influxdb@^0.0.1:
   version "0.0.1"
-  resolved "https://registry.yarnpkg.com/influxdb/-/influxdb-0.0.1.tgz#226bc4382a555f5ec8ae7b0fdea909d95f05512d"
+  resolved "https://registry.npmjs.org/influxdb/-/influxdb-0.0.1.tgz"
   integrity sha512-wuffewIRPs6Fe/H1f+1pCJ+ShcEt3/HQfmcLA2+bAxSvW/ftziDVmF4P8rG56v1AgGTcZ2fR74nNlXeI+xsklQ==
   dependencies:
     request "2.x"
@@ -10797,6 +10841,11 @@ lucide-react@^0.233.0:
   resolved "https://registry.npmjs.org/lucide-react/-/lucide-react-0.233.0.tgz"
   integrity sha512-r0jMHF0vPDq2wBbZ0B3rtIcBjDyWDKpHu+vAjD2OHn2WLUr3HN5IHovtO0EMgQXuSI7YrMZbjsEZWC2uBHr8nQ==
 
+lucide-react@^0.292.0:
+  version "0.292.0"
+  resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.292.0.tgz#c8a06b2ccd8a348a88669def3c0291c035de2884"
+  integrity sha512-rRgUkpEHWpa5VCT66YscInCQmQuPCB1RFRzkkxMxg4b+jaL0V12E3riWWR2Sh5OIiUhCwGW/ZExuEO4Az32E6Q==
+
 macos-release@^2.5.0:
   version "2.5.1"
   resolved "https://registry.npmjs.org/macos-release/-/macos-release-2.5.1.tgz"
@@ -11394,7 +11443,7 @@ nest-winston@^1.9.1:
 
 next-themes@^0.2.1:
   version "0.2.1"
-  resolved "https://registry.yarnpkg.com/next-themes/-/next-themes-0.2.1.tgz#0c9f128e847979daf6c67f70b38e6b6567856e45"
+  resolved "https://registry.npmjs.org/next-themes/-/next-themes-0.2.1.tgz"
   integrity sha512-B+AKNfYNIzh0vqQQKqQItTS8evEouKD7H5Hj3kmuPERwddR2TxvDSFZuTj6T7Jfn1oyeUyJMydPl1Bkxkh0W7A==
 
 next-tick@^1.1.0:
@@ -12660,7 +12709,7 @@ promzard@^0.3.0:
   dependencies:
     read "1"
 
-prop-types@^15.6.2, prop-types@^15.8.1:
+prop-types@^15.6.2, prop-types@^15.7.2, prop-types@^15.8.1:
   version "15.8.1"
   resolved "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   integrity sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg==
@@ -12903,6 +12952,13 @@ react-style-singleton@^2.2.1:
     get-nonce "^1.0.0"
     invariant "^2.2.4"
     tslib "^2.0.0"
+
+react-switch@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.npmjs.org/react-switch/-/react-switch-7.0.0.tgz"
+  integrity sha512-KkDeW+cozZXI6knDPyUt3KBN1rmhoVYgAdCJqAh7st7tk8YE6N0iR89zjCWO8T8dUTeJGTR0KU+5CHCRMRffiA==
+  dependencies:
+    prop-types "^15.7.2"
 
 react-transition-group@2.9.0:
   version "2.9.0"
@@ -13176,6 +13232,11 @@ regenerator-runtime@^0.13.11, regenerator-runtime@^0.13.7:
   version "0.13.11"
   resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.13.11.tgz"
   integrity sha512-kY1AZVr2Ra+t+piVaJ4gxaFaReZVH40AKNo7UCX6W+dEwBo/2oZJzqfuN1qLq1oL45o56cPaTXELwrTh8Fpggg==
+
+regenerator-runtime@^0.14.0:
+  version "0.14.0"
+  resolved "https://registry.npmjs.org/regenerator-runtime/-/regenerator-runtime-0.14.0.tgz"
+  integrity sha512-srw17NI0TUWHuGa5CFGGmhfNIeja30WMBfbslPNhf6JrqQlLN5gcrvig1oqPxiVaXb0oW0XRKtH6Nngs5lKCIA==
 
 regenerator-transform@^0.15.1:
   version "0.15.1"
@@ -14491,10 +14552,22 @@ tailwind-merge@^1.9.1:
   resolved "https://registry.npmjs.org/tailwind-merge/-/tailwind-merge-1.14.0.tgz"
   integrity sha512-3mFKyCo/MBcgyOTlrY8T7odzZFx+w+qKSMAmdFzRvqBfLlSigU6TZnlFHK0lkMwj9Bj8OYU+9yW9lmGuS0QEnQ==
 
+tailwind-merge@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/tailwind-merge/-/tailwind-merge-2.0.0.tgz"
+  integrity sha512-WO8qghn9yhsldLSg80au+3/gY9E4hFxIvQ3qOmlpXnqpDKoMruKfi/56BbbMg6fHTQJ9QD3cc79PoWqlaQE4rw==
+  dependencies:
+    "@babel/runtime" "^7.23.1"
+
 tailwindcss-animate@^1.0.5:
   version "1.0.5"
   resolved "https://registry.npmjs.org/tailwindcss-animate/-/tailwindcss-animate-1.0.5.tgz"
   integrity sha512-UU3qrOJ4lFQABY+MVADmBm+0KW3xZyhMdRvejwtXqYOL7YjHYxmuREFAZdmVG5LPe5E9CAst846SLC4j5I3dcw==
+
+tailwindcss-animate@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.npmjs.org/tailwindcss-animate/-/tailwindcss-animate-1.0.7.tgz"
+  integrity sha512-bl6mpH3T7I3UFxuvDEXLxy/VuFxBk5bbzplh7tXI68mwMokNYd1t9qPBHlnyTwfa4JGC4zP516I1hYYtQ/vspA==
 
 tailwindcss@^3:
   version "3.3.3"
@@ -15462,7 +15535,7 @@ use-sidecar@^1.1.2:
     detect-node-es "^1.1.0"
     tslib "^2.0.0"
 
-use-sync-external-store@1.2.0:
+use-sync-external-store@1.2.0, use-sync-external-store@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/use-sync-external-store/-/use-sync-external-store-1.2.0.tgz"
   integrity sha512-eEgnFxGQ1Ife9bzYs6VLi8/4X6CObHMw9Qr9tPY43iKwsPw8xE8+EFsf/2cFZ5S3esXgpWgtSCtLNS41F+sKPA==
