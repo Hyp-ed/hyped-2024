@@ -8,10 +8,12 @@ export const LOG_LEVELS = {
   DEBUG: 'debug',
 } as const;
 
+type LogLevel = typeof LOG_LEVELS[keyof typeof LOG_LEVELS];
+
 export type Log = {
   context: string;
   stack?: any;
-  level: (typeof LOG_LEVELS)[keyof typeof LOG_LEVELS];
+  level: LogLevel;
   message: string;
   timestamp: string;
 };
@@ -41,7 +43,7 @@ export const LiveLogsProvider = ({
     }
 
     function onLog(log: Log) {
-      setLogs((logs) => [...logs, log]);
+      setLogs(logs => [...logs, log]);
     }
 
     socket.on('connect', onConnect);
