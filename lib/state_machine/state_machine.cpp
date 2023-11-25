@@ -2,19 +2,17 @@
 
 #include <iostream>
 
-#include "rapidjson/document.h"
+#include <rapidjson/document.h>
+#include <rapidjson/stringbuffer.h>
+#include <rapidjson/writer.h>
 
 namespace hyped::state_machine {
 
-StateMachine::StateMachine(std::shared_ptr<core::Mqtt> mqtt)
+StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt)
     : current_state_(State::kIdle),
       mqtt_(std::move(mqtt))
 {
   mqtt_->subscribe(core::MqttTopic::kTest);
-}
-
-StateMachine::StateMachine() : current_state_(State::kIdle)
-{
 }
 
 State StateMachine::stringToState(const std::string &state_name)
@@ -59,11 +57,24 @@ core::Result StateMachine::updateStateMachine()
   return core::Result::kFailure;
 }
 
+void StateMachine::publishCurrentState(const State &state)
+{
+  const auto state_string         = StateMachine::stateToString(state);
+  const auto topic                = core::MqttTopic::kTest;
+  std::shared_ptr message_payload = std::make_shared<rapidjson::Document>();
+  message_payload->SetObject();
+  rapidjson::Value state_value(state_string.c_str(), message_payload->GetAllocator());
+  message_payload->AddMember("transition", state_value, message_payload->GetAllocator());
+  core::MqttMessage::Header header{.timestamp = 0, .priority = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage message{topic, header, message_payload};
+  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+}
+
 void StateMachine::startStateMachine()
 {
   while (true) {
     StateMachine::updateStateMachine();
-    // TODO: function to publish state we are currently in, mqtt message.
+    StateMachine::publishCurrentState(StateMachine::getCurrentState());
   }
 }
 

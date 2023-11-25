@@ -15,17 +15,19 @@ namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine(std::shared_ptr<core::Mqtt> mqtt);
-  StateMachine();
+  StateMachine(std::shared_ptr<core::IMqtt> mqtt);
   State stringToState(const std::string &state_name);
   std::string stateToString(const State &state);
   State getCurrentState();
   core::Result handleTransition(const State &state);
   core::Result updateStateMachine();
+  void publishCurrentState(const State &state);
+  void startStateMachine();
 
  private:
   const std::unordered_map<std::string, State> string_to_state_
-    = {{"kCalibrate", State::kCalibrate},
+    = {{"kIdle", State::kIdle},
+       {"kCalibrate", State::kCalibrate},
        {"kPrecharge", State::kPrecharge},
        {"kReadyForLeviation", State::kReadyForLevitation},
        {"kBeginLevitation", State::kBeginLevitation},
@@ -41,7 +43,8 @@ class StateMachine {
        {"kFailure", State::kFailure},
        {"kSafe", State::kSafe}};
   const std::unordered_map<State, std::string> state_to_string_
-    = {{State::kCalibrate, "kCalibrate"},
+    = {{State::kIdle, "kIdle"},
+       {State::kCalibrate, "kCalibrate"},
        {State::kPrecharge, "kPrecharge"},
        {State::kReadyForLevitation, "kReadyForLevitation"},
        {State::kBeginLevitation, "kBeginLevitation"},
@@ -82,7 +85,7 @@ class StateMachine {
        {{State::kCapacitorDischarge, State::kSafe}, State::kSafe}};
 
   State current_state_;
-  std::shared_ptr<core::Mqtt> mqtt_;
+  std::shared_ptr<core::IMqtt> mqtt_;
 };
 
 }  // namespace hyped::state_machine
