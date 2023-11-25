@@ -303,22 +303,23 @@ export function StateMachineFlowChart({
   );
 
   return (
-    <div className="min-h-[500px] pt-8">
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        nodeTypes={nodeTypes}
-        // remove all interactivity
-        panOnDrag={false}
-        panOnScroll={false}
-        zoomOnScroll={false}
-        elementsSelectable={false}
-        nodesDraggable={false}
-        nodesConnectable={false}
-        zoomOnPinch={false}
-        zoomOnDoubleClick={false}
-      />
+    <div className="h-full flex flex-col justify-center items-center">
+      <div className="h-[500px] w-[1400px]">
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          nodeTypes={nodeTypes}
+          // remove all interactivity
+          panOnDrag={false}
+          panOnScroll={false}
+          zoomOnScroll={false}
+          elementsSelectable={false}
+          nodesDraggable={false}
+          nodesConnectable={false}
+          zoomOnPinch={false}
+          zoomOnDoubleClick={false}
+        />
+      </div>
     </div>
   );
 }
-//

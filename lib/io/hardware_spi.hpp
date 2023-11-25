@@ -43,13 +43,9 @@ struct spi_ioc_transfer {
 
 namespace hyped::io {
 
-// All values and configuration options used are sourced from the AM335x and AMIC110 Sitara™
-// Processors Technical Reference Manual, please refer to the manual for more information.
-
-// Two SPI buses are available on the BeagleBone Black
-enum class SpiBus { kSpi0 = 0, kSpi1 };
-// Four SPI modes are available on the BeagleBone Black - for more information, see
-// https://github.com/Hyp-ed/hyped-2023/wiki/SPI-Interfacing-on-BBB#spi-modes-summary
+// Six SPI buses are available on the Raspberry Pi
+enum class SpiBus { kSpi0 = 0, kSpi1, kSpi2, kSpi3, kSpi4, kSpi5 };
+// Four SPI modes are available on the Raspberry Pi
 enum class SpiMode { kMode0 = 0, kMode1, kMode2, kMode3 };
 // Common word sizes (in bits) for SPI communcation
 enum class SpiWordSize { kWordSize4 = 4, kWordSize8 = 8, kWordSize16 = 16, kWordSize32 = 32 };
