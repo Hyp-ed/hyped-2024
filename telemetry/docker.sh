@@ -11,6 +11,17 @@ usage() {
  echo " -m, --with-mqtt-broker  Run the MQTT broker along with the container"
 }
 
+# From Kshitij
+if ! [ -x "$(command -v docker)" ]; then
+  echo '[!] Error: docker is not installed.' >&2
+  exit 1
+fi
+if ! [ -x "$(command -v docker-compose)" ]; then
+  echo '[!] Error: docker-compose is not installed.' >&2
+  exit 1
+fi
+
+
 # Default values for options
 build=false
 with_mqtt_broker=false
