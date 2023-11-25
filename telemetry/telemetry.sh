@@ -21,7 +21,6 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-
 # Default values for options
 build=false
 with_mqtt_broker=false

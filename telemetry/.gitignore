@@ -31,7 +31,8 @@ lerna-debug.log*
 # .env files
 .env
 
-# influx data
+# influx
+influxdb/config
 influxdb/data
 
 # mosquitto persistence & logs
