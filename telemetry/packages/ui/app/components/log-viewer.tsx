@@ -22,7 +22,7 @@ export const LogViewer = () => {
             className="h-full overflow-y-scroll scrollbar-track-transparent scrollbar-thumb-openmct-dark-gray scrollbar-thin scrollbar-thumb-rounded-full"
           >
             {logs.map((log, index) => (
-              <Log log={log} key={index} />
+              <SingleLog log={log} key={index} />
             ))}
           </div>
         ) : (
@@ -38,7 +38,7 @@ export const LogViewer = () => {
  * @param log The log to display
  * @returns The log component
  */
-const Log = ({ log }: { log: Log }) => {
+const SingleLog = ({ log }: { log: Log }) => {
   const { context, message } = log;
   const colour = getLogColour(log.level);
   const level = log.level.replace(/\b\w/g, (l) => l.toUpperCase());

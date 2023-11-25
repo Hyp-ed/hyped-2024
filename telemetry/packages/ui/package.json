@@ -22,7 +22,6 @@
     "@radix-ui/react-toast": "^1.1.4",
     "@radix-ui/react-tooltip": "^1.0.6",
     "@tremor/react": "^3.4.1",
-    "@types/node": "^18.11.18",
     "@types/prettier": "^2.7.2",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",

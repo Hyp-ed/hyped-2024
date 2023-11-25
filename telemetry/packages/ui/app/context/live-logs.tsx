@@ -1,5 +1,10 @@
+import { config } from '@/config';
 import { useState, useEffect, createContext, useContext } from 'react';
-import { socket } from '../lib/socket';
+import { io } from 'socket.io-client';
+
+export const socket = io(config.SERVER_ENDPOINT, {
+  path: 'live-logs',
+});
 
 export const LOG_LEVELS = {
   INFO: 'info',
@@ -8,7 +13,7 @@ export const LOG_LEVELS = {
   DEBUG: 'debug',
 } as const;
 
-type LogLevel = typeof LOG_LEVELS[keyof typeof LOG_LEVELS];
+type LogLevel = (typeof LOG_LEVELS)[keyof typeof LOG_LEVELS];
 
 export type Log = {
   context: string;
@@ -43,7 +48,7 @@ export const LiveLogsProvider = ({
     }
 
     function onLog(log: Log) {
-      setLogs(logs => [...logs, log]);
+      setLogs((logs) => [...logs, log]);
     }
 
     socket.on('connect', onConnect);

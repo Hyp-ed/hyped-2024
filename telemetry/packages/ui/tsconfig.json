@@ -20,6 +20,6 @@
       "@/*": ["./app/*"]
     }
   },
-  "include": ["app", "openmct", "mqtt.d.ts", "app/env.ts"],
+  "include": ["app", "openmct", "mqtt.d.ts", "app/config.ts"],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

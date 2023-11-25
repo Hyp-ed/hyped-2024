@@ -13,7 +13,7 @@ import {
   PodConnectionStatusType,
 } from '@/types/PodConnectionStatus';
 import { log } from '@/lib/logger';
-import { env } from '@/env';
+import { config } from '@/config';
 
 export const PodDisconnectError = ({
   podId,
@@ -39,7 +39,7 @@ export const PodDisconnectError = ({
   };
 
   return (
-    <AlertDialog open={env.DISCONNECTED_MESSAGE_DISABLED ? false : open}>
+    <AlertDialog open={config.DISCONNECTED_MESSAGE_DISABLED ? false : open}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Pod disconnected!</AlertDialogTitle>
