@@ -12,6 +12,10 @@ import { PodControlsModule } from './modules/controls/PodControls.module';
 import { WarningsModule } from './modules/warnings/Warnings.module';
 import { RemoteLogsModule } from './modules/remote-logs/RemoteLogs.module';
 import { PublicDataModule } from './modules/public-data/PublicData.module';
+<<<<<<< HEAD
+=======
+import { LiveLogsGateway } from './modules/live-logs/LiveLogs.gateway';
+>>>>>>> infra-mqtt_tests
 
 @Module({
   imports: [
@@ -28,6 +32,6 @@ import { PublicDataModule } from './modules/public-data/PublicData.module';
     PublicDataModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, LiveLogsGateway],
 })
 export class AppModule {}

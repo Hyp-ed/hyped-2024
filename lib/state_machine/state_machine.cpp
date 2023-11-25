@@ -8,9 +8,10 @@
 
 namespace hyped::state_machine {
 
-StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt)
+StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt, const TransitionTable &transition_table)
     : current_state_(State::kIdle),
-      mqtt_(std::move(mqtt))
+      mqtt_(std::move(mqtt)),
+      transition_to_state_(transition_table)  
 {
   mqtt_->subscribe(core::MqttTopic::kTest);
 }
@@ -76,6 +77,7 @@ void StateMachine::startStateMachine()
     StateMachine::updateStateMachine();
     StateMachine::publishCurrentState(StateMachine::getCurrentState());
   }
+  return core::Result::kFailure;
 }
 
 }  // namespace hyped::state_machine

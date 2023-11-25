@@ -13,6 +13,7 @@
 
 namespace hyped::core {
 
+// all messages with a higher priority are processed before any lower priority message is processed
 enum MqttMessagePriority {
   kCritical = 0,
   kNormal   = 1,
@@ -56,17 +57,24 @@ class IMqtt {
    * @return core::Result
    */
   virtual void publish(const MqttMessage &message, const MqttMessageQos qos) = 0;
-  virtual core::Result subscribe(const core::MqttTopic topic)                = 0;
   /**
-   * @brief Pulls all pending MQTT messages into internal queue
+   * @brief Subscribes to a topic
+   *
+   * @param topic
+   * @return core::Result
+   */
+  virtual core::Result subscribe(const core::MqttTopic topic) = 0;
+  /**
+   * @brief Pulls next 100 MQTT messages into internal queue
    *
    * @returns kFailure if any message received is invalid, kSuccess otherwise
    */
   virtual core::Result consume() = 0;
   /**
+   * @brief Returns the next message to be processed
+   *
    * @returns next message to be processed, sorted by priority then delivery time. i.e. The highest
    * priority message is always selected, then the oldest in that priority is returned
-   *
    */
   virtual std::optional<MqttMessage> getMessage() = 0;
 };
@@ -83,6 +91,7 @@ class Mqtt : public IMqtt {
   core::Result subscribe(const core::MqttTopic topic);
   core::Result consume();
   std::optional<MqttMessage> getMessage();
+  static constexpr std::uint8_t kKeepAliveInterval = 1;
 
  private:
   /**
@@ -103,7 +112,8 @@ class Mqtt : public IMqtt {
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;
   std::priority_queue<MqttMessage> incoming_message_queue_;
-  std::uint32_t messages_in_queue;
+  // callback_ptr needed to stop segfault per
+  // https://github.com/eclipse/paho.mqtt.cpp/issues/141#issuecomment-375402234
   mqtt::callback_ptr cb;
 };
 
@@ -111,8 +121,6 @@ class MqttCallback : public virtual mqtt::callback {
  public:
   MqttCallback(ILogger &logger);
   void connection_lost(const std::string &cause) override;
-  void delivery_complete(mqtt::delivery_token_ptr token) override;
-  void message_arrived(mqtt::const_message_ptr msg) override;
 
  private:
   ILogger &logger_;
