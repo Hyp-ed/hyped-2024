@@ -5,7 +5,7 @@
 namespace hyped::state_machine {
 
 StateMachine::StateMachine(const TransitionTable &transition_table)
-    : current_state_{State::kIdle},
+    : current_state_(State::kIdle),
       transition_to_state_{transition_table}
 {
 }
