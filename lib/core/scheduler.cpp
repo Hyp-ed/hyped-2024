@@ -16,7 +16,7 @@ core::Result Scheduler::run()
   const auto current_time = std::chrono::time_point_cast<std::chrono::nanoseconds>(time_.now());
   auto next_task          = task_queue_.top();
   core::Result result     = core::Result::kSuccess;
-  for (size_t i = 0; i < task_queue_.size(); i++) {
+  for (std::size_t i = 0; i < task_queue_.size(); i++) {
     if (current_time < next_task.sheduled_time) { return result; }
     core::Result next_result = next_task.handler();
     if (next_result == core::Result::kFailure) { result = core::Result::kFailure; }
