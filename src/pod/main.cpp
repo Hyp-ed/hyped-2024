@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     if (gpio_reader->read() == hyped::core::DigitalSignal::kHigh) {
       logger.log(hyped::core::LogLevel::kInfo, "High");
     } else {
-      logger.log(hyped::core::LogLevel::kInfo, "Low")
+      logger.log(hyped::core::LogLevel::kInfo, "Low");
     };
   });
   std::cout << "Ran for " << execution_time.count() << " ns" << std::endl;
