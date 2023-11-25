@@ -20,7 +20,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Run cmake-format style check
-        uses: TomLonergan03/cmake-format-lint-action@v1.0.6
+        uses: TomLonergan03/cmake-format-lint-action@v1.0.7
         with:
           args: --check
 
