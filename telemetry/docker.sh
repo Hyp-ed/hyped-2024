@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Adapted from: https://medium.com/@wujido20/handling-flags-in-bash-scripts-4b06b4d0ed04
+
 # Function to display script usage
 usage() {
  echo "Usage: $0 <yarn_script> [OPTIONS]"
@@ -7,14 +9,6 @@ usage() {
  echo " -h, --help              Display this help message"
  echo " -b, --build             Build the docker image before running the container"
  echo " -m, --with-mqtt-broker  Run the MQTT broker along with the container"
-}
-
-has_argument() {
-    [[ ("$1" == *=* && -n ${1#*=}) || ( ! -z "$2" && "$2" != -*)  ]];
-}
-
-extract_argument() {
-  echo "${2:-${1#*=}}"
 }
 
 # Default values for options
