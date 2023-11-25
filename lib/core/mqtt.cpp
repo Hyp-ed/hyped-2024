@@ -88,6 +88,7 @@ core::Result Mqtt::consume()
     }
     incoming_message_queue_.push(*parsed_message);
   }
+  logger_.log(core::LogLevel::kDebug, "Consumed 100 message(s)");
   return core::Result::kSuccess;
 }
 
