@@ -43,9 +43,6 @@ struct spi_ioc_transfer {
 
 namespace hyped::io {
 
-// All values and configuration options used are sourced from the AM335x and AMIC110 Sitara™
-// Processors Technical Reference Manual, please refer to the manual for more information.
-
 // Six SPI buses are available on the Raspberry Pi
 enum class SpiBus { kSpi0 = 0, kSpi1, kSpi2, kSpi3, kSpi4, kSpi5 };
 // Four SPI modes are available on the Raspberry Pi
