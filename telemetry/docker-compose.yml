@@ -35,17 +35,6 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=hyped
       - DOCKER_INFLUXDB_INIT_BUCKET=telemetry
       - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=edinburgh
-  mosquitto:
-    container_name: mosquitto
-    image: eclipse-mosquitto:2.0.18
-    ports:
-      - 1883:1883
-      - 8080:8080
-    volumes:
-      - ./mosquitto/config:/mosquitto/config
-      - ./mosquitto/data:/mosquitto/data
-      - ./mosquitto/log:/mosquitto/log
 
 volumes:
   influxdb:
-  mosquitto:
