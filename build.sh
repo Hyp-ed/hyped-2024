@@ -71,7 +71,7 @@ handle_options "$@"
 
 if [ "$rebuild" = true ]; then
     echo "Rebuild"
-    docker build . -t $IMAGE_NAME
+    docker build -t $IMAGE_NAME docker
 fi
 
 # Check if the container name already exists
@@ -83,5 +83,4 @@ if [[ -n ${container} ]]; then
   docker rm $CONTAINER_NAME
 fi
 
-cd ..
 docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/$IMAGE_NAME --name $CONTAINER_NAME -v $(pwd):/home/$IMAGE_NAME $IMAGE_NAME bash
