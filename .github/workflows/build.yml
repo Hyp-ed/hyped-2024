@@ -17,4 +17,4 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Run build
-        run: ./build.sh -r -c
+        run: cd docker && ./build.sh -r -c

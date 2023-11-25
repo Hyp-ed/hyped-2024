@@ -2,7 +2,7 @@ FROM ubuntu:latest
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y git clang clang-format libboost-all-dev libeigen3-dev rapidjson-dev build-essential gcc make cmake libssl-dev
+    apt-get install -y git clang clang-format libboost-all-dev libeigen3-dev rapidjson-dev build-essential gcc make cmake libssl-dev libncurses5-dev libncursesw5-dev
 
 # Install Paho
 WORKDIR /pahoc
