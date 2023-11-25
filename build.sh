@@ -74,5 +74,13 @@ if [ "$rebuild" = true ]; then
     docker build . -t $IMAGE_NAME
 fi
 
+# Check if the container name already exists
+container=$( docker ps -a -q --filter name=$CONTAINER_NAME 2> /dev/null )
 
-docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile --name $CONTAINER_NAME -v .:/home/$IMAGE_NAME $IMAGE_NAME bash
+# If the container exists, remove it
+if [[ -n ${container} ]]; then
+  echo "[!] Found existing container. Removing container"
+  docker rm $CONTAINER_NAME
+fi
+
+docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/$IMAGE_NAME --name $CONTAINER_NAME -v $(pwd):/home/$IMAGE_NAME $IMAGE_NAME bash

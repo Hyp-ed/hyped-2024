@@ -1,20 +1,18 @@
 #!/bin/bash
-echo "$CLEAN"
-echo "$CROSS_COMPILE"
 
 echo "Building..."
 
-cd /home/hyped_build
+# Fix for git
+git config --global --add safe.directory '*'
 
-if [ -d "build" ]; then
-    if [ $CLEAN = true ]; then
-        rm -r build  
-        mkdir build
-    fi    
-else
+cd $DIR
+
+if [ -d "build" && $CLEAN = true ]; then
+    rm -r build  
+    mkdir build
+elif [ ! -d "build" ]; then
     mkdir build
 fi
-
 
 cd build 
 cmake ..
