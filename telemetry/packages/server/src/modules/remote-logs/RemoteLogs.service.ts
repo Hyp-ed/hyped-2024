@@ -1,5 +1,5 @@
 import { Injectable, LoggerService } from '@nestjs/common';
-import { Logger } from '../logger/Logger.decorator';
+import { Logger } from '@/modules/logger/Logger.decorator';
 
 @Injectable()
 export class RemoteLogsService {

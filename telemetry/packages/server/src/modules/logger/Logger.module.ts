@@ -1,23 +1,38 @@
 import { Module } from '@nestjs/common';
 import { utilities, WinstonModule, WinstonModuleOptions } from 'nest-winston';
-import path from 'path';
 import { format, transports } from 'winston';
-import { ENV } from '../core/config';
+import { ENV } from '@/modules/core/config';
+import { LiveLogsTransport } from '../live-logs/LiveLogsTransport';
 
-// Same level as src
-const LOGGING_DIRECTORY = path.join(__dirname, '..', '..', 'logs');
+// In top-level 'telemetry' directory
+const LOGGING_DIRECTORY = '../../logs';
 
-const loggerOptions: WinstonModuleOptions = {
+const unhandledErrorFormat = format((info) => {
+  if (info[Symbol.for('level')] === 'error' && info['error']) {
+    return {
+      context: info['error']['name'],
+      message: `${info['error']['message']}`,
+      // stack: info['error']['stack'], - not using this for now
+      level: 'error',
+      [Symbol.for('level')]: 'error',
+    };
+  }
+  return info;
+});
+
+export const loggerOptions: WinstonModuleOptions = {
   level: ENV === 'development' ? 'debug' : 'info',
   format: format.combine(
+    unhandledErrorFormat(),
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss',
     }),
-    format.errors({ stack: true }),
+    format.errors({ stack: false }),
     format.splat(),
     format.json(),
   ),
   transports: [
+    new LiveLogsTransport(),
     new transports.File({
       filename: 'errors.log',
       dirname: LOGGING_DIRECTORY,
@@ -35,10 +50,12 @@ const loggerOptions: WinstonModuleOptions = {
                 prettyPrint: true,
               }),
             ),
+            handleExceptions: true,
           }),
         ]
       : []),
   ],
+  exitOnError: false,
 };
 
 const logger = WinstonModule.forRoot(loggerOptions);

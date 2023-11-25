@@ -1,5 +1,5 @@
 import { PreviousLatenciesType } from '@/context/pods';
-import { Title, LineChart } from '@tremor/react';
+import { LineChart } from '@tremor/react';
 
 const dataFormatter = (number: number) => `${number.toString()}ms`;
 

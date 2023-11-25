@@ -6,7 +6,8 @@ test/io @licornes-fluos
 lib/navigation @pkhudov
 test/navigation @pkhudov
 telemetry @davidbeechey
-lib/motors
-test/motors
+lib/motors @lsalhani
+test/motors @lsalhani
+lib/io/*can* @lsalhani
 lib/state_machine @DylanCavers
 test/state_machine @DylanCavers

@@ -18,6 +18,13 @@ module.exports = {
     },
     extend: {
       colors: {
+        // HYPED COLORS
+        'hyped-foreground': '#ffffff',
+        'hyped-background': '#000000',
+        'hyped-red': '#af1f24',
+        'hyped-light-gray': '#edeeec',
+        'openmct-light-gray': '#535353',
+        'openmct-dark-gray': '#222222',
         tremor: {
           brand: {
             faint: '#eff6ff', // blue-50
@@ -136,6 +143,7 @@ module.exports = {
       fontFamily: {
         sans: ['Victor Mono'],
         title: ['Raleway'],
+        logs: ['IBM Plex Mono'],
       },
       fontSize: {
         'tremor-label': ['0.75rem'],
@@ -188,5 +196,9 @@ module.exports = {
         /^(fill-(?:slate|gray|zinc|neutral|stone|red|orange|amber|yellow|lime|green|emerald|teal|cyan|sky|blue|indigo|violet|purple|fuchsia|pink|rose)-(?:50|100|200|300|400|500|600|700|800|900|950))$/,
     },
   ],
-  plugins: [require('tailwindcss-animate'), require('@headlessui/tailwindcss')],
+  plugins: [
+    require('tailwindcss-animate'),
+    require('@headlessui/tailwindcss'),
+    require('tailwind-scrollbar')({ nocompatible: true }),
+  ],
 };

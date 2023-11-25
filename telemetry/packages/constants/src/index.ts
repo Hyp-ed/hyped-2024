@@ -5,6 +5,7 @@ export {
   ACTIVE_STATES,
   NULL_STATES,
   FAILURE_STATES,
+  getStateType,
 } from './pods/states';
 export type { PodStateType } from './pods/states';
 export { openMctObjectTypes } from './openmct/object-types/object-types';
