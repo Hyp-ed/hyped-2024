@@ -7,7 +7,7 @@ git config --global --add safe.directory '*'
 
 cd $DIR
 
-if [ -d "build" && $CLEAN = true ]; then
+if [[ -d "build" && $CLEAN = true ]]; then
     rm -r build  
     mkdir build
 elif [ ! -d "build" ]; then
