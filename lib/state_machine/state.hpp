@@ -8,6 +8,7 @@ enum class State {
   kPrecharge,
   kReadyForLevitation,
   kBeginLevitation,
+  kLevitating,
   kReady,
   kAccelerate,
   kLimBrake,
