@@ -1,4 +1,4 @@
-import { LayoutDashboard, Terminal } from 'lucide-react';
+import { GitBranch, LayoutDashboard, Terminal } from 'lucide-react';
 import { StateMachineFlowChart } from './components/flow/flow-chart';
 import { LogViewer } from './components/log-viewer';
 import { OpenMCT } from './components/openmct-iframe';
@@ -6,7 +6,7 @@ import { OpenMCT } from './components/openmct-iframe';
 /**
  * The components that can be rendered in the LHS of the GUI.
  */
-export const COMPONENTS = [
+export const VIEWS = [
   {
     name: 'OpenMCT',
     component: <OpenMCT />,
@@ -20,6 +20,6 @@ export const COMPONENTS = [
   {
     name: 'State',
     component: <StateMachineFlowChart currentState="ACCELERATING" />,
-    icon: <Terminal width={18} />,
+    icon: <GitBranch width={18} />,
   },
 ];

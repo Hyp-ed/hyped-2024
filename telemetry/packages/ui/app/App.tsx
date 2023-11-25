@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { COMPONENTS } from './components';
+import { VIEWS } from './views';
 import { ControlsUI } from './components/controls';
 import { cn } from './lib/utils';
 
@@ -8,11 +8,11 @@ const App = () => {
 
   return (
     <div className="grid grid-cols-8 bg-hyped-background">
-      {COMPONENTS.map((component) => (
+      {VIEWS.map((component) => (
         <div
           className={cn(
             'h-[100vh] w-full col-span-7 p-1',
-            !(COMPONENTS.indexOf(component) === selectedComponent) && 'hidden',
+            !(VIEWS.indexOf(component) === selectedComponent) && 'hidden',
           )}
         >
           {component.component}

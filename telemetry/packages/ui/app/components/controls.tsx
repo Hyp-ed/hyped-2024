@@ -1,4 +1,4 @@
-import { COMPONENTS } from '@/components';
+import { VIEWS } from '@/views';
 import { log } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { POD_IDS } from '@hyped/telemetry-constants';
@@ -53,7 +53,7 @@ export const ControlsUI = ({
         <div>
           <p className="font-bold text-xl">View</p>
           <div className="h-full py-2 flex flex-col justify-start gap-2">
-            {COMPONENTS.map((component, index) => (
+            {VIEWS.map((component, index) => (
               <button
                 className={cn(
                   'flex items-start justify-start rounded-md px-3 py-2 gap-2',
