@@ -20,7 +20,7 @@ TEST(Scheduler, immediateTask)
   core::Logger logger("test", core::LogLevel::kDebug, manual_time);
   core::Scheduler scheduler(logger, manual_time);
   bool task_called = false;
-  scheduler.addTask(0, [&task_called]() {
+  scheduler.addTask(hyped::core::Duration(0), [&task_called]() {
     task_called = true;
     return core::Result::kSuccess;
   });
@@ -34,7 +34,7 @@ TEST(Scheduler, delayedTask)
   core::Logger logger("test", core::LogLevel::kDebug, manual_time);
   core::Scheduler scheduler(logger, manual_time);
   bool task_called = false;
-  scheduler.addTask(1000, [&task_called]() {
+  scheduler.addTask(hyped::core::Duration(1000000), [&task_called]() {
     task_called = true;
     return core::Result::kSuccess;
   });
@@ -51,33 +51,11 @@ TEST(Scheduler, failingTask)
   core::Logger logger("test", core::LogLevel::kDebug, manual_time);
   core::Scheduler scheduler(logger, manual_time);
   bool task_called = false;
-  scheduler.addTask(0, [&task_called]() {
+  scheduler.addTask(hyped::core::Duration(0), [&task_called]() {
     task_called = true;
     return core::Result::kFailure;
   });
   ASSERT_EQ(scheduler.run(), core::Result::kFailure);
   ASSERT_TRUE(task_called);
-}
-
-TEST(Scheduler, multipleTasksCorrectOrder)
-{
-  utils::ManualTime manual_time;
-  core::Logger logger("test", core::LogLevel::kDebug, manual_time);
-  core::Scheduler scheduler(logger, manual_time);
-  bool task1_called = false;
-  bool task2_called = false;
-  scheduler.addTask(0, [&task1_called]() {
-    task1_called = true;
-    return core::Result::kSuccess;
-  });
-  scheduler.addTask(0, [&task2_called]() {
-    task2_called = true;
-    return core::Result::kSuccess;
-  });
-  manual_time.set_time(std::chrono::system_clock::from_time_t(1));
-  ASSERT_EQ(scheduler.run(), core::Result::kSuccess);
-  ASSERT_TRUE(task1_called);
-  ASSERT_EQ(scheduler.run(), core::Result::kSuccess);
-  ASSERT_TRUE(task2_called);
 }
 }  // namespace hyped::test

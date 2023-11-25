@@ -6,42 +6,34 @@ namespace hyped::core {
 Scheduler::Scheduler(core::ILogger &logger, core::ITimeSource &time)
     : logger_(logger),
       time_(time),
-      task_queue_(),
-      task_map_()
+      task_queue_()
 {
 }
 
 core::Result Scheduler::run()
 {
   if (task_queue_.empty()) { return core::Result::kSuccess; }
-  const auto current_time = std::chrono::time_point_cast<std::chrono::microseconds>(time_.now())
-                              .time_since_epoch()
-                              .count();
-  const auto next_task_time = task_queue_.top();
-  if (current_time < next_task_time) { return core::Result::kSuccess; }
-  task_queue_.pop();
-  const auto task = task_map_.find(next_task_time);
-  if (task == task_map_.end()) {
-    logger_.log(core::LogLevel::kFatal, "Scheduled task missing callback function");
-    return core::Result::kFailure;
+  const auto current_time = std::chrono::time_point_cast<std::chrono::nanoseconds>(time_.now());
+  auto next_task          = task_queue_.top();
+  core::Result result     = core::Result::kSuccess;
+  for (uint64_t i = 0; i < task_queue_.size(); i++) {
+    if (current_time < next_task.sheduled_time) { return result; }
+    core::Result next_result = next_task.handler();
+    if (next_result == core::Result::kFailure) { result = core::Result::kFailure; }
+    task_queue_.pop();
+    if (task_queue_.empty()) { break; }
+    next_task = task_queue_.top();
   }
-  task_map_.erase(next_task_time);
-  const auto result = task->second();
   return result;
 }
 
-void Scheduler::addTask(uint32_t delay, std::function<core::Result(void)> task)
+void Scheduler::addTask(const core::Duration delay, std::function<core::Result(void)> handler)
 {
   const auto execution_timepoint
-    = std::chrono::time_point_cast<std::chrono::microseconds>(time_.now())
-      + std::chrono::microseconds(delay);
-  std::uint64_t execution_timepoint_us = execution_timepoint.time_since_epoch().count();
-  // If the timepoint is already in the map, increment it until it is not
-  while (task_map_.find(execution_timepoint_us) != task_map_.end()) {
-    execution_timepoint_us++;
-  }
-  task_queue_.push(execution_timepoint_us);
-  task_map_.emplace(execution_timepoint_us, task);
+    = std::chrono::time_point_cast<std::chrono::nanoseconds>(time_.now())
+      + std::chrono::nanoseconds(delay);
+  const Task task{execution_timepoint, handler};
+  task_queue_.push(task);
 }
 
 }  // namespace hyped::core
