@@ -1,8 +1,8 @@
 #pragma once
 
 #include "state.hpp"
-#include "types.hpp"
 #include "transition_table.hpp"
+#include "types.hpp"
 
 #include <optional>
 #include <queue>

@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
-#include <state_machine/transition_table.hpp>
 
 #include <state_machine/state_machine.hpp>
+#include <state_machine/transition_table.hpp>
 
 namespace hyped::test {
 
@@ -13,9 +13,10 @@ void testTransition(std::shared_ptr<state_machine::StateMachine> stm,
   ASSERT_TRUE(stm->getCurrentState() == expected_state);
 }
 
-TEST(StateMachine, cleanRun)
+TEST(StateMachine, cleanRunDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -36,9 +37,10 @@ TEST(StateMachine, cleanRun)
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
 }
 
-TEST(StateMachine, cleanRunDuplicatedMessages)
+TEST(StateMachine, cleanRunDuplicatedMessagesDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -77,9 +79,10 @@ TEST(StateMachine, cleanRunDuplicatedMessages)
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
 }
 
-TEST(StateMachine, failureBrakeFromAccelerating)
+TEST(StateMachine, failureBrakeFromAcceleratingDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -95,9 +98,10 @@ TEST(StateMachine, failureBrakeFromAccelerating)
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
 }
 
-TEST(StateMachine, failureBrakeFromLIMBrake)
+TEST(StateMachine, failureBrakeFromLIMBrakeDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -114,9 +118,10 @@ TEST(StateMachine, failureBrakeFromLIMBrake)
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
 }
 
-TEST(StateMachine, failureBrakeFrictionBrake)
+TEST(StateMachine, failureBrakeFrictionBrakeDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -134,9 +139,10 @@ TEST(StateMachine, failureBrakeFrictionBrake)
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
 }
 
-TEST(StateMachine, duplicatedMessagesFailureStates)
+TEST(StateMachine, duplicatedMessagesFailureStatesDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -167,9 +173,134 @@ TEST(StateMachine, duplicatedMessagesFailureStates)
   testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
 }
 
-TEST(StateMachine, duplicatedMessageAfterStateChange)
+TEST(StateMachine, duplicatedMessageAfterStateChangeDynamic)
 {
-  auto stm = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_dynamic);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kPrecharge);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+}
+
+TEST(StateMachine, cleanRunStatic)
+{
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_static);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+  testTransition(
+    stm, state_machine::State::kBeginLevitation, state_machine::State::kBeginLevitation);
+  testTransition(stm, state_machine::State::kLevitating, state_machine::State::kLevitating);
+  testTransition(stm, state_machine::State::kFrictionBrake, state_machine::State::kFrictionBrake);
+  testTransition(stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
+  testTransition(stm, state_machine::State::kStopped, state_machine::State::kStopped);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+}
+
+TEST(StateMachine, cleanRunDuplicatedMessagesStatic)
+{
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_static);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+  testTransition(
+    stm, state_machine::State::kBeginLevitation, state_machine::State::kBeginLevitation);
+  testTransition(
+    stm, state_machine::State::kBeginLevitation, state_machine::State::kBeginLevitation);
+  testTransition(stm, state_machine::State::kLevitating, state_machine::State::kLevitating);
+  testTransition(stm, state_machine::State::kLevitating, state_machine::State::kLevitating);
+  testTransition(stm, state_machine::State::kFrictionBrake, state_machine::State::kFrictionBrake);
+  testTransition(stm, state_machine::State::kFrictionBrake, state_machine::State::kFrictionBrake);
+  testTransition(stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
+  testTransition(stm, state_machine::State::kStopLevitation, state_machine::State::kStopLevitation);
+  testTransition(stm, state_machine::State::kStopped, state_machine::State::kStopped);
+  testTransition(stm, state_machine::State::kStopped, state_machine::State::kStopped);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+}
+
+TEST(StateMachine, failureBrakeFromLevitatingStatic)
+{
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_static);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+  testTransition(
+    stm, state_machine::State::kBeginLevitation, state_machine::State::kBeginLevitation);
+  testTransition(stm, state_machine::State::kLevitating, state_machine::State::kLevitating);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kFailureBrake);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+}
+
+TEST(StateMachine, failurePriorToLevitationStatic)
+{
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_static);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(stm, state_machine::State::kFailure, state_machine::State::kFailure);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+}
+
+TEST(StateMachine, duplicatedMessagesFailureStatesStatic)
+{
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_static);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+  testTransition(
+    stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
+  testTransition(
+    stm, state_machine::State::kBeginLevitation, state_machine::State::kBeginLevitation);
+  testTransition(
+    stm, state_machine::State::kBeginLevitation, state_machine::State::kBeginLevitation);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kFailureBrake);
+  testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kFailureBrake);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(
+    stm, state_machine::State::kCapacitorDischarge, state_machine::State::kCapacitorDischarge);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+  testTransition(stm, state_machine::State::kSafe, state_machine::State::kSafe);
+}
+
+TEST(StateMachine, duplicatedMessageAfterStateChangeStatic)
+{
+  auto stm
+    = std::make_shared<state_machine::StateMachine>(state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kPrecharge);
