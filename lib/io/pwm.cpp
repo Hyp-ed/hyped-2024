@@ -152,7 +152,7 @@ core::Result Pwm::setPeriod(const std::uint32_t period, const int period_file)
 core::Result Pwm::setPolarity(const Polarity polarity, const int polarity_file)
 {
   const std::uint8_t polarity_value = static_cast<std::uint8_t>(polarity);
-  char write_buffer[7];
+  char write_buffer[9];
   if (polarity_value == 0) {
     snprintf(write_buffer, sizeof(write_buffer), "normal");
   } else {
