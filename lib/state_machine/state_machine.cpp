@@ -77,7 +77,6 @@ void StateMachine::startStateMachine()
     StateMachine::updateStateMachine();
     StateMachine::publishCurrentState(StateMachine::getCurrentState());
   }
-  return core::Result::kFailure;
 }
 
 }  // namespace hyped::state_machine
