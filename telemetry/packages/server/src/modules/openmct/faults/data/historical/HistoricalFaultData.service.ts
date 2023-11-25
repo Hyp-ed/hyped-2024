@@ -1,21 +1,14 @@
 import { INFLUX_FAULTS_BUCKET } from '@/core/config';
+import { InfluxRow } from '@/modules/common/types/InfluxRow';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { OpenMctFault } from '@hyped/telemetry-types';
-import {
-  flux,
-  fluxBool,
-  fluxExpression,
-  fluxString,
-} from '@influxdata/influxdb-client';
+import { fluxExpression, fluxString } from '@influxdata/influxdb-client';
 import { Injectable, LoggerService } from '@nestjs/common';
 
-type InfluxRow = {
-  _time: string;
-  _value: string;
-  podId: string;
+interface InfluxFaultRow extends InfluxRow {
   fault: string;
-};
+}
 
 type GetHistoricalFaultsInput = {
   podId: string;
@@ -67,7 +60,9 @@ export class HistoricalFaultDataService {
       |> last()`;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxRow>(query);
+      const data = await this.influxService.query.collectRows<InfluxFaultRow>(
+        query,
+      );
       return data.map((row) => ({
         timestamp: new Date(row['_time']).getTime(),
         fault: JSON.parse(row['_value']) as OpenMctFault,
