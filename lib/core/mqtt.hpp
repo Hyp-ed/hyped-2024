@@ -120,8 +120,6 @@ class MqttCallback : public virtual mqtt::callback {
  public:
   MqttCallback(ILogger &logger);
   void connection_lost(const std::string &cause) override;
-  void delivery_complete(mqtt::delivery_token_ptr token) override;
-  void message_arrived(mqtt::const_message_ptr msg) override;
 
  private:
   ILogger &logger_;

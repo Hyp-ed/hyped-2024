@@ -176,14 +176,4 @@ void MqttCallback::connection_lost(const std::string &cause)
     logger_.log(core::LogLevel::kFatal, "Connection lost with MQTT broker: %s", cause.c_str());
   }
 }
-
-void MqttCallback::delivery_complete(mqtt::delivery_token_ptr token)
-{
-  logger_.log(core::LogLevel::kDebug, "Message delivery complete");
-}
-
-void MqttCallback::message_arrived(mqtt::const_message_ptr msg)
-{
-  logger_.log(core::LogLevel::kDebug, "Message arrived");
-}
 }  // namespace hyped::core
