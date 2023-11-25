@@ -12,27 +12,27 @@ import { http } from 'openmct/core/http';
 /**
  * The maximum latency before a pod is considered disconnected, in milliseconds
  */
-const POD_MAX_LATENCY = 300;
+const POD_MAX_LATENCY = 300 as const;
 
 /**
  * The latency at which a warning is sent to the server, in milliseconds
  */
-const POD_WARNING_LATENCY = 100;
+const POD_WARNING_LATENCY = 100 as const;
 
 /**
  * The number of previous latencies to keep
  */
-const NUM_PREVIOUS_LATENCIES = 50;
+const NUM_PREVIOUS_LATENCIES = 50 as const;
 
 /**
  * The number of latencies to use to calculate average
  */
-const NUM_LATENCIES_AVG = 10;
+const NUM_LATENCIES_AVG = 10 as const;
 
 /**
  * The interval between latency messages, in milliseconds
  */
-const LATENCY_REQUEST_INTERVAL = 100;
+const LATENCY_REQUEST_INTERVAL = 100 as const;
 
 export type PreviousLatenciesType = {
   index: number;
@@ -79,13 +79,18 @@ export const PodsProvider = ({
   );
   const [lastLatencyResponse, setLastLatencyResponse] = useState<number>();
 
-  const { client, publish, subscribe, unsubscribe, mqttConnectionStatus } =
-    useMQTT();
+  const {
+    client,
+    publish,
+    subscribe,
+    unsubscribe,
+    mqttConnectionStatus,
+  } = useMQTT();
 
   useEffect(() => {
     // If we don't have an MQTT connection, set all pod connection statuses to disconnected
     if (mqttConnectionStatus !== MQTT_CONNECTION_STATUS.CONNECTED) {
-      setPodsState((prevState) =>
+      setPodsState(prevState =>
         Object.fromEntries(
           Object.entries(prevState).map(([podId]) => [
             podId,
@@ -108,7 +113,7 @@ export const PodsProvider = ({
   useEffect(() => {
     // send latency messages every LATENCY_INTERVAL milliseconds
     const interval = setInterval(() => {
-      podIds.map((podId) => {
+      podIds.map(podId => {
         publish(
           'latency/request',
           JSON.stringify({
@@ -123,10 +128,10 @@ export const PodsProvider = ({
 
   useEffect(() => {
     const interval = setTimeout(() => {
-      podIds.map((podId) => {
+      podIds.map(podId => {
         if (!lastLatencyResponse) return;
         if (new Date().getTime() - lastLatencyResponse > POD_MAX_LATENCY) {
-          setPodsState((prevState) => ({
+          setPodsState(prevState => ({
             ...prevState,
             [podId]: {
               ...prevState[podId],
@@ -153,7 +158,7 @@ export const PodsProvider = ({
         const newPodState = message.toString();
         const allowedStates = Object.values(ALL_POD_STATES);
         if (allowedStates.includes(newPodState as PodStateType)) {
-          setPodsState((prevState) => ({
+          setPodsState(prevState => ({
             ...prevState,
             [podId]: {
               ...prevState[podId],
@@ -176,7 +181,7 @@ export const PodsProvider = ({
         setLastLatencyResponse(new Date().getTime());
 
         // update the connection status
-        setPodsState((prevState) => ({
+        setPodsState(prevState => ({
           ...prevState,
           [podId]: {
             ...prevState[podId],
@@ -206,7 +211,7 @@ export const PodsProvider = ({
       }
     };
 
-    podIds.map((podId) => {
+    podIds.map(podId => {
       subscribe('latency/response', podId);
       subscribe('state', podId);
       client.on('message', (topic, message) =>
@@ -215,7 +220,7 @@ export const PodsProvider = ({
     });
 
     return () => {
-      podIds.map((podId) => {
+      podIds.map(podId => {
         client.off('message', (topic, message) =>
           getLatency(podId, topic, message),
         );
