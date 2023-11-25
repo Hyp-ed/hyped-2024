@@ -57,7 +57,7 @@ handle_options "$@"
 
 if [ "$build" = true ]; then
     echo "Building docker image..."
-    docker build -t $IMAGE_NAME docker
+    docker build -t $IMAGE_NAME .
 fi
 
 # Check if the container name already exists
@@ -69,9 +69,8 @@ if [[ -n ${container} ]]; then
   docker rm $CONTAINER_NAME
 fi
 
-export YARN_SCRIPT=build
 
-docker run --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
+docker run -e YARN_SCRIPT=build --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
   -v /usr/src/app/node_modules \
   -v /usr/src/app/packages/server/node_modules \
   -v /usr/src/app/packages/ui/node_modules \
