@@ -1,9 +1,9 @@
-import { config } from '@/config';
 import { useState, useEffect, createContext, useContext } from 'react';
+import { config } from '@/config';
 import { io } from 'socket.io-client';
 
-export const socket = io(config.SERVER_ENDPOINT, {
-  path: 'live-logs',
+const socket = io(config.SERVER_ENDPOINT, {
+  path: '/live-logs',
 });
 
 export const LOG_LEVELS = {
