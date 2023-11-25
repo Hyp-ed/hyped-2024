@@ -26,5 +26,4 @@ WORKDIR /home/hyped
 COPY entry.sh ./
 
 ENTRYPOINT [ "/home/hyped/entry.sh" ]
-
 CMD ["bash"]
