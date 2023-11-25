@@ -112,7 +112,8 @@ class Mqtt : public IMqtt {
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;
   std::priority_queue<MqttMessage> incoming_message_queue_;
-  // callback_ptr is here to ensure that the callback object is not destroyed
+  // callback_ptr needed to stop segfault per
+  // https://github.com/eclipse/paho.mqtt.cpp/issues/141#issuecomment-375402234
   mqtt::callback_ptr cb;
 };
 
