@@ -5,4 +5,9 @@ add_executable(${target} ${headers} ${code})
 target_include_directories(
   ${target} INTERFACE "${CMAKE_SOURCE_DIR}/lib" "${CMAKE_CURRENT_SOURCE_DIR}"
 )
-target_link_libraries(${target} hyped_core hyped_io hyped_utils)
+target_link_libraries(
+  ${target}
+  hyped_core
+  hyped_io
+  hyped_utils
+)
