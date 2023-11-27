@@ -54,31 +54,15 @@
 
   > Note: The following should be run in the `telemetry` directory.
 
-  To install dependencies:
-  
-  ```
-  pnpm install
-  ```
-
-  To build the project:
+  To run the telemetry system, run the following command:
 
   ```
-  pnpm build
+  ./docker.sh <yarn_script>
   ```
 
-  To run in development mode:
-
-  ```
-  pnpm dev
-  ```
+  where `<yarn_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
 
   > The GUI will now be available on `http://localhost:5173`
-
-  To run a script in a particular package, add `--filter <workspace>`, for example:
-
-  ```
-  pnpm --filter @hyped/constants build
-  ```
 
 ## Contributing
 
