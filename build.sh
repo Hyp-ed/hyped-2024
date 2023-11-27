@@ -29,7 +29,7 @@ fi
 image=$( docker images -q $IMAGE_NAME 2> /dev/null )
 if [[ -z ${image} ]]; then
   echo "[!] Building image"
-  docker buildx build -t $IMAGE_NAME .
+  docker build -t $IMAGE_NAME .
 else 
   echo "[>] Image already built"
 fi
@@ -71,7 +71,7 @@ handle_options "$@"
 
 if [ "$rebuild" = true ]; then
     echo "Rebuild"
-    docker buildx build -t $IMAGE_NAME docker
+    docker build -t $IMAGE_NAME docker
 fi
 
 # Check if the container name already exists
