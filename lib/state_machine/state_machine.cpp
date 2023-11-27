@@ -8,10 +8,11 @@
 
 namespace hyped::state_machine {
 
-StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt, const TransitionTable &transition_table)
+StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt,
+                           const TransitionTable &transition_table)
     : current_state_(State::kIdle),
       mqtt_(std::move(mqtt)),
-      transition_to_state_(transition_table)  
+      transition_to_state_(transition_table)
 {
   mqtt_->subscribe(core::MqttTopic::kTest);
 }
@@ -41,7 +42,7 @@ core::Result StateMachine::handleTransition(const State &state)
   return core::Result::kFailure;
 }
 
-core::Result StateMachine::updateStateMachine()
+core::Result StateMachine::update()
 {
   mqtt_->consume();
   const auto nextMessage = mqtt_->getMessage();
@@ -58,9 +59,9 @@ core::Result StateMachine::updateStateMachine()
   return core::Result::kFailure;
 }
 
-void StateMachine::publishCurrentState(const State &state)
+void StateMachine::publishCurrentState()
 {
-  const auto state_string         = StateMachine::stateToString(state);
+  const auto state_string         = StateMachine::stateToString(StateMachine::getCurrentState());
   const auto topic                = core::MqttTopic::kTest;
   std::shared_ptr message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
@@ -73,10 +74,11 @@ void StateMachine::publishCurrentState(const State &state)
 
 void StateMachine::startStateMachine()
 {
-  while (true) {
-    StateMachine::updateStateMachine();
-    StateMachine::publishCurrentState(StateMachine::getCurrentState());
+  while (StateMachine::getCurrentState() != State::kShutdown) {
+    auto updated = StateMachine::update();
+    StateMachine::publishCurrentState();
   }
+  StateMachine::publishCurrentState();
 }
 
 }  // namespace hyped::state_machine

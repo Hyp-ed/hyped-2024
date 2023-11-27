@@ -17,15 +17,15 @@ namespace hyped::state_machine {
 class StateMachine {
  public:
   StateMachine(std::shared_ptr<core::IMqtt> mqtt, const TransitionTable &transition_table);
-  State stringToState(const std::string &state_name);
-  std::string stateToString(const State &state);
+  void startStateMachine();
   State getCurrentState();
   core::Result handleTransition(const State &state);
-  core::Result updateStateMachine();
-  void publishCurrentState(const State &state);
-  void startStateMachine();
 
  private:
+  void publishCurrentState();
+  State stringToState(const std::string &state_name);
+  std::string stateToString(const State &state);
+  core::Result update();
   const std::unordered_map<std::string, State> string_to_state_
     = {{"kIdle", State::kIdle},
        {"kCalibrate", State::kCalibrate},
