@@ -3,7 +3,7 @@ name: Telemetry Build
 on:
   push:
     paths:
-      - "telemetry/**"
+      - 'telemetry/**'
 
 jobs:
   telemetry-build:
@@ -14,14 +14,8 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/setup-node@v3
-        with:
-          node-version: "18.14.0"
-          cache: "yarn"
-          cache-dependency-path: "telemetry/yarn.lock"
-
-      - name: Install dependencies
-        run: yarn install
+      - name: Docker
+        uses: docker/setup-buildx-action@v3
 
       - name: Build
-        run: yarn build
+        run: ./build.sh
