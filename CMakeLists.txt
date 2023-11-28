@@ -17,6 +17,8 @@ include_directories(${EIGEN3_INCLUDE_DIR})
 find_package(Curses REQUIRED)
 include_directories(${CURSES_INCLUDE_DIR})
 find_package(Boost REQUIRED)
+find_package(PahoMqttCpp REQUIRED)
+include_directories(${PahoMqttCpp_INCLUDE_DIRS})
 include(FetchContent)
 FetchContent_Declare(
   rapidjson
