@@ -11,13 +11,13 @@
 
 namespace hyped::core {
 
-struct Task {
-  core::TimePoint sheduled_time;
-  std::function<core::Result(void)> handler;
-  bool operator>(const Task &other) const { return sheduled_time > other.sheduled_time; }
-};
-
 class Scheduler {
+  struct Task {
+    core::TimePoint sheduled_time;
+    std::function<core::Result(void)> handler;
+    bool operator>(const Task &other) const { return sheduled_time > other.sheduled_time; }
+  };
+
  public:
   Scheduler(core::ILogger &logger, core::ITimeSource &time);
   /**
@@ -35,7 +35,7 @@ class Scheduler {
    * @param task a function that returns a Result
    * @param delay the minimum delay before the task can called
    */
-  void addTask(const core::Duration delay, const std::function<core::Result(void)> handler);
+  void schedule(const core::Duration delay, const std::function<core::Result(void)> handler);
 
  private:
   core::ILogger &logger_;
