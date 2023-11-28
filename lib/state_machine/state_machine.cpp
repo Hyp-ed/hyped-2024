@@ -42,21 +42,18 @@ core::Result StateMachine::handleTransition(const State &state)
   return core::Result::kFailure;
 }
 
-core::Result StateMachine::update()
+void StateMachine::update()
 {
   mqtt_->consume();
   const auto nextMessage = mqtt_->getMessage();
-  if (!nextMessage) { return core::Result::kFailure; }
+  if (!nextMessage) { return; }
 
   const auto doc           = nextMessage->payload;
   const auto message_state = string_to_state_.find((*doc)["transition"].GetString());
 
   if (message_state != string_to_state_.end()) {
     StateMachine::handleTransition(message_state->second);
-    return core::Result::kSuccess;
   }
-
-  return core::Result::kFailure;
 }
 
 void StateMachine::publishCurrentState()
@@ -75,7 +72,7 @@ void StateMachine::publishCurrentState()
 void StateMachine::startStateMachine()
 {
   while (StateMachine::getCurrentState() != State::kShutdown) {
-    auto updated = StateMachine::update();
+    StateMachine::update();
     StateMachine::publishCurrentState();
   }
   StateMachine::publishCurrentState();

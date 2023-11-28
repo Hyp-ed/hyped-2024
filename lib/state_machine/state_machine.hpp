@@ -25,7 +25,7 @@ class StateMachine {
   void publishCurrentState();
   State stringToState(const std::string &state_name);
   std::string stateToString(const State &state);
-  core::Result update();
+  void update();
   const std::unordered_map<std::string, State> string_to_state_
     = {{"kIdle", State::kIdle},
        {"kCalibrate", State::kCalibrate},
