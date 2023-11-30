@@ -51,14 +51,12 @@ void StateMachine::update()
   const auto doc           = nextMessage->payload;
   const auto message_state = string_to_state_.find((*doc)["transition"].GetString());
 
-  if (message_state != string_to_state_.end()) {
-    StateMachine::handleTransition(message_state->second);
-  }
+  if (message_state != string_to_state_.end()) { handleTransition(message_state->second); }
 }
 
 void StateMachine::publishCurrentState()
 {
-  const auto state_string         = StateMachine::stateToString(StateMachine::getCurrentState());
+  const auto state_string         = stateToString(getCurrentState());
   const auto topic                = core::MqttTopic::kTest;
   std::shared_ptr message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
@@ -71,11 +69,11 @@ void StateMachine::publishCurrentState()
 
 void StateMachine::startStateMachine()
 {
-  while (StateMachine::getCurrentState() != State::kShutdown) {
-    StateMachine::update();
-    StateMachine::publishCurrentState();
+  while (getCurrentState() != State::kShutdown) {
+    update();
+    publishCurrentState();
   }
-  StateMachine::publishCurrentState();
+  publishCurrentState();
 }
 
 }  // namespace hyped::state_machine
