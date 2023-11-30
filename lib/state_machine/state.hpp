@@ -20,6 +20,7 @@ enum class State {
   kFailureBrake,
   kFailure,
   kSafe,
+  kShutdown
 };
 
 }  // namespace hyped::state_machine

@@ -37,7 +37,8 @@ const TransitionTable transition_to_state_dynamic
      {{State::kBatteryRecharge, State::kFailure}, State::kFailure},
      {{State::kFailureBrake, State::kCapacitorDischarge}, State::kCapacitorDischarge},
      {{State::kFailure, State::kCapacitorDischarge}, State::kCapacitorDischarge},
-     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe}};
+     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe},
+     {{State::kSafe, State::kShutdown}, State::kShutdown}};
 
 const TransitionTable transition_to_state_static
   = {{{State::kIdle, State::kCalibrate}, State::kCalibrate},
@@ -60,5 +61,6 @@ const TransitionTable transition_to_state_static
      {{State::kStopped, State::kFailure}, State::kFailure},
      {{State::kFailureBrake, State::kCapacitorDischarge}, State::kCapacitorDischarge},
      {{State::kFailure, State::kCapacitorDischarge}, State::kCapacitorDischarge},
-     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe}};
+     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe},
+     {{State::kSafe, State::kShutdown}, State::kShutdown}};
 }  // namespace hyped::state_machine
