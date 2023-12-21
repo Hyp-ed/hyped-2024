@@ -4,19 +4,22 @@ namespace hyped::state_machine {
 
 enum class State {
   kIdle,
-  kCalibrating,
+  kCalibrate,
+  kPrecharge,
+  kReadyForLevitation,
+  kBeginLevitation,
+  kLevitating,
   kReady,
-  kAccelerating,
-  kCruising,
-  kMotorBraking,
-  kPreFrictionBraking,
-  kFrictionBraking,
-  kPreFrictionBrakingFail,
-  kFrictionBrakingFail,
-  kFailureBraking,
+  kAccelerate,
+  kLimBrake,
+  kFrictionBrake,
+  kStopLevitation,
   kStopped,
-  kFailureStopped,
-  kOff,
+  kBatteryRecharge,
+  kCapacitorDischarge,
+  kFailureBrake,
+  kFailure,
+  kSafe,
 };
 
 }  // namespace hyped::state_machine

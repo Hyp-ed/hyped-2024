@@ -5,7 +5,6 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  TooltipArrow,
 } from '@/components/ui/tooltip';
 import { LatencyChart } from './latency-chart';
 import { cn } from '@/lib/utils';
@@ -44,7 +43,6 @@ export const Latency = ({ podId }: { podId: string }) => {
           side="bottom"
           className="border-none bg-black shadow-2xl"
         >
-          {/* <TooltipArrow width={15} height={8} /> */}
           <LatencyChart data={previousLatencies} />
         </TooltipContent>
       </Tooltip>

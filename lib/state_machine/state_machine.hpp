@@ -1,6 +1,7 @@
 #pragma once
 
 #include "state.hpp"
+#include "transition_table.hpp"
 #include "types.hpp"
 
 #include <optional>
@@ -8,70 +9,56 @@
 #include <unordered_map>
 
 #include <boost/unordered_map.hpp>
+#include <core/types.hpp>
 
 namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine();
-  Message stringToMessage(const std::string &message_name);
-  std::string messageToString(const Message &message);
+  StateMachine(const TransitionTable &transition_table);
+  State stringToState(const std::string &state_name);
+  std::string stateToString(const State &state);
   State getCurrentState();
+  core::Result handleTransition(const State &state);
 
  private:
-  const std::unordered_map<std::string, Message> string_to_message_
-    = {{"kCalibrating", Message::kCalibrating},
-       {"kReady", Message::kReady},
-       {"kAccelerating", Message::kAccelerating},
-       {"kCruising", Message::kCruising},
-       {"kMotorBrake", Message::kMotorBrake},
-       {"kPreFrictionBrake", Message::kPreFrictionBrake},
-       {"kFrictionBrake", Message::kFrictionBrake},
-       {"kStopped", Message::kStopped},
-       {"kFailureBrake", Message::kFailureBrake},
-       {"kPreFrictionBrakeFail", Message::kPreFrictionBrakeFail},
-       {"kFrictionBrakeFail", Message::kFrictionBrakeFail},
-       {"kOff", Message::kOff},
-       {"kFailureStopped", Message::kFailureStopped},
-       {"kFailureOff", Message::kFailureOff}};
-  const std::unordered_map<Message, std::string> message_to_string_
-    = {{Message::kCalibrating, "kCalibrating"},
-       {Message::kReady, "kReady"},
-       {Message::kAccelerating, "kAccelerating"},
-       {Message::kCruising, "kCruising"},
-       {Message::kMotorBrake, "kMotorBrake"},
-       {Message::kPreFrictionBrake, "kPreFrictionBrake"},
-       {Message::kFrictionBrake, "kFrictionBrake"},
-       {Message::kStopped, "kStopped"},
-       {Message::kFailureBrake, "kFailureBrake"},
-       {Message::kPreFrictionBrakeFail, "kPreFrictionBrakeFail"},
-       {Message::kFrictionBrakeFail, "kFrictionBrakeFail"},
-       {Message::kOff, "kOff"},
-       {Message::kFailureStopped, "kFailureStopped"},
-       {Message::kFailureOff, "kFailureOff"}};
-  const boost::unordered_map<SourceAndMessage, State, source_and_message_hash> transition_to_state_
-    = {{{State::kIdle, Message::kCalibrating}, State::kCalibrating},
-       {{State::kCalibrating, Message::kReady}, State::kReady},
-       {{State::kReady, Message::kAccelerating}, State::kAccelerating},
-       {{State::kAccelerating, Message::kCruising}, State::kCruising},
-       {{State::kCruising, Message::kMotorBrake}, State::kMotorBraking},
-       {{State::kMotorBraking, Message::kPreFrictionBrake}, State::kPreFrictionBraking},
-       {{State::kPreFrictionBraking, Message::kFrictionBrake}, State::kFrictionBraking},
-       {{State::kFrictionBraking, Message::kStopped}, State::kStopped},
-       {{State::kStopped, Message::kOff}, State::kOff},
-       {{State::kAccelerating, Message::kFailureBrake}, State::kFailureBraking},
-       {{State::kAccelerating, Message::kPreFrictionBrakeFail}, State::kPreFrictionBrakingFail},
-       {{State::kPreFrictionBrakingFail, Message::kFrictionBrakeFail}, State::kFrictionBrakingFail},
-       {{State::kCruising, Message::kFailureBrake}, State::kFailureBraking},
-       {{State::kCruising, Message::kPreFrictionBrakeFail}, State::kPreFrictionBrakingFail},
-       {{State::kMotorBraking, Message::kFailureBrake}, State::kFailureBraking},
-       {{State::kMotorBraking, Message::kPreFrictionBrakeFail}, State::kPreFrictionBrakingFail},
-       {{State::kFrictionBrakingFail, Message::kFailureBrake}, State::kFailureBraking},
-       {{State::kFrictionBrakingFail, Message::kFailureStopped}, State::kFailureStopped},
-       {{State::kFailureBraking, Message::kFailureStopped}, State::kFailureStopped},
-       {{State::kFailureStopped, Message::kFailureOff}, State::kOff}};
+  const std::unordered_map<std::string, State> string_to_state_
+    = {{"kCalibrate", State::kCalibrate},
+       {"kPrecharge", State::kPrecharge},
+       {"kReadyForLeviation", State::kReadyForLevitation},
+       {"kBeginLevitation", State::kBeginLevitation},
+       {"kLevitating", State::kLevitating},
+       {"kReady", State::kReady},
+       {"kAccelerate", State::kAccelerate},
+       {"kLimBrake", State::kLimBrake},
+       {"kFrictionBrake", State::kFrictionBrake},
+       {"kStopLevitation", State::kStopLevitation},
+       {"kStopped", State::kStopped},
+       {"kBatteryRecharge", State::kBatteryRecharge},
+       {"kCapacitorDischarge", State::kCapacitorDischarge},
+       {"kFailureBrake", State::kFailureBrake},
+       {"kFailure", State::kFailure},
+       {"kSafe", State::kSafe}};
+  const std::unordered_map<State, std::string> state_to_string_
+    = {{State::kCalibrate, "kCalibrate"},
+       {State::kPrecharge, "kPrecharge"},
+       {State::kReadyForLevitation, "kReadyForLevitation"},
+       {State::kBeginLevitation, "kBeginLevitation"},
+       {State::kLevitating, "kLevitating"},
+       {State::kReady, "kReady"},
+       {State::kAccelerate, "kAccelerate"},
+       {State::kLimBrake, "kLimBrake"},
+       {State::kFrictionBrake, "kFrictionBrake"},
+       {State::kStopLevitation, "kStopLevitation"},
+       {State::kStopped, "kStopped"},
+       {State::kBatteryRecharge, "kBatteryRecharge"},
+       {State::kCapacitorDischarge, "kCapacitorDischarge"},
+       {State::kFailureBrake, "kFailureBrake"},
+       {State::kFailure, "kFailure"},
+       {State::kSafe, "kSafe"}};
 
   State current_state_;
+  TransitionTable transition_to_state_;
 };
 
 }  // namespace hyped::state_machine

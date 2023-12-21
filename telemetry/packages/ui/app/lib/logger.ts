@@ -7,7 +7,7 @@ import { http } from 'openmct/core/http';
  */
 export const log = (message: string, podId?: string) => {
   if (podId) {
-    console.log(`[LOG] Pod "${podId}" log from UI: ${message}`);
+    console.log(`[LOG] (${podId}) ${message}`);
     http.post(`logs/${podId}`, {
       body: JSON.stringify({ message }),
       headers: {
@@ -15,7 +15,7 @@ export const log = (message: string, podId?: string) => {
       },
     });
   } else {
-    console.log(`[LOG] Pod log from UI: ${message}`);
+    console.log(`[LOG] ${message}`);
     http.post(`logs`, {
       body: JSON.stringify({ message }),
       headers: {
