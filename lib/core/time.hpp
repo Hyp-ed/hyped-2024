@@ -6,7 +6,7 @@ namespace hyped::core {
 /**
  * @brief Absolute point in time; nanosecond precision.
  */
-using TimePoint = std::chrono::system_clock::time_point;
+using TimePoint = std::chrono::sys_time<std::chrono::nanoseconds>;
 
 /**
  * @brief Difference between points in time; nanosecond precision.
