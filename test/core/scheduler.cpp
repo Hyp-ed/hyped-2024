@@ -20,7 +20,7 @@ TEST(Scheduler, immediateTask)
   core::Logger logger("test", core::LogLevel::kDebug, manual_time);
   core::Scheduler scheduler(logger, manual_time);
   bool task_called = false;
-  scheduler.addTask(hyped::core::Duration(0), [&task_called]() {
+  scheduler.schedule(hyped::core::Duration(0), [&task_called]() {
     task_called = true;
     return core::Result::kSuccess;
   });
@@ -34,7 +34,7 @@ TEST(Scheduler, delayedTask)
   core::Logger logger("test", core::LogLevel::kDebug, manual_time);
   core::Scheduler scheduler(logger, manual_time);
   bool task_called = false;
-  scheduler.addTask(hyped::core::Duration(1000000), [&task_called]() {
+  scheduler.schedule(hyped::core::Duration(1000000), [&task_called]() {
     task_called = true;
     return core::Result::kSuccess;
   });
@@ -51,7 +51,7 @@ TEST(Scheduler, failingTask)
   core::Logger logger("test", core::LogLevel::kDebug, manual_time);
   core::Scheduler scheduler(logger, manual_time);
   bool task_called = false;
-  scheduler.addTask(hyped::core::Duration(0), [&task_called]() {
+  scheduler.schedule(hyped::core::Duration(0), [&task_called]() {
     task_called = true;
     return core::Result::kFailure;
   });
