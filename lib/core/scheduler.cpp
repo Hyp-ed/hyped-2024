@@ -11,7 +11,6 @@ Scheduler::Scheduler(core::ILogger &logger, core::ITimeSource &time)
 
 core::Result Scheduler::run()
 {
-  if (task_queue_.empty()) { return core::Result::kSuccess; }
   const auto current_time    = std::chrono::time_point_cast<std::chrono::nanoseconds>(time_.now());
   const auto number_of_tasks = task_queue_.size();
   for (std::size_t i = 0; i < number_of_tasks; i++) {
