@@ -26,9 +26,7 @@ core::Result Scheduler::run()
 
 void Scheduler::schedule(const core::Duration delay, std::function<core::Result(void)> handler)
 {
-  core::TimePoint execution_timepoint
-    = std::chrono::time_point_cast<std::chrono::nanoseconds>(time_.now())
-      + std::chrono::nanoseconds(delay);
+  core::TimePoint execution_timepoint = time_.now() + std::chrono::nanoseconds(delay);
   const Task task{execution_timepoint, handler};
   task_queue_.push(task);
 }
