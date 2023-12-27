@@ -4,6 +4,11 @@ on:
   push:
     paths:
       - 'telemetry/**'
+      - '.github/workflows/telemetry.yml'
+
+defaults:
+  run:
+    working-directory: telemetry
 
 jobs:
   telemetry-build:
