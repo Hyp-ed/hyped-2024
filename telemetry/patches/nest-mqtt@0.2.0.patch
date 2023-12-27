@@ -1,7 +1,7 @@
-diff --git a/node_modules/nest-mqtt/package.json b/node_modules/nest-mqtt/package.json
-index d618c5b..0ce26cf 100644
---- a/node_modules/nest-mqtt/package.json
-+++ b/node_modules/nest-mqtt/package.json
+diff --git a/package.json b/package.json
+index d618c5b39872a64b809eac6c27402241d77f79f7..0ce26cf2e52786645c5b8fe528df38cda55f969d 100644
+--- a/package.json
++++ b/package.json
 @@ -32,8 +32,8 @@
      "test:e2e": "jest --config ./test/jest-e2e.json"
    },

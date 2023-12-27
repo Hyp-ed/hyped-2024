@@ -57,10 +57,10 @@
   To run the telemetry system, run the following command:
 
   ```
-  ./docker.sh <yarn_script>
+  ./docker.sh <pnpm_script>
   ```
 
-  where `<yarn_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
+  where `<pnpm_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
 
   > The GUI will now be available on `http://localhost:5173`
 

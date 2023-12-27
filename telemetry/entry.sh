@@ -5,11 +5,11 @@ cp /usr/src/app/packages/server/.env.docker /usr/src/app/packages/server/.env
 
 cp /usr/src/app/packages/ui/.env.docker /usr/src/app/packages/ui/.env
 
-yarn build
+pnpm build
 
-if [ "$YARN_SCRIPT" = "build" ]; then
+if [ "$PNPM_SCRIPT" = "build" ]; then
   echo "Build complete"
   exit 0
 fi
 
-yarn "$YARN_SCRIPT"
+pnpm "$PNPM_SCRIPT"

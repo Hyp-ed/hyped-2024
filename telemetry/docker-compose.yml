@@ -10,7 +10,7 @@ services:
       - 5173:5173
       - 3000:3000
     environment:
-      - YARN_SCRIPT
+      - PNPM_SCRIPT
     volumes:
       - ./:/usr/src/app
       # Exclude node_modules from being mounted

@@ -1,7 +1,7 @@
-diff --git a/node_modules/openmct/dist/openmct.d.ts b/node_modules/openmct/dist/openmct.d.ts
-index ce404b2..5594ef7 100644
---- a/node_modules/openmct/dist/openmct.d.ts
-+++ b/node_modules/openmct/dist/openmct.d.ts
+diff --git a/dist/openmct.d.ts b/dist/openmct.d.ts
+index ce404b2dd2881abdbeb3ef6e5cbaa877c3f124d7..ef1ba3e7ceb42f8a5b57eeb2b512556dbb5bbb60 100644
+--- a/dist/openmct.d.ts
++++ b/dist/openmct.d.ts
 @@ -34,14 +34,17 @@ type OpenMCT = {
      getAssetPath: {
          (): string;
@@ -9,7 +9,7 @@ index ce404b2..5594ef7 100644
 -    start: (domElement: HTMLElement, isHeadlessMode: boolean) => void;
 +    setAssetPath: {
 +        (path: string): void;
-+    };
++    }
 +    start: (domElement?: HTMLElement, isHeadlessMode?: boolean) => void;
      startHeadless: {
          (): void;
@@ -22,10 +22,10 @@ index ce404b2..5594ef7 100644
      components: OpenMCTComponent[];
  };
  type BuildInfo = {
-diff --git a/node_modules/openmct/dist/src/api/time/TimeContext.d.ts b/node_modules/openmct/dist/src/api/time/TimeContext.d.ts
-index b87f325..e56366e 100644
---- a/node_modules/openmct/dist/src/api/time/TimeContext.d.ts
-+++ b/node_modules/openmct/dist/src/api/time/TimeContext.d.ts
+diff --git a/dist/src/api/time/TimeContext.d.ts b/dist/src/api/time/TimeContext.d.ts
+index b87f3254b37d51cd1ce6ef3e13210a1f00d96e83..e56366e686f551ca497ec1032c7e2eb08cb69ca8 100644
+--- a/dist/src/api/time/TimeContext.d.ts
++++ b/dist/src/api/time/TimeContext.d.ts
 @@ -43,7 +43,7 @@ declare class TimeContext {
       * @memberof module:openmct.TimeAPI#
       * @method timeSystem

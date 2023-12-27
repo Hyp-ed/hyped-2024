@@ -70,7 +70,7 @@ if [[ -n ${container} ]]; then
 fi
 
 
-docker run -e YARN_SCRIPT=build --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
+docker run -e PNPM_SCRIPT=build --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
   -v /usr/src/app/node_modules \
   -v /usr/src/app/packages/server/node_modules \
   -v /usr/src/app/packages/ui/node_modules \
