@@ -5,8 +5,11 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('/branch')
+  @Get('/info/git-branch')
   public async getBranch() {
-    return { branch: await this.appService.getBranch() };
+    return {
+      branch: await this.appService.getBranch(),
+      uncommittedChanges: await this.appService.getUncommittedChanges(),
+    };
   }
 }

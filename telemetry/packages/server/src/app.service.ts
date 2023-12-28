@@ -17,4 +17,16 @@ export class AppService {
       });
     });
   }
+
+  public getUncommittedChanges() {
+    return new Promise<boolean>((resolve, reject) => {
+      exec('git status --porcelain', (err, stdout) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(stdout.trim().length > 0);
+        }
+      });
+    });
+  }
 }
