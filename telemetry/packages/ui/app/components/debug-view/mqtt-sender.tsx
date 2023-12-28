@@ -16,10 +16,35 @@ import { Textarea } from '../ui/textarea';
 import { useMQTT } from '@/context/mqtt';
 import toast from 'react-hot-toast';
 import { log } from '@/lib/logger';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { Send } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 
 const formSchema = z.object({
-  topic: z.string(),
+  topic: z.string().min(1, {
+    message: 'Topic must not be empty',
+  }),
   message: z.string(),
+  qos: z.coerce
+    .number()
+    .optional()
+    .refine((val) => (val ? [0, 1, 2].includes(val) : true), {
+      message: 'QoS must be 0, 1, or 2',
+    }),
+  retain: z.coerce.boolean().optional(),
 });
 
 /**
@@ -34,6 +59,8 @@ export const MqttSender = () => {
     defaultValues: {
       topic: '',
       message: '',
+      qos: 0,
+      retain: false,
     },
   });
 
@@ -42,61 +69,112 @@ export const MqttSender = () => {
       toast.error('Could not publish message.');
       return;
     }
-    // TODO: currently not working...
-    publish(
-      values.topic,
-      values.message,
-      {
-        qos: 0,
-        retain: false,
-      },
-      (error) => {
-        if (error) {
-          log(`MQTT publish error: ${error}`);
-        }
-      },
-    );
+    publish(values.topic, values.message, {
+      qos: values.qos as 0 | 1 | 2,
+      retain: values.retain,
+    });
+    log(`Published message to ${values.topic}: ${values.message}`);
+    toast.success('Message published.');
+    // Reset form
+    form.reset();
   }
 
   return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="topic"
-          render={({ field }) => (
-            <FormItem className="flex gap-4 items-center">
-              <FormLabel>Topic:</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
-              {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="message"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Message:</FormLabel>
-              <FormControl>
-                <Textarea {...field} />
-              </FormControl>
-              {/* <FormDescription>
-                This is your public display name.
-              </FormDescription> */}
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <div className="flex justify-end">
-          <Button type="submit">Send</Button>
-        </div>
-      </form>
-    </Form>
+    <Card>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+          <CardHeader>
+            <CardTitle>MQTT</CardTitle>
+            <CardDescription>Send arbitrary MQTT messages</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-8">
+            <FormField
+              control={form.control}
+              name="topic"
+              render={({ field }) => (
+                <FormItem className="flex gap-4 items-center">
+                  <FormLabel>Topic:</FormLabel>
+                  <FormControl>
+                    <Input {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Message:</FormLabel>
+                  <FormControl>
+                    <Textarea {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </CardContent>
+          <CardFooter>
+            <div className="w-full flex justify-between">
+              <div className="flex gap-8">
+                <FormField
+                  control={form.control}
+                  name="qos"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 items-center text-sm space-y-0">
+                      <FormLabel>QoS:</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="0">0 (At most once)</SelectItem>
+                          <SelectItem value="1">1 (At least once)</SelectItem>
+                          <SelectItem value="2">2 (Exactly once)</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="retain"
+                  render={({ field }) => (
+                    <FormItem className="flex gap-2 items-center text-sm space-y-0">
+                      <FormLabel>Retain:</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value?.toString()}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="true">true</SelectItem>
+                          <SelectItem value="false">false</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button type="submit" className="flex gap-2">
+                Send <Send size={16} />
+              </Button>
+            </div>
+          </CardFooter>
+        </form>
+      </Form>
+    </Card>
   );
 };

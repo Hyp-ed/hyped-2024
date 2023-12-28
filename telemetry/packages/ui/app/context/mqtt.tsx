@@ -4,18 +4,23 @@ import { MqttPublish, MqttSubscribe, QoS } from '@/types/mqtt';
 import {
   MQTTConnectionStatusType,
   MQTT_CONNECTION_STATUS,
-} from '@/types/MqttConnectionStatus';
+} from '@/types/MQTTConnectionStatus';
 import mqtt from 'mqtt/dist/mqtt';
 import { MqttUnsubscribe } from '@/types/mqtt';
 import { getTopic } from '@/lib/utils';
 import { log } from '@/lib/logger';
+import { IClientPublishOptions } from 'mqtt/types/lib/client-options';
 
 type MQTTContextType = {
   client: MqttClient | null;
   publish: MqttPublish;
   subscribe: MqttSubscribe;
   unsubscribe: MqttUnsubscribe;
-  customPublish?: MqttClient['publish'];
+  customPublish: (
+    topic: string,
+    message: string | Buffer,
+    opts: IClientPublishOptions,
+  ) => MqttClient | undefined;
   mqttConnectionStatus: MQTTConnectionStatusType;
 };
 
@@ -124,6 +129,22 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
     client.unsubscribe(fullTopic);
   };
 
+  const customPublish = (
+    topic: string,
+    message: string | Buffer,
+    opts: IClientPublishOptions,
+  ) => {
+    if (!client) {
+      log(`MQTT couldn't publish to ${topic} because client is null`);
+      return;
+    }
+    return client.publish(topic, message, opts, (error) => {
+      if (error) {
+        log(`MQTT publish error: ${error}`);
+      }
+    });
+  };
+
   return (
     <MQTTContext.Provider
       value={{
@@ -131,7 +152,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         publish,
         subscribe,
         unsubscribe,
-        customPublish: client?.publish,
+        customPublish,
         mqttConnectionStatus: connectionStatus,
       }}
     >
