@@ -430,5 +430,17 @@ export const pods: Pods = {
         },
       },
     },
+    pis: {
+      pi_1: {
+        id: 'pi_1',
+        ip: '192.168.1.41',
+        name: 'pi-1',
+      },
+      pi_2: {
+        id: 'pi-2',
+        ip: '192.168.1.42',
+        name: 'pi-2',
+      },
+    },
   },
 };

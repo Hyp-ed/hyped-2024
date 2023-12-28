@@ -1,7 +1,7 @@
 import { Controller, Get, HttpException, Param, Query } from '@nestjs/common';
 import { PublicDataService } from './PublicData.service';
 import { HistoricalTelemetryDataService } from '@/modules/openmct/data/historical/HistoricalTelemetryData.service';
-import { pods } from '@hyped/telemetry-constants';
+import { validatePodId } from '../common/utils/validatePodId';
 
 @Controller('pods/:podId/public-data')
 export class PublicDataController {
@@ -12,13 +12,13 @@ export class PublicDataController {
 
   @Get('launch-time')
   async getLaunchTime(@Param('podId') podId: string) {
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.publicDataService.getLaunchTime(podId);
   }
 
   @Get('state')
   async getState(@Param('podId') podId: string) {
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.publicDataService.getState(podId);
   }
 
@@ -31,7 +31,7 @@ export class PublicDataController {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
       'velocity',
@@ -49,7 +49,7 @@ export class PublicDataController {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
       'displacement',
@@ -67,18 +67,12 @@ export class PublicDataController {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
       'levitation_height',
       startTimestamp,
       endTimestamp ?? new Date().getTime().toString(),
     );
-  }
-
-  private validatePodId(podId: string) {
-    if (pods[podId] === undefined) {
-      throw new HttpException('Invalid pod ID', 400);
-    }
   }
 }

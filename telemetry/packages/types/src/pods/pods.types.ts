@@ -14,12 +14,12 @@ export type Limits = {
     low: number;
     high: number;
   };
-}
+};
 
-export type RangeMeasurement = BaseMeasurement & {  
+export type RangeMeasurement = BaseMeasurement & {
   format: 'float' | 'integer';
   limits: Limits;
-}
+};
 
 export type EnumMeasurement = BaseMeasurement & {
   format: 'enum';
@@ -31,10 +31,27 @@ export type EnumMeasurement = BaseMeasurement & {
 
 export type Measurement = RangeMeasurement | EnumMeasurement;
 
+// Could replace with stricter type in future
+type IpAddress = string;
+
+type Id = string;
+
+export type Pi = {
+  id: Id;
+  ip: IpAddress;
+  name: string;
+};
+
+export type PiWithVersion = Pi & {
+  binary?: string;
+  config?: string;
+};
+
 export type Pod = {
   name: string;
   id: string;
   measurements: Record<string, Measurement>;
+  pis: Record<Id, Pi>;
 };
 
-export type Pods = Record<string, Pod>;
+export type Pods = Record<Id, Pod>;
