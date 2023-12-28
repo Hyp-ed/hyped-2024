@@ -4,7 +4,7 @@ import { MqttPublish, MqttSubscribe, QoS } from '@/types/mqtt';
 import {
   MQTTConnectionStatusType,
   MQTT_CONNECTION_STATUS,
-} from '@/types/MQTTConnectionStatus';
+} from '@/types/MqttConnectionStatus';
 import mqtt from 'mqtt/dist/mqtt';
 import { MqttUnsubscribe } from '@/types/mqtt';
 import { getTopic } from '@/lib/utils';
@@ -15,6 +15,7 @@ type MQTTContextType = {
   publish: MqttPublish;
   subscribe: MqttSubscribe;
   unsubscribe: MqttUnsubscribe;
+  customPublish?: MqttClient['publish'];
   mqttConnectionStatus: MQTTConnectionStatusType;
 };
 
@@ -39,13 +40,13 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
 
   /**
    * Connect to an MQTT broker
-   * @param host The host to connect to
+   * @param broker The broker to connect to
    * @param mqttOption The MQTT options
    */
-  const mqttConnect = (host: string, mqttOption?: IClientOptions) => {
-    log(`Connecting to MQTT broker: ${host}`);
+  const mqttConnect = (broker: string, mqttOption?: IClientOptions) => {
+    log(`Connecting to MQTT broker: ${broker}`);
     setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTING);
-    const mqttClient = mqtt.connect(host, mqttOption);
+    const mqttClient = mqtt.connect(broker, mqttOption);
     setClient(mqttClient);
   };
 
@@ -130,6 +131,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         publish,
         subscribe,
         unsubscribe,
+        customPublish: client?.publish,
         mqttConnectionStatus: connectionStatus,
       }}
     >

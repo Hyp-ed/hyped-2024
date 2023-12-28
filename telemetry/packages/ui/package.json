@@ -11,6 +11,7 @@
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.0.8",
     "@fontsource/raleway": "^4.5.12",
+    "@hookform/resolvers": "^3.3.3",
     "@hyped/telemetry-constants": "*",
     "@hyped/telemetry-types": "*",
     "@radix-ui/react-alert-dialog": "^1.0.4",
@@ -35,6 +36,7 @@
     "openmct": "git+https://github.com/nasa/openmct.git#v2.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-hook-form": "^7.49.2",
     "react-hot-toast": "^2.4.1",
     "reactflow": "^11.7.4",
     "socket.io-client": "^4.6.2",
