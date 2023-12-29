@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run cmake-format style check
-        uses: TomLonergan03/cmake-format-lint-action@v1.0.11
+        uses: PuneetMatharu/cmake-format-lint-action@v1.0.4
         with:
           args: --check
 
