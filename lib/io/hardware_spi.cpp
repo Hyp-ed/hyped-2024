@@ -113,8 +113,16 @@ const char *HardwareSpi::getSpiBusAddress(const SpiBus bus)
 {
   if (bus == SpiBus::kSpi0) {
     return "/dev/spidev0.0";
+  } else if (bus == SpiBus::kSpi1) {
+    return "/dev/spidev0.1";
+  } else if (bus == SpiBus::kSpi2) {
+    return "/dev/spidev0.2";
+  } else if (bus == SpiBus::kSpi3) {
+    return "/dev/spidev0.3";
+  } else if (bus == SpiBus::kSpi4) {
+    return "/dev/spidev0.4";
   } else {
-    return "/dev/spidev1.0";
+    return "/dev/spidev0.5";
   }
 }
 
