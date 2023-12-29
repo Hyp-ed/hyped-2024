@@ -16,6 +16,7 @@ import {
   MoveUp,
   PlugZap,
   Rocket,
+  Settings2,
   Siren,
   Unplug,
 } from 'lucide-react';
@@ -28,7 +29,9 @@ export const FullControls = ({ podId }: { podId: string }) => {
   return (
     <Card className="w-full border-none">
       <CardHeader>
-        <CardTitle>Controls</CardTitle>
+        <CardTitle className="flex gap-2">
+          <Settings2 /> Controls
+        </CardTitle>
         <CardDescription>Granular pod controls</CardDescription>
       </CardHeader>
       <CardContent>

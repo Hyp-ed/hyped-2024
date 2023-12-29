@@ -23,6 +23,7 @@ type MQTTContextType = {
   ) => MqttClient | undefined;
   mqttConnectionStatus: MQTTConnectionStatusType;
   connectedAt: number | null;
+  broker: string;
 };
 
 const MQTTContext = createContext<MQTTContextType | null>(null);
@@ -159,6 +160,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         customPublish,
         mqttConnectionStatus: connectionStatus,
         connectedAt,
+        broker,
       }}
     >
       {children}

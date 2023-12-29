@@ -27,14 +27,14 @@ export const DebugView = () => {
       <ResizablePanel defaultSize={50}>
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
           <ResizablePanel
-            defaultSize={50}
+            defaultSize={60}
             className="flex items-center justify-center"
           >
             <ConnectionStatuses />
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel
-            defaultSize={50}
+            defaultSize={40}
             className="flex items-center justify-center"
           >
             <MqttSender />

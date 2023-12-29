@@ -8,9 +8,10 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { Radio } from 'lucide-react';
 
 export const MqttConnectionStatus = () => {
-  const { mqttConnectionStatus, connectedAt } = useMQTT();
+  const { mqttConnectionStatus, connectedAt, broker } = useMQTT();
 
   const statusComponentMap: Record<MQTTConnectionStatusType, React.ReactNode> =
     {
@@ -55,7 +56,9 @@ export const MqttConnectionStatus = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>MQTT</CardTitle>
+        <CardTitle className="flex gap-2">
+          <Radio /> MQTT
+        </CardTitle>
         <CardDescription>GUI connection to the MQTT broker</CardDescription>
       </CardHeader>
       <CardContent>
@@ -70,7 +73,7 @@ export const MqttConnectionStatus = () => {
           )}
         </div>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="text-sm opacity-60">{broker}</CardFooter>
     </Card>
   );
 };

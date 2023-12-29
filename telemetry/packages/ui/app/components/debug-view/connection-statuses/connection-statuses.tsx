@@ -15,12 +15,17 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { Signal } from 'lucide-react';
+import { pods } from '@hyped/telemetry-constants';
+import { ServerConnectionStatus } from './server-connection-status';
 
 export const ConnectionStatuses = () => {
   return (
-    <Card className="border-none">
+    <Card className="border-none w-full">
       <CardHeader>
-        <CardTitle>Connection Statuses</CardTitle>
+        <CardTitle className="flex gap-2">
+          <Signal /> Connection Statuses
+        </CardTitle>
         <CardDescription>
           Monitor connection statuses and latencies
         </CardDescription>
@@ -33,15 +38,16 @@ export const ConnectionStatuses = () => {
           className="mx-10"
         >
           <CarouselContent>
-            <CarouselItem className="basis-1/2 h-full">
-              {/* TODO: get pod ID from somewhere */}
-              <PodConnectionStatus podId="pod_1" />
-            </CarouselItem>
-            <CarouselItem className="basis-1/2 h-full">
+            {Object.keys(pods).map((podId) => (
+              <CarouselItem className="basis-1/3 h-full">
+                <PodConnectionStatus podId={podId} />
+              </CarouselItem>
+            ))}
+            <CarouselItem className="basis-1/3 h-full">
               <MqttConnectionStatus />
             </CarouselItem>
-            <CarouselItem className="basis-1/2 h-full">
-              <MqttConnectionStatus />
+            <CarouselItem className="basis-1/3 h-full">
+              <ServerConnectionStatus />
             </CarouselItem>
           </CarouselContent>
           <CarouselPrevious />

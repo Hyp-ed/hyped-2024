@@ -10,6 +10,7 @@ import { usePod } from '@/context/pods';
 import { PodConnectionStatusType } from '@/types/PodConnectionStatus';
 import { pods } from '@hyped/telemetry-constants';
 import { LatencyChart } from '@/components/latency-chart';
+import { TrainFront } from 'lucide-react';
 
 export const PodConnectionStatus = ({ podId }: { podId: string }) => {
   const {
@@ -46,13 +47,18 @@ export const PodConnectionStatus = ({ podId }: { podId: string }) => {
     ),
   };
 
+  const podName = pods[podId].name;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle>
-          {pods[podId].name} <span className="text-sm">({podId})</span>
+        <CardTitle className="flex gap-2">
+          <TrainFront />
+          {podName}
         </CardTitle>
-        <CardDescription>GUI connection to the MQTT broker</CardDescription>
+        <CardDescription>
+          GUI connection to {podName} ({podId})
+        </CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">

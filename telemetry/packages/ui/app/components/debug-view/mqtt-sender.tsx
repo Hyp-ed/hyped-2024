@@ -24,7 +24,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Send } from 'lucide-react';
+import { Radio, Send } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -84,7 +84,9 @@ export const MqttSender = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <Card className="border-none">
           <CardHeader>
-            <CardTitle>MQTT</CardTitle>
+            <CardTitle className="flex gap-2">
+              <Radio /> MQTT
+            </CardTitle>
             <CardDescription>Send arbitrary MQTT messages</CardDescription>
           </CardHeader>
           <CardContent className="space-y-8">

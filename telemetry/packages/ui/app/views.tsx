@@ -1,4 +1,10 @@
-import { Bug, GitBranch, LayoutDashboard, Terminal } from 'lucide-react';
+import {
+  Bug,
+  GitBranch,
+  LayoutDashboard,
+  LineChart,
+  Terminal,
+} from 'lucide-react';
 import { StateMachineFlowChart } from './components/flow/flow-chart';
 import { LogViewer } from './components/log-viewer';
 import { OpenMCT } from './components/openmct-iframe';
@@ -11,7 +17,7 @@ export const VIEWS = [
   {
     name: 'OpenMCT',
     component: <OpenMCT />,
-    icon: <LayoutDashboard width={18} />,
+    icon: <LineChart width={18} />,
   },
   {
     name: 'Logs',
