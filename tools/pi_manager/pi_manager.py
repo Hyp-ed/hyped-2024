@@ -3,8 +3,8 @@ from os import execv, fork
 import socket
 import json
 
-HYPED_POD = "/home/infernox/work/hyped-2024/build/bin/hyped_pod"
-CONFIG = "/home/infernox/work/hyped-2024/config/pod.toml"
+HYPED_POD = "/home/hyped/hyped_pod"
+CONFIG = "/home/hyped/pod.toml"
 HOST = 'localhost'
 PORT = 48595
 

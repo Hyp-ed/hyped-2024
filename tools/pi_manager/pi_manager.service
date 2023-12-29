@@ -7,8 +7,8 @@ StartLimitIntervalSec=0
 Type=simple
 Restart=always
 RestartSec=1
-User=infernox
-ExecStart=/usr/bin/env python3 /home/infernox/work/hyped-2024/tools/pi_manager/pi_manager.py
+User=hyped
+ExecStart=/usr/bin/env python3 /home/hyped/pi_manager/pi_manager.py
 
 [Install]
 WantedBy=multi-user.target
