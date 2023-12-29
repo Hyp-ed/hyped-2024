@@ -32,7 +32,7 @@
     "embla-carousel-react": "^8.0.0-rc17",
     "ky": "^0.33.2",
     "lerna": "^6.4.1",
-    "lucide-react": "^0.233.0",
+    "lucide-react": "^0.303.0",
     "mqtt": "4.1.0",
     "openmct": "git+https://github.com/nasa/openmct.git#v2.2.5",
     "react": "^18.2.0",

@@ -1,16 +1,30 @@
-import React from 'react';
-import { Button } from '../ui/button';
-import { cn } from '@/lib/utils';
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { cn } from '@/lib/utils';
+import {
+  ArrowDownToLine,
+  ArrowUpFromLine,
+  ChevronsDown,
+  ChevronsUp,
+  Italic,
+  MoveDown,
+  MoveUp,
+  PlugZap,
+  Rocket,
+  Siren,
+  Unplug,
+} from 'lucide-react';
+import React from 'react';
+import { SetLevitationHeight } from '../set-levitation-height';
+import { Button } from '../ui/button';
+import { CONTROLS, control } from '@/controls/controls';
 
-export const FullControls = () => {
+export const FullControls = ({ podId }: { podId: string }) => {
   return (
     <Card className="w-full border-none">
       <CardHeader>
@@ -22,35 +36,66 @@ export const FullControls = () => {
           <div className="space-y-2">
             <ButtonLabel>Start/stop</ButtonLabel>
             <ButtonPair>
-              <LeftButton>Start</LeftButton>
-              <RightButton>Stop</RightButton>
+              <LeftButton onClick={() => control(podId, CONTROLS.START)}>
+                Start <Rocket size={16} />
+              </LeftButton>
+              <RightButton onClick={() => control(podId, CONTROLS.STOP)}>
+                Stop <Siren size={16} />
+              </RightButton>
             </ButtonPair>
           </div>
           <div className="space-y-2">
             <ButtonLabel>Active suspension</ButtonLabel>
             <ButtonPair>
-              <LeftButton>Raise</LeftButton>
-              <RightButton>Lower</RightButton>
+              <LeftButton onClick={() => control(podId, CONTROLS.RAISE)}>
+                Raise <ChevronsUp size={16} />
+              </LeftButton>
+              <RightButton onClick={() => control(podId, CONTROLS.LOWER)}>
+                Lower <ChevronsDown size={16} />
+              </RightButton>
             </ButtonPair>
-            <ControlButton>Tilt</ControlButton>
+            <ControlButton
+              className="flex gap-2"
+              onClick={() => control(podId, CONTROLS.TILT)}
+            >
+              Tilt <Italic size={16} />
+            </ControlButton>
           </div>
           <div className="space-y-2">
             <ButtonLabel>Friction brakes</ButtonLabel>
             <ButtonPair>
-              <LeftButton>Clamp</LeftButton>
-              <RightButton>Retract</RightButton>
+              <LeftButton onClick={() => control(podId, CONTROLS.CLAMP)}>
+                Clamp <ArrowDownToLine size={16} />
+              </LeftButton>
+              <RightButton onClick={() => control(podId, CONTROLS.RETRACT)}>
+                Retract <ArrowUpFromLine size={16} />
+              </RightButton>
             </ButtonPair>
           </div>
           <div className="space-y-2">
             <ButtonLabel>High power</ButtonLabel>
             <ButtonPair>
-              <LeftButton>Start HP</LeftButton>
-              <RightButton>Stop HP</RightButton>
+              <LeftButton onClick={() => control(podId, CONTROLS.START_HP)}>
+                Start HP <PlugZap size={16} />
+              </LeftButton>
+              <RightButton onClick={() => control(podId, CONTROLS.STOP_HP)}>
+                Stop HP <Unplug size={16} />
+              </RightButton>
             </ButtonPair>
           </div>
           <div className="space-y-2">
             <ButtonLabel>Levitation</ButtonLabel>
-            <ControlButton>Levitate</ControlButton>
+            <ButtonPair>
+              <LeftButton onClick={() => control(podId, CONTROLS.LEVITATE)}>
+                Levitate <MoveUp size={16} />
+              </LeftButton>
+              <RightButton
+                onClick={() => control(podId, CONTROLS.STOP_LEVITATING)}
+              >
+                Descend <MoveDown size={16} />
+              </RightButton>
+            </ButtonPair>
+            <SetLevitationHeight podId={podId} />
           </div>
         </div>
       </CardContent>
@@ -94,7 +139,7 @@ const LeftButton = React.forwardRef<
       ref={ref}
       {...props}
       className={cn(
-        'bg-openmct-dark-gray hover:bg-openmct-light-gray rounded-r-none py-6 pr-6 pl-8',
+        'bg-openmct-dark-gray hover:bg-openmct-light-gray rounded-r-none pr-2 flex gap-2',
         props.className,
       )}
     />
@@ -112,7 +157,7 @@ const RightButton = React.forwardRef<
       ref={ref}
       {...props}
       className={cn(
-        'bg-openmct-dark-gray hover:bg-openmct-light-gray rounded-l-none py-6 pr-8 pl-6',
+        'bg-openmct-dark-gray hover:bg-openmct-light-gray rounded-l-none pl-2 flex gap-2',
         props.className,
       )}
     />

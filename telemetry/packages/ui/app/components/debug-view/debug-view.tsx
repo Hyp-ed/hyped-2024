@@ -20,7 +20,8 @@ export const DebugView = () => {
   return (
     <ResizablePanelGroup direction="vertical" className="h-full w-full">
       <ResizablePanel defaultSize={50}>
-        <FullControls />
+        {/* TODO: get podId from somewhere */}
+        <FullControls podId="pod_1" />
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={50}>
