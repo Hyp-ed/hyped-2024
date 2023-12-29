@@ -22,6 +22,7 @@ type MQTTContextType = {
     opts: IClientPublishOptions,
   ) => MqttClient | undefined;
   mqttConnectionStatus: MQTTConnectionStatusType;
+  connectedAt: number | null;
 };
 
 const MQTTContext = createContext<MQTTContextType | null>(null);
@@ -43,6 +44,8 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
   const [connectionStatus, setConnectionStatus] =
     useState<MQTTConnectionStatusType>(MQTT_CONNECTION_STATUS.UNKNOWN);
 
+  const [connectedAt, setConnectedAt] = useState<number | null>(null);
+
   /**
    * Connect to an MQTT broker
    * @param broker The broker to connect to
@@ -53,6 +56,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
     setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTING);
     const mqttClient = mqtt.connect(broker, mqttOption);
     setClient(mqttClient);
+    setConnectedAt(Date.now());
   };
 
   // Connect to MQTT broker on mount
@@ -154,6 +158,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         unsubscribe,
         customPublish,
         mqttConnectionStatus: connectionStatus,
+        connectedAt,
       }}
     >
       {children}

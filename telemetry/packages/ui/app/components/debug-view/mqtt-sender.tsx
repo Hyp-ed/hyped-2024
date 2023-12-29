@@ -80,9 +80,9 @@ export const MqttSender = () => {
   }
 
   return (
-    <Card>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)}>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)}>
+        <Card className="border-none">
           <CardHeader>
             <CardTitle>MQTT</CardTitle>
             <CardDescription>Send arbitrary MQTT messages</CardDescription>
@@ -116,65 +116,63 @@ export const MqttSender = () => {
             />
           </CardContent>
           <CardFooter>
-            <div className="w-full flex justify-between">
-              <div className="flex gap-8">
-                <FormField
-                  control={form.control}
-                  name="qos"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center text-sm space-y-0">
-                      <FormLabel>QoS:</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value?.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="0">0 (At most once)</SelectItem>
-                          <SelectItem value="1">1 (At least once)</SelectItem>
-                          <SelectItem value="2">2 (Exactly once)</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-                <FormField
-                  control={form.control}
-                  name="retain"
-                  render={({ field }) => (
-                    <FormItem className="flex gap-2 items-center text-sm space-y-0">
-                      <FormLabel>Retain:</FormLabel>
-                      <Select
-                        onValueChange={field.onChange}
-                        defaultValue={field.value?.toString()}
-                      >
-                        <FormControl>
-                          <SelectTrigger>
-                            <SelectValue />
-                          </SelectTrigger>
-                        </FormControl>
-                        <SelectContent>
-                          <SelectItem value="true">true</SelectItem>
-                          <SelectItem value="false">false</SelectItem>
-                        </SelectContent>
-                      </Select>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-              </div>
+            <div className="w-full flex justify-between gap-4">
+              <FormField
+                control={form.control}
+                name="qos"
+                render={({ field }) => (
+                  <FormItem className="flex gap-2 items-center text-sm space-y-0">
+                    <FormLabel>QoS:</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value?.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="0">0 (At most once)</SelectItem>
+                        <SelectItem value="1">1 (At least once)</SelectItem>
+                        <SelectItem value="2">2 (Exactly once)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="retain"
+                render={({ field }) => (
+                  <FormItem className="flex gap-2 items-center text-sm space-y-0">
+                    <FormLabel>Retain:</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value?.toString()}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="true">true</SelectItem>
+                        <SelectItem value="false">false</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
               <Button type="submit" className="flex gap-2">
                 Send <Send size={16} />
               </Button>
             </div>
           </CardFooter>
-        </form>
-      </Form>
-    </Card>
+        </Card>
+      </form>
+    </Form>
   );
 };
