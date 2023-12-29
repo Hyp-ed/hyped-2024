@@ -1,4 +1,5 @@
 import hashlib
+from os import execv, fork
 import socket
 import json
 
@@ -15,13 +16,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         with conn:
             data = conn.recv(1024)
             if data == b'get_hashes':
-                hashes = {}
+                hashes = {"result": "success"}
                 hashes['hyped_pod'] = hashlib.md5(
                     open(HYPED_POD, 'rb').read()).hexdigest()
                 hashes['config'] = hashlib.md5(
                     open(CONFIG, 'rb').read()).hexdigest()
                 reply = json.dumps(hashes)
-            # elif data == b'start':
+            elif data == b'start':
+                if fork() == 0:
+                    execv(HYPED_POD, [HYPED_POD, CONFIG])
+                reply = json.dumps({"result": "success"})
             else:
-                reply = "I'm sorry, Dave. I'm afraid I can't do that"
+                reply = json.dumps(
+                    {"result": "error", "message": "Unknown command"})
             conn.sendall(reply.encode())
