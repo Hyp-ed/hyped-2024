@@ -1,0 +1,5 @@
+[pi_names]
+# TODOLater: come up with a naming scheme
+# TODOLater: add the actual IPs
+"192.168.1.0" = "a pi"
+"192.168.1.1" = "another pi"
