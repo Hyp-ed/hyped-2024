@@ -5,8 +5,12 @@ const dataFormatter = (number: number) => `${number.toString()}ms`;
 
 export const LatencyChart = ({
   data,
+  minValue = 0,
+  maxValue = 100,
 }: {
   data: PreviousLatenciesType | undefined;
+  minValue?: number;
+  maxValue?: number;
 }) => {
   return (
     <div className="w-[200px]">
@@ -23,11 +27,11 @@ export const LatencyChart = ({
           showXAxis={false}
           showLegend={false}
           showGridLines={true}
-          maxValue={100}
-          minValue={0}
+          maxValue={maxValue}
+          minValue={minValue}
         />
       ) : (
-        <p>No latencies to show</p>
+        <p className="text-sm">No latencies to show</p>
       )}
     </div>
   );

@@ -39,14 +39,14 @@ export const ConnectionStatuses = () => {
         >
           <CarouselContent>
             {Object.keys(pods).map((podId) => (
-              <CarouselItem className="basis-1/3 h-full">
+              <CarouselItem className="basis-1/3">
                 <PodConnectionStatus podId={podId} />
               </CarouselItem>
             ))}
-            <CarouselItem className="basis-1/3 h-full">
+            <CarouselItem className="basis-1/3">
               <MqttConnectionStatus />
             </CarouselItem>
-            <CarouselItem className="basis-1/3 h-full">
+            <CarouselItem className="basis-1/3">
               <ServerConnectionStatus />
             </CarouselItem>
           </CarouselContent>

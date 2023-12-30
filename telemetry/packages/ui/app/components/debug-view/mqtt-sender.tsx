@@ -32,6 +32,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { pods } from '@hyped/telemetry-constants';
 
 const formSchema = z.object({
   topic: z.string().min(1, {
@@ -57,7 +58,7 @@ export const MqttSender = () => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      topic: '',
+      topic: `hyped/${Object.keys(pods)[0]}/`,
       message: '',
       qos: 0,
       retain: false,

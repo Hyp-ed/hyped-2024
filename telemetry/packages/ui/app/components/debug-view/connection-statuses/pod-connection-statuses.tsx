@@ -56,17 +56,18 @@ export const PodConnectionStatus = ({ podId }: { podId: string }) => {
           <TrainFront />
           {podName}
         </CardTitle>
-        <CardDescription>
-          GUI connection to {podName} ({podId})
-        </CardDescription>
+        <CardDescription>GUI connection to {podName}</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="flex flex-col gap-2">
           {statusComponentMap[connectionStatus]}
+          <p className="text-sm">
+            Latency: {latency ? <b>{latency}ms</b> : 'N/A'}
+          </p>
           <LatencyChart data={previousLatencies} />
         </div>
       </CardContent>
-      <CardFooter></CardFooter>
+      <CardFooter className="text-sm text-muted-foreground">{podId}</CardFooter>
     </Card>
   );
 };

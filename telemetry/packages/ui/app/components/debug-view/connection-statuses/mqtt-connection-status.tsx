@@ -73,7 +73,9 @@ export const MqttConnectionStatus = () => {
           )}
         </div>
       </CardContent>
-      <CardFooter className="text-sm opacity-60">{broker}</CardFooter>
+      <CardFooter className="text-sm text-muted-foreground">
+        {broker}
+      </CardFooter>
     </Card>
   );
 };
