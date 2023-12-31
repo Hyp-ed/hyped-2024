@@ -1,3 +1,4 @@
+import { PodState } from './pod-state';
 import { ConnectionStatuses } from './connection-statuses/connection-statuses';
 import { FullControls } from './full-controls';
 import { MqttSender } from './mqtt-sender';
@@ -19,9 +20,27 @@ import {
 export const DebugView = () => {
   return (
     <ResizablePanelGroup direction="vertical" className="h-full w-full">
-      <ResizablePanel defaultSize={50}>
+      <ResizablePanel defaultSize={30}>
         {/* TODO: get podId from somewhere */}
         <FullControls podId="pod_1" />
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={20}>
+        <ResizablePanelGroup direction="horizontal" className="w-full h-full">
+          <ResizablePanel
+            defaultSize={50}
+            className="flex items-center justify-center gap-2"
+          >
+            <PodState podId="pod_1" />
+          </ResizablePanel>
+          <ResizableHandle withHandle />
+          <ResizablePanel
+            defaultSize={50}
+            className="flex items-center justify-center"
+          >
+            Something else
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={50}>
