@@ -8,14 +8,25 @@ export class RemoteLogsService {
     private readonly logger: LoggerService,
   ) {}
 
+  /**
+   * Logs a message from the GUI, which is not associated with a particular pod.
+   * @param message The message from the GUI to log
+   * @returns True if the message was logged successfully, false otherwise
+   */
   async logRemoteMessage(message: string) {
-    this.logger.log(`Pod log from UI: ${message}`, RemoteLogsService.name);
+    this.logger.verbose(`[GUI] ${message}`, RemoteLogsService.name);
     return true;
   }
 
+  /**
+   * Logs a message from the GUI, which is associated with a particular pod.
+   * @param podId The ID of the pod
+   * @param message The message from the GUI to log
+   * @returns True if the message was logged successfully, false otherwise
+   */
   async logRemoteMessageWithPodID(podId: string, message: string) {
-    this.logger.log(
-      `Pod "${podId}" log from UI: ${message}`,
+    this.logger.verbose(
+      `[GUI - Pod ${podId}] ${message}`,
       RemoteLogsService.name,
     );
     return true;

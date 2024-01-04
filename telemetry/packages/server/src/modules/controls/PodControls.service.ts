@@ -10,7 +10,12 @@ export class PodControlsService {
     private readonly logger: LoggerService,
   ) {}
 
-  // Sends a control message to the pod over MQTT
+  /**
+   * Sends a control message to a pod.
+   * @param control The control message to send
+   * @param podId The ID of the pod
+   * @returns True if the message was sent successfully, false otherwise
+   */
   async sendControlMessage(control: string, podId: string) {
     this.mqttService.publish(`hyped/${podId}/controls/${control}`, control);
     this.logger.log(
@@ -20,11 +25,19 @@ export class PodControlsService {
     return true;
   }
 
-  // Sends a start message to the pod over MQTT, with options
-  async startPod(podId: string, options: any) {
-    this.mqttService.publish(`hyped/${podId}/controls/start`, options);
+  /**
+   * Sets the levitation height of a pod.
+   * @param height The height in millimeters
+   * @param podId The ID of the pod
+   * @returns True if the message was sent successfully, false otherwise
+   */
+  async setLevitationHeight(height: number, podId: string) {
+    this.mqttService.publish(
+      `hyped/${podId}/controls/levitation_height`,
+      height.toString(),
+    );
     this.logger.log(
-      `Control message "start" sent to pod "${podId}"`,
+      `Levitation height set to ${height}mm for pod "${podId}"`,
       PodControlsService.name,
     );
     return true;

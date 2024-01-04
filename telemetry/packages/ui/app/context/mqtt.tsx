@@ -9,13 +9,21 @@ import mqtt from 'mqtt/dist/mqtt';
 import { MqttUnsubscribe } from '@/types/mqtt';
 import { getTopic } from '@/lib/utils';
 import { log } from '@/lib/logger';
+import { IClientPublishOptions } from 'mqtt/types/lib/client-options';
 
 type MQTTContextType = {
   client: MqttClient | null;
   publish: MqttPublish;
   subscribe: MqttSubscribe;
   unsubscribe: MqttUnsubscribe;
+  customPublish: (
+    topic: string,
+    message: string | Buffer,
+    opts: IClientPublishOptions,
+  ) => MqttClient | undefined;
   mqttConnectionStatus: MQTTConnectionStatusType;
+  connectedAt: number | null;
+  broker: string;
 };
 
 const MQTTContext = createContext<MQTTContextType | null>(null);
@@ -37,16 +45,19 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
   const [connectionStatus, setConnectionStatus] =
     useState<MQTTConnectionStatusType>(MQTT_CONNECTION_STATUS.UNKNOWN);
 
+  const [connectedAt, setConnectedAt] = useState<number | null>(null);
+
   /**
    * Connect to an MQTT broker
-   * @param host The host to connect to
+   * @param broker The broker to connect to
    * @param mqttOption The MQTT options
    */
-  const mqttConnect = (host: string, mqttOption?: IClientOptions) => {
-    log(`Connecting to MQTT broker: ${host}`);
+  const mqttConnect = (broker: string, mqttOption?: IClientOptions) => {
+    log(`Connecting to MQTT broker: ${broker}`);
     setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTING);
-    const mqttClient = mqtt.connect(host, mqttOption);
+    const mqttClient = mqtt.connect(broker, mqttOption);
     setClient(mqttClient);
+    setConnectedAt(Date.now());
   };
 
   // Connect to MQTT broker on mount
@@ -123,6 +134,22 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
     client.unsubscribe(fullTopic);
   };
 
+  const customPublish = (
+    topic: string,
+    message: string | Buffer,
+    opts: IClientPublishOptions,
+  ) => {
+    if (!client) {
+      log(`MQTT couldn't publish to ${topic} because client is null`);
+      return;
+    }
+    return client.publish(topic, message, opts, (error) => {
+      if (error) {
+        log(`MQTT publish error: ${error}`);
+      }
+    });
+  };
+
   return (
     <MQTTContext.Provider
       value={{
@@ -130,7 +157,10 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         publish,
         subscribe,
         unsubscribe,
+        customPublish,
         mqttConnectionStatus: connectionStatus,
+        connectedAt,
+        broker,
       }}
     >
       {children}

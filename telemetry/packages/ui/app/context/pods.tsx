@@ -6,7 +6,7 @@ import { createContext, useContext, useEffect, useState } from 'react';
 import { useMQTT } from './mqtt';
 import { MQTT_CONNECTION_STATUS } from '@/types/MQTTConnectionStatus';
 import { getTopic } from '@/lib/utils';
-import { ALL_POD_STATES, PodStateType } from '@hyped/telemetry-constants';
+import { ALL_POD_STATES, PodStateType, pods } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
 
 /**
@@ -41,6 +41,7 @@ export type PreviousLatenciesType = {
 
 type PodsContextType = {
   [podId: string]: {
+    name: string;
     connectionStatus: PodConnectionStatusType;
     previousLatencies?: PreviousLatenciesType;
     latency?: number;
@@ -55,6 +56,7 @@ function createPodsContextFromIds(podIds: string[]): PodsContextType {
   const podsContext: PodsContextType = {};
   for (const podId of podIds) {
     podsContext[podId] = {
+      name: pods[podId].name,
       connectionStatus: POD_CONNECTION_STATUS.UNKNOWN,
       podState: ALL_POD_STATES.UNKNOWN,
     };
@@ -79,18 +81,13 @@ export const PodsProvider = ({
   );
   const [lastLatencyResponse, setLastLatencyResponse] = useState<number>();
 
-  const {
-    client,
-    publish,
-    subscribe,
-    unsubscribe,
-    mqttConnectionStatus,
-  } = useMQTT();
+  const { client, publish, subscribe, unsubscribe, mqttConnectionStatus } =
+    useMQTT();
 
   useEffect(() => {
     // If we don't have an MQTT connection, set all pod connection statuses to disconnected
     if (mqttConnectionStatus !== MQTT_CONNECTION_STATUS.CONNECTED) {
-      setPodsState(prevState =>
+      setPodsState((prevState) =>
         Object.fromEntries(
           Object.entries(prevState).map(([podId]) => [
             podId,
@@ -113,7 +110,7 @@ export const PodsProvider = ({
   useEffect(() => {
     // send latency messages every LATENCY_INTERVAL milliseconds
     const interval = setInterval(() => {
-      podIds.map(podId => {
+      podIds.map((podId) => {
         publish(
           'latency/request',
           JSON.stringify({
@@ -128,10 +125,10 @@ export const PodsProvider = ({
 
   useEffect(() => {
     const interval = setTimeout(() => {
-      podIds.map(podId => {
+      podIds.map((podId) => {
         if (!lastLatencyResponse) return;
         if (new Date().getTime() - lastLatencyResponse > POD_MAX_LATENCY) {
-          setPodsState(prevState => ({
+          setPodsState((prevState) => ({
             ...prevState,
             [podId]: {
               ...prevState[podId],
@@ -153,12 +150,14 @@ export const PodsProvider = ({
   // subscribe to latency messages and calculate latency
   useEffect(() => {
     if (!client) return;
-    const getLatency = (podId: string, topic: string, message: Buffer) => {
+    const processMessage = (podId: string, topic: string, message: Buffer) => {
       if (topic === getTopic('state', podId)) {
+        console.log(podId);
         const newPodState = message.toString();
+        console.log(newPodState);
         const allowedStates = Object.values(ALL_POD_STATES);
         if (allowedStates.includes(newPodState as PodStateType)) {
-          setPodsState(prevState => ({
+          setPodsState((prevState) => ({
             ...prevState,
             [podId]: {
               ...prevState[podId],
@@ -173,7 +172,6 @@ export const PodsProvider = ({
           parseInt(JSON.parse(message.toString())['latency']);
 
         // send warning to the server if the latency is too high
-        // send warning to the server if the latency is too high
         if (latency > POD_WARNING_LATENCY) {
           http.post(`pods/${podId}/warnings/latency`);
         }
@@ -181,7 +179,7 @@ export const PodsProvider = ({
         setLastLatencyResponse(new Date().getTime());
 
         // update the connection status
-        setPodsState(prevState => ({
+        setPodsState((prevState) => ({
           ...prevState,
           [podId]: {
             ...prevState[podId],
@@ -211,18 +209,18 @@ export const PodsProvider = ({
       }
     };
 
-    podIds.map(podId => {
+    podIds.map((podId) => {
       subscribe('latency/response', podId);
       subscribe('state', podId);
       client.on('message', (topic, message) =>
-        getLatency(podId, topic, message),
+        processMessage(podId, topic, message),
       );
     });
 
     return () => {
-      podIds.map(podId => {
+      podIds.map((podId) => {
         client.off('message', (topic, message) =>
-          getLatency(podId, topic, message),
+          processMessage(podId, topic, message),
         );
         unsubscribe('latency/response', podId);
         unsubscribe('state', podId);
