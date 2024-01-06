@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include <gtest/gtest.h>
 
 #include <navigation/control/consts.hpp>
@@ -8,11 +10,12 @@ namespace hyped::test {
 
 TEST(KalmanFilter, construction)
 {
-  using KalmanFilter     = navigation::KalmanFilter<3, 3>;
+  using KalmanFilter     = navigation::KalmanFilter;
   const auto manual_time = std::make_shared<utils::ManualTime>();
   navigation::StateVector initial_state;
   navigation::ErrorCovarianceMatrix initial_error_covariance;
   KalmanFilter kalman_filter(manual_time, initial_state, initial_error_covariance);
+
   /*
   kalman_filter.filter(KalmanFilter::StateTransitionMatrix(),
                        KalmanFilter::StateTransitionCovarianceMatrix(),
