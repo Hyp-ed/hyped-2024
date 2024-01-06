@@ -25,12 +25,13 @@ void KalmanFilter::filter(const StateTransitionMatrix &transition_matrix,
   const auto prop_error_covariance
     = (transition_matrix.transpose() * error_covariance_ * transition_matrix)
       + transition_covariance;
-  const auto innovation_covariance = prop_error_covariance * measurement_matrix.transpose();
+
   // TODOLater: Some optimisation is to be found here:
   // 1. Try and get rid of the inverse.
+  const auto repeated_matrix = prop_error_covariance * measurement_matrix.transpose();
   const auto kalman_gain
-    = innovation_covariance
-      * (measurement_matrix * innovation_covariance + measurement_noise_covariance).inverse();
+    = repeated_matrix
+      * (measurement_matrix * repeated_matrix + measurement_noise_covariance).inverse();
   state_estimate_
     = prop_state_estimate + kalman_gain * (measurement - measurement_matrix * prop_state_estimate);
 }

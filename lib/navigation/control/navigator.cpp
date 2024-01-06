@@ -13,7 +13,6 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       accelerometer_trajectory_estimator_(time),
       // crosschecker_(logger, time),
       running_means_filter_(logger, time),
-      encoders_preprocessor_(logger),
       previous_keyence_reading_({0, 0})
 {
 }
@@ -22,15 +21,6 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 // is std::nullopt
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  // TODOLater: uncomment when wheel encoders working
-  // get mean values from arrays to use in crosschecking
-  /*
-  core::Float mean_encoder_value = 0;
-  for (std::size_t i = 0; i < core::kNumEncoders; ++i) {
-    mean_encoder_value += static_cast<core::Float>(previous_encoder_reading_.at(i));
-  }
-  mean_encoder_value /= core::kNumEncoders;
-  */
 
   core::Float mean_keyence_value = 0;
   for (std::size_t i = 0; i < core::kNumKeyence; ++i) {
@@ -87,33 +77,6 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
   // Update old keyence reading
   previous_keyence_reading_ = keyence_data;
   logger_.log(core::LogLevel::kInfo, "Keyence data successfully updated in Navigation");
-  return core::Result::kSuccess;
-}
-
-// TODOLater: check input from sensors matches this
-// THIS SHOULD NOT BE CALLED!
-core::Result Navigator::encoderUpdate(const core::EncoderData &encoder_data)
-{
-  // check encoder data strictly increasing
-  for (std::size_t i = 0; i < core::kNumEncoders; ++i) {
-    if (previous_encoder_reading_.at(i) < encoder_data.at(i)) {
-      logger_.log(core::LogLevel::kFatal, "Encoder data is decreasing");
-      return core::Result::kFailure;
-    }
-  }
-
-  // run preprocessing on encoder data
-  auto clean_encoder_data = encoders_preprocessor_.processData(encoder_data);
-
-  // check fail state
-  if (!clean_encoder_data) {
-    logger_.log(core::LogLevel::kFatal, "Encoder data has failed preprocessing");
-    return core::Result::kFailure;
-  }
-
-  // update internal value
-  previous_encoder_reading_ = clean_encoder_data.value();
-  logger_.log(core::LogLevel::kInfo, "Encoder data successfully updated in navigation");
   return core::Result::kSuccess;
 }
 
