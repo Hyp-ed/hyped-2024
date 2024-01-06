@@ -25,12 +25,11 @@ using MeasurementVector = Eigen::Matrix<core::Float, measurement_dimension, 1>; 
 using MeasurementNoiseCovarianceMatrix
   = Eigen::Matrix<core::Float, measurement_dimension, measurement_dimension>;
 
-
 // TODOLater: move most of these to a config file
-static constexpr core::Float kTrackLength       = 100.0;  // m
-static constexpr core::Float kBrakingDistance   = 20.0;   // m TODOLater:check!
-static constexpr core::Float kStripeDistance    = 5.0;
-static constexpr bool kIsKeyenceActive          = true;
+static constexpr core::Float kTrackLength     = 100.0;  // m
+static constexpr core::Float kBrakingDistance = 20.0;   // m TODOLater:check!
+static constexpr core::Float kStripeDistance  = 5.0;
+static constexpr bool kIsKeyenceActive        = true;
 
 // define sensor checks return type
 enum class SensorChecks { kUnacceptable = 0, kAcceptable };

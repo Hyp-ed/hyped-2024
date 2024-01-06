@@ -1,5 +1,6 @@
-#include <gtest/gtest.h>
 #include <iostream>
+
+#include <gtest/gtest.h>
 
 #include <navigation/control/consts.hpp>
 #include <navigation/filtering/kalman_filter.hpp>
