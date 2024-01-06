@@ -1,7 +1,6 @@
 #pragma once
 
 #include "consts.hpp"
-#include "crosscheck.hpp"
 
 #include <array>
 #include <memory>
