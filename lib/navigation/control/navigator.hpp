@@ -37,12 +37,7 @@ class Navigator : public INavigator {
    *
    * @param encoder_data
    */
-  core::Result encoderUpdate(const core::EncoderData &encoder_data);
-  /**
-   * @brief preprocesses accelerometer data and updates trajectory
-   *
-   * @param accelerometer_data
-   */
+
   core::Result accelerometerUpdate(
     const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
 
@@ -59,7 +54,6 @@ class Navigator : public INavigator {
   RunningMeansFilter running_means_filter_;
 
   // previous readings
-  core::EncoderData previous_encoder_reading_;
   core::KeyenceData previous_keyence_reading_;
 
   // current navigation trajectory

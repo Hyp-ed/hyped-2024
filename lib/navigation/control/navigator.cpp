@@ -21,7 +21,6 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 // is std::nullopt
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-
   core::Float mean_keyence_value = 0;
   for (std::size_t i = 0; i < core::kNumKeyence; ++i) {
     mean_keyence_value += static_cast<core::Float>(previous_keyence_reading_.at(i));
