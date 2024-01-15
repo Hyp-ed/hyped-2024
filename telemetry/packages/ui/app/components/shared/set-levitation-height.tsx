@@ -1,8 +1,8 @@
 import { log } from '@/lib/logger';
 import { http } from 'openmct/core/http';
 import { useState } from 'react';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 
 export const SetLevitationHeight = ({ podId }: { podId: string }) => {
   const [height, setHeight] = useState<number | null>(null);

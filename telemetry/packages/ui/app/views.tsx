@@ -1,8 +1,8 @@
 import { Bug, GitBranch, LineChart, Terminal } from 'lucide-react';
-import { LogViewer } from './components/log-viewer';
-import { OpenMCT } from './components/openmct-iframe';
-import { DebugView } from './components/debug-view/debug-view';
-import { StateMachine } from './components/flow/state-machine';
+import { LogViewer } from './components/views/log-viewer';
+import { OpenMCT } from './components/views/openmct';
+import { DebugView } from './components/views/debug-view/debug-view';
+import { StateMachine } from './components/views/state-machine/state-machine';
 
 /**
  * The components that can be rendered in the LHS of the GUI.

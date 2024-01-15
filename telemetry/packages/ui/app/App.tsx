@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { VIEWS } from './views';
-import { ControlsUI } from './components/controls';
+import { Sidebar } from './components/sidebar/sidebar';
 import { cn } from './lib/utils';
 import {
   ResizableHandle,
@@ -30,7 +30,7 @@ const App = () => {
       </ResizablePanel>
       <ResizableHandle withHandle className="bg-openmct-light-gray" />
       <ResizablePanel defaultSize={15} minSize={10}>
-        <ControlsUI
+        <Sidebar
           selectedComponent={selectedComponent}
           setSelectedComponent={setSelectedComponent}
         />

@@ -21,9 +21,9 @@ import {
   Unplug,
 } from 'lucide-react';
 import React from 'react';
-import { SetLevitationHeight } from '../set-levitation-height';
-import { Button } from '../ui/button';
 import { CONTROLS, control } from '@/lib/controls';
+import { SetLevitationHeight } from '@/components/shared/set-levitation-height';
+import { Button } from '@tremor/react';
 
 export const FullControls = ({ podId }: { podId: string }) => {
   return (

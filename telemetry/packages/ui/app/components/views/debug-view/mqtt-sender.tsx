@@ -12,7 +12,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Textarea } from '../ui/textarea';
+import { Textarea } from '@/components/ui/textarea';
 import { useMQTT } from '@/context/mqtt';
 import toast from 'react-hot-toast';
 import { log } from '@/lib/logger';

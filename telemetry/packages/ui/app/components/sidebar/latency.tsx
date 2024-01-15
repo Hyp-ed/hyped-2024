@@ -6,7 +6,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
-import { LatencyChart } from './latency-chart';
+import { LatencyChart } from '../shared/latency-chart';
 import { cn } from '@/lib/utils';
 
 /**

@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button';
 import { CONTROLS, control } from '@/lib/controls';
 import { cn } from '@/lib/utils';
 import { ArrowUpFromLine, Rocket, Siren } from 'lucide-react';
-import { SetLevitationHeight } from './set-levitation-height';
+import { SetLevitationHeight } from '../shared/set-levitation-height';
 
 interface PodControlsProps {
   podId: string;

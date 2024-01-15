@@ -9,7 +9,7 @@ import {
 import { usePod } from '@/context/pods';
 import { PodConnectionStatusType } from '@/types/PodConnectionStatus';
 import { PodId, pods } from '@hyped/telemetry-constants';
-import { LatencyChart } from '@/components/latency-chart';
+import { LatencyChart } from '@/components/shared/latency-chart';
 import { TrainFront } from 'lucide-react';
 
 export const PodConnectionStatus = ({ podId }: { podId: PodId }) => {

@@ -4,15 +4,19 @@ import { cn } from '@/lib/utils';
 import { POD_IDS } from '@hyped/telemetry-constants';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useCurrentPod, usePod } from '../context/pods';
+import { useCurrentPod, usePod } from '../../context/pods';
 import { Latency } from './latency';
 import { PodControls } from './pod-controls';
-import { PodDisconnectError } from './pod-disconnect-error';
-import { PodConnectionStatus } from './connection-status';
-import { Logo } from './logo';
+import { PodDisconnectError } from '../pod-disconnect-error';
+import { PodConnectionStatus } from './pod-connection-status';
+import { Logo } from '../shared/logo';
 import { PodSelector } from './pod-selector';
 
-export const ControlsUI = ({
+/**
+ * The custom sidebar for the GUI which allows us to select a pod, control it, view its connection status, and change the view.
+ * Formerly known as the "Controls UI"
+ */
+export const Sidebar = ({
   selectedComponent,
   setSelectedComponent,
 }: {

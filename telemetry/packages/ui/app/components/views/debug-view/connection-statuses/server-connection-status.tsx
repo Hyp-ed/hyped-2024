@@ -10,8 +10,8 @@ import { Server } from 'lucide-react';
 import { config } from '@/config';
 import { useLiveLogs } from '@/context/live-logs';
 import { useEffect, useState } from 'react';
-import { Latency } from '@/components/latency';
-import { LatencyChart } from '@/components/latency-chart';
+import { Latency } from '@/components/sidebar/latency';
+import { LatencyChart } from '@/components/shared/latency-chart';
 import { PreviousLatenciesType } from '@/context/pods';
 
 const NUM_PREVIOUS_LATENCIES = 10 as const;
