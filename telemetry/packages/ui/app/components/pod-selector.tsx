@@ -21,7 +21,7 @@ export const PodSelector = () => {
         value={getDisplayText(podId)}
         onValueChange={(v) => setCurrentPod(getPodIdFromDisplayText(v))}
       >
-        <SelectTrigger id="pod-select" className="w-[180px]">
+        <SelectTrigger id="pod-select" className="w-full">
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

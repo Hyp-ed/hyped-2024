@@ -36,7 +36,7 @@ export const ControlsUI = ({
         <PodSelector />
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-xl">Connection</p>
+          <p className="font-bold text-xl">Connection to pod</p>
           <PodConnectionStatus podId={currentPod} />
           <PodDisconnectError status={connectionStatus} podId={currentPod} />
           <Latency podId={currentPod} />

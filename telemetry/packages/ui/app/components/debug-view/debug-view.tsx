@@ -24,10 +24,14 @@ export const DebugView = () => {
     <ResizablePanelGroup direction="vertical">
       <ResizablePanel defaultSize={20}>
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
-          <ResizablePanel
-            defaultSize={50}
-            className="flex items-center"
-          ></ResizablePanel>
+          <ResizablePanel defaultSize={50} className="flex items-center">
+            <div className="flex justify-center flex-col items-center w-full gap-2">
+              <h1 className="font-bold text-xl text-foreground">Placeholder</h1>
+              <p className="text-muted-foreground">
+                Something useful will go here at some point...
+              </p>
+            </div>
+          </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={50} className="flex items-center gap-2">
             <PodState podId={podId} />

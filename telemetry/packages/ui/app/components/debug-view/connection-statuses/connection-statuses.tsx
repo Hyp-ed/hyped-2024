@@ -38,17 +38,17 @@ export const ConnectionStatuses = () => {
           className="mx-10"
         >
           <CarouselContent>
-            {POD_IDS.map((podId) => (
-              <CarouselItem className="basis-1/3" key={podId}>
-                <PodConnectionStatus podId={podId} />
-              </CarouselItem>
-            ))}
             <CarouselItem className="basis-1/3">
               <MqttConnectionStatus />
             </CarouselItem>
             <CarouselItem className="basis-1/3">
               <ServerConnectionStatus />
             </CarouselItem>
+            {POD_IDS.map((podId) => (
+              <CarouselItem className="basis-1/3" key={podId}>
+                <PodConnectionStatus podId={podId} />
+              </CarouselItem>
+            ))}
           </CarouselContent>
           <CarouselPrevious />
           <CarouselNext />
