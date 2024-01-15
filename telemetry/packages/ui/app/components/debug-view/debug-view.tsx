@@ -7,9 +7,9 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
+import { useCurrentPod } from '@/context/pods';
 
 /**
- * TODO: in progress
  * Debug view. Contains components for debugging.
  * Will include:
  * - Full set of controls for pod
@@ -18,29 +18,25 @@ import {
  * @returns The debug view
  */
 export const DebugView = () => {
+  const { currentPod: podId } = useCurrentPod();
+
   return (
-    <ResizablePanelGroup direction="vertical" className="h-full w-full">
-      <ResizablePanel defaultSize={30}>
-        {/* TODO: get podId from somewhere */}
-        <FullControls podId="pod_1" />
-      </ResizablePanel>
-      <ResizableHandle withHandle />
+    <ResizablePanelGroup direction="vertical">
       <ResizablePanel defaultSize={20}>
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
           <ResizablePanel
             defaultSize={50}
-            className="flex items-center justify-center gap-2"
-          >
-            <PodState podId="pod_1" />
-          </ResizablePanel>
+            className="flex items-center"
+          ></ResizablePanel>
           <ResizableHandle withHandle />
-          <ResizablePanel
-            defaultSize={50}
-            className="flex items-center justify-center"
-          >
-            Something else
+          <ResizablePanel defaultSize={50} className="flex items-center gap-2">
+            <PodState podId={podId} />
           </ResizablePanel>
         </ResizablePanelGroup>
+      </ResizablePanel>
+      <ResizableHandle withHandle />
+      <ResizablePanel defaultSize={30}>
+        <FullControls podId={podId} />
       </ResizablePanel>
       <ResizableHandle withHandle />
       <ResizablePanel defaultSize={50}>

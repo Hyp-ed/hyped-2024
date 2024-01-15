@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { CONTROLS, control } from '@/controls/controls';
+import { CONTROLS, control } from '@/lib/controls';
 import { cn } from '@/lib/utils';
 import { ArrowUpFromLine, Rocket, Siren } from 'lucide-react';
 import { SetLevitationHeight } from './set-levitation-height';

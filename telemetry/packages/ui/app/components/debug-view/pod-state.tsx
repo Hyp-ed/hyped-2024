@@ -25,7 +25,7 @@ export const PodState = ({ podId }: { podId: string }) => {
   const { podState: state, name } = usePod(podId);
 
   return (
-    <Card className="border-none w-full">
+    <Card className="border-none">
       <CardHeader>
         <CardTitle className="flex gap-2">
           <CircleDashed /> Pod State

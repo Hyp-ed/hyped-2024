@@ -16,7 +16,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Signal } from 'lucide-react';
-import { pods } from '@hyped/telemetry-constants';
+import { POD_IDS, pods } from '@hyped/telemetry-constants';
 import { ServerConnectionStatus } from './server-connection-status';
 
 export const ConnectionStatuses = () => {
@@ -38,8 +38,8 @@ export const ConnectionStatuses = () => {
           className="mx-10"
         >
           <CarouselContent>
-            {Object.keys(pods).map((podId) => (
-              <CarouselItem className="basis-1/3">
+            {POD_IDS.map((podId) => (
+              <CarouselItem className="basis-1/3" key={podId}>
                 <PodConnectionStatus podId={podId} />
               </CarouselItem>
             ))}

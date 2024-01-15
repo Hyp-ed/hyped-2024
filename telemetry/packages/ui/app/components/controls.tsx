@@ -4,14 +4,13 @@ import { cn } from '@/lib/utils';
 import { POD_IDS } from '@hyped/telemetry-constants';
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { usePod } from '../context/pods';
+import { useCurrentPod, usePod } from '../context/pods';
 import { Latency } from './latency';
 import { PodControls } from './pod-controls';
 import { PodDisconnectError } from './pod-disconnect-error';
 import { PodConnectionStatus } from './connection-status';
 import { Logo } from './logo';
-
-const DEFAULT_POD = POD_IDS[0];
+import { PodSelector } from './pod-selector';
 
 export const ControlsUI = ({
   selectedComponent,
@@ -20,9 +19,10 @@ export const ControlsUI = ({
   selectedComponent: number;
   setSelectedComponent: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const [currentPod, setCurrentPod] = useState<string>(DEFAULT_POD);
-  const { connectionStatus } = usePod(currentPod);
-  const { podState } = usePod(currentPod);
+  const {
+    currentPod,
+    pod: { podState, connectionStatus },
+  } = useCurrentPod();
 
   // Display notification when the pod state changes
   useEffect(() => {
@@ -31,8 +31,9 @@ export const ControlsUI = ({
   }, [podState]);
 
   return (
-    <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col gap-2 justify-between bg-hyped-background select-none text-gray-100">
+    <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col justify-between bg-hyped-background select-none text-gray-100">
       <div className="flex flex-col gap-12 h-full">
+        <PodSelector />
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">
           <p className="font-bold text-xl">Connection</p>

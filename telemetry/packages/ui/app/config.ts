@@ -1,3 +1,4 @@
+import { pods } from '@hyped/telemetry-constants';
 import { z } from 'zod';
 
 const envSchema = z.object({

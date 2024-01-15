@@ -1,4 +1,4 @@
-import { usePod } from '@/context/pods';
+import { useCurrentPod, usePod } from '@/context/pods';
 import { cn } from '@/lib/utils';
 import { POD_CONNECTION_STATUS } from '@/types/PodConnectionStatus';
 import {
