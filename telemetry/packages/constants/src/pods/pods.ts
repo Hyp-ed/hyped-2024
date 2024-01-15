@@ -1,4 +1,4 @@
-import type { Pods } from '@hyped/telemetry-types';
+import { Pod } from '@hyped/telemetry-types';
 import {
   accelerometerCommon,
   hallEffectCommon,
@@ -7,7 +7,9 @@ import {
   thermistorCommon,
 } from './common';
 
-export const POD_IDS = ['pod_1'] as const;
+export const POD_IDS = ['pod_1', 'pod_2024'] as const;
+export type PodId = (typeof POD_IDS)[number];
+export type Pods = Record<PodId, Pod>;
 
 export const pods: Pods = {
   pod_1: {

@@ -8,11 +8,11 @@ import {
 } from '@/components/ui/card';
 import { usePod } from '@/context/pods';
 import { PodConnectionStatusType } from '@/types/PodConnectionStatus';
-import { pods } from '@hyped/telemetry-constants';
+import { PodId, pods } from '@hyped/telemetry-constants';
 import { LatencyChart } from '@/components/latency-chart';
 import { TrainFront } from 'lucide-react';
 
-export const PodConnectionStatus = ({ podId }: { podId: string }) => {
+export const PodConnectionStatus = ({ podId }: { podId: PodId }) => {
   const {
     connectionStatus,
     connectionEstablished,

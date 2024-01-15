@@ -1,4 +1,5 @@
 export { pods, POD_IDS } from './pods/pods';
+export type { PodId, Pods } from './pods/pods';
 export {
   ALL_POD_STATES,
   PASSIVE_STATES,

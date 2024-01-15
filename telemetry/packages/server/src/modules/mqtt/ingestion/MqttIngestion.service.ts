@@ -4,6 +4,7 @@ import { MeasurementService } from '@/modules/measurement/Measurement.service';
 import { currentTime } from '@influxdata/influxdb-client';
 import { StateService } from '@/modules/state/State.service';
 import { MqttIngestionError } from './errors/MqttIngestionError';
+import { POD_IDS } from '@hyped/telemetry-constants';
 
 @Injectable()
 export class MqttIngestionService {
@@ -25,7 +26,7 @@ export class MqttIngestionService {
     this.validateMqttMessage({ podId, measurementKey, value });
 
     await this.measurementService.addMeasurementReading({
-      podId,
+      podId: podId as any, // TODOLater: fix this
       measurementKey,
       value,
       timestamp,
@@ -44,7 +45,7 @@ export class MqttIngestionService {
     this.validateMqttMessage({ podId, measurementKey: 'state', value });
 
     await this.stateService.addStateReading({
-      podId,
+      podId: podId as any, // TODOLater: fix this
       value,
       timestamp,
     });

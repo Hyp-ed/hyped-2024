@@ -9,6 +9,7 @@ import { getTopic } from '@/lib/utils';
 import {
   ALL_POD_STATES,
   POD_IDS,
+  PodId,
   PodStateType,
   pods,
 } from '@hyped/telemetry-constants';
@@ -49,38 +50,37 @@ export type PreviousLatenciesType = {
   latency: number;
 }[];
 
-type PodsContextType = {
-  currentPod: string;
-  setPod: (podId: string) => void;
-  pods: {
-    [podId: string]: {
-      id: string;
-      name: string;
-      connectionStatus: PodConnectionStatusType;
-      previousLatencies?: PreviousLatenciesType;
-      latency?: number;
-      connectionEstablished?: Date;
-      podState: PodStateType;
-    };
+type PodsStateType = {
+  [podId: string]: {
+    id: PodId;
+    name: string;
+    connectionStatus: PodConnectionStatusType;
+    previousLatencies?: PreviousLatenciesType;
+    latency?: number;
+    connectionEstablished?: Date;
+    podState: PodStateType;
   };
+};
+
+type PodsContextType = {
+  pods: PodsStateType;
+  currentPod: PodId;
+  setCurrentPod: (podId: PodId) => void;
 };
 
 const PodsContext = createContext<PodsContextType | null>(null);
 
-function createPodsContextFromIds(podIds: string[]): PodsContextType {
-  const podsContext: PodsContextType = {
-    currentPod: DEFAULT_POD_ID,
-    setPod: (_: string) => {},
-    pods: {},
-  };
+function createPodsStateFromIds(podIds: typeof POD_IDS): PodsStateType {
+  const podsContext: PodsStateType = {};
   for (const podId of podIds) {
-    podsContext.pods[podId] = {
+    podsContext[podId] = {
       id: podId,
       name: pods[podId].name,
-      connectionStatus: POD_CONNECTION_STATUS.UNKNOWN,
+      connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
       podState: ALL_POD_STATES.UNKNOWN,
     };
   }
+  console.log('podsContext', podsContext);
   return podsContext;
 }
 
@@ -89,22 +89,11 @@ function createPodsContextFromIds(podIds: string[]): PodsContextType {
  * Provides an MQTT client and functions to publish, subscribe and unsubscribe to MQTT topics.
  * Also provides the connection status of the MQTT client.
  */
-export const PodsProvider = ({
-  podIds,
-  children,
-}: {
-  podIds: string[];
-  children: React.ReactNode;
-}) => {
-  const [podsState, setPodsState] = useState<PodsContextType>({
-    ...createPodsContextFromIds(podIds),
-    setPod: (podId: string) => {
-      setPodsState((prevState: PodsContextType) => ({
-        ...prevState,
-        currentPod: podId,
-      }));
-    },
-  });
+export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
+  const [podsState, setPodsState] = useState<PodsStateType>(
+    createPodsStateFromIds(POD_IDS),
+  );
+  const [currentPod, setCurrentPod] = useState<PodId>(DEFAULT_POD_ID);
   const [lastLatencyResponse, setLastLatencyResponse] = useState<number>();
 
   const { client, publish, subscribe, unsubscribe, mqttConnectionStatus } =
@@ -113,28 +102,21 @@ export const PodsProvider = ({
   useEffect(() => {
     // If we don't have an MQTT connection, set all pod connection statuses to disconnected
     if (mqttConnectionStatus !== MQTT_CONNECTION_STATUS.CONNECTED) {
-      setPodsState((prevState: PodsContextType) => ({
-        ...prevState,
-        pods: Object.fromEntries(
-          Object.entries(prevState.pods).map(([podId]) => [
-            podId,
-            {
-              ...prevState.pods[podId],
-              connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
-              previousLatencies: [], // reset previous latencies
-              latency: undefined, // reset latency
-              connectionEstablished: undefined, // reset connection established
-            },
-          ]),
-        ),
-      }));
+      setPodsState((prevState) => {
+        const newPodsState = { ...prevState };
+        for (const podId of POD_IDS) {
+          newPodsState[podId].connectionStatus =
+            POD_CONNECTION_STATUS.DISCONNECTED;
+        }
+        return newPodsState;
+      });
     }
   }, [mqttConnectionStatus]);
 
   useEffect(() => {
     // send latency messages every LATENCY_INTERVAL milliseconds
     const interval = setInterval(() => {
-      podIds.map((podId) => {
+      POD_IDS.map((podId) => {
         publish(
           'latency/request',
           JSON.stringify({
@@ -149,22 +131,20 @@ export const PodsProvider = ({
 
   useEffect(() => {
     const interval = setTimeout(() => {
-      podIds.map((podId) => {
+      POD_IDS.map((podId) => {
         if (!lastLatencyResponse) return;
         if (new Date().getTime() - lastLatencyResponse > POD_MAX_LATENCY) {
           setPodsState((prevState) => ({
             ...prevState,
-            pods: {
-              [podId]: {
-                ...prevState.pods[podId],
-                connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
-                // reset previous latencies
-                previousLatencies: [],
-                // reset latency
-                latency: undefined,
-                // reset connection established
-                connectionEstablished: undefined,
-              },
+            [podId]: {
+              ...prevState[podId],
+              connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
+              // reset previous latencies
+              previousLatencies: [],
+              // reset latency
+              latency: undefined,
+              // reset connection established
+              connectionEstablished: undefined,
             },
           }));
         }
@@ -184,12 +164,9 @@ export const PodsProvider = ({
         const allowedStates = Object.values(ALL_POD_STATES);
         if (allowedStates.includes(newPodState as PodStateType)) {
           setPodsState((prevState) => ({
-            ...prevState,
-            pods: {
-              [podId]: {
-                ...prevState.pods[podId],
-                podState: newPodState as PodStateType,
-              },
+            [podId]: {
+              ...prevState[podId],
+              podState: newPodState as PodStateType,
             },
           }));
         }
@@ -208,38 +185,35 @@ export const PodsProvider = ({
 
         // update the connection status
         setPodsState((prevState) => ({
-          ...prevState,
-          pods: {
-            [podId]: {
-              ...prevState.pods[podId],
-              connectionStatus: POD_CONNECTION_STATUS.CONNECTED,
-              // maintain a list of the previous NUM_PREVIOUS_LATENCIES latencies
-              previousLatencies: [
-                ...(prevState.pods[podId].previousLatencies || []).slice(
-                  -NUM_PREVIOUS_LATENCIES,
-                ),
-                {
-                  index: new Date().getTime(),
-                  latency,
-                },
-              ],
-              // calculate the average latency from the last NUM_LATENCIES_AVG latencies
-              latency: Math.round(
-                (prevState.pods[podId].previousLatencies || [])
-                  .slice(-NUM_LATENCIES_AVG)
-                  .reduce((acc, { latency }) => acc + latency, 0) /
-                  NUM_LATENCIES_AVG,
+          [podId]: {
+            ...prevState[podId],
+            connectionStatus: POD_CONNECTION_STATUS.CONNECTED,
+            // maintain a list of the previous NUM_PREVIOUS_LATENCIES latencies
+            previousLatencies: [
+              ...(prevState[podId].previousLatencies || []).slice(
+                -NUM_PREVIOUS_LATENCIES,
               ),
-              // set the connection established time if it hasn't been set yet
-              connectionEstablished:
-                prevState.pods[podId].connectionEstablished || new Date(),
-            },
+              {
+                index: new Date().getTime(),
+                latency,
+              },
+            ],
+            // calculate the average latency from the last NUM_LATENCIES_AVG latencies
+            latency: Math.round(
+              (prevState[podId].previousLatencies || [])
+                .slice(-NUM_LATENCIES_AVG)
+                .reduce((acc, { latency }) => acc + latency, 0) /
+                NUM_LATENCIES_AVG,
+            ),
+            // set the connection established time if it hasn't been set yet
+            connectionEstablished:
+              prevState[podId].connectionEstablished || new Date(),
           },
         }));
       }
     };
 
-    podIds.map((podId) => {
+    POD_IDS.map((podId) => {
       subscribe('latency/response', podId);
       subscribe('state', podId);
       client.on('message', (topic, message) =>
@@ -248,7 +222,7 @@ export const PodsProvider = ({
     });
 
     return () => {
-      podIds.map((podId) => {
+      POD_IDS.map((podId) => {
         client.off('message', (topic, message) =>
           processMessage(podId, topic, message),
         );
@@ -258,9 +232,13 @@ export const PodsProvider = ({
     };
   }, [client]);
 
-  return (
-    <PodsContext.Provider value={podsState}>{children}</PodsContext.Provider>
-  );
+  const value = {
+    pods: podsState,
+    currentPod,
+    setCurrentPod,
+  };
+
+  return <PodsContext.Provider value={value}>{children}</PodsContext.Provider>;
 };
 
 export const usePod = (podId: string) => {
@@ -290,6 +268,6 @@ export const useCurrentPod = () => {
   return {
     currentPod: context.currentPod,
     pod: context.pods[context.currentPod],
-    setPod: context.setPod,
+    setCurrentPod: context.setCurrentPod,
   };
 };

@@ -1,4 +1,4 @@
-import { pods } from '@hyped/telemetry-constants';
+import { POD_IDS, PodId, pods } from '@hyped/telemetry-constants';
 import { Label } from './ui/label';
 import {
   Select,
@@ -10,16 +10,16 @@ import {
 import { useCurrentPod } from '@/context/pods';
 
 export const PodSelector = () => {
-  const { currentPod: podId, setPod } = useCurrentPod();
+  const { currentPod: podId, setCurrentPod } = useCurrentPod();
 
-  const podOptions = Object.keys(pods).map((podId) => getDisplayText(podId));
+  const podOptions = POD_IDS.map((podId) => getDisplayText(podId));
 
   return (
     <div className="space-y-2">
       <Label htmlFor="pod-select">Select Pod:</Label>
       <Select
         value={getDisplayText(podId)}
-        onValueChange={(v) => setPod(v.split(' - ')[0])}
+        onValueChange={(v) => setCurrentPod(getPodIdFromDisplayText(v))}
       >
         <SelectTrigger id="pod-select" className="w-[180px]">
           <SelectValue />
@@ -36,4 +36,8 @@ export const PodSelector = () => {
   );
 };
 
-const getDisplayText = (podId: string) => `${pods[podId].name} (${podId})`;
+const getDisplayText = (podId: PodId) => `${pods[podId].name} (${podId})`;
+const getPodIdFromDisplayText = (displayText: string) => {
+  const podId = displayText.split('(')[1].split(')')[0];
+  return podId as PodId;
+};
