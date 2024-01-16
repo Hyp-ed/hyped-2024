@@ -31,4 +31,10 @@ TimeOfFlight::TimeOfFlight(core::ILogger &logger,
       device_address_(device_address)
 {
 }
+
+std::uint8_t TimeOfFlight::getChannel()
+{
+  return channel_;
+};
+
 }  // namespace hyped::sensors

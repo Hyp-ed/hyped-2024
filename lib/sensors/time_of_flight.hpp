@@ -26,7 +26,6 @@ class TimeOfFlight {
   // TODOLater - Implement
   std::optional<core::Result> checkStatus();
 
-  // TODOLater - Implement
   std::uint8_t getChannel();
 
  private:
