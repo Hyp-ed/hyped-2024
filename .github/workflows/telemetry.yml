@@ -4,13 +4,15 @@ on:
   push:
     paths:
       - 'telemetry/**'
+      - '.github/workflows/telemetry.yml'
+
+defaults:
+  run:
+    working-directory: telemetry
 
 jobs:
   telemetry-build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: telemetry
     steps:
       - uses: actions/checkout@v3
 
