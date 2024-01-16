@@ -23,10 +23,11 @@ class TimeOfFlight {
 
   ~TimeOfFlight();
 
-  // TODOLater - Implement
   std::optional<core::Result> checkStatus();
 
   std::uint8_t getChannel();
+
+  // TODOLater - Implement any other functions of ToF sensor
 
  private:
   TimeOfFlight(core::ILogger &logger,

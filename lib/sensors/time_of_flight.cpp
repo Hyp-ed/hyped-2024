@@ -32,6 +32,18 @@ TimeOfFlight::TimeOfFlight(core::ILogger &logger,
 {
 }
 
+std::optional<core::Result> TimeOfFlight::checkStatus()
+{
+  const auto status = i2c_->readByte(device_address_, kStatus);
+  if (!status) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read time of flight status");
+    return std::nullopt;
+  }
+  logger_.log(core::LogLevel::kDebug, "Successfully read time of flight status");
+  // TODOLater - Return core::Result or return value of status?
+  return core::Result::kSuccess;
+};
+
 std::uint8_t TimeOfFlight::getChannel()
 {
   return channel_;
