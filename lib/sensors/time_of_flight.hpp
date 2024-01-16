@@ -7,43 +7,48 @@
 #include <optional>
 
 #include <core/logger.hpp>
-#include <io/i2c.hpp>  
+#include <io/i2c.hpp>
 
-namespace hyoed :: sensors {
-constexpr std::uint8_t kDefaultVL6180XAddress = 0x29;
+namespace hyped::sensors {
+constexpr std::uint8_t kDefaultTimeOfFlightAddress = 0x29;
 
-class VL6180X : public II2cMuxSensor<std::int16_t> {
+// TODOLater - Implement II2cMuxSensor
+class TimeOfFlight {
  public:
-  static std::optional<VL6180X> create(core::ILogger &logger,
-                                        std::shared_ptr<io::II2c> i2c,
-                                        const std::uint8_t channel,
-                                        const std::uint8_t device_address = kDefaultVL6180XAddress);  
+  static std::optional<TimeOfFlight> create(core::ILogger &logger,
+                                            std::shared_ptr<io::II2c> i2c,
+                                            const std::uint8_t channel,
+                                            const std::uint8_t device_address
+                                            = kDefaultTimeOfFlightAddress);
 
-   ~VL6180X();       
+  ~TimeOfFlight();
 
-   std::optional<core::Result> checkStatus();
-   std::uint8_t getChannel() const;
+  // TODOLater - Implement
+  std::optional<core::Result> checkStatus();
 
-   private:
-  VL6180X(core::ILogger &logger,
-          std::shared_ptr<io::II2c> i2c,
-          const std::uint8_t channel,
-          const std::uint8_t device_address);
+  // TODOLater - Implement
+  std::uint8_t getChannel();
 
  private:
+  TimeOfFlight(core::ILogger &logger,
+               std::shared_ptr<io::II2c> i2c,
+               const std::uint8_t channel,
+               const std::uint8_t device_address);
+
+ private:
+  // TODOLater - Confirm these addresses are correct
+  // Register addresses/values taken from the VL6180X datasheet
+  static constexpr std::uint8_t kCtrl                 = 0x00;
+  static constexpr std::uint8_t kDataHigh             = 0x00;
+  static constexpr std::uint8_t kDataLow              = 0x00;
+  static constexpr std::uint8_t kStatus               = 0x00;
+  static constexpr std::uint8_t kBusy                 = 0x00;
+  static constexpr std::uint8_t kConfigurationSetting = 0x00;
+
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
   const std::uint8_t channel_;
   const std::uint8_t device_address_;
-
-private:
-  // Register addresses/values taken from the VL6180X datasheet
-  static constexpr std::uint8_t kCtrl = 0x00;  
-  static constexpr std::uint8_t kDataHigh = 0x00;  
-  static constexpr std::uint8_t kDataLow = 0x00;  
-  static constexpr std::uint8_t kStatus = 0x00;  
-  static constexpr std::uint8_t kBusy = 0x00;  
-  static constexpr std::uint8_t kConfigurationSetting = 0x00;  
 };
 
 }  // namespace hyped::sensors
