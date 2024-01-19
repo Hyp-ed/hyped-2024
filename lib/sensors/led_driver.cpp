@@ -19,7 +19,7 @@ std::optional<LedDriver> LedDriver::create(core::ILogger &logger,
 
     logger.log(core::LogLevel::kDebug, "Successfully initialised LED driver");
     
-    return LedDriver;
+    return ledDriver;
 }
 
 
