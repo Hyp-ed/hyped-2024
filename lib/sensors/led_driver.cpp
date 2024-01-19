@@ -1,6 +1,6 @@
 #include "led_driver.hpp"
 
-namespace hyped::drivers {
+namespace hyped::sensors {
 
 std::optional<LedDriver> LedDriver::create(core::ILogger &logger,
                                            std::shared_ptr<io::II2c> i2c,
@@ -11,15 +11,17 @@ std::optional<LedDriver> LedDriver::create(core::ILogger &logger,
         return std::nullopt;
     }
 
-    auto led_driver = LedDriver(logger, i2c, device_address);
-    if (auto init_result = led_driver.initialize(); !init_result) {
-        logger.log(core::LogLevel::kFatal, "Failed to initialize LED driver");
+    auto ledDriver = LedDriver(logger, i2c, device_address);
+    if (auto init_result = ledDriver.initialise(); !init_result) {
+        logger.log(core::LogLevel::kFatal, "Failed to initialise LED driver");
         return std::nullopt;
     }
 
-    logger.log(core::LogLevel::kDebug, "Successfully initialized LED driver");
-    return led_driver;
+    logger.log(core::LogLevel::kDebug, "Successfully initialised LED driver");
+    
+    return LedDriver;
 }
+
 
 LedDriver::LedDriver(core::ILogger &logger, std::shared_ptr<io::II2c> i2c, const std::uint8_t device_address)
     : logger_(logger),
@@ -32,19 +34,19 @@ LedDriver::~LedDriver()
 {
 }
 
-std::optional<core::Result> LedDriver::initialize()
+std::optional<core::Result> LedDriver::initialise()
 {
     const auto write_led_control_result = i2c_->writeByteToRegister(device_address_, kLEDControlRegister, 0x00);
 
     if (write_led_control_result == core::Result::kFailure) {
-        logger_.log(core::LogLevel::kFatal, "Failed to initialize LED driver");
+        logger_.log(core::LogLevel::kFatal, "Failed to initialise LED driver");
         return std::nullopt;
     }
 
     return core::Result::kSuccess;
 }
 
-std::optional<core::Result> LedDriver::setLEDColor(std::uint8_t channel, std::uint8_t red, std::uint8_t green, std::uint8_t blue)
+std::optional<core::Result> LedDriver::set_colour(std::uint8_t channel, std::uint8_t red, std::uint8_t green, std::uint8_t blue)
 {
     const auto write_red_result = i2c_->writeByteToRegister(device_address_, kColorRegisterBase + channel, red);
     const auto write_green_result = i2c_->writeByteToRegister(device_address_, kColorRegisterBase + channel + 1, green);
@@ -58,7 +60,7 @@ std::optional<core::Result> LedDriver::setLEDColor(std::uint8_t channel, std::ui
     return core::Result::kSuccess;
 }
 
-std::optional<core::Result> LedDriver::setLEDIntensity(std::uint8_t channel, std::uint8_t intensity)
+std::optional<core::Result> LedDriver::set_intensity(std::uint8_t channel, std::uint8_t intensity)
 {
     const auto write_intensity_result = i2c_->writeByteToRegister(device_address_, kBrightnessRegisterBase + channel, intensity);
 
