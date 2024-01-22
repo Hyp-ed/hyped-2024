@@ -12,7 +12,6 @@ Some variables can be analytically calculated, such as acceleration from basic c
 initial conditions and desired steady-state cruising speed. Temperature is more arbitrary, it goes up with 
 an increase of kinetic energy but to what extent is up to the programmer.
 */
-   
        
 /**
 * this class instantiates different data generation methods for a certain sensor
@@ -34,12 +33,23 @@ export class Behaviour {
      * @param data all sensor data
      * @returns array of [displacement, velocity, acceleration]
      */
-    public static motionSensors(data: SensorData): [number, number, number] {
-        let disp = data.displacement.currentVal;
-        let vel = data.velocity.currentVal;
-        let accl = data.acceleration.currentVal;
+    public static motionSensors(data: SensorData, dt: number): [number, number, number] {
+        let prevDisp = data.displacement.currentVal;
+        let prevVel = data.velocity.currentVal;
+        let prevAccl = data.acceleration.currentVal;
         
-        // Logistic function
+        // Logistic function params
+        const t = this.timestep;
+        const maxVel = data.velocity.limits.critical.high;
+        const growthRate = 0.4; // these params ensure accl. doesn't exceed 5
+        const timeOfInflection = 12.5;
+        
+        const maxAccl = data.acceleration.limits.critical.high;
+        
+        const vel = maxVel / (1 + Math.exp(-growthRate * (t - timeOfInflection)))
+        const accl = (vel - prevVel) / dt >= maxAccl ?
+            maxAccl : (vel - prevVel) / dt;
+        const disp = vel * t + 0.5 * accl * t ** 2;
 
         return [disp, vel, accl]
     }

@@ -4,7 +4,7 @@ import { Behaviour } from './pod.behaviour';
 import { DataManager } from './utils/data-manager';
 
 // Generate data for 50s in steps of 0.5s
-const updateTime = 500;
+const updateTime = 100;
 const startTime = 0
 const endTime = 50 * 1000 // 50s
 
@@ -93,8 +93,8 @@ const currentData = dataManager.getData();
  * Otherwise, defaults to false and all variables will be updated every timestep
 */
 const generateDataSeries = (random: boolean = false, specific: false | string[] = false) => {
-    for (let t = startTime; t <= 1000; t += updateTime) {
-        Behaviour.timestep = t;
+    for (let t = startTime + updateTime; t <= 14000; t += updateTime) {
+        Behaviour.timestep = t / 1000; // to use units of seconds in calcs
         if (random) {
             Behaviour.generateRandomValues(currentData);
             console.log(Object.keys(currentData).map( (sensor) => [sensor, currentData[sensor].currentVal]));
@@ -104,44 +104,57 @@ const generateDataSeries = (random: boolean = false, specific: false | string[] 
             continue;
         }
         if (!specific) {
-            for (const dataCategory in currentData) {
-                t == startTime && console.log(dataCategory)
-                // console.log(dataCategory);
-                switch (dataCategory) {
-                    case 'displacement':
-                    case 'velocity':
-                    case 'acceleration':
-                        // const [disp, vel, acc] = Behaviour.motionSensors(currentData)
-                        break;
-                    case 'pressure':
-                        //
-                        break;
-                    case 'temperature':
-                        //
-                        break;
-                    case 'hall_effect':
-                        //
-                        break;
-                    case 'keyence':
-                        //
-                        break;
-                    case 'power_line_resistance':
-                        //
-                        break;
-                    case 'levitation_height':
-                        //
-                        break;
+            
+            // ### NAVIGATION DATA UPDATE ### //
+            const [disp, vel, accl] = Behaviour.motionSensors(currentData, updateTime / 1000);
+            console.log(`Time: ${t / 1000}, Disp: ${disp}, Vel: ${vel}, Accl: ${accl}\n`);
+            currentData.displacement.currentVal = disp;
+            currentData.velocity.currentVal = vel;
+            currentData.acceleration.currentVal = accl;
+            dataManager.addData([
+                ['displacement', disp],
+                ['velocity', vel],
+                ['acceleration', accl],
+            ])
 
-                }
-            }
+            // for (const measurement in currentData) {
+            //     t == startTime && console.log(measurement)
+            //     Behaviour.hallEffect();
+            //     switch (dataCategory) {
+            //         case 'displacement':
+            //         case 'velocity':
+            //         case 'acceleration':
+            //             // const [disp, vel, acc] = Behaviour.motionSensors(currentData)
+            //             break;
+            //         case 'pressure':
+            //             //
+            //             break;
+            //         case 'temperature':
+            //             //
+            //             break;
+            //         case 'hall_effect':
+            //             //
+            //             break;
+            //         case 'keyence':
+            //             //
+            //             break;
+            //         case 'power_line_resistance':
+            //             //
+            //             break;
+            //         case 'levitation_height':
+            //             //
+            //             break;
 
-            continue;
+            //     }
+            // }
+
+            // continue;
         }
     }
 }
 
 
-generateDataSeries(true);
+generateDataSeries();
 
 console.log("Pod Data:", dataManager.storedPodData)
 
