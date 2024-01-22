@@ -9,15 +9,32 @@
 #include <core/types.hpp>
 #include <io/spi.hpp>
 
-namespace hyped::io {
+namespace hyped::sensors {
+
+constexpr std::uint8_t kOpticalFlowAddress = 0x00; //ToDo: determine the address of the sensor
 
 class OpticalFLow {
-// start with initialising the sensor (method 1)
-// gets the value of x_low and of y_low and return it, so read from 0x03 and 0x05 (method 2)
-// this will use read, addr: is register (either x or y), pointer: pointer to head of read buffer ??
-// and len: number of bytes to be read, 16 bits?
+// include "magic sauce" optimisation?
+ public:
+  static std::optional<OpticalFLow> create(core::ILogger &logger,
+  										   std::shared_ptr<io::ISpi> spi,
+										   const std::uint8_t channel,
+										   const std::uint8_t device_address);
+  ~OpticalFLow();
 
-private:
+ private:
+ OpticalFLow(core::ILogger &logger,
+  			 std::shared_ptr<io::ISpi> spi,
+			 const std::uint8_t channel,
+			 const std::uint8_t device_address);
+ 
+ private:
+ core::ILogger &logger_;
+ std::shared_ptr<io::ISpi> spi_;
+ const std::uint8_t channel_;
+ const std::uint8_t device_address_;
+
+ private:
 std::uint8_t getPosition();
 //Register addresses for x and y
 static constexpr std::uint8_t kXLowReg = 0x03;
@@ -25,4 +42,5 @@ static constexpr std::uint8_t kYLowReg = 0x05;
 static constexpr std::uint8_t kXLow = 0;
 static constexpr std::uint8_t kYLow = 0;
 };
-}
+
+} //namespace hyped::sensors

@@ -1,10 +1,9 @@
 #include "optical_flow.hpp"
 
-namespace hyped::io {
+namespace hyped::sensors {
 std::uint8_t OpticalFLow::getPosition()
 {
-	// call function read(kXLowReg, *kXLow, 8)
-	// nb of bytes is an assumption, not mentioned in datasheet
+  	//io::ISpi read(kXLowReg, *kXLow, 8); // abstract class
 	// do same for Y
 }
 }
