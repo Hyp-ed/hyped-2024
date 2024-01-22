@@ -63,7 +63,7 @@ export class Behaviour {
         let vel = data.data.navigation.velocity;
         let accl = data.data.navigation.acceleration;
         
-        
+
         
         // Logistic function
         // this.sensor.limits
@@ -102,54 +102,3 @@ export class Behaviour {
     // keyence()
 }
       
-
-/**
- * Helper function checks if the limits of a sensor's range are equal to another
- * in order to avoid duplicates in rangeReadings array
- * @param range1 a sensor's allowed range of values
- * @param range2 a sensor of the same type's allowed range
- * @returns true if they share the same limits
-*/
-/*
-function compareLimits(range1: Limits, range2: Limits): boolean {
-    return range1.critical.low === range2.critical.low && range1.critical.high === range2.critical.high;
-}
-*/      
-
-/*
-### Comments and cut sections of code - to be deleted later ###
-
-   // interface Behaviour {
-       //     temperature: (prevValue: number) => number;
-       //     displacement: (prevValue: number) => number;
-       //     velocity: (prevValue: number) => number;
-       //     acceleration: (prevValue: number) => number;
-       //     pressurePullPush: (prevValue: number) => number;
-       //     pressurePullPush: (prevValue: number) => number;
-       
-       //     levitationHeight: (prevValue: number) => number;
-       // }
-        
-        // i > 0 && console.log(sensor[0], uniqueRangeSensors[i - 1][0]);
-        
-        // const behaviour = {}
-        // for (const sensor of uniqueRangeSensors) {
-            //     // console.log(sensor[0]);
-            //     behaviour[String(sensor[0])] = sensor[0];
-            // }
-            
-            // console.log(behaviour);
-
-// temperature: (prevValue: number) => {}
-
-
-// printInput(): void {
-    //     console.log(this.sensor)
-    // }
-
-*/
-
-// console.log(uniqueRangeSensors);
-// console.log(`Number of unique sensors: ${uniqueSensorAmt}`);
-// console.log(`The pod uses the following set of sensors:${uniqueSensorStringArray}.`);
-// console.log(uniqueRangeSensors.slice(0,5));

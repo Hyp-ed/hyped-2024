@@ -1,12 +1,12 @@
 import { pods } from '../../constants/src/pods/pods';
 import type { RangeMeasurement, Measurement, Limits } from '../../../packages/types/src/index';
 import { Behaviour } from './pod.behaviour';
-import { SensorData, DataManager } from './utils/data-manager';
+import { DataManager } from './utils/data-manager';
 
 // Generate data for 50s in steps of 0.5s
-const deltaT = 500;
+const updateTime = 500;
 const startTime = 0
-const endTime = 50 * 1000
+const endTime = 50 * 1000 // 50s
 
 // Reduce sensors object to one with only relevant range-based sensors
 const sensors = Object.entries(pods.pod_1.measurements);
@@ -19,7 +19,11 @@ const sensors = Object.entries(pods.pod_1.measurements);
  * It then removes those without a limits property (i.e. of type EnumMeasurement)
  *      as well as unnecessary duplicates
  */
-const unqSensorObj = sensors
+interface LiveMeasurement extends RangeMeasurement {
+    initialVal: number
+}
+
+const unqSensorObj: Record<string, LiveMeasurement> = Object.fromEntries( sensors
     .map( (sensor): [string, RangeMeasurement] | null => {
         const substrSlice = (name: string): [number, number] => [0, name.lastIndexOf('_')];
         // let temp = sensor[0];
@@ -29,18 +33,88 @@ const unqSensorObj = sensors
         // if (temp.match(/(\d|avg\b)$/)) {console.log('Sensor not range :', temp.substring(...substrSlice(temp)))}
         // console.log(sensor[0])
         return sensor[1].hasOwnProperty('limits') 
-            ? [sensor[0], sensor[1]] as [string, RangeMeasurement] : null;
-    }).filter((sensor): sensor is [string, RangeMeasurement] => sensor !== null
-    ).reduce( (acc, [key, val] ) => {
-        // console.log(key, val);
-        acc[key] = val;
-        return acc;
-    }, {} as Record<string, RangeMeasurement>);
+            ? [sensor[0], { ...sensor[1], initialVal: 0 } ] as [string, LiveMeasurement] : null;
+    }).filter((sensor): sensor is [string, RangeMeasurement] => sensor !== null)
+)
 
-// console.log(unqSensorObj)
+// Set initial conditions, updated throughout runtime
+interface InitialConditions {
+    [key: string]: number;
+}
+    
+const initialConditions: InitialConditions = {
+    // Navigation
+    accelerometer: 0, displacement: 0, velocity: 0, acceleration: 0,
+    // External Pressure
+    pressure_back_pull: 1, pressure_front_pull: 1, pressure_back_push: 1, pressure_front_push: 1,
+    // Fluid Reservoir Pressure
+    pressure_brakes_reservoir: 5, pressure_active_suspension_reservoir: 5,
+    // Brake Pressure
+    pressure_front_brake: 1, pressure_back_brake: 1,
+    // Miscallaneous
+    thermistor: 20, hall_effect: averageLimits('hall_effect'), keyence: 0,
+    power_line_resistance: 10, levitation_height: 0
+}
+for (let sens in unqSensorObj) [
+    unqSensorObj[sens].initialVal = initialConditions[sens]
+]
+
+console.log("UNIQUE")
+console.log(unqSensorObj)
+
+/* MAIN DATA GENERATION FUNCTION */
+
+const dataManager = DataManager.getInstance(unqSensorObj); // change DataManager file data type to LiveMeasurement type
+// const podBehaviour = new Behaviour();
+
+const generateDataSeries = () => {
+    for (let t = startTime; t <= 2000; t += updateTime) {
+        Behaviour.timestep = t;
+        const currentData = dataManager.getData();
+        // console.log(currentData)
+        for (const dataCategory in currentData.data) {
+            // console.log(dataCategory);
+            switch (dataCategory) {
+                case 'navigation':
+                    const [disp, vel, acc] = Behaviour.motionSensors(currentData)
+                    break;
+                case 'pressure':
+                    //
+                    break;
+                case 'temperature':
+                    //
+                    break;
+                case 'hall_effect':
+                    //
+                    break;
+                case 'keyence':
+                    //
+                    break;
+                case 'power_line_resistance':
+                    //
+                    break;
+                case 'levitation_height':
+                    //
+                    break;
+
+            }
+            for (const measurement in currentData.data[dataCategory]) {
+                
+                currentData.data[dataCategory][measurement] += 1;
+            }
+        }
+        dataManager.updateData(currentData);
+    }
+}
+
+generateDataSeries();
+// const finalData = dataManager.getData();
+// console.log(finalData);
+// console.log(Behaviour.timestep);
+
 
 /**
- * Gets arbitrary initial conditions for certain sensors below
+ * Helper func to get arbitrary initial conditions for certain sensors below
  * Uses simple average
  * @param sensor name of the sensor e.g. 'pressure_back_push'
  * */
@@ -48,45 +122,3 @@ function averageLimits(sensor: string): number {
     let lims = Object.values(unqSensorObj[sensor].limits.critical)
     return lims.reduce( (acc, c) => (acc + c)/2);
 }
-
-// Set as initial conditions, updated throughout runtime
-const liveData: SensorData = {
-    timestep: 0,
-    data: {
-        navigation: {
-        displacement: 0,
-        velocity: 0,
-        acceleration: 0,
-        },
-        pressure: {
-            back_pull: 1,
-            front_pull: 1,
-            back_push: 1,
-            front_push: 1,
-            brakes_reservoir: 5,
-            active_suspension_reservoir: 5,
-            front_brake: 1,
-            back_brake: 1,
-        },
-        // Using only one sensor value for those below for fake data generation testing
-        // Rest can be added later if needed
-        temperature: {
-            thermistor: 20,
-        },
-        hall_effect: {
-            // initially set reading to average of limits as it will fluctuate sinusoidally
-            hall_effect: averageLimits('hall_effect')
-        },
-        keyence: {
-            keyence: averageLimits('keyence')
-        },
-        line_resistance: {
-            resistance: 10 // closer to min than max, heats up with speed
-        },
-        levitation_height: {
-            height: 0 // rests on track when stationary
-        }
-    }
-}
-
-console.log(liveData);
