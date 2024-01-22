@@ -2,6 +2,10 @@ import { Controller, Get, HttpException, Param, Query } from '@nestjs/common';
 import { PublicDataService } from './PublicData.service';
 import { HistoricalTelemetryDataService } from '@/modules/openmct/data/historical/HistoricalTelemetryData.service';
 import { pods } from '@hyped/telemetry-constants';
+import {
+  LevitationHeightResponse,
+  RawLevitationHeight,
+} from '@hyped/telemetry-types';
 
 @Controller('pods/:podId/public-data')
 export class PublicDataController {
@@ -88,12 +92,12 @@ export class PublicDataController {
     this.validatePodId(podId);
 
     const [
-      levitationHeight1,
-      levitationHeight2,
-      levitationHeight3,
-      levitationHeight4,
-      levitationHeightLateral1,
-      levitationHeightLateral2,
+      levitation_height_1,
+      levitation_height_2,
+      levitation_height_3,
+      levitation_height_4,
+      levitation_height_lateral_1,
+      levitation_height_lateral_2,
     ] = await Promise.all([
       this.historialTelemetryDataService.getHistoricalReading(
         podId,
@@ -134,13 +138,24 @@ export class PublicDataController {
     ]);
 
     return {
-      levitationHeight1,
-      levitationHeight2,
-      levitationHeight3,
-      levitationHeight4,
-      levitationHeightLateral1,
-      levitationHeightLateral2,
-    };
+      levitation_height_1: this.convertValueToInt(levitation_height_1),
+      levitation_height_2: this.convertValueToInt(levitation_height_2),
+      levitation_height_3: this.convertValueToInt(levitation_height_3),
+      levitation_height_4: this.convertValueToInt(levitation_height_4),
+      levitation_height_lateral_1: this.convertValueToInt(
+        levitation_height_lateral_1,
+      ),
+      levitation_height_lateral_2: this.convertValueToInt(
+        levitation_height_lateral_2,
+      ),
+    } satisfies LevitationHeightResponse;
+  }
+
+  private convertValueToInt(levitationHeights: RawLevitationHeight[]) {
+    return levitationHeights.map((reading) => ({
+      ...reading,
+      value: parseInt(reading.value),
+    }));
   }
 
   private validatePodId(podId: string) {

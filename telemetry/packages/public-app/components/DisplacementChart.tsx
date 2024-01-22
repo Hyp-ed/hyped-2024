@@ -33,22 +33,17 @@ export const DisplacementChart = () => {
       })
     : [];
 
-  //if (isLoading) return <div>Currently loading acceleration...</div>;
+
   return (
-    <Card
-      //  className="dark:bg-black"
-      decoration="top"
-      decorationColor="red"
-    >
+    <Card className="h-[560px]" decoration="top" decorationColor="red">
       <Title>Displacement</Title>
 
       <LineChart
-        className="mt-6"
+        className="h-[420px] mt-6"
         data={displacementData}
         index="year"
         categories={['displacement']}
         colors={['red']}
-        valueFormatter={valueFormatter}
         yAxisWidth={40}
       />
     </Card>

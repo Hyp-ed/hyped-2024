@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { useQuery } from 'react-query';
+import { LevitationHeightResponse } from '@hyped/telemetry-types';
 
 import {
   Card,
@@ -14,6 +15,7 @@ import {
   Metric,
   BadgeDelta,
   TabGroup,
+  Badge,
 } from '@tremor/react';
 
 interface products {
@@ -53,32 +55,41 @@ const products = [
 export default function LevitationHeight() {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const selectedLocation = selectedIndex === 0 ? 'A' : 'B';
+  const [show, setShow] = useState(false);
 
-  const { data } = useQuery(
-    'levitation_height_1',
+  const { data, error } = useQuery<LevitationHeightResponse>(
+    'levitation-height',
     async () =>
-      (await fetch(
+      await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/levitation-height?start=0`,
-      ).then((res) => res.json())) as {
-        id: 'levitation_height_1';
-        timestamp: string;
-        value: number;
-      }[],
+      ).then(res => res.json()),
     {
       refetchInterval: 1000,
     },
   );
-  console.log(data);
 
-  // for (let i = 0; i < products.length; i++) {
-  //   products[i].value = data ? data[i].value : 0;
-  // }
+  if (!data) return error;
+  console.log('typeof :' + (Object.keys(data)[0] === 'statusCode'));
+  if (Object.keys(data)[0] === 'statusCode') {
+    const error = true;
+    console.log('The data fetch request resulted in error ' + error);
+  }
 
+  console.log('Levitation fetch request result ' + Object.keys(data));
+ 
   return (
-    <Card decoration="top" decorationColor="red" className="h-[410px]">
+    <Card decoration="top" decorationColor="red" className="h-[560px]">
       <Flex alignItems="start">
         <Text>Levitation Height</Text>
-        <BadgeDelta deltaType="moderateIncrease">Elevated</BadgeDelta>
+        <BadgeDelta
+          deltaType={
+            data[Object.keys(data)[0]][0]?.value > 0
+              ? 'moderateIncrease'
+              : 'moderateDecrease'
+          }
+        >
+          Elevated
+        </BadgeDelta>
       </Flex>
       <Flex
         justifyContent="start"
@@ -97,27 +108,99 @@ export default function LevitationHeight() {
           <Tab>Pod 1</Tab>
         </TabList>
       </TabGroup>
-      {products
-        .filter((item) => item.location === selectedLocation)
-        .map((item) => (
-          <div key={item.title} className="space-y-2 mt-4">
-            <Flex>
-              <Text>{item.title}</Text>
-              <Text>{`${item.value}% (${item.metric})`}</Text>
-            </Flex>
-            <ProgressBar value={item.value} />
-          </div>
-        ))}
+      {data ? (
+        Object.keys(data)
+          .slice(0, Object.keys(data).length - 2)
+          .map(height => (
+            <div key={height} className="space-y-2 mt-4">
+              <Flex>
+                <Text>{height}</Text>
+                <Text>{`${
+                  data[height][0]?.value ? data[height][0].value : 0
+                } mm`}</Text>
+              </Flex>
+
+              <ProgressBar value={data[height][0]?.value}></ProgressBar>
+            </div>
+          ))
+      ) : (
+        <div>no data </div>
+      )}
+
+      {show ? (
+        <div>
+          {Object.keys(data)
+            .slice(-2)
+            .map(height => (
+              <div key={height} className="space-y-2 mt-4">
+                <Flex>
+                  <Text>{height}</Text>
+                  <Text>{`${
+                    data[height][0]?.value ? data[height][0].value : 0
+                  } mm`}</Text>
+                </Flex>
+
+                <ProgressBar value={data[height][0]?.value}></ProgressBar>
+              </div>
+            ))}
+        </div>
+      ) : null}
       <Flex className="mt-6 pt-4 border-t">
         <Button
           size="xs"
           variant="light"
           //   icon={ArrowNarrowRightIcon}
           iconPosition="right"
+          onClick={() => {
+            !show ? setShow(true) : setShow(false);
+          }}
         >
           View more
         </Button>
       </Flex>
+     
+      {show ? null : !(Object.keys(data)[0] === 'statusCode') ? (
+        (console.log('no error', error),
+        console.log('This is data statuscode ' + typeof data['statusCode']),
+        (
+          <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
+            {Object.keys(data).map((height, i) => (
+              <BadgeDelta
+                key={i}
+                deltaType={
+                  data[height][0]?.value > 0
+                    ? 'moderateIncrease'
+                    : 'moderateDecrease'
+                }
+              >
+                Sensor {i}:{' '}
+                {data[height][0]?.value > 0 ? 'Elevated' : 'disconnected'}
+              </BadgeDelta>
+            ))}
+          </div>
+        ))
+      ) : (
+        <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
+          <BadgeDelta key={1} deltaType="moderateDecrease">
+            Disconnected
+          </BadgeDelta>
+          <BadgeDelta key={2} deltaType="moderateDecrease">
+            Disconnected
+          </BadgeDelta>
+          <BadgeDelta key={3} deltaType="moderateDecrease">
+            Disconnected
+          </BadgeDelta>
+          <BadgeDelta key={4} deltaType="moderateDecrease">
+            Disconnected
+          </BadgeDelta>
+          <BadgeDelta key={5} deltaType="moderateDecrease">
+            Disconnected
+          </BadgeDelta>
+          <BadgeDelta key={6} deltaType="moderateDecrease">
+            Disconnected
+          </BadgeDelta>
+        </div>
+      )}
     </Card>
   );
 }

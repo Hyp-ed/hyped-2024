@@ -1,7 +1,7 @@
 import { Card, Title, Text, Grid, Badge } from '@tremor/react';
 import { VelocityGraph } from './velocity-graph';
 
-import { TrackerExample } from './tracker';
+
 import { useState } from 'react';
 import { MeasurementChart } from './measurementsGraph';
 import { DisplacementChart } from './DisplacementChart';
@@ -17,7 +17,7 @@ const CARDS = {
   VELOCITY: <VelocityGraph />,
   ACCELERATION: <DisplacementChart />,
   LEVITATION: <LevitationHeight />,
-  // TIMER: <DigitalTimer />,
+  
 };
 
 type Card = keyof typeof CARDS;
@@ -39,10 +39,6 @@ export const ColorInverter = () => {
   }
 };
 
-// const refreshStorage = () => {
-//   localStorage.clear;
-// };
-// window.onload = refreshStorage;
 export default function GridDsiplay() {
   const [selected, setSelected] = useState<Card>('VELOCITY');
   const [clicked, setClicked] = useState(false);
@@ -60,14 +56,6 @@ export default function GridDsiplay() {
         <div className="heading  p-2">
           {' '}
           <div>
-            {/* <Image
-              alt="Hyped logo"
-              src="/new.svg"
-              width="50"
-              height="50"
-              className="mt-2"
-            /> */}
-
             <Image
               alt="Hyped logo"
               src={
@@ -82,9 +70,7 @@ export default function GridDsiplay() {
           <div className="dashboard-title mt-2">
             {' '}
             <Title>Dashboard</Title>
-            <Text>
-              Lorem ipsum dolor sit amet, consetetur sadipscing elitr.
-            </Text>
+            <Text>Telemetric data stream from on device sensors.</Text>
           </div>
         </div>
         <div className="pt-[60px] flex flex-row-reverse gap-5 switch">
@@ -115,14 +101,13 @@ export default function GridDsiplay() {
       <div className="top-card">
         <Grid numItemsMd={2} className="mt-6 gap-6 w-full">
           {(Object.keys(CARDS) as Card[])
-            .filter((c) => c !== selected)
-            .map((c) => (
+            .filter(c => c !== selected)
+            .map(c => (
               <button key={c} onClick={() => setSelected(c)}>
-                {/* <Card> */}
-                {/* Placeholder to set height */}
+               
                 <div className="h-0" />
                 {CARDS[c]}
-                {/* </Card> */}
+                
               </button>
             ))}
         </Grid>

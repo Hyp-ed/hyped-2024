@@ -10,16 +10,16 @@ const style: React.CSSProperties = {
   fontSize: '20px',
   justifyContent: 'center',
   alignContent: 'center',
-  alignItems: 'center', // corrected property name from alignContent to alignItems
+  alignItems: 'center', 
   display: 'flex',
-  flexDirection: 'column', // added display property to center content horizontally
-  height: '100vh', // added height to center content vertically
+  flexDirection: 'column',
+  height: '100vh', 
   width: '100vw',
-  // margin: 'auto',
+ 
 };
 
 export default function PreLoader(): JSX.Element {
-  //const [data, setData] = useState([])
+
   const [loading, setLoading] = useState<boolean>(true);
   const [processing, setProcessing] = useState<boolean>(true);
   const [processed, setProcessed] = useState<boolean>(true);
@@ -27,16 +27,16 @@ export default function PreLoader(): JSX.Element {
   useEffect(() => {
     setTimeout(() => {
       setProcessing(false);
-    }, 0);
+    }, 1500);
     setTimeout(() => {
       setProcessed(false);
-    }, 0);
+    }, 3000);
   }, []);
 
   useEffect(() => {
     setTimeout(() => {
       setLoading(false);
-    }, 0);
+    }, 4500);
   }, []);
 
   return (

@@ -4,53 +4,6 @@ import { AreaChart, Card, Title } from '@tremor/react';
 import { useQuery } from 'react-query';
 import { Badge, BadgeDelta } from '@tremor/react';
 
-// const chartdata3 = [
-//   {
-//     date: "Jan 23",
-//     Running: 167,
-//     Cycling: 145,
-//   },
-//   {
-//     date: "Feb 23",
-//     Running: 125,
-//     Cycling: 110,
-//   },
-//   {
-//     date: "Mar 23",
-//     Running: 156,
-//     Cycling: 149,
-//   },
-//   {
-//     date: "Apr 23",
-//     Running: 165,
-//     Cycling: 112,
-//   },
-//   {
-//     date: "May 23",
-//     Running: 153,
-//     Cycling: 138,
-//   },
-//   {
-//     date: "Jun 23",
-//     Running: 124,
-//     Cycling: 145,
-//   },
-//   {
-//     date: "Jul 23",
-//     Running: 164,
-//     Cycling: 134,
-//   },
-//   {
-//     date: "Aug 23",
-//     Running: 123,
-//     Cycling: 110,
-//   },
-//   {
-//     date: "Sep 23",
-//     Running: 132,
-//     Cycling: 113,
-//   },
-// ];
 interface Category {
   color: string;
   dataKey: string;
@@ -146,9 +99,6 @@ export const MeasurementChart = () => {
 
   console.log(measurementData);
 
-  //   if (isError) return <div>Error loading velocity</div>;
-
-  //   if (isLoading) return <div>Loading...</div>;
 
   return (
     <>

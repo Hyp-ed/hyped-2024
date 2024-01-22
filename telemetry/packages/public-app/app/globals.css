@@ -139,7 +139,7 @@
 }
 
 .v-graph {
-  height: 410px;
+  height: 560px;
 }
 
 .grid-display {
@@ -209,4 +209,12 @@
 .logo-hyped1{
   margin-top: 30px
 }
+}
+
+@media ( max-width:780px) {
+  .levitation-badges{
+    display: none;
+    
+  }
+
 }

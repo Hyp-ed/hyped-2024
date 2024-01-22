@@ -4,18 +4,6 @@ import { Card, Title, LineChart } from '@tremor/react';
 import { format } from 'date-fns';
 import { useQuery } from 'react-query';
 
-// const chartdata3 = [
-//   {
-//     date: 'Jan 23',
-//     running: 167,
-//   },
-//   // ...
-//   {
-//     date: 'Sep 23',
-//     running: 132,
-//   },
-// ];
-
 export const VelocityGraph = () => {
   const { data, isLoading, isError } = useQuery(
     'velocity',
@@ -43,18 +31,13 @@ export const VelocityGraph = () => {
       })
     : [];
 
-  // if (isError) return <div>Error loading velocity</div>;
-
-  // if (isLoading) return <div>Loading...</div>;
-
   return (
     <>
-      <Card className="v-graph " decoration="top" decorationColor="red">
+      <Card className="v-graph" decoration="top" decorationColor="red">
         <Title className="">Velocity</Title>
         <LineChart
-          className="h-72 mt-6 dark:text-white"
+          className="h-[420px] mt-6 dark:text-white"
           data={velocityData}
-          // data={chartdata3}
           index="time"
           categories={['velocity']}
           colors={['red']}
