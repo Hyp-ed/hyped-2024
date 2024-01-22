@@ -13,17 +13,17 @@ namespace hyped::sensors {
 
 constexpr std::uint8_t kOpticalFlowAddress = 0x00; //ToDo: determine the address of the sensor
 
-class OpticalFLow {
+class OpticalFlow {
 // include "magic sauce" optimisation?
  public:
-  static std::optional<OpticalFLow> create(core::ILogger &logger,
+  static std::optional<OpticalFlow> create(core::ILogger &logger,
   										   std::shared_ptr<io::ISpi> spi,
 										   const std::uint8_t channel,
 										   const std::uint8_t device_address);
-  ~OpticalFLow();
+  ~OpticalFlow();
 
  private:
- OpticalFLow(core::ILogger &logger,
+ OpticalFlow(core::ILogger &logger,
   			 std::shared_ptr<io::ISpi> spi,
 			 const std::uint8_t channel,
 			 const std::uint8_t device_address);
@@ -41,6 +41,9 @@ static constexpr std::uint8_t kXLowReg = 0x03;
 static constexpr std::uint8_t kYLowReg = 0x05;
 static constexpr std::uint8_t kXLow = 0;
 static constexpr std::uint8_t kYLow = 0;
+
+static constexpr std::uint8_t kDeviceIdAddress = 0x00;
+static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;
 };
 
 } //namespace hyped::sensors
