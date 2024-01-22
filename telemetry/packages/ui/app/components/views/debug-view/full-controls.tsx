@@ -23,7 +23,7 @@ import {
 import React from 'react';
 import { CONTROLS, control } from '@/lib/controls';
 import { SetLevitationHeight } from '@/components/shared/set-levitation-height';
-import { Button } from '@tremor/react';
+import { Button } from '@/components/ui/button';
 
 export const FullControls = ({ podId }: { podId: string }) => {
   return (

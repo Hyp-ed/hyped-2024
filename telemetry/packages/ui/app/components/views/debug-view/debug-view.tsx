@@ -1,4 +1,4 @@
-import { PodState } from './pod-state';
+import { PodState } from '../../shared/pod-state';
 import { ConnectionStatuses } from './connection-statuses/connection-statuses';
 import { FullControls } from './full-controls';
 import { MqttSender } from './mqtt-sender';
@@ -8,10 +8,11 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
 import { useCurrentPod } from '@/context/pods';
+import { PodStateUpdater } from './pod-state-updater';
 
 /**
  * Debug view. Contains components for debugging.
- * Will include:
+ * Includes:
  * - Full set of controls for pod
  * - Details connection statuses and latencies (connection to MQTT broker, connection to pod, etc.)
  * - Custom MQTT message sender
@@ -34,7 +35,7 @@ export const DebugView = () => {
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={50} className="flex items-center gap-2">
-            <PodState podId={podId} />
+            <PodStateUpdater podId={podId} />
           </ResizablePanel>
         </ResizablePanelGroup>
       </ResizablePanel>

@@ -1,5 +1,5 @@
 import { StateMachineFlowChart } from './flow-chart';
-import { PodState } from '../debug-view/pod-state';
+import { PodState } from '../../shared/pod-state';
 import { useCurrentPod } from '@/context/pods';
 
 export const StateMachine = () => {

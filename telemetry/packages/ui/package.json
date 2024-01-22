@@ -11,7 +11,7 @@
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.0.8",
     "@fontsource/raleway": "^4.5.12",
-    "@hookform/resolvers": "^3.3.3",
+    "@hookform/resolvers": "^3.3.4",
     "@hyped/telemetry-constants": "*",
     "@hyped/telemetry-types": "*",
     "@radix-ui/react-alert-dialog": "^1.0.4",
@@ -29,7 +29,7 @@
     "class-variance-authority": "^0.6.0",
     "clsx": "^1.2.1",
     "date-fns": "^2.30.0",
-    "embla-carousel-react": "^8.0.0-rc17",
+    "embla-carousel-react": "8.0.0-rc19",
     "ky": "^0.33.2",
     "lerna": "^6.4.1",
     "lucide-react": "^0.303.0",

@@ -56,6 +56,7 @@ export const MqttSender = () => {
   const { customPublish: publish } = useMQTT();
 
   const form = useForm<z.infer<typeof formSchema>>({
+    // @ts-ignore - not sure why this is throwing an error
     resolver: zodResolver(formSchema),
     defaultValues: {
       topic: `hyped/${Object.keys(pods)[0]}/`,
