@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -32,9 +31,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { pods } from '@hyped/telemetry-constants';
+import { useCurrentPod, usePods } from '@/context/pods';
+import { QoS } from '@/types/mqtt';
+import { useKeyPress } from '@/hooks/useKeypress';
 
-const formSchema = z.object({
+const mqttMessageSchema = z.object({
   topic: z.string().min(1, {
     message: 'Topic must not be empty',
   }),
@@ -48,37 +49,45 @@ const formSchema = z.object({
   retain: z.coerce.boolean().optional(),
 });
 
+type MqttMessageSchema = z.infer<typeof mqttMessageSchema>;
+
 /**
  * Custom MQTT message sender to allow sending of arbitrary MQTT messages.
  * @returns The MQTT sender
  */
 export const MqttSender = () => {
   const { customPublish: publish } = useMQTT();
+  const { currentPod: podId } = useCurrentPod();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    // @ts-ignore - not sure why this is throwing an error
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      topic: `hyped/${Object.keys(pods)[0]}/`,
-      message: '',
-      qos: 0,
-      retain: false,
-    },
+  useKeyPress([['ctrlKey', 'Enter']], () => {
+    form.handleSubmit(onSubmit)();
   });
 
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  const defaultMqttMessage: MqttMessageSchema = {
+    topic: `hyped/${podId}/`,
+    message: '',
+    qos: 0,
+    retain: false,
+  };
+
+  const form = useForm<MqttMessageSchema>({
+    // @ts-ignore - not sure why this is throwing an error
+    resolver: zodResolver(mqttMessageSchema),
+    defaultValues: defaultMqttMessage,
+  });
+
+  function onSubmit(values: MqttMessageSchema) {
     if (!publish) {
       toast.error('Could not publish message.');
       return;
     }
     publish(values.topic, values.message, {
-      qos: values.qos as 0 | 1 | 2,
+      qos: values.qos as QoS,
       retain: values.retain,
     });
     log(`Published message to ${values.topic}: ${values.message}`);
-    toast.success('Message published.');
-    // Reset form
-    form.reset();
+    // Reset message field
+    form.setValue('message', '');
   }
 
   return (
