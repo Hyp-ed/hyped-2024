@@ -72,12 +72,6 @@ for (const sens in unqSensorObj) [
 
 const dataManager = DataManager.getInstance(unqSensorObj); // change DataManager file data type to LiveMeasurement type
 
-/* 
-References object in DataManager so only needs to be defined once
-TODO: change logic so that DataManager instance can only be altered
-  directly throuugh updateData(), not through object references */
-const currentData = dataManager.getData();
-
 
 /**
  * MAIN FUNCTION TO GENERATE FAKE DATA
@@ -93,46 +87,46 @@ const currentData = dataManager.getData();
  * Otherwise, defaults to false and all variables will be updated every timestep
 */
 const generateDataSeries = (random: boolean = false, specific: false | string[] = false) => {
-    for (let t = startTime + updateTime; t <= 14000; t += updateTime) {
+    for (let t = startTime + updateTime; t <= 500; t += updateTime) {
+        // create a deep copy so as not to reference the object in memory
+        const currentData: SensorData = JSON.parse(JSON.stringify(dataManager.getData()));
         Behaviour.timestep = t / 1000; // to use units of seconds in calcs
+
         if (random) {
             Behaviour.generateRandomValues(currentData);
-            console.log(Object.keys(currentData).map( (sensor) => [sensor, currentData[sensor].currentVal]));
-            dataManager.addData(
-                Object.keys(currentData).map( (sensor) => [sensor, currentData[sensor].currentVal])
-            )
+            console.log(currentData.acceleration)
+            dataManager.updateData(currentData);
             continue;
-        }
-        if (!specific) {
-            
+        } else if (!specific) {
+            console.log('specific', t);
             // ### NAVIGATION DATA ### //
             const [disp, vel, accl] = Behaviour.motionSensors(currentData);
             console.log(`Time: ${t / 1000}, Disp: ${disp}, Vel: ${vel}, Accl: ${accl}\n`);
-            dataManager.addData([
-                ['displacement', disp],
-                ['velocity', vel],
-                ['acceleration', accl],
-            ])
             
             // ### LEVITATION GAP HEIGHT ### //
             const height = Behaviour.levitationHeight(currentData)
             
             // ### MORE SENSORS ... ### //
-
-
+            
+            
             currentData.displacement.currentVal = disp;
             currentData.velocity.currentVal = vel;
             currentData.acceleration.currentVal = accl;
             // currentData.levitation_height.currentVal = height;
-
-
+            
+            
             // continue;
+            // dataManager.addData([
+            //     ['displacement', disp],
+            //     ['velocity', vel],
+            //     ['acceleration', accl],
+            // ]);
         }
     }
 }
 
 
-generateDataSeries();
+generateDataSeries(true);
 
 console.log("Pod Data:", dataManager.storedPodData)
 

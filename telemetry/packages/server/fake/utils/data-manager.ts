@@ -34,18 +34,19 @@ export class DataManager {
         return DataManager.instance;
     }
 
-    // getData(categorised: boolean = false): SensorData {
     getData(): SensorData {
         return this.data;
     }
 
+    /**
+     * Updates the instance's data with an object containing the new values at each iteration
+     * Also records value for each sensor in the isntance's stored data object
+     * @param newData current iteration of sensor data object
+     */
     updateData(newData: SensorData): void {
         this.data = newData;
-    }
-
-    addData(vals: [string, number][]): void {
-        for (const val of vals) {
-            this.storedPodData[val[0]].push(val[1])
-        }
+        Object.keys(newData).forEach( (sensor): void => {
+            this.storedPodData[sensor].push(newData[sensor].currentVal);
+        });
     }
 }
