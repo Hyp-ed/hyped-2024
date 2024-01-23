@@ -22,7 +22,7 @@ export const LogViewer = () => {
             className="h-full overflow-y-scroll scrollbar-track-transparent scrollbar-thumb-openmct-dark-gray scrollbar-thin scrollbar-thumb-rounded-full"
           >
             {logs.map((log, index) => (
-              <SingleLog log={log} key={log.timestamp} />
+              <SingleLog log={log} key={index} />
             ))}
           </div>
         ) : (

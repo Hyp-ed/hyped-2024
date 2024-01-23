@@ -158,12 +158,12 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
     if (!client) return;
     const processMessage = (podId: string, topic: string, message: Buffer) => {
       if (topic === getTopic('state', podId)) {
-        console.log(podId);
         const newPodState = message.toString();
-        console.log(newPodState);
         const allowedStates = Object.values(ALL_POD_STATES);
-        if (allowedStates.includes(newPodState as PodStateType)) {
+        if ((allowedStates as string[]).includes(newPodState)) {
+          console.log('setting pod state', podId, newPodState);
           setPodsState((prevState) => ({
+            ...prevState,
             [podId]: {
               ...prevState[podId],
               podState: newPodState as PodStateType,
@@ -185,6 +185,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
 
         // update the connection status
         setPodsState((prevState) => ({
+          ...prevState,
           [podId]: {
             ...prevState[podId],
             connectionStatus: POD_CONNECTION_STATUS.CONNECTED,
@@ -223,9 +224,9 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
 
     return () => {
       POD_IDS.map((podId) => {
-        client.off('message', (topic, message) =>
-          processMessage(podId, topic, message),
-        );
+        // client.off('message', (topic, message) =>
+        //   processMessage(podId, topic, message),
+        // );
         unsubscribe('latency/response', podId);
         unsubscribe('state', podId);
       });
@@ -238,6 +239,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
     setCurrentPod,
   };
 
+  console.log('value', value);
   return <PodsContext.Provider value={value}>{children}</PodsContext.Provider>;
 };
 

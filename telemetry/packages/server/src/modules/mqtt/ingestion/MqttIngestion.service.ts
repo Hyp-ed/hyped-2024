@@ -4,7 +4,6 @@ import { MeasurementService } from '@/modules/measurement/Measurement.service';
 import { currentTime } from '@influxdata/influxdb-client';
 import { StateService } from '@/modules/state/State.service';
 import { MqttIngestionError } from './errors/MqttIngestionError';
-import { POD_IDS } from '@hyped/telemetry-constants';
 
 @Injectable()
 export class MqttIngestionService {
@@ -41,6 +40,8 @@ export class MqttIngestionService {
     const timestamp = currentTime.nanos();
     const podId = rawParams[0];
     const value = rawValue;
+
+    console.log(value);
 
     this.validateMqttMessage({ podId, measurementKey: 'state', value });
 

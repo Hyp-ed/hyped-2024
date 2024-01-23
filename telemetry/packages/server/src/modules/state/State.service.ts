@@ -1,10 +1,11 @@
-import { Injectable, LoggerService } from '@nestjs/common';
+import { Inject, Injectable, LoggerService } from '@nestjs/common';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { StateUpdate, StateUpdateSchema } from './StateUpdate.types';
 import { StateUpdateValidationError } from './errors/MeasurementReadingValidationError';
 import { Point } from '@influxdata/influxdb-client';
 import { InfluxService } from '@/modules/influx/Influx.service';
-import { getStateType } from '@hyped/telemetry-constants';
+import { ALL_POD_STATES, getStateType } from '@hyped/telemetry-constants';
+import { MqttService } from 'nest-mqtt';
 
 @Injectable()
 export class StateService {
@@ -12,14 +13,11 @@ export class StateService {
     @Logger()
     private readonly logger: LoggerService,
     private influxService: InfluxService,
+    @Inject(MqttService) private readonly mqttService: MqttService,
   ) {}
 
   public async addStateReading(props: StateUpdate) {
     const validatedState = this.validateStateUpdate(props);
-
-    if (!validatedState) {
-      throw new StateUpdateValidationError('Invalid state');
-    }
 
     const { podId, value: state, timestamp } = validatedState;
     const stateType = getStateType(state);
@@ -49,6 +47,38 @@ export class StateService {
     }
   }
 
+  /**
+   * Simply sends an MQTT message on the state topic to set the state of a pod.
+   * @param podId The ID of the pod
+   * @param state The state to set
+   */
+  public async setPodState(podId: string, state: string) {
+    this.logger.log(
+      `Setting pod ${podId} to state ${state}`,
+      StateService.name,
+    );
+
+    this.validateState(state);
+
+    // Send the MQTT message
+    this.mqttService.publish(`hyped/${podId}/state`, state);
+  }
+
+  /**
+   * Validates a state string is a valid state.
+   * @param state The state to validate
+   */
+  private validateState(state: string) {
+    if (!(Object.values(ALL_POD_STATES) as string[]).includes(state)) {
+      throw new StateUpdateValidationError('Invalid state');
+    }
+  }
+
+  /**
+   * Validates a state update.
+   * @param props The state update to validate
+   * @returns The validated state update, or throws an error if invalid
+   */
   private validateStateUpdate(props: StateUpdate) {
     const result = StateUpdateSchema.safeParse(props);
 
