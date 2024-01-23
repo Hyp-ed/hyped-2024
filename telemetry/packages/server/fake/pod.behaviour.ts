@@ -1,4 +1,4 @@
-import { SensorData } from './data-gen';
+import { SensorData, updateTime, averageLimits } from './data-gen';
 import { DataManager } from './utils/data-manager';
 
 /*
@@ -19,6 +19,8 @@ an increase of kinetic energy but to what extent is up to the programmer.
 export class Behaviour {
     // readonly sensor: RangeMeasurement
     public static timestep: number // current iteration
+    public static dt: number = updateTime / 1000; // iteration update time (or delta t)
+    
     private static levSpeedThreshold: number = 10 // arbitrary velocity value at which pod begins to levitate
         
     /**
@@ -33,7 +35,7 @@ export class Behaviour {
      * @param data all sensor data
      * @returns array of [displacement, velocity, acceleration]
      */
-    public static motionSensors(data: SensorData, dt: number): [number, number, number] {
+    public static motionSensors(data: SensorData): [number, number, number] {
         let prevDisp = data.displacement.currentVal;
         let prevVel = data.velocity.currentVal;
         let prevAccl = data.acceleration.currentVal;
@@ -47,8 +49,8 @@ export class Behaviour {
         const maxAccl = data.acceleration.limits.critical.high;
         
         const vel = maxVel / (1 + Math.exp(-growthRate * (t - timeOfInflection)))
-        const accl = (vel - prevVel) / dt >= maxAccl ?
-            maxAccl : (vel - prevVel) / dt;
+        const accl = (vel - prevVel) / this.dt >= maxAccl ?
+            maxAccl : (vel - prevVel) / this.dt;
         const disp = vel * t + 0.5 * accl * t ** 2;
 
         return [disp, vel, accl]
@@ -76,6 +78,11 @@ export class Behaviour {
      * @returns calculated value
      */
     static levitationHeight(data: SensorData) {
+        if (data.velocity.currentVal < this.levSpeedThreshold) {
+            return 0;
+        }
+        const levSetpoint = averageLimits(data.levitation_height.key)
+        console.log("Lev. Setpoint:", levSetpoint);
 
     }
 

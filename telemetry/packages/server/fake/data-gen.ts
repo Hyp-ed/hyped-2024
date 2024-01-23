@@ -4,7 +4,7 @@ import { Behaviour } from './pod.behaviour';
 import { DataManager } from './utils/data-manager';
 
 // Generate data for 50s in steps of 0.5s
-const updateTime = 100;
+export const updateTime = 100;
 const startTime = 0
 const endTime = 50 * 1000 // 50s
 
@@ -105,48 +105,26 @@ const generateDataSeries = (random: boolean = false, specific: false | string[] 
         }
         if (!specific) {
             
-            // ### NAVIGATION DATA UPDATE ### //
-            const [disp, vel, accl] = Behaviour.motionSensors(currentData, updateTime / 1000);
+            // ### NAVIGATION DATA ### //
+            const [disp, vel, accl] = Behaviour.motionSensors(currentData);
             console.log(`Time: ${t / 1000}, Disp: ${disp}, Vel: ${vel}, Accl: ${accl}\n`);
-            currentData.displacement.currentVal = disp;
-            currentData.velocity.currentVal = vel;
-            currentData.acceleration.currentVal = accl;
             dataManager.addData([
                 ['displacement', disp],
                 ['velocity', vel],
                 ['acceleration', accl],
             ])
+            
+            // ### LEVITATION GAP HEIGHT ### //
+            const height = Behaviour.levitationHeight(currentData)
+            
+            // ### MORE SENSORS ... ### //
 
-            // for (const measurement in currentData) {
-            //     t == startTime && console.log(measurement)
-            //     Behaviour.hallEffect();
-            //     switch (dataCategory) {
-            //         case 'displacement':
-            //         case 'velocity':
-            //         case 'acceleration':
-            //             // const [disp, vel, acc] = Behaviour.motionSensors(currentData)
-            //             break;
-            //         case 'pressure':
-            //             //
-            //             break;
-            //         case 'temperature':
-            //             //
-            //             break;
-            //         case 'hall_effect':
-            //             //
-            //             break;
-            //         case 'keyence':
-            //             //
-            //             break;
-            //         case 'power_line_resistance':
-            //             //
-            //             break;
-            //         case 'levitation_height':
-            //             //
-            //             break;
 
-            //     }
-            // }
+            currentData.displacement.currentVal = disp;
+            currentData.velocity.currentVal = vel;
+            currentData.acceleration.currentVal = accl;
+            // currentData.levitation_height.currentVal = height;
+
 
             // continue;
         }
@@ -166,7 +144,7 @@ console.log("Pod Data:", dataManager.storedPodData)
  * Uses simple average
  * @param sensor name of the sensor e.g. 'pressure_back_push'
  * */
-function averageLimits(sensor: string): number {
+export function averageLimits(sensor: string): number {
     let lims = Object.values(unqSensorObj[sensor].limits.critical)
     return lims.reduce( (acc, c) => (acc + c)/2);
 }
