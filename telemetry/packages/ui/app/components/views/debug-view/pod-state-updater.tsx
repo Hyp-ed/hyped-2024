@@ -10,7 +10,6 @@ import {
 } from '@/components/ui/select';
 import { useMQTT } from '@/context/mqtt';
 import { ALL_POD_STATES, PodStateType } from '@hyped/telemetry-constants';
-import { http } from 'openmct/core/http';
 import { useState } from 'react';
 
 export const PodStateUpdater = ({ podId }: { podId: string }) => {

@@ -11,9 +11,10 @@ export const LOG_LEVELS = {
   WARN: 'warn',
   ERROR: 'error',
   DEBUG: 'debug',
+  VERBOSE: 'verbose',
 } as const;
 
-type LogLevel = (typeof LOG_LEVELS)[keyof typeof LOG_LEVELS];
+export type LogLevel = (typeof LOG_LEVELS)[keyof typeof LOG_LEVELS];
 
 export type Log = {
   context: string;
@@ -48,6 +49,10 @@ export const LiveLogsProvider = ({
     }
 
     function onLog(log: Log) {
+      // Only keep the last 100 logs
+      if (logs.length > 100) {
+        setLogs((logs) => logs.slice(1));
+      }
       setLogs((logs) => [...logs, log]);
     }
 

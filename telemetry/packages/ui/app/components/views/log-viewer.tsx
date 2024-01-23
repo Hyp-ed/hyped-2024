@@ -1,9 +1,24 @@
-import { LOG_LEVELS, Log, useLiveLogs } from '@/context/live-logs';
+import { LOG_LEVELS, Log, LogLevel, useLiveLogs } from '@/context/live-logs';
 import { format } from 'date-fns';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Button } from '../ui/button';
+import { ChevronDown } from 'lucide-react';
 
 export const LogViewer = () => {
   const { isConnected, logs } = useLiveLogs();
+  const [logLevelFilters, setLogLevelFilters] = useState<LogLevel[]>([
+    LOG_LEVELS.INFO,
+    LOG_LEVELS.ERROR,
+    LOG_LEVELS.WARN,
+    LOG_LEVELS.DEBUG,
+    LOG_LEVELS.VERBOSE,
+  ]);
 
   // Scroll to bottom on new log
   useEffect(() => {
@@ -13,22 +28,44 @@ export const LogViewer = () => {
     }
   }, [logs]);
 
+  /**
+   * Filter the logs based on the log level filters...
+   */
+  const displayLogs = logs.filter((log) => logLevelFilters.includes(log.level));
+
   return (
-    <div className="h-full p-12">
-      <div className="h-full p-12 border-[1px] border-openmct-light-gray rounded-xl">
-        {isConnected ? (
-          <div
-            id="log-viewer"
-            className="h-full overflow-y-scroll scrollbar-track-transparent scrollbar-thumb-openmct-dark-gray scrollbar-thin scrollbar-thumb-rounded-full"
-          >
-            {logs.map((log, index) => (
-              <SingleLog log={log} key={index} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-white text-center p-4">Connecting...</div>
-        )}
+    <div className="h-full p-16 space-y-8">
+      <div className="flex justify-between items-center">
+        <div className="flex gap-2 items-center">
+          {isConnected ? (
+            <>
+              <div className="w-2 h-2 rounded-full bg-green-500 animate-[pulse_linear_1s_infinite]" />
+              <p className="italic text-green-500">Connected</p>
+            </>
+          ) : (
+            <>
+              <div className="w-2 h-2 rounded-full bg-red-500" />
+              <p className="italic text-red-500">Disconnected</p>
+            </>
+          )}
+        </div>
+        <LogLevelFilter
+          logLevelFilters={logLevelFilters}
+          setLogLevelFilters={setLogLevelFilters}
+        />
       </div>
+      {isConnected ? (
+        <div
+          id="log-viewer"
+          className="h-[90%] overflow-y-scroll scrollbar-track-transparent scrollbar-thumb-openmct-dark-gray scrollbar-thin scrollbar-thumb-rounded-full"
+        >
+          {displayLogs.map((log, index) => (
+            <SingleLog log={log} key={index} />
+          ))}
+        </div>
+      ) : (
+        <div className="text-white text-center p-4">Connecting...</div>
+      )}
     </div>
   );
 };
@@ -53,6 +90,43 @@ const SingleLog = ({ log }: { log: Log }) => {
     </p>
   );
 };
+
+const LogLevelFilter = ({
+  logLevelFilters,
+  setLogLevelFilters,
+}: {
+  logLevelFilters: LogLevel[];
+  setLogLevelFilters: (logLevelFilters: LogLevel[]) => void;
+}) => (
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button variant="outline" className="flex gap-2">
+        Log levels
+        <ChevronDown className="h-4 w-4 opacity-50" />
+      </Button>
+    </DropdownMenuTrigger>
+    <DropdownMenuContent align="end">
+      {Object.values(LOG_LEVELS).map((logLevel) => (
+        <DropdownMenuCheckboxItem
+          key={logLevel}
+          className="capitalize"
+          checked={logLevelFilters.includes(logLevel)}
+          onCheckedChange={(value) => {
+            if (value) {
+              setLogLevelFilters([...logLevelFilters, logLevel]);
+            } else {
+              setLogLevelFilters(
+                logLevelFilters.filter((filter) => filter !== logLevel),
+              );
+            }
+          }}
+        >
+          {logLevel}
+        </DropdownMenuCheckboxItem>
+      ))}
+    </DropdownMenuContent>
+  </DropdownMenu>
+);
 
 /**
  * Get the colour of the log based on the level
