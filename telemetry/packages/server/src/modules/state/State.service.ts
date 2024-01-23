@@ -4,7 +4,7 @@ import { StateUpdate, StateUpdateSchema } from './StateUpdate.types';
 import { StateUpdateValidationError } from './errors/MeasurementReadingValidationError';
 import { Point } from '@influxdata/influxdb-client';
 import { InfluxService } from '@/modules/influx/Influx.service';
-import { ALL_POD_STATES, getStateType } from '@hyped/telemetry-constants';
+import { getStateType } from '@hyped/telemetry-constants';
 import { MqttService } from 'nest-mqtt';
 
 @Injectable()
@@ -44,33 +44,6 @@ export class StateService {
         e,
         StateService.name,
       );
-    }
-  }
-
-  /**
-   * Simply sends an MQTT message on the state topic to set the state of a pod.
-   * @param podId The ID of the pod
-   * @param state The state to set
-   */
-  public async setPodState(podId: string, state: string) {
-    this.logger.log(
-      `Setting pod ${podId} to state ${state}`,
-      StateService.name,
-    );
-
-    this.validateState(state);
-
-    // Send the MQTT message
-    this.mqttService.publish(`hyped/${podId}/state`, state);
-  }
-
-  /**
-   * Validates a state string is a valid state.
-   * @param state The state to validate
-   */
-  private validateState(state: string) {
-    if (!(Object.values(ALL_POD_STATES) as string[]).includes(state)) {
-      throw new StateUpdateValidationError('Invalid state');
     }
   }
 

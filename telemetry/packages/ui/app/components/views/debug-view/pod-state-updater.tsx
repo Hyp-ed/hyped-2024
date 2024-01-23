@@ -8,22 +8,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { useMQTT } from '@/context/mqtt';
 import { ALL_POD_STATES, PodStateType } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
 import { useState } from 'react';
 
 export const PodStateUpdater = ({ podId }: { podId: string }) => {
   const [podState, setPodState] = useState<PodStateType>(ALL_POD_STATES.IDLE);
+  const { publish } = useMQTT();
 
-  const publishPodState = () => {
-    console.log(`Manually publishing pod state: ${podState}`);
-    http.post(`pods/${podId}/state/set`, {
-      body: JSON.stringify({ state: podState }),
-      headers: {
-        'content-type': 'application/json',
-      },
-    });
-  };
+  const publishPodState = () => publish(`state`, podState, podId);
 
   return (
     <div className="flex gap-8 w-full justify-center">
