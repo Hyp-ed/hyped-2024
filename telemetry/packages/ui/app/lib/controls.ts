@@ -1,5 +1,6 @@
 import { log } from '@/lib/logger';
 import { http } from 'openmct/core/http';
+import toast from 'react-hot-toast';
 
 export const CONTROLS = {
   START: 'start',
@@ -20,6 +21,7 @@ export type Control = (typeof CONTROLS)[keyof typeof CONTROLS];
 
 export const control = async (podId: string, control: Control) => {
   log(`Sending control ${control} to pod ${podId}`, podId);
+  toast(`Sending control ${control} to pod ${podId}`);
   const url = `pods/${podId}/controls/${control}`;
   await http.post(url);
 };

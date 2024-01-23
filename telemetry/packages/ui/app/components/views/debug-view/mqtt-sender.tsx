@@ -33,9 +33,9 @@ import {
 } from '@/components/ui/select';
 import { useCurrentPod, usePods } from '@/context/pods';
 import { QoS } from '@/types/mqtt';
-import { useKeyPress } from '@/hooks/useKeypress';
+import { useKeyPress } from '@/hooks/useKeyPress';
 
-const mqttMessageSchema = z.object({
+const mqttMessageSchema = z.object({  
   topic: z.string().min(1, {
     message: 'Topic must not be empty',
   }),

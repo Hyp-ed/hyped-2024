@@ -1,4 +1,4 @@
-import { Body, Controller, Param, Post, Query } from '@nestjs/common';
+import { Controller, Param, Post, Query } from '@nestjs/common';
 import { PodControlsService } from './PodControls.service';
 
 @Controller('pods/:podId/controls')

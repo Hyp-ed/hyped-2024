@@ -4,6 +4,9 @@ import {
   ACTIVE_STATES,
   FAILURE_STATES,
   NULL_STATES,
+  PASSIVE_STATES,
+  PodStateCategoryType,
+  PodStateType,
   pods,
 } from '@hyped/telemetry-constants';
 import {
@@ -15,10 +18,11 @@ import {
 } from '@/components/ui/card';
 import { CircleDashed } from 'lucide-react';
 
-const styles = {
-  ACTIVE_STATES: 'bg-green-700 border-2 border-green-900 text-white',
-  FAILURE_STATES: 'bg-red-700 border-2 border-red-900 text-white',
-  NULL_STATES: 'bg-gray-600 border-2 border-gray-800 text-white',
+const styles: Record<PodStateCategoryType, string> = {
+  ACTIVE: 'bg-green-700 border-2 border-green-900 text-white',
+  FAILURE: 'bg-red-700 border-2 border-red-900 text-white',
+  PASSIVE: 'bg-gray-600 border-2 border-gray-800 text-white',
+  NULL: '',
 };
 
 export const PodState = ({ podId }: { podId: string }) => {
@@ -36,9 +40,10 @@ export const PodState = ({ podId }: { podId: string }) => {
         <p
           className={cn(
             'px-3 py-2 rounded-md max-w-max justify-start font-bold uppercase',
-            state in ACTIVE_STATES && styles.ACTIVE_STATES,
-            state in FAILURE_STATES && styles.FAILURE_STATES,
-            state in NULL_STATES && styles.NULL_STATES,
+            state in ACTIVE_STATES && styles.ACTIVE,
+            state in FAILURE_STATES && styles.FAILURE,
+            state in PASSIVE_STATES && styles.PASSIVE,
+            state in NULL_STATES && styles.NULL,
           )}
         >
           {state}

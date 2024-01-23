@@ -8,7 +8,7 @@ export {
   FAILURE_STATES,
   getStateType,
 } from './pods/states';
-export type { PodStateType } from './pods/states';
+export type { PodStateType, PodStateCategoryType } from './pods/states';
 export { openMctObjectTypes } from './openmct/object-types/object-types';
 
 export * as socket from './socket';

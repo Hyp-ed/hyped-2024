@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef } from 'react';
 
 type Key = string;
 type Combo = 'ctrlKey' | 'shiftKey' | 'altKey' | 'metaKey';
@@ -12,26 +12,36 @@ type KeyCombination = [Combo, Key];
 export const useKeyPress = (
   keys: (Key | KeyCombination)[],
   callback: (event: KeyboardEvent) => void,
+  node = window,
 ) => {
-  const downHandler = (event: KeyboardEvent) => {
-    if (keys.includes(event.key)) {
-      callback(event);
-      return;
-    }
-    const KeyCombinations = keys.filter(isKeyCombination);
-    for (const keyCombination of KeyCombinations) {
-      const [combinationKey, key] = keyCombination;
-      if (event[combinationKey] && event.key === key) {
+  const callbackRef = useRef(callback);
+  useLayoutEffect(() => {
+    callbackRef.current = callback;
+  });
+
+  // handle what happens on key press
+  const handleKeyPress = useCallback(
+    (event: KeyboardEvent) => {
+      if (keys.includes(event.key)) {
         callback(event);
         return;
       }
-    }
-  };
+      const KeyCombinations = keys.filter(isKeyCombination);
+      for (const keyCombination of KeyCombinations) {
+        const [combinationKey, key] = keyCombination;
+        if (event[combinationKey] && event.key === key) {
+          callback(event);
+          return;
+        }
+      }
+    },
+    [keys],
+  );
 
   useEffect(() => {
-    window.addEventListener('keydown', downHandler);
+    node.addEventListener('keydown', handleKeyPress);
     return () => {
-      window.removeEventListener('keydown', downHandler);
+      node.removeEventListener('keydown', handleKeyPress);
     };
   }, []);
 };
