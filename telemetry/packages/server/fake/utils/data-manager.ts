@@ -12,12 +12,12 @@ export class DataManager {
     public storedPodData: StoredData = {};
     private limits: Limits; // Instance property to hold sensor reading range limits
 
-    private constructor(data: SensorData) {
+    private constructor(initialData: SensorData) {
         // Initialize data
-        this.data = data;
+        this.data = initialData;
         // Initialise pod data storage object
-        for (const sensor in data) {
-            this.storedPodData[sensor] = [];
+        for (const sensor in initialData) {
+            this.storedPodData[sensor] = [this.data[sensor].currentVal];
         }
     }
 

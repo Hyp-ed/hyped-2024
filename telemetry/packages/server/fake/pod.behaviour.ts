@@ -1,4 +1,4 @@
-import { SensorData, updateTime, averageLimits } from './data-gen';
+import { SensorData, averageLimits } from './data-gen';
 import { DataManager } from './utils/data-manager';
 
 /*
@@ -18,8 +18,8 @@ an increase of kinetic energy but to what extent is up to the programmer.
 */
 export class Behaviour {
     // readonly sensor: RangeMeasurement
-    public static timestep: number // current iteration
-    public static dt: number = updateTime / 1000; // iteration update time (or delta t)
+    public static timestep: number; // current iteration
+    public static dt: number; // iteration update time (or delta t)
     
     private static levSpeedThreshold: number = 10 // arbitrary velocity value at which pod begins to levitate
         
@@ -35,23 +35,31 @@ export class Behaviour {
      * @param data all sensor data
      * @returns array of [displacement, velocity, acceleration]
      */
-    public static motionSensors(data: SensorData): [number, number, number] {
-        let prevDisp = data.displacement.currentVal;
+    public static motionSensors(data: SensorData) {
+        console.log('update time:', this.dt);
+        // let prevDisp = data.displacement.currentVal;
         let prevVel = data.velocity.currentVal;
-        let prevAccl = data.acceleration.currentVal;
+        // let prevDiso = data.velocity.currentVal;
+        console.log('dt & timestep')
+        console.log(this.dt)
+        console.log(this.timestep)
+        // let prevAccl = data.acceleration.currentVal;
         
         // Logistic function params
         const t = this.timestep;
         const maxVel = data.velocity.limits.critical.high;
-        const growthRate = 0.4; // these params ensure accl. doesn't exceed 5
-        const timeOfInflection = 12.5;
+        const startVel = 0.1 * maxVel;
+        const growthRate = 0.444; // these params ensure accl. doesn't exceed 5
+        const timeOfInflection = 15;
         
         const maxAccl = data.acceleration.limits.critical.high;
         
-        const vel = maxVel / (1 + Math.exp(-growthRate * (t - timeOfInflection)))
-        const accl = (vel - prevVel) / this.dt >= maxAccl ?
-            maxAccl : (vel - prevVel) / this.dt;
-        const disp = vel * t + 0.5 * accl * t ** 2;
+        // Logistic equation and kinematics
+        const vel = (maxVel - startVel) / (1 + Math.exp(-growthRate * (t - timeOfInflection))) + startVel;
+        const accl = (vel - prevVel) / this.dt >= maxAccl ? maxAccl 
+            :  (vel - prevVel) / this.dt;
+        const disp = data.displacement.currentVal + (vel * this.dt 
+            + 0.5 * accl * this.dt ** 2);
 
         return [disp, vel, accl]
     }
@@ -102,5 +110,6 @@ export class Behaviour {
                 ? parseFloat((Math.random() * range + data[sensor].limits.critical.low).toFixed(2))
                 : Math.floor(Math.random() * (range + 1)) + data[sensor].limits.critical.low
         }
+        // return data;
     }
 }

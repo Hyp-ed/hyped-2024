@@ -4,9 +4,9 @@ import { Behaviour } from './pod.behaviour';
 import { DataManager } from './utils/data-manager';
 
 // Generate data for 50s in steps of 0.5s
-export const updateTime = 100;
+export const updateTime = 250;
 const startTime = 0
-const endTime = 50 * 1000 // 50s
+const endTime = 20 * 1000 // 50s
 
 // Reduce sensors object to one with only relevant range-based sensors
 const sensors = Object.entries(pods.pod_1.measurements);
@@ -53,7 +53,9 @@ interface InitialConditions {
     
 const initialConditions: InitialConditions = {
     // Navigation
-    accelerometer: 0, displacement: 0, velocity: 0, acceleration: 0,
+    accelerometer: 0, displacement: 0,
+    velocity: unqSensorObj.velocity.limits.critical.high * 0.1, // starting speed 10% of max
+    acceleration: 0,
     // External Pressure
     pressure_back_pull: 1, pressure_front_pull: 1, pressure_back_push: 1, pressure_front_push: 1,
     // Fluid Reservoir Pressure
@@ -71,7 +73,7 @@ for (const sens in unqSensorObj) [
 /* MAIN DATA GENERATION FUNCTION */
 
 const dataManager = DataManager.getInstance(unqSensorObj); // change DataManager file data type to LiveMeasurement type
-
+dataManager.updateData
 
 /**
  * MAIN FUNCTION TO GENERATE FAKE DATA
@@ -87,8 +89,15 @@ const dataManager = DataManager.getInstance(unqSensorObj); // change DataManager
  * Otherwise, defaults to false and all variables will be updated every timestep
 */
 const generateDataSeries = (random: boolean = false, specific: false | string[] = false) => {
-    for (let t = startTime + updateTime; t <= 500; t += updateTime) {
-        // create a deep copy so as not to reference the object in memory
+    
+    Behaviour.dt = updateTime / 1000; // set time interval used for time-dependent calculations
+
+    for (let t = startTime + updateTime; t <= endTime; t += updateTime) {
+        /* Create a deep copy so as not to reference the object in memory
+        The data will only be updated once each iteration is complete
+        This is so that certain functions won't reference other readings from a future timestep
+        E.g. a lot are functions of velocity, so velocity in the data manager instance must 
+            not change until all data is generated for a given timestep */ 
         const currentData: SensorData = JSON.parse(JSON.stringify(dataManager.getData()));
         Behaviour.timestep = t / 1000; // to use units of seconds in calcs
 
@@ -104,10 +113,10 @@ const generateDataSeries = (random: boolean = false, specific: false | string[] 
             console.log(`Time: ${t / 1000}, Disp: ${disp}, Vel: ${vel}, Accl: ${accl}\n`);
             
             // ### LEVITATION GAP HEIGHT ### //
-            const height = Behaviour.levitationHeight(currentData)
+            // const height = Behaviour.levitationHeight(currentData)
             
             // ### MORE SENSORS ... ### //
-            
+            // console.log(currentData.displacement)
             
             currentData.displacement.currentVal = disp;
             currentData.velocity.currentVal = vel;
@@ -115,6 +124,7 @@ const generateDataSeries = (random: boolean = false, specific: false | string[] 
             // currentData.levitation_height.currentVal = height;
             
             
+            dataManager.updateData(currentData);
             // continue;
             // dataManager.addData([
             //     ['displacement', disp],
@@ -126,7 +136,7 @@ const generateDataSeries = (random: boolean = false, specific: false | string[] 
 }
 
 
-generateDataSeries(true);
+generateDataSeries();
 
 console.log("Pod Data:", dataManager.storedPodData)
 
