@@ -1,6 +1,7 @@
 #include "optical_flow.hpp"
 
 namespace hyped::sensors {
+	
 std::optional<OpticalFlow> OpticalFlow::create(core::ILogger &logger,
   										   	   std::shared_ptr<io::ISpi> spi,
 										   	   const std::uint8_t channel,
