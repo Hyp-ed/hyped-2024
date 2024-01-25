@@ -23,7 +23,7 @@ class TimeOfFlight {
 
   ~TimeOfFlight();
 
-  std::optional<core::Result> checkStatus();
+  std::optional<std::uint8_t> getStatus();
 
   std::uint8_t getChannel();
 
