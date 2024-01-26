@@ -35,6 +35,13 @@ class TimeOfFlight {
                const std::uint8_t channel,
                const std::uint8_t device_address);
 
+  /**
+   * @brief Set registers in device for default use
+   * @return kSuccess if successful; kFailure otherwise
+   * @note See ST Application Note AN4545 Section 1.3 for details
+   */
+  core::Result initialise();
+
  private:
   // TODOLater - Confirm these addresses are correct
   // Register addresses/values taken from the VL6180X datasheet

@@ -32,6 +32,11 @@ TimeOfFlight::TimeOfFlight(core::ILogger &logger,
 {
 }
 
+core::Result TimeOfFlight::initialise()
+{
+  return core::Result::kSuccess;
+}
+
 std::optional<std::uint8_t> TimeOfFlight::getStatus()
 {
   const auto status = i2c_->readByte(device_address_, kStatus);
