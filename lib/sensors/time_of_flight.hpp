@@ -58,6 +58,8 @@ class TimeOfFlight {
   static constexpr std::uint8_t kBusy                 = 0x00;
   static constexpr std::uint8_t kConfigurationSetting = 0x00;
 
+  static constexpr std::uint8_t kSystemFreshOutOfReset = 0x016;
+
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
   const std::uint8_t channel_;
