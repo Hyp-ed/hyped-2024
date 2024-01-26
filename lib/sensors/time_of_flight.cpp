@@ -10,16 +10,16 @@ std::optional<TimeOfFlight> TimeOfFlight::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Invalid device address for time of flight sensor");
     return std::nullopt;
   }
-  // TODOLater - Should these not be replaced with call to initialise?
-  const auto write_result = i2c->writeByteToRegister(device_address, kCtrl, kConfigurationSetting);
-  if (write_result == core::Result::kFailure) {
+  auto time_of_flight          = TimeOfFlight(logger, i2c, channel, device_address);
+  const auto initialise_result = time_of_flight.initialise();
+  if (initialise_result == core::Result::kFailure) {
     logger.log(
       core::LogLevel::kFatal, "Failed to configure time of flight sensor at channel %d", channel);
     return std::nullopt;
   }
   logger.log(
     core::LogLevel::kDebug, "Successfully configured time of flight sensor at channel %d", channel);
-  return TimeOfFlight(logger, i2c, channel, device_address);
+  return time_of_flight;
 }
 
 TimeOfFlight::TimeOfFlight(core::ILogger &logger,
