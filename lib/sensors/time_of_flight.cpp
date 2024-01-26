@@ -41,6 +41,7 @@ core::Result TimeOfFlight::initialise()
   if (*status == 1) {
     // TODOLater - Replace magic numbers with constants?
     // TODOLater - Check core::Result after every writeByteToRegister?
+    // // Mandatory : private registers
     // i2c_->writeByteToRegister(device_address_, 0x0207, 0x01);
     // i2c_->writeByteToRegister(device_address_, 0x0208, 0x01);
     // i2c_->writeByteToRegister(device_address_, 0x0096, 0x00);
@@ -73,6 +74,19 @@ core::Result TimeOfFlight::initialise()
     // i2c_->writeByteToRegister(device_address_, 0x0030, 0x00);
 
     i2c_->writeByteToRegister(device_address_, kSystemFreshOutOfReset, 0);
+
+    // // Recommended : Public registers
+    // i2c_->writeByteToRegister(device_address_, 0x0011, 0x10);
+    // i2c_->writeByteToRegister(device_address_, 0x010a, 0x30);
+    // i2c_->writeByteToRegister(device_address_, 0x003f, 0x46);
+    // i2c_->writeByteToRegister(device_address_, 0x0031, 0xff);
+    // i2c_->writeByteToRegister(device_address_, 0x0041, 0x63);
+    // i2c_->writeByteToRegister(device_address_, 0x002e, 0x01);
+
+    // // Optional: Public registers
+    // i2c_->writeByteToRegister(device_address_, 0x001b, 0x09);
+    // i2c_->writeByteToRegister(device_address_, 0x003e, 0x31);
+    // i2c_->writeByteToRegister(device_address_, 0x0013, 0x24);
   }
   return core::Result::kSuccess;
 }
