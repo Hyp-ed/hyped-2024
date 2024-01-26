@@ -86,7 +86,7 @@ core::Result HardwareI2c::writeByteToRegister(const std::uint8_t device_address,
 
 // TODOLater - Test code
 core::Result HardwareI2c::writeBytesToDevice(const std::uint8_t device_address,
-                                             const std::vector<std::uint8_t> bytes)
+                                             const std::vector<std::uint8_t> &bytes)
 {
   if (sensor_address_ != device_address) { setSensorAddress(device_address); }
   const std::size_t number_of_bytes = bytes.size();

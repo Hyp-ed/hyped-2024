@@ -37,7 +37,7 @@ class HardwareI2c : public II2c {
  private:
   void setSensorAddress(const std::uint8_t device_address);
   core::Result writeBytesToDevice(const std::uint8_t device_address,
-                                  const std::vector<std::uint8_t> bytes);
+                                  const std::vector<std::uint8_t> &bytes);
 
  private:
   core::ILogger &logger_;
