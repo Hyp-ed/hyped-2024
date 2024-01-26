@@ -14,25 +14,24 @@ static constexpr std::uint8_t kDefaultLedDriverAddress = 0x30;
 namespace hyped::sensors {
 class LedDriver {
  public:
-  static std::optional<LedDriver> create(core::ILogger &logger,
-                                         std::shared_ptr<io::II2c> i2c);
+  static std::optional<LedDriver> create(core::ILogger &logger, std::shared_ptr<io::II2c> i2c);
   ~LedDriver();
 
+  core::Result initialise();
+  core::Result setColour(std::uint8_t channel,
+                         std::uint8_t red,
+                         std::uint8_t green,
+                         std::uint8_t blue);
+  core::Result setIntensity(std::uint8_t channel, std::uint8_t intensity);
+  core::Result reset();
+
  private:
-  LedDriver(core::ILogger &logger, 
-            std::shared_ptr<io::II2c> i2c);
-  std::optional<core::Result> initialise();
-  std::optional<core::Result> setColour(std::uint8_t channel,
-                                         std::uint8_t red,
-                                         std::uint8_t green,
-                                         std::uint8_t blue);
-  std::optional<core::Result> setIntensity(std::uint8_t channel, std::uint8_t intensity);
-  std::optional<core::Result> reset();
+  LedDriver(core::ILogger &logger, std::shared_ptr<io::II2c> i2c);
 
  private:
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
-  const std::uint8_t device_address_;
+  const std::uint8_t device_address_ = kDefaultLedDriverAddress;
 
  private:
   static constexpr std::uint8_t kLEDControlRegister     = 0x02;
