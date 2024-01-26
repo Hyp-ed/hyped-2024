@@ -2,8 +2,16 @@ import { log } from '@/lib/logger';
 import { http } from 'openmct/core/http';
 import { toast } from 'react-hot-toast';
 
+export const levitate = async (podId: string) => {
+  toast(`[${podId}] Initiating levitation!`);
+  log(`UI button clicked: levitate`, podId);
+  const res = await http.post(`pods/${podId}/controls/levitate`);
+  return res.status === 200;
+};
+
 export const startPod = async (podId: string) => {
   toast.success(`[${podId}] Pod launched!`, { icon: '🚀' });
+  log(`UI button clicked: start`, podId);
   const res = await http.post(`pods/${podId}/controls/start`);
   return res.status === 200;
 };
