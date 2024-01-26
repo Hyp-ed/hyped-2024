@@ -9,29 +9,25 @@
 #include <core/logger.hpp>
 #include <io/i2c.hpp>
 
-int kDefaultLedDriverAddress = 0x30;
+static constexpr std::uint8_t kDefaultLedDriverAddress = 0x30;
 
 namespace hyped::sensors {
 class LedDriver {
  public:
   static std::optional<LedDriver> create(core::ILogger &logger,
-                                         std::shared_ptr<io::II2c> i2c,
-                                         const std::uint8_t device_address
-                                         = kDefaultLedDriverAddress);
+                                         std::shared_ptr<io::II2c> i2c);
   ~LedDriver();
 
+ private:
+  LedDriver(core::ILogger &logger, 
+            std::shared_ptr<io::II2c> i2c);
   std::optional<core::Result> initialise();
-  std::optional<core::Result> set_colour(std::uint8_t channel,
+  std::optional<core::Result> setColour(std::uint8_t channel,
                                          std::uint8_t red,
                                          std::uint8_t green,
                                          std::uint8_t blue);
-  std::optional<core::Result> set_intensity(std::uint8_t channel, std::uint8_t intensity);
+  std::optional<core::Result> setIntensity(std::uint8_t channel, std::uint8_t intensity);
   std::optional<core::Result> reset();
-
- private:
-  LedDriver(core::ILogger &logger,
-            std::shared_ptr<io::II2c> i2c,
-            const std::uint8_t device_address);
 
  private:
   core::ILogger &logger_;

@@ -3,15 +3,9 @@
 namespace hyped::sensors {
 
 std::optional<LedDriver> LedDriver::create(core::ILogger &logger,
-                                           std::shared_ptr<io::II2c> i2c,
-                                           const std::uint8_t device_address)
+                                           std::shared_ptr<io::II2c> i2c)
 {
-  if (device_address != kDefaultLedDriverAddress) {
-    logger.log(core::LogLevel::kFatal, "Invalid device address for LED driver");
-    return std::nullopt;
-  }
-
-  auto ledDriver = LedDriver(logger, i2c, device_address);
+  auto ledDriver = LedDriver(logger, i2c);
   if (auto init_result = ledDriver.initialise(); !init_result) {
     logger.log(core::LogLevel::kFatal, "Failed to initialise LED driver");
     return std::nullopt;
@@ -48,10 +42,10 @@ std::optional<core::Result> LedDriver::initialise()
   return core::Result::kSuccess;
 }
 
-std::optional<core::Result> LedDriver::set_colour(std::uint8_t channel,
-                                                  std::uint8_t red,
-                                                  std::uint8_t green,
-                                                  std::uint8_t blue)
+std::optional<core::Result> LedDriver::setColour(const std::uint8_t channel,
+                                                  const std::uint8_t red,
+                                                  const std::uint8_t green,
+                                                  const std::uint8_t blue)
 {
   const auto write_red_result
     = i2c_->writeByteToRegister(device_address_, kColorRegisterBase + channel, red);
@@ -69,7 +63,7 @@ std::optional<core::Result> LedDriver::set_colour(std::uint8_t channel,
   return core::Result::kSuccess;
 }
 
-std::optional<core::Result> LedDriver::set_intensity(std::uint8_t channel, std::uint8_t intensity)
+std::optional<core::Result> LedDriver::setIntensity(std::uint8_t channel, std::uint8_t intensity)
 {
   const auto write_intensity_result
     = i2c_->writeByteToRegister(device_address_, kBrightnessRegisterBase + channel, intensity);
