@@ -42,6 +42,12 @@ class TimeOfFlight {
    */
   core::Result initialise();
 
+  /**
+   * @brief Reads the measured range in Single-Shot mode
+   * @note Implementation based on ST Application Note AN4545
+   */
+  std::optional<std::uint8_t> getRange();
+
  private:
   // TODOLater - Confirm these addresses are correct
   // Register addresses/values taken from the VL6180X datasheet

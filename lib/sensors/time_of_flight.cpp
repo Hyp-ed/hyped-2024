@@ -37,6 +37,33 @@ core::Result TimeOfFlight::initialise()
   return core::Result::kSuccess;
 }
 
+std::optional<std::uint8_t> TimeOfFlight::getRange()
+{
+  // Start measurement in Single-Shot mode
+  const auto start_status = i2c_->writeByteToRegister(device_address_, 0x018, 0x01);
+  if (start_status == core::Result::kFailure) { return std::nullopt; }
+
+  // Check the status
+  auto status = i2c_->readByte(device_address_, 0x04f);
+  if (!status) { return std::nullopt; }
+  auto range_status = *status & 0x07;
+
+  // Wait for new measurement ready status
+  while (range_status != 0x04) {
+    status = i2c_->readByte(device_address_, 0x04f);
+    if (!status) { return std::nullopt; }
+    range_status = *status & 0x07;
+  }
+
+  const auto range = i2c_->readByte(device_address_, 0x062);
+
+  // Clear interrupts
+  const auto interrupt_reset_status = i2c_->writeByteToRegister(device_address_, 0x015, 0x07);
+  if (interrupt_reset_status == core::Result::kFailure) { return std::nullopt; }
+
+  return range;
+};
+
 std::optional<std::uint8_t> TimeOfFlight::getStatus()
 {
   const auto status = i2c_->readByte(device_address_, kStatus);
