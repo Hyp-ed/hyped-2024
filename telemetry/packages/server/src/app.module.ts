@@ -13,7 +13,7 @@ import { WarningsModule } from './modules/warnings/Warnings.module';
 import { RemoteLogsModule } from './modules/remote-logs/RemoteLogs.module';
 import { PublicDataModule } from './modules/public-data/PublicData.module';
 import { LiveLogsGateway } from './modules/live-logs/LiveLogs.gateway';
-import { PiManagementModule } from './modules/pis/PiManagement.module';
+import { PiManagementModule } from './modules/pi-management/PiManagement.module';
 
 @Module({
   imports: [

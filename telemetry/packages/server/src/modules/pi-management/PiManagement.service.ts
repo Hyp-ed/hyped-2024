@@ -16,7 +16,7 @@ export class PiManagementService {
    */
   public async getAllPis(podId: string) {
     this.logger.log(`Getting all info for pis in pod ${podId}`);
-    const pis = pods[podId]!.pis;
+    const pis = pods[podId].pis;
     return Promise.all(Object.keys(pis).map((piId) => this.getPi(podId, piId)));
   }
 

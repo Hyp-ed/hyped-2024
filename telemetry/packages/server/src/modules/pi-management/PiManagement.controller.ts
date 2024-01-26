@@ -20,7 +20,7 @@ export class PiManagementController {
     return this.piManagementService.getPi(podId, piId);
   }
 
-  @Get(':piId/update/code')
+  @Get(':piId/update-code')
   async updatePiCode(
     @Param('podId') podId: string,
     @Param('piId') piId: string,
@@ -30,7 +30,7 @@ export class PiManagementController {
     return this.piManagementService.updatePiCode(podId, piId);
   }
 
-  @Get(':piId/update/config')
+  @Get(':piId/update-config')
   async updatePiConfig(
     @Param('podId') podId: string,
     @Param('piId') piId: string,
@@ -41,7 +41,7 @@ export class PiManagementController {
   }
 
   private validatePiId(podId: string, piId: string) {
-    const pi = pods[podId]!.pis[piId];
+    const pi = pods[podId].pis[piId];
     if (!pi) {
       throw new HttpException(`Unknown pi ID: ${piId} on pod ${podId}`, 400);
     }
