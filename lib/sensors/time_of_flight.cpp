@@ -92,7 +92,6 @@ core::Result TimeOfFlight::initialise()
 
 std::optional<std::uint8_t> TimeOfFlight::getRange()
 {
-  // TODOLater - Replace magic numbers with constants
   // Start measurement in Single-Shot mode
   const auto start_status = i2c_->writeByteToRegister(device_address_, kSysRangeStart, 0x01);
   if (start_status == core::Result::kFailure) { return std::nullopt; }

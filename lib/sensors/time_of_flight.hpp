@@ -25,6 +25,7 @@ class TimeOfFlight {
 
   /**
    * @brief Reads the measured range in Single-Shot mode
+   * @return Range value in millimetres
    * @note Implementation based on ST Application Note AN4545
    */
   std::optional<std::uint8_t> getRange();
