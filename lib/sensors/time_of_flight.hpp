@@ -23,6 +23,12 @@ class TimeOfFlight {
 
   ~TimeOfFlight();
 
+  /**
+   * @brief Reads the measured range in Single-Shot mode
+   * @note Implementation based on ST Application Note AN4545
+   */
+  std::optional<std::uint8_t> getRange();
+
   std::optional<std::uint8_t> getStatus();
 
   std::uint8_t getChannel();
@@ -41,12 +47,6 @@ class TimeOfFlight {
    * @note See ST Application Note AN4545 Section 1.3 for details
    */
   core::Result initialise();
-
-  /**
-   * @brief Reads the measured range in Single-Shot mode
-   * @note Implementation based on ST Application Note AN4545
-   */
-  std::optional<std::uint8_t> getRange();
 
  private:
   // TODOLater - Confirm these addresses are correct
