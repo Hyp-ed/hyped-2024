@@ -16,10 +16,18 @@ class II2c {
     = 0;
 
   /**
-   * @brief      General function to write a byte to a register to some device on the I2C bus
+   * @brief      General function to write a byte to an 8-bit register to some device on the I2C bus
    */
   virtual core::Result writeByteToRegister(const std::uint8_t device_address,
                                            const std::uint8_t register_address,
+                                           const std::uint8_t data)
+    = 0;
+
+  /**
+   * @brief      General function to write a byte to a 16-bit register to some device on the I2C bus
+   */
+  virtual core::Result writeByteToRegister(const std::uint8_t device_address,
+                                           const std::uint16_t register_address,
                                            const std::uint8_t data)
     = 0;
 

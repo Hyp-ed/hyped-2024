@@ -70,10 +70,30 @@ core::Result HardwareI2c::writeByteToRegister(const std::uint8_t device_address,
                                               const std::uint8_t register_address,
                                               const std::uint8_t data)
 {
+  const std::uint8_t register_address_array[2] = {0x00, register_address};
+  return writeByteToDevice(device_address, register_address_array, data);
+}
+
+core::Result HardwareI2c::writeByteToRegister(const std::uint8_t device_address,
+                                              const std::uint16_t register_address,
+                                              const std::uint8_t data)
+{
+  // TODOLater - Is this the best way to do this?
+  const std::uint8_t register_address_hi       = register_address >> 8;
+  const std::uint8_t register_address_lo       = static_cast<std::uint8_t>(register_address);
+  const std::uint8_t register_address_array[2] = {register_address_hi, register_address_lo};
+  return writeByteToDevice(device_address, register_address_array, data);
+}
+
+// TODOLater - Test code
+core::Result HardwareI2c::writeByteToDevice(const std::uint8_t device_address,
+                                            const std::uint8_t register_address_array[2],
+                                            const std::uint8_t data)
+{
   if (sensor_address_ != device_address) { setSensorAddress(device_address); }
-  const std::uint8_t write_buffer[2] = {register_address, data};
-  const ssize_t num_bytes_written    = write(file_descriptor_, write_buffer, 2);
-  if (num_bytes_written != 2) {
+  const std::uint8_t write_buffer[3] = {register_address_array[1], register_address_array[0], data};
+  const ssize_t num_bytes_written    = write(file_descriptor_, write_buffer, 3);
+  if (num_bytes_written != 3) {
     logger_.log(core::LogLevel::kFatal, "Failed to write to i2c device");
     return core::Result::kFailure;
   }
