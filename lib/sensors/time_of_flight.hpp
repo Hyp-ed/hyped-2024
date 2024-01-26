@@ -58,7 +58,24 @@ class TimeOfFlight {
   static constexpr std::uint8_t kBusy                 = 0x00;
   static constexpr std::uint8_t kConfigurationSetting = 0x00;
 
-  static constexpr std::uint8_t kSystemFreshOutOfReset = 0x016;
+  // TODOLater - std::uint8_t or std::uint16_t for all regs?
+  static constexpr std::uint8_t kSystemFreshOutOfReset  = 0x016;
+  static constexpr std::uint8_t kSystemModeGpioOne      = 0x011;
+  static constexpr std::uint16_t kReadoutSamplingPeriod = 0x010a;
+  static constexpr std::uint8_t kSysAlsAnalogueGain     = 0x03f;
+  static constexpr std::uint8_t kSysRangeVhvRepeatRate  = 0x031;
+  // TODOLater - Confirm SYSALS__INTEGRATION_PERIOD (application note vs datasheet)
+  static constexpr std::uint8_t kSysAlsIntegrationPeriod        = 0x040;
+  static constexpr std::uint8_t kSysRangeVhvRecalibrate         = 0x02e;
+  static constexpr std::uint8_t kSysRangeIntermeasurementPeriod = 0x01b;
+  static constexpr std::uint8_t kSysAlsIntermeasurementPeriod   = 0x03e;
+  static constexpr std::uint8_t kSystemInterruptConfigGpio      = 0x014;
+
+  static constexpr std::uint8_t kSysRangeStart             = 0x018;
+  static constexpr std::uint8_t kResultInterruptStatusGpio = 0x04f;
+  static constexpr std::uint8_t kResultRangeVal            = 0x062;
+
+  static constexpr std::uint8_t kSystemInterruptClear = 0x015;
 
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;

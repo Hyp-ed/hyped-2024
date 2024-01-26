@@ -39,9 +39,8 @@ core::Result TimeOfFlight::initialise()
   const auto status = i2c_->readByte(device_address_, kSystemFreshOutOfReset);
   if (!status) { return core::Result::kFailure; }
   if (*status == 1) {
-    // TODOLater - Replace magic numbers with constants?
     // TODOLater - Check core::Result after every writeByteToRegister?
-    // // Mandatory : private registers
+    // // Register names are not public - See ST Application Note AN4545 Section 9
     // i2c_->writeByteToRegister(device_address_, 0x0207, 0x01);
     // i2c_->writeByteToRegister(device_address_, 0x0208, 0x01);
     // i2c_->writeByteToRegister(device_address_, 0x0096, 0x00);
@@ -76,17 +75,17 @@ core::Result TimeOfFlight::initialise()
     i2c_->writeByteToRegister(device_address_, kSystemFreshOutOfReset, 0);
 
     // // Recommended : Public registers
-    // i2c_->writeByteToRegister(device_address_, 0x0011, 0x10);
-    // i2c_->writeByteToRegister(device_address_, 0x010a, 0x30);
-    // i2c_->writeByteToRegister(device_address_, 0x003f, 0x46);
-    // i2c_->writeByteToRegister(device_address_, 0x0031, 0xff);
-    // i2c_->writeByteToRegister(device_address_, 0x0041, 0x63);
-    // i2c_->writeByteToRegister(device_address_, 0x002e, 0x01);
+    // i2c_->writeByteToRegister(device_address_, kSystemModeGpioOne, 0x10);
+    // i2c_->writeByteToRegister(device_address_, kReadoutSamplingPeriod, 0x30);
+    // i2c_->writeByteToRegister(device_address_, kSysAlsAnalogueGain, 0x46);
+    // i2c_->writeByteToRegister(device_address_, kSysRangeVhvRepeatRate, 0xff);
+    // i2c_->writeByteToRegister(device_address_, kSysAlsIntegrationPeriod, 0x63);
+    // i2c_->writeByteToRegister(device_address_, kSysRangeVhvRecalibrate, 0x01);
 
     // // Optional: Public registers
-    // i2c_->writeByteToRegister(device_address_, 0x001b, 0x09);
-    // i2c_->writeByteToRegister(device_address_, 0x003e, 0x31);
-    // i2c_->writeByteToRegister(device_address_, 0x0013, 0x24);
+    // i2c_->writeByteToRegister(device_address_, kSysRangeIntermeasurementPeriod, 0x09);
+    // i2c_->writeByteToRegister(device_address_, kSysAlsIntermeasurementPeriod, 0x31);
+    // i2c_->writeByteToRegister(device_address_, kSystemInterruptConfigGpio, 0x24);
   }
   return core::Result::kSuccess;
 }
@@ -95,25 +94,26 @@ std::optional<std::uint8_t> TimeOfFlight::getRange()
 {
   // TODOLater - Replace magic numbers with constants
   // Start measurement in Single-Shot mode
-  const auto start_status = i2c_->writeByteToRegister(device_address_, 0x018, 0x01);
+  const auto start_status = i2c_->writeByteToRegister(device_address_, kSysRangeStart, 0x01);
   if (start_status == core::Result::kFailure) { return std::nullopt; }
 
   // Check the status
-  auto status = i2c_->readByte(device_address_, 0x04f);
+  auto status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
   if (!status) { return std::nullopt; }
-  auto range_status = *status & 0x07;
+  auto range_status = *status & 0b111;
 
   // Wait for new measurement ready status
   while (range_status != 0x04) {
-    status = i2c_->readByte(device_address_, 0x04f);
+    status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
     if (!status) { return std::nullopt; }
-    range_status = *status & 0x07;
+    range_status = *status & 0b111;
   }
 
-  const auto range = i2c_->readByte(device_address_, 0x062);
+  const auto range = i2c_->readByte(device_address_, kResultRangeVal);
 
   // Clear interrupts
-  const auto interrupt_reset_status = i2c_->writeByteToRegister(device_address_, 0x015, 0x07);
+  const auto interrupt_reset_status
+    = i2c_->writeByteToRegister(device_address_, kSystemInterruptClear, 0b111);
   if (interrupt_reset_status == core::Result::kFailure) { return std::nullopt; }
 
   return range;
