@@ -9,14 +9,15 @@ namespace hyped::io {
 class II2c {
  public:
   /**
-   * @brief      Reads a byte from some device on the I2C bus.
+   * @brief Reads a byte from some device on the I2C bus.
    */
   virtual std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
                                                const std::uint8_t register_address)
     = 0;
 
   /**
-   * @brief      General function to write a byte to an 8-bit register to some device on the I2C bus
+   * @brief General function to write a byte to a register of some device on the I2C bus.
+   * Register addressed by 8-bit value.
    */
   virtual core::Result writeByteToRegister(const std::uint8_t device_address,
                                            const std::uint8_t register_address,
@@ -24,7 +25,8 @@ class II2c {
     = 0;
 
   /**
-   * @brief      General function to write a byte to a 16-bit register to some device on the I2C bus
+   * @brief General function to write a byte to a register of some device on the I2C bus.
+   * Register addressed by 16-bit value.
    */
   virtual core::Result writeByteToRegister(const std::uint8_t device_address,
                                            const std::uint16_t register_address,
@@ -32,7 +34,7 @@ class II2c {
     = 0;
 
   /**
-   * @brief      Writes a byte to single register devices such as the mux
+   * @brief Writes a byte to single register devices such as the mux
    */
   virtual core::Result writeByte(const std::uint8_t device_address, std::uint8_t data) = 0;
 };
