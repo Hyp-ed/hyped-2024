@@ -15944,7 +15944,6 @@ packages:
     name: openmct
     version: 2.2.5
     engines: {node: '>=16.19.1 <20'}
-    prepare: true
     requiresBuild: true
     dev: false
     patched: true
