@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <vector>
 
 #include <core/logger.hpp>
 #include <core/types.hpp>
@@ -35,9 +36,8 @@ class HardwareI2c : public II2c {
 
  private:
   void setSensorAddress(const std::uint8_t device_address);
-  core::Result writeByteToDevice(const std::uint8_t device_address,
-                                 const std::uint8_t register_address_array[2],
-                                 const std::uint8_t data);
+  core::Result writeBytesToDevice(const std::uint8_t device_address,
+                                  const std::vector<std::uint8_t> bytes);
 
  private:
   core::ILogger &logger_;
