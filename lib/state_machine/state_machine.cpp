@@ -33,6 +33,6 @@ core::Result StateMachine::handleTransition(const State &state)
     return core::Result::kSuccess;
   }
   return core::Result::kFailure;
-};please fail here;
+}
 
 }  // namespace hyped::state_machine
