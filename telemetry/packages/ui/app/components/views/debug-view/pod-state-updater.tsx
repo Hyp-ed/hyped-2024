@@ -12,11 +12,21 @@ import { useMQTT } from '@/context/mqtt';
 import { ALL_POD_STATES, PodStateType } from '@hyped/telemetry-constants';
 import { useState } from 'react';
 
+/**
+ * A pod state updater component which allows us to set the state of a pod for testing/debug purposes. Used in the debug view.
+ * @param podId The ID of the pod to update the state of.
+ * @returns A component to update the state of a pod.
+ */
 export const PodStateUpdater = ({ podId }: { podId: string }) => {
   const [podState, setPodState] = useState<PodStateType>(ALL_POD_STATES.IDLE);
   const { publish } = useMQTT();
 
-  const publishPodState = () => publish(`state`, podState, podId);
+  /**
+   * Publishes the pod state to the MQTT broker.
+   */
+  const publishPodState = () => {
+    publish(`state`, podState, podId);
+  };
 
   return (
     <div className="flex gap-8 w-full justify-center">
@@ -34,11 +44,7 @@ export const PodStateUpdater = ({ podId }: { podId: string }) => {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.keys(ALL_POD_STATES).map((state) => (
-                <SelectItem key={state} value={state}>
-                  {state}
-                </SelectItem>
-              ))}
+              <PodStateOptions />
             </SelectContent>
           </Select>
           <Button onClick={publishPodState}>Set</Button>
@@ -47,3 +53,13 @@ export const PodStateUpdater = ({ podId }: { podId: string }) => {
     </div>
   );
 };
+
+/**
+ * Returns the pod state options for the pod state updater.
+ */
+const PodStateOptions = () =>
+  Object.keys(ALL_POD_STATES).map((state) => (
+    <SelectItem key={state} value={state}>
+      {state}
+    </SelectItem>
+  ));

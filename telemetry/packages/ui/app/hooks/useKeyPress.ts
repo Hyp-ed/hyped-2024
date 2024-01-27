@@ -46,5 +46,8 @@ export const useKeyPress = (
   }, []);
 };
 
+/**
+ * @returns `true` if the given key is a key combination, `false` otherwise.
+ */
 const isKeyCombination = (key: Key | KeyCombination): key is KeyCombination =>
   Array.isArray(key);

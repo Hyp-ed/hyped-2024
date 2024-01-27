@@ -1,4 +1,5 @@
-import { pods } from '@hyped/telemetry-constants';
+// Here we validate the environment variables and cast them to the correct types using zod
+
 import { z } from 'zod';
 
 const envSchema = z.object({

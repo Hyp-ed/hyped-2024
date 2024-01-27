@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { VIEWS } from './views';
-import { Sidebar } from './components/sidebar/sidebar';
+import { VIEWS, VIEW_KEYS, VIEW_OPTIONS, View, ViewOption } from './views';
+import { Sidebar } from './components/sidebar';
 import { cn } from './lib/utils';
 import {
   ResizableHandle,
@@ -8,8 +8,17 @@ import {
   ResizablePanelGroup,
 } from '@/components/ui/resizable';
 
-const App = () => {
-  const [selectedComponent, setSelectedComponent] = useState(0);
+/**
+ * The default view to display when the app is opened.
+ */
+const DEFAULT_VIEW: ViewOption = VIEW_OPTIONS.OPEN_MCT;
+
+/**
+ *
+ * @returns
+ */
+export const App = () => {
+  const [currentView, setCurrentView] = useState<ViewOption>(DEFAULT_VIEW);
 
   return (
     <ResizablePanelGroup
@@ -17,26 +26,21 @@ const App = () => {
       className="w-full bg-hyped-background"
     >
       <ResizablePanel defaultSize={85} minSize={50}>
-        {VIEWS.map((component) => (
+        {VIEW_KEYS.map((key) => (
           <div
             className={cn(
               'h-[100vh] w-full col-span-7 p-1',
-              !(VIEWS.indexOf(component) === selectedComponent) && 'hidden',
+              currentView !== key && 'hidden',
             )}
           >
-            {component.component}
+            {VIEWS[key].component}
           </div>
         ))}
       </ResizablePanel>
       <ResizableHandle withHandle className="bg-openmct-light-gray" />
       <ResizablePanel defaultSize={15} minSize={10}>
-        <Sidebar
-          selectedComponent={selectedComponent}
-          setSelectedComponent={setSelectedComponent}
-        />
+        <Sidebar currentView={currentView} setCurrentView={setCurrentView} />
       </ResizablePanel>
     </ResizablePanelGroup>
   );
 };
-
-export default App;

@@ -10,7 +10,7 @@ import { LatencyChart } from '../shared/latency-chart';
 import { cn } from '@/lib/utils';
 
 /**
- * Displays the latency between the base station and the pod
+ * Displays the latency between the base station (GUI) and the pod.
  */
 export const Latency = ({ podId }: { podId: string }) => {
   const { latency, connectionStatus, previousLatencies } = usePod(podId);

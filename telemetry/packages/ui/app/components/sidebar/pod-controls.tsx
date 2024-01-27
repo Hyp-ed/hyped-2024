@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button';
-import { CONTROLS, control } from '@/lib/controls';
+import { CONTROLS, sendControlMessage } from '@/lib/controls';
 import { cn } from '@/lib/utils';
 import { ArrowUpFromLine, Rocket, Siren } from 'lucide-react';
 import { SetLevitationHeight } from '../shared/set-levitation-height';
@@ -7,12 +7,19 @@ import { useState } from 'react';
 import { Switch } from '../ui/switch';
 import { Label } from '@radix-ui/react-label';
 
-interface PodControlsProps {
+/**
+ * Displays the pod controls.
+ * @param podId The ID of the pod to display the controls of.
+ * @param show Whether or not to show the controls. This is used to keep the state of the controls when the podId changes (rather than unmounting and remounting the component).
+ * @returns The pod controls.
+ */
+export const PodControls = ({
+  podId,
+  show,
+}: {
   podId: string;
   show: boolean;
-}
-
-export const PodControls = ({ podId, show }: PodControlsProps) => {
+}) => {
   return (
     <div className={cn('mt-2 space-y-8', show ? 'block' : 'hidden')}>
       <div className="flex flex-col gap-2">
@@ -34,7 +41,7 @@ const LevitateButton = ({ podId }: { podId: string }) => (
       'bg-blue-600 hover:bg-blue-700',
     )}
     onClick={() => {
-      control(podId, CONTROLS.LEVITATE);
+      sendControlMessage(podId, CONTROLS.LEVITATE);
     }}
   >
     <ArrowUpFromLine /> LEVITATE
@@ -46,6 +53,7 @@ const LaunchButton = ({ podId }: { podId: string }) => {
 
   return (
     <div className="space-y-2 w-full">
+      {/* This switch is used to enable the launch button */}
       <div className="flex items-center space-x-2">
         <Switch id="enable" checked={enabled} onCheckedChange={setEnabled} />
         <Label htmlFor="enable">Enable</Label>
@@ -56,7 +64,7 @@ const LaunchButton = ({ podId }: { podId: string }) => {
           'bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed',
         )}
         disabled={!enabled}
-        onClick={() => control(podId, CONTROLS.START)}
+        onClick={() => sendControlMessage(podId, CONTROLS.START)}
       >
         <Rocket /> LAUNCH
       </Button>
@@ -70,7 +78,7 @@ const EmergencyStopButton = ({ podId }: { podId: string }) => (
       'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
       'bg-red-700 hover:bg-red-800',
     )}
-    onClick={() => control(podId, CONTROLS.STOP)}
+    onClick={() => sendControlMessage(podId, CONTROLS.STOP)}
   >
     <Siren /> EMERGENCY STOP
   </Button>

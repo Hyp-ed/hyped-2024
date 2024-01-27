@@ -2,6 +2,9 @@ import { log } from '@/lib/logger';
 import { http } from 'openmct/core/http';
 import toast from 'react-hot-toast';
 
+/**
+ * Defines the controls that can be sent to a pod.
+ */
 export const CONTROLS = {
   START: 'start',
   STOP: 'stop',
@@ -19,7 +22,12 @@ export const CONTROLS = {
 
 export type Control = (typeof CONTROLS)[keyof typeof CONTROLS];
 
-export const control = async (podId: string, control: Control) => {
+/**
+ * Sends a control message to a pod.
+ * @param podId The ID of the pod to send the control to.
+ * @param control The control message to send.
+ */
+export const sendControlMessage = async (podId: string, control: Control) => {
   log(`Sending control ${control} to pod ${podId}`, podId);
   toast(`Sending control ${control} to pod ${podId}`);
   const url = `pods/${podId}/controls/${control}`;

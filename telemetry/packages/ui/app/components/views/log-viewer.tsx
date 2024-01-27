@@ -10,15 +10,21 @@ import {
 import { Button } from '../ui/button';
 import { ChevronDown } from 'lucide-react';
 
+const defaultLogLevel = [
+  LOG_LEVELS.INFO,
+  LOG_LEVELS.ERROR,
+  LOG_LEVELS.WARN,
+  LOG_LEVELS.DEBUG,
+];
+
+/**
+ * Log viewer component which displays the logs from the telemetry server.
+ */
 export const LogViewer = () => {
   const { isConnected, logs } = useLiveLogs();
-  const [logLevelFilters, setLogLevelFilters] = useState<LogLevel[]>([
-    LOG_LEVELS.INFO,
-    LOG_LEVELS.ERROR,
-    LOG_LEVELS.WARN,
-    LOG_LEVELS.DEBUG,
-    LOG_LEVELS.VERBOSE,
-  ]);
+
+  const [logLevelFilters, setLogLevelFilters] =
+    useState<LogLevel[]>(defaultLogLevel);
 
   // Scroll to bottom on new log
   useEffect(() => {
@@ -91,6 +97,12 @@ const SingleLog = ({ log }: { log: Log }) => {
   );
 };
 
+/**
+ * The log level filter component, which allows the user to filter the logs by log level.
+ * @param logLevelFilters The log level filters
+ * @param setLogLevelFilters The function to set the log level filters
+ * @returns The log level filter component
+ */
 const LogLevelFilter = ({
   logLevelFilters,
   setLogLevelFilters,

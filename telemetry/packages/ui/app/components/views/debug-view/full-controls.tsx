@@ -21,10 +21,15 @@ import {
   Unplug,
 } from 'lucide-react';
 import React from 'react';
-import { CONTROLS, control } from '@/lib/controls';
+import { CONTROLS, sendControlMessage } from '@/lib/controls';
 import { SetLevitationHeight } from '@/components/shared/set-levitation-height';
 import { Button } from '@/components/ui/button';
 
+/**
+ * Full granular pod controls. Used in the debug view.
+ * @param podId The ID of the pod to display the controls of.
+ * @returns A Card component displaying the full granular pod controls.
+ */
 export const FullControls = ({ podId }: { podId: string }) => {
   return (
     <Card className="w-full border-none">
@@ -39,10 +44,14 @@ export const FullControls = ({ podId }: { podId: string }) => {
           <div className="space-y-2">
             <ButtonLabel>Start/stop</ButtonLabel>
             <ButtonPair>
-              <LeftButton onClick={() => control(podId, CONTROLS.START)}>
+              <LeftButton
+                onClick={() => sendControlMessage(podId, CONTROLS.START)}
+              >
                 Start <Rocket size={16} />
               </LeftButton>
-              <RightButton onClick={() => control(podId, CONTROLS.STOP)}>
+              <RightButton
+                onClick={() => sendControlMessage(podId, CONTROLS.STOP)}
+              >
                 Stop <Siren size={16} />
               </RightButton>
             </ButtonPair>
@@ -50,16 +59,20 @@ export const FullControls = ({ podId }: { podId: string }) => {
           <div className="space-y-2">
             <ButtonLabel>Active suspension</ButtonLabel>
             <ButtonPair>
-              <LeftButton onClick={() => control(podId, CONTROLS.RAISE)}>
+              <LeftButton
+                onClick={() => sendControlMessage(podId, CONTROLS.RAISE)}
+              >
                 Raise <ChevronsUp size={16} />
               </LeftButton>
-              <RightButton onClick={() => control(podId, CONTROLS.LOWER)}>
+              <RightButton
+                onClick={() => sendControlMessage(podId, CONTROLS.LOWER)}
+              >
                 Lower <ChevronsDown size={16} />
               </RightButton>
             </ButtonPair>
             <ControlButton
               className="flex gap-2"
-              onClick={() => control(podId, CONTROLS.TILT)}
+              onClick={() => sendControlMessage(podId, CONTROLS.TILT)}
             >
               Tilt <Italic size={16} />
             </ControlButton>
@@ -67,10 +80,14 @@ export const FullControls = ({ podId }: { podId: string }) => {
           <div className="space-y-2">
             <ButtonLabel>Friction brakes</ButtonLabel>
             <ButtonPair>
-              <LeftButton onClick={() => control(podId, CONTROLS.CLAMP)}>
+              <LeftButton
+                onClick={() => sendControlMessage(podId, CONTROLS.CLAMP)}
+              >
                 Clamp <ArrowDownToLine size={16} />
               </LeftButton>
-              <RightButton onClick={() => control(podId, CONTROLS.RETRACT)}>
+              <RightButton
+                onClick={() => sendControlMessage(podId, CONTROLS.RETRACT)}
+              >
                 Retract <ArrowUpFromLine size={16} />
               </RightButton>
             </ButtonPair>
@@ -78,10 +95,14 @@ export const FullControls = ({ podId }: { podId: string }) => {
           <div className="space-y-2">
             <ButtonLabel>High power</ButtonLabel>
             <ButtonPair>
-              <LeftButton onClick={() => control(podId, CONTROLS.START_HP)}>
+              <LeftButton
+                onClick={() => sendControlMessage(podId, CONTROLS.START_HP)}
+              >
                 Start HP <PlugZap size={16} />
               </LeftButton>
-              <RightButton onClick={() => control(podId, CONTROLS.STOP_HP)}>
+              <RightButton
+                onClick={() => sendControlMessage(podId, CONTROLS.STOP_HP)}
+              >
                 Stop HP <Unplug size={16} />
               </RightButton>
             </ButtonPair>
@@ -89,11 +110,15 @@ export const FullControls = ({ podId }: { podId: string }) => {
           <div className="space-y-2">
             <ButtonLabel>Levitation</ButtonLabel>
             <ButtonPair>
-              <LeftButton onClick={() => control(podId, CONTROLS.LEVITATE)}>
+              <LeftButton
+                onClick={() => sendControlMessage(podId, CONTROLS.LEVITATE)}
+              >
                 Levitate <MoveUp size={16} />
               </LeftButton>
               <RightButton
-                onClick={() => control(podId, CONTROLS.STOP_LEVITATING)}
+                onClick={() =>
+                  sendControlMessage(podId, CONTROLS.STOP_LEVITATING)
+                }
               >
                 Descend <MoveDown size={16} />
               </RightButton>
@@ -110,10 +135,16 @@ const ButtonLabel = ({ children }: { children: React.ReactNode }) => (
   <p className="text-sm font-bold">{children}</p>
 );
 
+/**
+ * Sets up the default styling for a pair of buttons. (space-x-0.5)
+ */
 const ButtonPair = ({ children }: { children: React.ReactNode }) => {
   return <div className="flex flex-row space-x-0.5">{children}</div>;
 };
 
+/**
+ * Sets up the default styling for a control button.
+ */
 const ControlButton = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
@@ -132,6 +163,9 @@ const ControlButton = React.forwardRef<
 });
 ControlButton.displayName = 'ControlButton';
 
+/**
+ * Sets up the default styling for a control button on the left side of a pair. (rounded left)
+ */
 const LeftButton = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>
@@ -150,6 +184,9 @@ const LeftButton = React.forwardRef<
 });
 LeftButton.displayName = 'LeftButton';
 
+/**
+ * Sets up the default styling for a control button on the right side of a pair. (rounded right)
+ */
 const RightButton = React.forwardRef<
   HTMLButtonElement,
   React.ButtonHTMLAttributes<HTMLButtonElement>

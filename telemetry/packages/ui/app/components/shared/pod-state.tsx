@@ -18,6 +18,9 @@ import {
 } from '@/components/ui/card';
 import { CircleDashed } from 'lucide-react';
 
+/**
+ * Defines the styling for each pod state.
+ */
 const styles: Record<PodStateCategoryType, string> = {
   ACTIVE: 'bg-green-700 border-2 border-green-900 text-white',
   FAILURE: 'bg-red-700 border-2 border-red-900 text-white',
@@ -25,6 +28,11 @@ const styles: Record<PodStateCategoryType, string> = {
   NULL: '',
 };
 
+/**
+ * Displays the current state of a pod.
+ * @param podId The ID of the pod to display the state of.
+ * @returns A Card component displaying the pod state.
+ */
 export const PodState = ({ podId }: { podId: string }) => {
   const { podState: state, name } = usePod(podId);
 

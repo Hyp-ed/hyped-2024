@@ -13,13 +13,9 @@ import { LatencyChart } from '@/components/shared/latency-chart';
 import { TrainFront } from 'lucide-react';
 
 export const PodConnectionStatus = ({ podId }: { podId: PodId }) => {
-  const {
-    connectionStatus,
-    connectionEstablished,
-    latency,
-    previousLatencies,
-  } = usePod(podId);
+  const { connectionStatus, latency, previousLatencies } = usePod(podId);
 
+  // Maps the connection statuses to React components
   const statusComponentMap: Record<PodConnectionStatusType, React.ReactNode> = {
     CONNECTED: (
       <div className="flex gap-2 items-center">

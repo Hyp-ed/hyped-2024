@@ -61,30 +61,33 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
   };
 
   // Connect to MQTT broker on mount
-  useEffect(() => {
+  useEffect(function connectToMqttBrokerOnMount() {
     mqttConnect(broker);
   }, []);
 
   // Handle client changes
-  useEffect(() => {
-    if (client) {
-      client.on('connect', () => {
-        log('MQTT client connected to broker');
-        setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTED);
-      });
-      client.on('error', (err: any) => {
-        log(`MQTT connection error: ${err}`);
-        setConnectionStatus(MQTT_CONNECTION_STATUS.ERROR);
-        client.end();
-      });
-      client.on('reconnect', () => {
-        setConnectionStatus(MQTT_CONNECTION_STATUS.RECONNECTING);
-      });
-    } else {
-      log("MQTT client doesn't exist, reconnecting...");
-      mqttConnect(broker);
-    }
-  }, [client]);
+  useEffect(
+    function handleClientChanges() {
+      if (client) {
+        client.on('connect', () => {
+          log('MQTT client connected to broker');
+          setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTED);
+        });
+        client.on('error', (err: any) => {
+          log(`MQTT connection error: ${err}`);
+          setConnectionStatus(MQTT_CONNECTION_STATUS.ERROR);
+          client.end();
+        });
+        client.on('reconnect', () => {
+          setConnectionStatus(MQTT_CONNECTION_STATUS.RECONNECTING);
+        });
+      } else {
+        log("MQTT client doesn't exist, reconnecting...");
+        mqttConnect(broker);
+      }
+    },
+    [client],
+  );
 
   /**
    * Publish an MQTT message

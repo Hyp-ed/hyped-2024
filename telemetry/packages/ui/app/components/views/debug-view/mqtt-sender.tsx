@@ -35,7 +35,10 @@ import { useCurrentPod, usePods } from '@/context/pods';
 import { QoS } from '@/types/mqtt';
 import { useKeyPress } from '@/hooks/useKeyPress';
 
-const mqttMessageSchema = z.object({  
+/**
+ * Validation schema for an MQTT message.
+ */
+const mqttMessageSchema = z.object({
   topic: z.string().min(1, {
     message: 'Topic must not be empty',
   }),
@@ -59,6 +62,7 @@ export const MqttSender = () => {
   const { customPublish: publish } = useMQTT();
   const { currentPod: podId } = useCurrentPod();
 
+  // Send MQTT message on Ctrl+Enter
   useKeyPress([['ctrlKey', 'Enter']], () => {
     form.handleSubmit(onSubmit)();
   });
@@ -76,6 +80,10 @@ export const MqttSender = () => {
     defaultValues: defaultMqttMessage,
   });
 
+  /**
+   * Sends an MQTT message.
+   * @param values The MQTT message values to send
+   */
   function onSubmit(values: MqttMessageSchema) {
     if (!publish) {
       toast.error('Could not publish message.');

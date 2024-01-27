@@ -19,6 +19,10 @@ import { Signal } from 'lucide-react';
 import { POD_IDS, pods } from '@hyped/telemetry-constants';
 import { ServerConnectionStatus } from './server-connection-status';
 
+/**
+ * Displays the connection statuses of the GUI, server, and pods.
+ * @returns A Card component displaying the connection statuses of the GUI, server, and pods.
+ */
 export const ConnectionStatuses = () => {
   return (
     <Card className="border-none w-full">
@@ -54,7 +58,6 @@ export const ConnectionStatuses = () => {
           <CarouselNext />
         </Carousel>
       </CardContent>
-      <CardFooter></CardFooter>
     </Card>
   );
 };

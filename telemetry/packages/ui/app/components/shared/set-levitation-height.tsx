@@ -1,18 +1,24 @@
 import { log } from '@/lib/logger';
 import { http } from 'openmct/core/http';
 import { useState } from 'react';
-import { Input } from '../ui/input';
-import { Button } from '../ui/button';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
+/**
+ * Sets the levitation height of a pod.
+ * @param podId The ID of the pod to set the levitation height of.
+ * @returns A component to set the levitation height of a pod.
+ */
 export const SetLevitationHeight = ({ podId }: { podId: string }) => {
   const [height, setHeight] = useState<number | null>(null);
 
-  const setHeightHandler = async () => {
+  const setLevigationHeight = async () => {
+    // Don't do anything if the height is invalid
     if (!height || height < 0) return;
     log(`Setting the levitation height of ${podId} to ${height}mm`);
     const url = `pods/${podId}/controls/levitation-height?height=${height}`;
     await http.post(url);
-    // Clear
+    // Clear the input
     setHeight(null);
   };
 
@@ -28,7 +34,7 @@ export const SetLevitationHeight = ({ podId }: { podId: string }) => {
         />
         <Button
           className="bg-white hover:bg-gray-200 text-black"
-          onClick={setHeightHandler}
+          onClick={setLevigationHeight}
         >
           Set
         </Button>

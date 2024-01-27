@@ -1,8 +1,13 @@
 import { PreviousLatenciesType } from '@/context/pods';
 import { LineChart } from '@tremor/react';
 
-const dataFormatter = (number: number) => `${number.toString()}ms`;
-
+/**
+ * Wrapper around LineChart to display latency data.
+ * @param data The latency values to display, possibly undefined.
+ * @param minValue The minimum value to display on the y-axis.
+ * @param maxValue The maximum value to display on the y-axis.
+ * @returns A LineChart component.
+ */
 export const LatencyChart = ({
   data,
   minValue = 0,
@@ -36,3 +41,5 @@ export const LatencyChart = ({
     </div>
   );
 };
+
+const dataFormatter = (number: number) => `${number.toString()}ms`;

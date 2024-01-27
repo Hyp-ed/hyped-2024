@@ -1,5 +1,10 @@
 import { SVGProps } from 'react';
 
+/**
+ * The HYPED logo as an SVG.
+ * @param props (Optional) props to pass to the SVG.
+ * @returns An SVG component.
+ */
 export const Logo = (props: SVGProps<SVGSVGElement>) => (
   <svg
     id="Layer_1"

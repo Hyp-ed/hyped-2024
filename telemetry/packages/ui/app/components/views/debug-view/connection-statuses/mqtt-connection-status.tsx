@@ -10,9 +10,13 @@ import {
 } from '@/components/ui/card';
 import { Radio } from 'lucide-react';
 
+/**
+ * Displays the connection status of the base station (GUI) to the MQTT broker.
+ */
 export const MqttConnectionStatus = () => {
   const { mqttConnectionStatus, connectedAt, broker } = useMQTT();
 
+  // Maps the connection statuses to React components
   const statusComponentMap: Record<MQTTConnectionStatusType, React.ReactNode> =
     {
       CONNECTING: (
