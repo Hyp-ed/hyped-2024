@@ -10,10 +10,8 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       time_(time),
       keyence_preprocessor_(logger),
       accelerometer_preprocessor_(logger, time),
-      accelerometer_trajectory_estimator_(time),
-      // crosschecker_(logger, time),
-      running_means_filter_(logger, time),
-      previous_keyence_reading_({0, 0})
+      previous_accelerometer_data_(0.0),
+      previous_keyence_reading_(0.0)
 {
 }
 
@@ -21,38 +19,33 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 // is std::nullopt
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  core::Float mean_keyence_value = 0;
-  for (std::size_t i = 0; i < core::kNumKeyence; ++i) {
-    mean_keyence_value += static_cast<core::Float>(previous_keyence_reading_.at(i));
-  }
-  mean_keyence_value /= core::kNumKeyence;
+  
+  // // temp solution
+  // SensorChecks check_trajectory = SensorChecks::kAcceptable;
+  // if (std::abs(trajectory_.displacement - mean_keyence_value) > 10) {
+  //   check_trajectory = SensorChecks::kUnacceptable;
+  // }
 
-  // TODOLater: use again when wheel encoders work
-  // cross check all estimates to ensure any returned trajectory is accurate
-  /*
-  const SensorChecks check_trajectory = crosschecker_.checkTrajectoryAgreement(
-    trajectory_.displacement, mean_encoder_value, mean_keyence_value);
-  */
-  // temp solution
-  SensorChecks check_trajectory = SensorChecks::kAcceptable;
-  if (std::abs(trajectory_.displacement - mean_keyence_value) > 10) {
-    check_trajectory = SensorChecks::kUnacceptable;
-  }
+  // // check fail state
+  // if (check_trajectory == SensorChecks::kUnacceptable) {
+  //   logger_.log(core::LogLevel::kFatal,
+  //               "Navigation sensors are in disagreement. Unable to accurately determine "
+  //               "trajectory.");
+  //   return std::nullopt;
+  // }
 
-  // check fail state
-  if (check_trajectory == SensorChecks::kUnacceptable) {
-    logger_.log(core::LogLevel::kFatal,
-                "Navigation sensors are in disagreement. Unable to accurately determine "
-                "trajectory.");
-    return std::nullopt;
-  }
 
-  // TODOLater: check braking implementation here!
-  if (trajectory_.displacement
-      > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
-    logger_.log(core::LogLevel::kFatal, "Time to break!");
-    return std::nullopt;
-  }
+
+
+
+
+
+  // // TODOLater: check braking implementation here!
+  // if (trajectory_.displacement
+  //     > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
+  //   logger_.log(core::LogLevel::kFatal, "Time to break!");
+  //   return std::nullopt;
+  // }
 
   return trajectory_;
 }
@@ -61,7 +54,7 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
 core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 {
   // Check keyence strictly increasing
-  if (keyence_data.at(0) < previous_keyence_reading_.at(0)) {
+  if (keyence_data.at(0) < previous_keyence_reading_) {
     logger_.log(core::LogLevel::kFatal, "Keyence data is decreasing");
     return core::Result::kFailure;
   }
@@ -73,8 +66,8 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
     return core::Result::kFailure;
   }
 
-  // Update old keyence reading
-  previous_keyence_reading_ = keyence_data;
+  previous_keyence_reading_ = keyence_data[0];
+
   logger_.log(core::LogLevel::kInfo, "Keyence data successfully updated in Navigation");
   return core::Result::kSuccess;
 }
@@ -101,30 +94,12 @@ core::Result Navigator::accelerometerUpdate(
   }
 
   // get mean value
-  core::Float unfiltered_acceleration = 0;
+  previous_accelerometer_data_ = 0;
   for (std::size_t i = 0; i < core::kNumAccelerometers; ++i) {
-    unfiltered_acceleration += clean_accelerometer_data.value().at(i);
+    previous_accelerometer_data_ += clean_accelerometer_data.value().at(i);
   }
-  unfiltered_acceleration /= core::kNumAccelerometers;
 
-  // run filtering on estimate
-  // TODOLater: change from rolling means to kalamn
-  const core::Float filtered_acceleration
-    = running_means_filter_.updateEstimate(unfiltered_acceleration);
-
-  // Numerically integrate data estimates, update internal class values
-  accelerometer_trajectory_estimator_.update(filtered_acceleration,
-                                             accelerometer_data.at(0).measured_at);
-  trajectory_.acceleration = filtered_acceleration;
-  trajectory_.velocity     = accelerometer_trajectory_estimator_.getVelocityEstimate();
-  trajectory_.displacement = accelerometer_trajectory_estimator_.getDisplacementEstimate();
-
-  // check if we need to break
-  if (trajectory_.displacement
-      > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
-    logger_.log(core::LogLevel::kFatal, "Time to break!");
-    return core::Result::kFailure;
-  }
+  previous_accelerometer_data_ /= core::kNumAccelerometers;
 
   logger_.log(core::LogLevel::kInfo, "Navigation trjectory successfully updated.");
   return core::Result::kSuccess;

@@ -11,7 +11,6 @@ namespace hyped::navigation {
 
 constexpr std::size_t state_dimension       = 3;
 constexpr std::size_t measurement_dimension = 1;
-constexpr std::size_t extended_dimension    = 2;
 // in order acc, velocity, displacement
 using StateVector           = Eigen::Matrix<core::Float, state_dimension, 1>;
 using StateTransitionMatrix = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
@@ -41,12 +40,6 @@ struct Quartiles {
 };
 
 inline core::Trajectory zero_trajectory = {0, 0, 0};
-
-struct Quartile {
-  core::Float first_quartile;
-  core::Float median;
-  core::Float third_quartile;
-};
 
 class INavigator {
  public:

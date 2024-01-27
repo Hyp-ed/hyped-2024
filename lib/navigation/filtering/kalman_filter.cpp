@@ -4,24 +4,30 @@ namespace hyped::navigation {
 
 KalmanFilter::KalmanFilter(std::shared_ptr<core::ITimeSource> time_source,
                            const StateVector initial_state,
-                           const ErrorCovarianceMatrix initial_error_covariance)
+                           const ErrorCovarianceMatrix initial_error_covariance,
+                           const StateTransitionMatrix &transition_matrix,
+                           const ControlMatrix &control_matrix,
+                           const StateTransitionCovarianceMatrix &transition_covariance,
+                           const MeasurementMatrix &measurement_matrix,
+                           const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance)
     : time_source_(time_source),
       last_update_time_(time_source->now()),
       state_estimate_(initial_state),
-      error_covariance_(initial_error_covariance)
+      error_covariance_(initial_error_covariance),
+      transition_matrix(transition_matrix),
+      control_matrix(control_matrix),
+      transition_covariance(transition_covariance),
+      measurement_matrix(measurement_matrix),
+      measurement_noise_covariance(measurement_noise_covariance)
 {
   static_assert(state_dimension > 0);
   static_assert(measurement_dimension > 0);
 }
 
-void KalmanFilter::filter(const StateTransitionMatrix &transition_matrix,
-                          const StateTransitionCovarianceMatrix &transition_covariance,
-                          const MeasurementMatrix &measurement_matrix,
-                          const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance,
-                          const MeasurementVector &measurement)
+void KalmanFilter::filter(const MeasurementVector &measurement,
+                          const ControlInput &control_input)
 {
-  // TODOLater: figure out how to make transition matrix given time delta - in main nav section
-  const auto prop_state_estimate = transition_matrix * state_estimate_;
+  const auto prop_state_estimate = transition_matrix * state_estimate_ + control_matrix * control_input;
   const auto prop_error_covariance
     = (transition_matrix.transpose() * error_covariance_ * transition_matrix)
       + transition_covariance;

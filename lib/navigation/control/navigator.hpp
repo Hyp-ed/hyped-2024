@@ -9,8 +9,7 @@
 #include "core/logger.hpp"
 #include "core/types.hpp"
 #include "navigation/control/consts.hpp"
-#include "navigation/filtering/running_means_filter.hpp"
-#include "navigation/preprocessing/accelerometer_trajectory.hpp"
+#include "navigation/filtering/kalman_filter.hpp"
 #include "navigation/preprocessing/preprocess_accelerometer.hpp"
 #include "navigation/preprocessing/preprocess_keyence.hpp"
 
@@ -44,16 +43,15 @@ class Navigator : public INavigator {
   core::ILogger &logger_;
   const core::ITimeSource &time_;
 
+  KalmanFilter kalman_filter_;
+
   // navigation functionality
   KeyencePreprocessor keyence_preprocessor_;
   AccelerometerPreprocessor accelerometer_preprocessor_;
-  AccelerometerTrajectoryEstimator accelerometer_trajectory_estimator_;
-  // TODOLater: use again when wheel encoders work
-  // Crosscheck crosschecker_;
-  RunningMeansFilter running_means_filter_;
 
   // previous readings
-  core::KeyenceData previous_keyence_reading_;
+  core::Float previous_keyence_reading_;
+  core::Float previous_accelerometer_data_;
 
   // current navigation trajectory
   core::Trajectory trajectory_;
