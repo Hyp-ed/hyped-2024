@@ -1,6 +1,6 @@
 #!/bin/bash
 
-IMAGE_NAME="hyped_build"
+IMAGE_NAME="hyped"
 BUILD_CONTAINER_NAME="hyped_build"
 DEV_CONTAINER_NAME="hyped_dev"
 
@@ -96,7 +96,7 @@ if [ "$docker_build" = true ]; then
     docker rm $BUILD_CONTAINER_NAME
   fi
 
-  docker run -it -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/$IMAGE_NAME --name $BUILD_CONTAINER_NAME -v $(pwd):/home/$IMAGE_NAME $IMAGE_NAME bash
+  docker run -it -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
 fi
 
 if [ "$docker_dev" = true ]; then
@@ -108,6 +108,7 @@ if [ "$docker_dev" = true ]; then
     docker start -i $DEV_CONTAINER_NAME
   else
     echo "[!] No existing container found. Creating new container"
-    docker run -it --mount type=bind,source=$(pwd),target=/home/hyped/ --name $DEV_CONTAINER_NAME --entrypoint /bin/bash $IMAGE_NAME
+    docker run -it -v $(pwd):/home/hyped --name $DEV_CONTAINER_NAME -w /home/hyped/ --entrypoint /bin/bash $IMAGE_NAME 
+    # --mount type=bind,source=$(pwd),target=/home/hyped
   fi
 fi

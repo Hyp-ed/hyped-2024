@@ -22,9 +22,9 @@ RUN cmake -DPAHO_BUILD_DOCUMENTATION=FALSE -DPAHO_BUILD_SAMPLES=FALSE -DPAHO_MQT
 RUN make
 RUN make install
 
-WORKDIR /home/hyped
+WORKDIR /home/hyped_entrypoint
 
 COPY entry.sh ./
 
-ENTRYPOINT [ "/home/hyped/entry.sh" ]
+ENTRYPOINT [ "/home/hyped_entrypoint/entry.sh" ]
 CMD ["bash"]
