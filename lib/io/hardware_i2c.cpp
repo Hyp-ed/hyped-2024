@@ -115,12 +115,12 @@ core::Result HardwareI2c::writeByte(const std::uint8_t device_address, const std
 
 void HardwareI2c::setSensorAddress(const std::uint8_t device_address)
 {
-  sensor_address_        = device_address;
   const int return_value = ioctl(file_descriptor_, I2C_SLAVE, device_address);
   if (return_value < 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to set sensor address");
     return;
   }
+  sensor_address_ = device_address;
 }
 
 }  // namespace hyped::io
