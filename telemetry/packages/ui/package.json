@@ -11,8 +11,7 @@
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.0.8",
     "@fontsource/raleway": "^4.5.12",
-    "@hyped/telemetry-constants": "*",
-    "@hyped/telemetry-types": "*",
+    "@hyped/telemetry-constants": "workspace:*",
     "@radix-ui/react-alert-dialog": "^1.0.4",
     "@radix-ui/react-dialog": "^1.0.4",
     "@radix-ui/react-label": "^2.0.2",
@@ -48,7 +47,7 @@
     "zod": "^3.22.4"
   },
   "devDependencies": {
-    "@hyped/telemetry-types": "*",
+    "@hyped/telemetry-types": "workspace:*",
     "@types/node": "^20.10.0",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",

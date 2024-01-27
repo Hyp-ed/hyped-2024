@@ -3,17 +3,9 @@
   "private": true,
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "Run": "===========================================================================================================",
-    "start": "turbo run start --parallel",
-    "Development": "===================================================================================================",
-    "dev": "turbo run dev --parallel",
-    "Test": "==========================================================================================================",
-    "test": "turbo run test",
-    "test:watch": "turbo run test:watch --parallel",
-    "Lint": "==========================================================================================================",
-    "fix": "turbo run fix --parallel",
-    "flightcheck": "turbo run flightcheck",
-    "Build": "=========================================================================================================",
+    "start": "turbo run start",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint --parallel",
     "build": "turbo run build"
   },
   "devDependencies": {
