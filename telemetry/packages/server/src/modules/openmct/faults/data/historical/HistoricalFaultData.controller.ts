@@ -5,11 +5,9 @@ import { HistoricalFaultDataService } from './HistoricalFaultData.service';
 export class HistoricalFaultsDataController {
   constructor(private historicalDataService: HistoricalFaultDataService) {}
   @Get('pods/:podId')
-  getFaults(
-    @Param('podId') podId: string,
-  ) {
+  getFaults(@Param('podId') podId: string) {
     return this.historicalDataService.getHistoricalFaults({
       podId,
-   } );
+    });
   }
 }

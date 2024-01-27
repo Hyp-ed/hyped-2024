@@ -6,12 +6,12 @@
     "start": "turbo run start",
     "dev": "turbo run dev",
     "lint": "turbo run lint --parallel",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "build": "turbo run build"
   },
   "devDependencies": {
     "@types/is-ci": "^3.0.0",
     "@types/node": "^18.11.18",
-    "@types/prettier": "^2.7.2",
     "@types/rimraf": "^3.0.2",
     "@typescript-eslint/eslint-plugin": "^5.48.2",
     "@typescript-eslint/parser": "^5.48.2",

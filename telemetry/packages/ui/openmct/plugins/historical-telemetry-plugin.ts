@@ -9,11 +9,14 @@ export function HistoricalTelemetryPlugin() {
       supportsRequest: function (domainObject: AugmentedDomainObject) {
         return domainObject.podId !== undefined;
       },
-      request: function (domainObject: AugmentedDomainObject, options: TelemetryRequest) {
+      request: function (
+        domainObject: AugmentedDomainObject,
+        options: TelemetryRequest,
+      ) {
         const { start, end } = options;
         const podId = domainObject.podId;
         const measurementKey = domainObject.identifier.key;
-        const url = `openmct/data/historical/pods/${podId}/measurements/${measurementKey}?start=${start}&end=${end}`
+        const url = `openmct/data/historical/pods/${podId}/measurements/${measurementKey}?start=${start}&end=${end}`;
 
         return http
           .get(url)

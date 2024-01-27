@@ -21,4 +21,4 @@ export type OpenMctFault = {
       monitoringResult: string;
     };
   };
-}
+};

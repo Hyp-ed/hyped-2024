@@ -87,18 +87,20 @@ export function LimitPlugin() {
         return {
           limits: function () {
             return Promise.resolve({
-              ...(limits.warning ? {
-                WARNING: {
-                  low: {
-                    color: 'yellow',
-                    value: limits.warning.low,
-                  },
-                  high: {
-                    color: 'yellow',
-                    value: limits.warning.high,
-                  },
-                }
-              } : {}),
+              ...(limits.warning
+                ? {
+                    WARNING: {
+                      low: {
+                        color: 'yellow',
+                        value: limits.warning.low,
+                      },
+                      high: {
+                        color: 'yellow',
+                        value: limits.warning.high,
+                      },
+                    },
+                  }
+                : {}),
               CRITICAL: {
                 low: {
                   color: 'red',
