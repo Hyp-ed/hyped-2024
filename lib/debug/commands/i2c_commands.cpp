@@ -68,6 +68,6 @@ core::Result I2cCommands::addCommands(core::ILogger &logger,
     repl->addCommand(std::move(write_command));
   }
   return core::Result::kSuccess;
-};
+}
 
 }  // namespace hyped::debug

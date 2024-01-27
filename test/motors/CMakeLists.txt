@@ -1,4 +1,4 @@
-set(target hyped_test_core)
+set(target hyped_test_motors)
 file(GLOB code "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 add_executable(${target} ${code})
 target_include_directories(
@@ -7,9 +7,8 @@ target_include_directories(
 target_link_libraries(
   ${target}
   GTest::gtest_main
-  hyped_core
+  hyped_motors
   hyped_utils
-  Eigen3::Eigen
-  Boost::boost
+  hyped_core
 )
 gtest_discover_tests(${target})
