@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 echo "Building..."
 
 # Fix for git
@@ -17,4 +19,4 @@ fi
 cd build 
 cmake ..
 make -j
-#make test
+make test
