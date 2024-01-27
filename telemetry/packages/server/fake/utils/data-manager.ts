@@ -1,5 +1,4 @@
-import { SensorData } from "../data-gen";
-import { Limits } from "../../../types/src";
+import { SensorData } from "../../../types/src";
 
 interface StoredData {
     [key: string]: (number | string)[]
@@ -10,14 +9,13 @@ export class DataManager {
     private static instance: DataManager | null = null;  // Static property to hold the single instance
     private data: SensorData;  // Instance property to hold the shared state
     public storedPodData: StoredData = {};
-    private limits: Limits; // Instance property to hold sensor reading range limits
 
     private constructor(initialData: SensorData) {
         // Initialize data
         this.data = initialData;
         // Initialise pod data storage object
         for (const sensor in initialData) {
-            this.storedPodData[sensor] = [this.data[sensor].currentVal];
+            this.storedPodData[sensor] = [this.data[sensor].currentValue];
         }
     }
 
@@ -46,7 +44,7 @@ export class DataManager {
     updateData(newData: SensorData): void {
         this.data = newData;
         Object.keys(newData).forEach( (sensor): void => {
-            this.storedPodData[sensor].push(newData[sensor].currentVal);
+            this.storedPodData[sensor].push(newData[sensor].currentValue);
         });
     }
 }
