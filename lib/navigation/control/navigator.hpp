@@ -37,6 +37,13 @@ class Navigator : public INavigator {
    * @param encoder_data
    */
 
+  core::Result opticalUpdate(const core::OpticalData &optical_data);
+  /**
+   * @brief preprocesses encoder data and updates trajectory
+   *
+   * @param optical_data
+   */
+
   core::Result accelerometerUpdate(
     const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
 
@@ -51,6 +58,7 @@ class Navigator : public INavigator {
   AccelerometerPreprocessor accelerometer_preprocessor_;
 
   // previous readings
+  core::Float previous_optical_reading_;
   core::Float previous_keyence_reading_;
   core::Float previous_accelerometer_data_;
 

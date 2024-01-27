@@ -4,6 +4,7 @@
 
 #include <navigation/control/consts.hpp>
 #include <navigation/filtering/kalman_filter.hpp>
+#include <navigation/control/kalman_matrices.hpp>
 #include <utils/manual_time.hpp>
 
 namespace hyped::test {
@@ -12,9 +13,15 @@ TEST(KalmanFilter, construction)
 {
   using KalmanFilter     = navigation::KalmanFilter;
   const auto manual_time = std::make_shared<utils::ManualTime>();
-  navigation::StateVector initial_state;
+  navigation::StateVector initial_state(navigation::StateVector::Zero());
   navigation::ErrorCovarianceMatrix initial_error_covariance;
-  KalmanFilter kalman_filter(manual_time, initial_state, initial_error_covariance);
+  KalmanFilter kalman_filter(initial_state,
+                            navigation::ErrorCovarianceMatrix::Zero(), //If initial position not known exactly, tune
+                            navigation::kStateTransitionMatrix,
+                            navigation::kControlMatrix,
+                            navigation::kErrorCovarianceMatrix,
+                            navigation::kMeasurementMatrix,
+                            navigation::kMeasurementNoiseCovarianceMatrix );
 
   /*
   kalman_filter.filter(KalmanFilter::StateTransitionMatrix(),

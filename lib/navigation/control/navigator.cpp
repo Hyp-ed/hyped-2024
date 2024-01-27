@@ -11,12 +11,14 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       keyence_preprocessor_(logger),
       accelerometer_preprocessor_(logger, time),
       previous_accelerometer_data_(0.0),
+      previous_optical_reading_(0.0),
       previous_keyence_reading_(0.0),
       kalman_filter_(StateVector::Zero(), //If initial position not known exactly, modify
                     ErrorCovarianceMatrix::Zero(), //If initial position not known exactly, tune
                     kStateTransitionMatrix,
                     kControlMatrix,
                     kErrorCovarianceMatrix,
+                    kMeasurementMatrix,
                     kMeasurementNoiseCovarianceMatrix)
 {
 }
@@ -40,8 +42,6 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   //   return std::nullopt;
   // }
 
-
-
   // // TODOLater: check braking implementation here!
   // if (trajectory_.displacement
   //     > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
@@ -49,6 +49,25 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   //   return std::nullopt;
   // }
 
+  control_input_vector << previous_accelerometer_data_;
+  measurement_vector << previous_keyence_reading_, previous_optical_reading_;
+
+  //Modify measurement matrix depending on the availabiiity of keyence data
+  if(previous_keyence_reading_ == 0.0){
+    kMeasurementMatrix(0,0) = 0;
+  } else {
+    kMeasurementMatrix(0,0) = 1;
+  }
+  
+  kalman_filter_.filter(measurement_vector, control_input_vector);
+  previous_keyence_reading_ = 0.0; //Reset keyence reading to 0.0 after use so that next step uses optical measurment matrix only.
+
+  trajectory_.displacement = kalman_filter_.getStateEstimate()(0);
+  trajectory_.velocity     = kalman_filter_.getStateEstimate()(1);
+
+  logger_.log(core::LogLevel::kInfo, "Trajectory successfully updated to: %f, %f",
+              trajectory_.displacement, trajectory_.velocity);
+  
   return trajectory_;
 }
 
@@ -70,7 +89,15 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 
   previous_keyence_reading_ = keyence_data[0];
 
-  logger_.log(core::LogLevel::kInfo, "Keyence data successfully updated in Navigation");
+  logger_.log(core::LogLevel::kInfo, "Keyence data successfully updated");
+  return core::Result::kSuccess;
+}
+core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
+{
+  
+  previous_optical_reading_ = optical_data[0][0]; //TODO: TAKE MAGNITUDE!
+
+  logger_.log(core::LogLevel::kInfo, "Optical flow data successfully updated");
   return core::Result::kSuccess;
 }
 
@@ -100,10 +127,9 @@ core::Result Navigator::accelerometerUpdate(
   for (std::size_t i = 0; i < core::kNumAccelerometers; ++i) {
     previous_accelerometer_data_ += clean_accelerometer_data.value().at(i);
   }
-
   previous_accelerometer_data_ /= core::kNumAccelerometers;
 
-  logger_.log(core::LogLevel::kInfo, "Navigation trjectory successfully updated.");
+  logger_.log(core::LogLevel::kInfo, "Accelerometer data successfully updated");
   return core::Result::kSuccess;
 }
 
