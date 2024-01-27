@@ -40,7 +40,7 @@ function movingAvg(vals: number[]): number {
 interface InitialState {
     [key: string]: {
         dt: number;
-        currentValue: number;
+        initialVal: number;
     }
 }
 
@@ -66,7 +66,7 @@ function readData(file: string): Promise<InitialState> {
             const { quantity, dt, initialVal } = row;
             initialState[quantity] = {
                 dt: parseInt(dt),
-                currentValue: parseFloat(initialVal)
+                initialVal: parseFloat(initialVal)
             };
 
             // Print the information

@@ -1,4 +1,5 @@
-import type { Pods } from '@hyped/telemetry-types';
+// import type { Pods } from '@hyped/telemetry-types'; /* TS error - cannot locate module */
+import type { Pods } from '../../../types/src/pods/pods.types';
 import {
   accelerometerCommon,
   hallEffectCommon,

@@ -19,9 +19,11 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
+    // "types": ["node"],
     "paths": {
       "@/modules/*": [
         "src/modules/*",
+        "src/fake/*"
     ],
       "@/core/*": [
           "src/modules/core/*",
