@@ -1,5 +1,5 @@
 {
-  "name": "@hyped/types",
+  "name": "@hyped/telemetry-types",
   "private": true,
   "version": "0.0.0",
   "types": "dist/index.d.ts",

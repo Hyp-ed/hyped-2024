@@ -1,5 +1,5 @@
 {
-  "name": "@hyped/ui",
+  "name": "@hyped/telemetry-ui",
   "private": true,
   "version": "0.0.0",
   "type": "module",
