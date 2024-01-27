@@ -11,10 +11,13 @@
   ],
   "scripts": {
     "start": "tsdx watch",
-    "build": "tsdx build"
+    "build": "tsdx build",
+    "lint": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "devDependencies": {
     "@hyped/telemetry-types": "workspace:*",
+    "@hyped/eslint-config": "workspace:*",
     "tsdx": "^0.14.1",
     "tslib": "^2.5.3",
     "typescript": "^5.1.6"

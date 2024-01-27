@@ -1,7 +1,7 @@
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   root: true,
-  extends: ['@hyped/eslint-config/basic.js'],
+  extends: ['@hyped/eslint-config/react.js'],
   parserOptions: {
     project: true,
     tsconfigRootDir: __dirname,

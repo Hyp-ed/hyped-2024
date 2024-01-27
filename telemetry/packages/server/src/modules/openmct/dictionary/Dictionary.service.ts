@@ -19,7 +19,7 @@ export class DictionaryService {
   }
 
   getPod(podId: string): OpenMctPod {
-    const pod = pods[podId as keyof typeof pods];
+    const pod = pods[podId ];
     if (!pod) {
       throw new Error(`Pod ${podId} not found`);
     }
@@ -36,7 +36,7 @@ export class DictionaryService {
   }
 
   getMeasurement(podId: string, measurementKey: string) {
-    const pod = pods[podId as keyof typeof pods];
+    const pod = pods[podId ];
     if (!pod) {
       throw new Error(`Pod ${podId} not found`);
     }

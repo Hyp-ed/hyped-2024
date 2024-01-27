@@ -10,6 +10,7 @@
       "persistent": true
     },
     "lint": {},
+    "lint:fix": {},
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
