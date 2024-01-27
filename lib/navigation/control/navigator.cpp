@@ -24,15 +24,9 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 {
 }
 
-// TODOLater: make sure that whoever calls this calls a full fail state if return fo this function
-// is std::nullopt
+
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  // // temp solution
-  // SensorChecks check_trajectory = SensorChecks::kAcceptable;
-  // if (std::abs(trajectory_.displacement - mean_keyence_value) > 10) {
-  //   check_trajectory = SensorChecks::kUnacceptable;
-  // }
 
   // // check fail state
   // if (check_trajectory == SensorChecks::kUnacceptable) {
@@ -64,7 +58,7 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
               trajectory_.displacement,
               trajectory_.velocity);
 
-  // TODO: check this
+  // T0DO: check this
   if (trajectory_.displacement
       > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
     logger_.log(core::LogLevel::kFatal, "Time to break!");
@@ -74,7 +68,7 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   return trajectory_;
 }
 
-// TODOLater: check input from sensors matches this
+// : check input from sensors matches this
 core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 {
   // Check keyence strictly increasing
@@ -112,7 +106,6 @@ core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
   return core::Result::kSuccess;
 }
 
-// TODOLater: check input from sensors matches this
 core::Result Navigator::accelerometerUpdate(
   const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data)
 {
