@@ -48,7 +48,6 @@ export type LiveMeasurement = RangeMeasurement & {
 // export the sensor object type for data generation
 export type SensorData = Record<string, LiveMeasurement>;
 
-
 // create Pod type
 export type Pod = {
   name: string;

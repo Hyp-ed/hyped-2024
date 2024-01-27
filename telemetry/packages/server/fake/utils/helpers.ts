@@ -1,4 +1,4 @@
-import { SensorData, Limits } from "../../../types/src";
+import { SensorData, Limits } from '../../../types/src';
 import * as csvParser from 'csv-parser';
 import * as fs from 'fs';
 import { Readable } from 'stream';
@@ -10,8 +10,8 @@ import { Readable } from 'stream';
  * @param sensor name of the sensor e.g. 'pressure_back_push'
  * */
 function averageLimits(data: SensorData, sensor: string): number {
-    let lims = Object.values(data[sensor].limits.critical)
-    return lims.reduce( (acc, c) => (acc + c)/2);
+  let lims = Object.values(data[sensor].limits.critical);
+  return lims.reduce((acc, c) => (acc + c) / 2);
 }
 
 /**
@@ -20,9 +20,12 @@ function averageLimits(data: SensorData, sensor: string): number {
  * @param range1 a sensor's allowed range of values
  * @param range2 a sensor of the same type's allowed range
  * @returns true if they share the same limits
-*/
+ */
 function compareLimits(range1: Limits, range2: Limits): boolean {
-    return range1.critical.low === range2.critical.low && range1.critical.high === range2.critical.high;
+  return (
+    range1.critical.low === range2.critical.low &&
+    range1.critical.high === range2.critical.high
+  );
 }
 
 /**
@@ -31,67 +34,60 @@ function compareLimits(range1: Limits, range2: Limits): boolean {
  * @param vals an array of data values
  */
 function movingAvg(vals: number[]): number {
-    return vals.reduce( (acc, c) => acc + c );
+  return vals.reduce((acc, c) => acc + c);
 }
 
 /**
  * csv read/write function for user input
  */
 interface InitialState {
-    [key: string]: {
-        dt: number;
-        initialVal: number;
-    }
+  [key: string]: {
+    dt: number;
+    initialVal: number;
+  };
 }
 
 function readData(file: string): Promise<InitialState> {
-    return new Promise( (resolve, reject) => {
-        // Check if the file exists
-        if (!fs.existsSync(file)) {
-            reject(`File '${file}' not found.`);
-            return;
-        }
+  return new Promise((resolve, reject) => {
+    // Check if the file exists
+    if (!fs.existsSync(file)) {
+      reject(`File '${file}' not found.`);
+      return;
+    }
 
-        const initialState: InitialState = {};
+    const initialState: InitialState = {};
 
     // console.log('Sensor / Measurement\tTime interval between readings\tValue at time = 0')
     // console.log('---------------------------------------------------------------')
     // Read the CSV file using csv-parser
 
-        const stream = fs.createReadStream(file);
-        stream
-            .pipe(csvParser())
-            .on('data', (row) => {
-            // Extract values from the CSV row
-            const { quantity, dt, initialVal } = row;
-            initialState[quantity] = {
-                dt: parseInt(dt),
-                initialVal: parseFloat(initialVal)
-            };
+    const stream = fs.createReadStream(file);
+    stream
+      .pipe(csvParser())
+      .on('data', (row) => {
+        // Extract values from the CSV row
+        const { quantity, dt, initialVal } = row;
+        initialState[quantity] = {
+          dt: parseInt(dt),
+          initialVal: parseFloat(initialVal),
+        };
 
-            // Print the information
-            // console.log(`${quantity} \t-\t ${dt} \t-\t ${initialVal}`);
-            })
-            .on('end', () => {
-            console.log('Finished reading the CSV file.');
-            // console.log("Initial state:", initialState)
-            !Object.keys(initialState).length && reject('Provided file was empty');
-            resolve(initialState)
-            })
-            .on('error', (err) => {
-                reject('Encountered error reading file', err);
-                // resolve(0).then( res => res );;
-            });
-    });
+        // Print the information
+        // console.log(`${quantity} \t-\t ${dt} \t-\t ${initialVal}`);
+      })
+      .on('end', () => {
+        console.log('Finished reading the CSV file.');
+        // console.log("Initial state:", initialState)
+        !Object.keys(initialState).length && reject('Provided file was empty');
+        resolve(initialState);
+      })
+      .on('error', (err) => {
+        reject('Encountered error reading file', err);
+        // resolve(0).then( res => res );;
+      });
+  });
 }
 
-function writeData(file: string, mods: InitialState) {
+function writeData(file: string, mods: InitialState) {}
 
-}
-
-export {
-    averageLimits,
-    compareLimits,
-    movingAvg,
-    readData,
-}
+export { averageLimits, compareLimits, movingAvg, readData };
