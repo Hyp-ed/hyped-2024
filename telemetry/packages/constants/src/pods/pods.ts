@@ -54,6 +54,8 @@ export const pods: Pods = {
             high: 100,
           },
         },
+        timestep: 1000,
+        initialValue: 0,
       },
       velocity: {
         name: 'Velocity',
@@ -67,6 +69,8 @@ export const pods: Pods = {
             high: 50,
           },
         },
+        timestep: 1000,
+        initialValue: 0,
       },
       acceleration: {
         name: 'Acceleration',
@@ -80,6 +84,8 @@ export const pods: Pods = {
             high: 5,
           },
         },
+        timestep: 1000,
+        initialValue: 0,
       },
 
       // ************************************ PRESSURE ************************************ //
@@ -413,22 +419,9 @@ export const pods: Pods = {
             high: 100,
           },
         },
-      },
-
-      // ************************************ LEVITATION ************************************ //
-      levitation_height: {
-        name: 'Levitation Height',
-        key: 'levitation_height',
-        format: 'float',
-        type: 'levitation',
-        unit: 'mm',
-        limits: {
-          critical: {
-            low: 0,
-            high: 100,
-          },
-        },
+        timestep: 1000,
+        initialValue: 0,
       },
     },
   },
-};
+} as const;

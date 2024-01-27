@@ -8,6 +8,8 @@ export const accelerometerCommon = {
       high: 150,
     },
   },
+  timestep: 1000,
+  initialValue: 0,
 } as const;
 
 export const thermistorCommon = {
@@ -22,14 +24,18 @@ export const thermistorCommon = {
     warning: {
       low: 20,
       high: 100,
-    }
+    },
   },
+  timestep: 500,
+  initialValue: 40,
 } as const;
 
 export const pressureCommon = {
   format: 'float',
   type: 'pressure',
   unit: 'bar',
+  timestep: 500,
+  initialValue: 1,
 } as const;
 
 export const hallEffectCommon = {
@@ -42,6 +48,8 @@ export const hallEffectCommon = {
       high: 500,
     },
   },
+  timestep: 250,
+  initialValue: 0,
 } as const;
 
 export const keyenceCommon = {
@@ -54,4 +62,6 @@ export const keyenceCommon = {
       high: 16,
     },
   },
+  timestep: 100,
+  initialValue: 0,
 } as const;
