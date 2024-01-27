@@ -28,7 +28,9 @@ class TimeOfFlight {
    * @return Range value in millimetres
    * @note Implementation based on ST Application Note AN4545
    */
-  std::optional<std::uint8_t> getRange();
+  std::optional<std::uint8_t> getRangeSingleShot();
+
+  std::optional<std::uint8_t> getRangeContinuous();
 
   std::optional<std::uint8_t> getStatus();
 
@@ -49,6 +51,15 @@ class TimeOfFlight {
    */
   core::Result initialise();
 
+  /**
+   * @brief Reads the measured range
+   * @return Range value in millimetres
+   * @note Implementation based on ST Application Note AN4545
+   */
+  std::optional<std::uint8_t> getRange();
+
+  core::Result checkSensorMode(std::uint8_t mode_value);
+
  private:
   // TODOLater - Confirm these addresses are correct
   // Register addresses/values taken from the VL6180X datasheet
@@ -58,6 +69,9 @@ class TimeOfFlight {
   static constexpr std::uint8_t kStatus               = 0x00;
   static constexpr std::uint8_t kBusy                 = 0x00;
   static constexpr std::uint8_t kConfigurationSetting = 0x00;
+
+  static constexpr std::uint8_t kModeSingleShot = 0x01;
+  static constexpr std::uint8_t kModeContinuous = 0x03;
 
   // TODOLater - std::uint8_t or std::uint16_t for all regs?
   static constexpr std::uint8_t kSystemFreshOutOfReset  = 0x016;
@@ -75,6 +89,7 @@ class TimeOfFlight {
   static constexpr std::uint8_t kSysRangeStart             = 0x018;
   static constexpr std::uint8_t kResultInterruptStatusGpio = 0x04f;
   static constexpr std::uint8_t kResultRangeVal            = 0x062;
+  static constexpr std::uint16_t kInterleavedModeEnable    = 0x2A3;
 
   static constexpr std::uint8_t kSystemInterruptClear = 0x015;
 
