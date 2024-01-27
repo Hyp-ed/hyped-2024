@@ -6,7 +6,10 @@ export class PodControlsController {
   constructor(private podControlsService: PodControlsService) {}
 
   @Post('start')
-  startPod(@Param('podId') podId: string, @Body() options: any) {
+  startPod(
+    @Param('podId') podId: string,
+    @Body() options: string | object | Buffer,
+  ) {
     return this.podControlsService.startPod(podId, options);
   }
 

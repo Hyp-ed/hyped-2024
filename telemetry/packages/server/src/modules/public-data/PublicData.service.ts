@@ -56,7 +56,7 @@ export class PublicDataService {
             }
           : null,
       };
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get historical reading for ${podId}'s state`,
         e,
@@ -109,7 +109,7 @@ export class PublicDataService {
       return {
         launchTime,
       };
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get launch time for ${podId}`,
         e,

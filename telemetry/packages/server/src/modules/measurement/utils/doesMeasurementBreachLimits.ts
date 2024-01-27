@@ -1,4 +1,3 @@
-import { Measurement } from '@hyped/telemetry-types';
 import { MeasurementReading } from '../MeasurementReading.types';
 import { RangeMeasurement } from '@hyped/telemetry-types/dist/pods/pods.types';
 import { FaultLevel } from '@hyped/telemetry-constants';

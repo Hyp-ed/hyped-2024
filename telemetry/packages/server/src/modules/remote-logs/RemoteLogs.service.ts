@@ -8,12 +8,12 @@ export class RemoteLogsService {
     private readonly logger: LoggerService,
   ) {}
 
-  async logRemoteMessage(message: string) {
+  logRemoteMessage(message: string) {
     this.logger.log(`Pod log from UI: ${message}`, RemoteLogsService.name);
     return true;
   }
 
-  async logRemoteMessageWithPodID(podId: string, message: string) {
+  logRemoteMessageWithPodID(podId: string, message: string) {
     this.logger.log(
       `Pod "${podId}" log from UI: ${message}`,
       RemoteLogsService.name,

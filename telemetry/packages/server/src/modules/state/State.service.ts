@@ -14,7 +14,7 @@ export class StateService {
     private influxService: InfluxService,
   ) {}
 
-  public async addStateReading(props: StateUpdate) {
+  public addStateReading(props: StateUpdate) {
     const validatedState = this.validateStateUpdate(props);
 
     if (!validatedState) {
@@ -40,7 +40,7 @@ export class StateService {
         `Added state ${props.podId}: ${props.value} (Type: ${stateType})`,
         StateService.name,
       );
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to add state ${props.podId}: ${props.value} (Type: ${stateType})`,
         e,

@@ -12,7 +12,10 @@ export class PodControlsService {
 
   // Sends a control message to the pod over MQTT
   async sendControlMessage(control: string, podId: string) {
-    this.mqttService.publish(`hyped/${podId}/controls/${control}`, control);
+    await this.mqttService.publish(
+      `hyped/${podId}/controls/${control}`,
+      control,
+    );
     this.logger.log(
       `Control message "${control}" sent to pod "${podId}"`,
       PodControlsService.name,
@@ -21,8 +24,8 @@ export class PodControlsService {
   }
 
   // Sends a start message to the pod over MQTT, with options
-  async startPod(podId: string, options: any) {
-    this.mqttService.publish(`hyped/${podId}/controls/start`, options);
+  async startPod(podId: string, options: string | object | Buffer) {
+    await this.mqttService.publish(`hyped/${podId}/controls/start`, options);
     this.logger.log(
       `Control message "start" sent to pod "${podId}"`,
       PodControlsService.name,
