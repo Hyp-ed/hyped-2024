@@ -85,7 +85,7 @@ handle_options "$@"
 
 if [ "$rebuild" = true ]; then
   echo "Rebuild"
-  docker build -t $IMAGE_NAME
+  docker build -t $IMAGE_NAME .
 fi
 
 if [ "$docker_build" = true ]; then
