@@ -12,7 +12,7 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "lint": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "lint": "eslint \"src/**/*.ts\" --max-warnings 0 --report-unused-disable-directives",
     "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "devDependencies": {

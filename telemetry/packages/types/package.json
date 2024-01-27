@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w",
-    "lint": "eslint --ext .ts src",
+    "lint": "eslint --ext .ts src --max-warnings 0  --report-unused-disable-directives",
     "lint:fix": "eslint --ext .ts src --fix"
   },
   "dependencies": {

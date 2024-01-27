@@ -8,7 +8,7 @@
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
-    "lint": "eslint \"src/**/*.ts\" --max-warnings 0",
+    "lint": "eslint \"src/**/*.ts\" --max-warnings 0 --report-unused-disable-directives",
     "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {

@@ -11,7 +11,7 @@ export function RealtimeFaultsProvider() {
   const socket = io(SERVER_ENDPOINT, { path: '/openmct/faults/realtime' });
   // handle socket disconnects
 
-  var faultCallback: any = null;
+  let faultCallback: any = null;
 
   socket.on(socketConstants.FAULT_EVENT, ({ fault }) => {
     // Give Influx time to save to database
