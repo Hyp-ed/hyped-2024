@@ -66,15 +66,3 @@ export const keyenceCommon = {
   rms_noise: 0,
   sampling_time: 500
 } as const;
-
-
-  /* 
-  Initial value is not an inherent sensor property like the others
-  We can change it for different runs and it is only a property of the current run
-    and how we want to configure its initial conditions
-  Not to mention that this file is in a separate directory to the fake data gen folder
-  It's in constants/... and should only have constant inherent sensor properties
-  Adding a mutable sensor-independent property is misleading and could impact other
-    parts of the codebase which reference the pod's sensor data
-  */
-  // initialValue: 0,

@@ -8,7 +8,7 @@ import {
   trackLength,
 } from '.';
 
-import MQTT from 'mqtt';
+import MQTT from 'mqtt/dist/mqtt';
 export class SensorManager {
   // Create an array to store sensor instances
   private sensors: SensorInstance<(typeof sensors)[keyof typeof sensors]>[] =

@@ -1,8 +1,8 @@
 // External complex types in codebase
-export { RangeMeasurement, Limits, Pod } from '../../../types/src';
+export type { RangeMeasurement, Limits, Pod } from '../../../types/src';
 
 // Complex types defined for live data generation
-export {
+export type {
   Readings,
   ReadingsMap,
   LiveReading,
