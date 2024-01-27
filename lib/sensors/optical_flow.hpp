@@ -11,39 +11,35 @@
 
 namespace hyped::sensors {
 
-constexpr std::uint8_t kOpticalFlowAddress = 0x00; //ToDo: determine the address of the sensor
-
 class OpticalFlow {
-// include "magic sauce" optimisation?
+  // include "magic sauce" optimisation?
  public:
   static std::optional<OpticalFlow> create(core::ILogger &logger,
-  										   std::shared_ptr<io::ISpi> spi,
-										   const std::uint8_t channel,
-										   const std::uint8_t device_address);
+                                           std::shared_ptr<io::ISpi> spi,
+                                           const std::uint8_t channel);
   ~OpticalFlow();
 
  private:
- OpticalFlow(core::ILogger &logger,
-  			 std::shared_ptr<io::ISpi> spi,
-			 const std::uint8_t channel,
-			 const std::uint8_t device_address);
- 
- private:
- core::ILogger &logger_;
- std::shared_ptr<io::ISpi> spi_;
- const std::uint8_t channel_;
- const std::uint8_t device_address_;
+  OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi, const std::uint8_t channel);
+  std::uint8_t getDeltaX(std::shared_ptr<io::ISpi> spi);
+  std::uint8_t getDeltaY(std::shared_ptr<io::ISpi> spi);
 
  private:
-std::uint8_t getPosition();
-//Register addresses for x and y
-static constexpr std::uint8_t kXLowReg = 0x03;
-static constexpr std::uint8_t kYLowReg = 0x05;
-static constexpr std::uint8_t kXLow = 0;
-static constexpr std::uint8_t kYLow = 0;
+  core::ILogger &logger_;
+  std::shared_ptr<io::ISpi> spi_;
+  const std::uint8_t channel_;
 
-static constexpr std::uint8_t kDeviceIdAddress = 0x00;
-static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;
+ private:
+  // Register addresses for x and y
+  static constexpr std::uint8_t kXLowAddress  = 0x03;
+  static constexpr std::uint8_t kXHighAddress = 0x04;
+  static constexpr std::uint8_t kYLowAddress  = 0x05;
+  static constexpr std::uint8_t kYHighAddress = 0x06;
+  // static constexpr std::uint16_t kDeltaX = 0;
+  // static constexpr std::uint16_t kDeltaY = 0;
+
+  static constexpr std::uint8_t kDeviceIdAddress       = 0x00;
+  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;  // unsure that's the value
 };
 
-} //namespace hyped::sensors
+}  // namespace hyped::sensors
