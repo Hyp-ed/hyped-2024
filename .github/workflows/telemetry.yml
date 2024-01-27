@@ -1,10 +1,6 @@
 name: Telemetry Build
 
-on:
-  push:
-    paths:
-      - 'telemetry/**'
-      - '.github/workflows/telemetry.yml'
+on: push
 
 defaults:
   run:

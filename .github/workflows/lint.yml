@@ -1,9 +1,6 @@
 name: Linter
 
-on:
-  push:
-    paths-ignore: 
-      - "telemetry/**"
+on: push
 
 jobs:
   clang-format:
