@@ -1,5 +1,5 @@
 {
-  "name": "@hyped/telemetry-constants",
+  "name": "@hyped/constants",
   "private": true,
   "version": "1.0.0",
   "main": "dist/index.js",
