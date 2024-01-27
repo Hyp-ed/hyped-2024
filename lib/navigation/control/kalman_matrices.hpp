@@ -17,54 +17,23 @@ const core::Float kDeltaT = 0.01;
 
 
 //Constant matrices
+
 using StateTransitionMatrix = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
-inline const StateTransitionMatrix kStateTransitionMatrix = [] {
-    StateTransitionMatrix m;
-    m << 1, kDeltaT,
-          0, 1;
-    return m;
-}();
+const StateTransitionMatrix kStateTransitionMatrix = (StateTransitionMatrix() << 1, kDeltaT, 0, 1).finished();
 
 using ControlMatrix = Eigen::Matrix<core::Float, state_dimension, control_dimension>;
-inline const ControlMatrix kControlMatrix = [] {
-    ControlMatrix m;
-    m << 0.5 * kDeltaT * kDeltaT,
-         kDeltaT;
-    return m;
-}();                                                    
-                               
+const ControlMatrix kControlMatrix = (ControlMatrix() << 0.5 * kDeltaT * kDeltaT, kDeltaT).finished();
+
 using ErrorCovarianceMatrix = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
-inline const ErrorCovarianceMatrix kErrorCovarianceMatrix = [] {
-    ErrorCovarianceMatrix m;
-    m << 1, 0, //TODO: tune these  
-         0, 1;
-    return m;
-}();
+const ErrorCovarianceMatrix kErrorCovarianceMatrix = (ErrorCovarianceMatrix() << 1, 0, 0, 1).finished();
 
-using MeasurementMatrix
-  = Eigen::Matrix<core::Float, measurement_dimension, state_dimension>;
-//TODO: could be optimised by changing 1,1 element only
-inline const MeasurementMatrix kMeasurementMatrix_optical_only = [] {
-    MeasurementMatrix m;
-    m << 0, 0,
-         0, kDeltaT;
-    return m;
-}();
-inline const MeasurementMatrix kMeasurementMatrix_both = [] {
-    MeasurementMatrix m;
-    m << 1, 0,
-         0, kDeltaT;
-    return m;
-}();
 
-using MeasurementNoiseCovarianceMatrix
-  = Eigen::Matrix<core::Float, measurement_dimension, measurement_dimension>;
-inline const MeasurementMatrix kMeasurementMatrix_optical_only_2 = [] {
-    MeasurementMatrix m;
-    m << 0, 0,
-         0, 1;
-    return m;
-}();
+using MeasurementMatrix = Eigen::Matrix<core::Float, measurement_dimension, state_dimension>;
+const MeasurementMatrix kMeasurementMatrix_optical_only = (MeasurementMatrix() << 0, 0, 0, kDeltaT).finished();
+const MeasurementMatrix kMeasurementMatrix_both = (MeasurementMatrix() << 1, 0, 0, kDeltaT).finished();
+
+using MeasurementNoiseCovarianceMatrix = Eigen::Matrix<core::Float, measurement_dimension, measurement_dimension>;
+const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0.01).finished();
 
 //Changing values
 using StateVector = Eigen::Matrix<core::Float, state_dimension, 1>;
