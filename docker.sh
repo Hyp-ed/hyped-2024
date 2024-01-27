@@ -96,7 +96,7 @@ if [ "$docker_build" = true ]; then
     docker rm $BUILD_CONTAINER_NAME
   fi
 
-  docker run -it -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
+  docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
 fi
 
 if [ "$docker_dev" = true ]; then
