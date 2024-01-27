@@ -39,15 +39,6 @@ export type EnumMeasurement = BaseMeasurement & {
 // export type Measurement as union
 export type Measurement = RangeMeasurement | EnumMeasurement;
 
-// for the sensors used for fake data generation with transient numerical values
-export type LiveMeasurement = RangeMeasurement & {
-  currentValue: number;
-  timestep: number;
-};
-
-// export the sensor object type for data generation
-export type SensorData = Record<string, LiveMeasurement>;
-
 // create Pod type
 export type Pod = {
   name: string;

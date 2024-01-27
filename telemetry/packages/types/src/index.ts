@@ -1,11 +1,10 @@
-export type { 
+export type {
   Pods,
   Measurement,
   RangeMeasurement,
-  LiveMeasurement,
-  SensorData,
   Limits,
-  Pod } from './pods/pods.types';
+  Pod,
+} from './pods/pods.types';
 export type {
   OpenMctDictionary,
   OpenMctPod,
