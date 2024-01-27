@@ -7,7 +7,7 @@ std::optional<OpticalFlow> OpticalFlow::create(core::ILogger &logger,
                                                const std::uint8_t channel)
 {
   // check we are communicating with the correct sensor
-  const uint8_t *device_id;
+  const std::uint8_t *device_id;
   spi->read(kDeviceIdAddress, device_id, 1);
   if (!device_id) {
     logger.log(core::LogLevel::kFatal, "Failed to read the optical flow device");
