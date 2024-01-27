@@ -1,4 +1,4 @@
-name: Telemetry Build
+name: Telemetry
 
 on: push
 
