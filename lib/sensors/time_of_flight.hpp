@@ -27,9 +27,9 @@ class TimeOfFlight {
 
   std::optional<std::uint8_t> getRangeContinuous();
 
+  // TODOlater - Confirm if this function works/is required
   std::optional<std::uint8_t> getStatus();
 
-  // TODOlater - Confirm if this function works/is required
   std::uint8_t getChannel();
 
  private:
