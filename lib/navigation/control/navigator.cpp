@@ -24,10 +24,8 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 {
 }
 
-
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-
   // // check fail state
   // if (check_trajectory == SensorChecks::kUnacceptable) {
   //   logger_.log(core::LogLevel::kFatal,

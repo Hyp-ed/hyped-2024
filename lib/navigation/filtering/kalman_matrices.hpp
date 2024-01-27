@@ -21,11 +21,11 @@ extern const StateTransitionMatrix kStateTransitionMatrix;
 using ControlMatrix = Eigen::Matrix<core::Float, state_dimension, control_dimension>;
 extern const ControlMatrix kControlMatrix;
 
-//T0DO: tune this
+// T0DO: tune this
 using ErrorCovarianceMatrix = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
 extern const ErrorCovarianceMatrix kErrorCovarianceMatrix;
 
-//T0DO: tune this
+// T0DO: tune this
 using MeasurementNoiseCovarianceMatrix
   = Eigen::Matrix<core::Float, measurement_dimension, measurement_dimension>;
 extern const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix;
