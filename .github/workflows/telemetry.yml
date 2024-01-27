@@ -23,8 +23,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install ESLint and Prettier
-        run: npm install --no-save eslint prettier
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Lint
         uses: wearerequired/lint-action@v2
