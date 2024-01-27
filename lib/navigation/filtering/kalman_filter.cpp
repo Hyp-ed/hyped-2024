@@ -2,8 +2,8 @@
 
 namespace hyped::navigation {
 
-KalmanFilter::KalmanFilter(const StateVector initial_state,
-                           const ErrorCovarianceMatrix initial_error_covariance,
+KalmanFilter::KalmanFilter(const StateVector &initial_state,
+                           const ErrorCovarianceMatrix &initial_error_covariance,
                            const StateTransitionMatrix &transition_matrix,
                            const ControlMatrix &control_matrix,
                            const StateTransitionCovarianceMatrix &transition_covariance,

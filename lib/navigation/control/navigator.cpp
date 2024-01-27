@@ -13,12 +13,12 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       previous_accelerometer_data_(0.0),
       previous_optical_reading_(0.0),
       previous_keyence_reading_(0.0),
-      kalman_filter_(StateVector::Zero(), //If initial position not known exactly, modify
-                    ErrorCovarianceMatrix::Zero(), //If initial position not known exactly, tune
+      kalman_filter_(initial_state, //If initial position not known exactly, modify
+                    initial_covariance, //If initial position not known exactly, tune
                     kStateTransitionMatrix,
                     kControlMatrix,
                     kErrorCovarianceMatrix,
-                    kMeasurementMatrix,
+                    measurement_matrix,
                     kMeasurementNoiseCovarianceMatrix)
 {
 }
@@ -54,9 +54,9 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
 
   //Modify measurement matrix depending on the availabiiity of keyence data
   if(previous_keyence_reading_ == 0.0){
-    kMeasurementMatrix(0,0) = 0;
+    measurement_matrix(0,0) = 0;
   } else {
-    kMeasurementMatrix(0,0) = 1;
+    measurement_matrix(0,0) = 1;
   }
   
   kalman_filter_.filter(measurement_vector, control_input_vector);

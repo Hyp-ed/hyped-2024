@@ -7,14 +7,14 @@
 #include <Eigen/Dense>
 #include <core/time.hpp>
 #include <core/types.hpp>
-#include <navigation/control/kalman_matrices.hpp>
+#include "kalman_matrices.hpp"
 
 namespace hyped::navigation {
 
 class KalmanFilter {
  public:
-  KalmanFilter(const StateVector initial_state,
-               const ErrorCovarianceMatrix initial_error_covariance,
+  KalmanFilter(const StateVector &initial_state,
+               const ErrorCovarianceMatrix &initial_error_covariance,
                const StateTransitionMatrix &transition_matrix,
                const ControlMatrix &control_matrix,
                const StateTransitionCovarianceMatrix &transition_covariance,

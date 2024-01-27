@@ -4,7 +4,7 @@
 
 #include <navigation/control/consts.hpp>
 #include <navigation/filtering/kalman_filter.hpp>
-#include <navigation/control/kalman_matrices.hpp>
+#include <navigation/filtering/kalman_matrices.hpp>
 #include <utils/manual_time.hpp>
 
 namespace hyped::test {
@@ -20,7 +20,7 @@ TEST(KalmanFilter, construction)
                             navigation::kStateTransitionMatrix,
                             navigation::kControlMatrix,
                             navigation::kErrorCovarianceMatrix,
-                            navigation::kMeasurementMatrix,
+                            navigation::measurement_matrix,
                             navigation::kMeasurementNoiseCovarianceMatrix );
 
   /*
