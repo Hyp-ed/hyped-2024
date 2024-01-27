@@ -18,10 +18,10 @@ class KalmanFilter {
                const StateTransitionMatrix &transition_matrix,
                const ControlMatrix &control_matrix,
                const StateTransitionCovarianceMatrix &transition_covariance,
-               const MeasurementMatrix &measurement_matrix,
                const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance);
 
-  void filter(const MeasurementVector &measurement,
+  void filter(const MeasurementMatrix &measurement_matrix, 
+              const MeasurementVector &measurement,
               const ControlInput &control_input);
 
   inline const StateVector &getStateEstimate() const { return state_estimate_; }
@@ -34,7 +34,6 @@ class KalmanFilter {
   StateTransitionMatrix transition_matrix;
   ControlMatrix control_matrix;
   StateTransitionCovarianceMatrix transition_covariance;
-  MeasurementMatrix measurement_matrix;
   MeasurementNoiseCovarianceMatrix measurement_noise_covariance;
 };
 

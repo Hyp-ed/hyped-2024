@@ -7,21 +7,20 @@ KalmanFilter::KalmanFilter(const StateVector initial_state,
                            const StateTransitionMatrix &transition_matrix,
                            const ControlMatrix &control_matrix,
                            const StateTransitionCovarianceMatrix &transition_covariance,
-                           const MeasurementMatrix &measurement_matrix,
                            const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance)
     : state_estimate_(initial_state),
       error_covariance_(initial_error_covariance),
       transition_matrix(transition_matrix),
       control_matrix(control_matrix),
       transition_covariance(transition_covariance),
-      measurement_matrix(measurement_matrix),
       measurement_noise_covariance(measurement_noise_covariance)
 {
   static_assert(state_dimension > 0);
   static_assert(measurement_dimension > 0);
 }
 
-void KalmanFilter::filter(const MeasurementVector &measurement,
+void KalmanFilter::filter(const MeasurementMatrix &measurement_matrix,
+                          const MeasurementVector &measurement,
                           const ControlInput &control_input)
 {
   const auto prop_state_estimate = transition_matrix * state_estimate_ + control_matrix * control_input;

@@ -12,6 +12,12 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       accelerometer_preprocessor_(logger, time),
       previous_accelerometer_data_(0.0),
       previous_keyence_reading_(0.0),
+      kalman_filter_(StateVector::Zero(), //If initial position not known exactly, modify
+                    ErrorCovarianceMatrix::Zero(), //If initial position not known exactly, tune
+                    kStateTransitionMatrix,
+                    kControlMatrix,
+                    kErrorCovarianceMatrix,
+                    kMeasurementNoiseCovarianceMatrix)
 {
 }
 
@@ -33,10 +39,6 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   //               "trajectory.");
   //   return std::nullopt;
   // }
-
-
-
-
 
 
 
