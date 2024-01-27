@@ -9,17 +9,18 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
     : logger_(logger),
       time_(time),
       keyence_preprocessor_(logger),
+      optical_preprocessor_(logger),
       accelerometer_preprocessor_(logger, time),
       previous_accelerometer_data_(0.0),
       previous_optical_reading_(0.0),
       previous_keyence_reading_(0.0),
-      kalman_filter_(initial_state, //If initial position not known exactly, modify
-                    initial_covariance, //If initial position not known exactly, tune
-                    kStateTransitionMatrix,
-                    kControlMatrix,
-                    kErrorCovarianceMatrix,
-                    measurement_matrix,
-                    kMeasurementNoiseCovarianceMatrix)
+      kalman_filter_(initial_state,       // If initial position not known exactly, modify
+                     initial_covariance,  // If initial position not known exactly, tune
+                     kStateTransitionMatrix,
+                     kControlMatrix,
+                     kErrorCovarianceMatrix,
+                     measurement_matrix,
+                     kMeasurementNoiseCovarianceMatrix)
 {
 }
 
@@ -27,7 +28,6 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 // is std::nullopt
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  
   // // temp solution
   // SensorChecks check_trajectory = SensorChecks::kAcceptable;
   // if (std::abs(trajectory_.displacement - mean_keyence_value) > 10) {
@@ -42,32 +42,35 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   //   return std::nullopt;
   // }
 
-  // // TODOLater: check braking implementation here!
-  // if (trajectory_.displacement
-  //     > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
-  //   logger_.log(core::LogLevel::kFatal, "Time to break!");
-  //   return std::nullopt;
-  // }
-
   control_input_vector << previous_accelerometer_data_;
   measurement_vector << previous_keyence_reading_, previous_optical_reading_;
 
-  //Modify measurement matrix depending on the availabiiity of keyence data
-  if(previous_keyence_reading_ == 0.0){
-    measurement_matrix(0,0) = 0;
+  // Modify measurement matrix depending on the availabiiity of keyence data
+  if (previous_keyence_reading_ == 0.0) {
+    measurement_matrix(0, 0) = 0;
   } else {
-    measurement_matrix(0,0) = 1;
+    measurement_matrix(0, 0) = 1;
   }
-  
+
   kalman_filter_.filter(measurement_vector, control_input_vector);
-  previous_keyence_reading_ = 0.0; //Reset keyence reading to 0.0 after use so that next step uses optical measurment matrix only.
+  previous_keyence_reading_ = 0.0;  // Reset keyence reading to 0.0 after use so that next step uses
+                                    // optical measurment matrix only.
 
   trajectory_.displacement = kalman_filter_.getStateEstimate()(0);
   trajectory_.velocity     = kalman_filter_.getStateEstimate()(1);
 
-  logger_.log(core::LogLevel::kInfo, "Trajectory successfully updated to: %f, %f",
-              trajectory_.displacement, trajectory_.velocity);
-  
+  logger_.log(core::LogLevel::kInfo,
+              "Trajectory successfully updated to: %f, %f",
+              trajectory_.displacement,
+              trajectory_.velocity);
+
+  // TODO: check this
+  if (trajectory_.displacement
+      > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
+    logger_.log(core::LogLevel::kFatal, "Time to break!");
+    return std::nullopt;
+  }
+
   return trajectory_;
 }
 
@@ -94,8 +97,16 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 }
 core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
 {
-  
-  previous_optical_reading_ = optical_data[0][0]; //TODO: TAKE MAGNITUDE!
+  // Run preprocessing on optical
+  auto clean_optical_data = optical_preprocessor_.processData(optical_data);
+
+  // get mean value
+  previous_optical_reading_ = 0.0;
+
+  for (std::size_t i = 0; i < core::kNumOptical; ++i) {
+    previous_optical_reading_ += clean_optical_data.value().at(i);
+  }
+  previous_optical_reading_ /= core::kNumOptical;
 
   logger_.log(core::LogLevel::kInfo, "Optical flow data successfully updated");
   return core::Result::kSuccess;

@@ -9,10 +9,11 @@
 #include "core/logger.hpp"
 #include "core/types.hpp"
 #include "navigation/control/consts.hpp"
-#include "navigation/filtering/kalman_matrices.hpp"
 #include "navigation/filtering/kalman_filter.hpp"
+#include "navigation/filtering/kalman_matrices.hpp"
 #include "navigation/preprocessing/preprocess_accelerometer.hpp"
 #include "navigation/preprocessing/preprocess_keyence.hpp"
+#include "navigation/preprocessing/preprocess_optical.hpp"
 
 namespace hyped::navigation {
 
@@ -56,6 +57,7 @@ class Navigator : public INavigator {
   // navigation functionality
   KeyencePreprocessor keyence_preprocessor_;
   AccelerometerPreprocessor accelerometer_preprocessor_;
+  OpticalPreprocessor optical_preprocessor_;
 
   // previous readings
   core::Float previous_optical_reading_;

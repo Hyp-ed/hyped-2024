@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kalman_matrices.hpp"
+
 #include <cstdint>
 #include <functional>
 #include <memory>
@@ -7,7 +9,6 @@
 #include <Eigen/Dense>
 #include <core/time.hpp>
 #include <core/types.hpp>
-#include "kalman_matrices.hpp"
 
 namespace hyped::navigation {
 
@@ -21,8 +22,7 @@ class KalmanFilter {
                const MeasurementMatrix &measurement_matrix,
                const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance);
 
-  void filter(const MeasurementVector &measurement,
-              const ControlInput &control_input);
+  void filter(const MeasurementVector &measurement, const ControlInput &control_input);
 
   inline const StateVector &getStateEstimate() const { return state_estimate_; }
 

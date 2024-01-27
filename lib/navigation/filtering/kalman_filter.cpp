@@ -21,10 +21,10 @@ KalmanFilter::KalmanFilter(const StateVector &initial_state,
   static_assert(measurement_dimension > 0);
 }
 
-void KalmanFilter::filter(const MeasurementVector &measurement,
-                          const ControlInput &control_input)
+void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInput &control_input)
 {
-  const auto prop_state_estimate = transition_matrix * state_estimate_ + control_matrix * control_input;
+  const auto prop_state_estimate
+    = transition_matrix * state_estimate_ + control_matrix * control_input;
   const auto prop_error_covariance
     = (transition_matrix.transpose() * error_covariance_ * transition_matrix)
       + transition_covariance;

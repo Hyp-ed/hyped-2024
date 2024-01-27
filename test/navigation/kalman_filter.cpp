@@ -15,13 +15,14 @@ TEST(KalmanFilter, construction)
   const auto manual_time = std::make_shared<utils::ManualTime>();
   navigation::StateVector initial_state(navigation::StateVector::Zero());
   navigation::ErrorCovarianceMatrix initial_error_covariance;
-  KalmanFilter kalman_filter(initial_state,
-                            navigation::ErrorCovarianceMatrix::Zero(), //If initial position not known exactly, tune
-                            navigation::kStateTransitionMatrix,
-                            navigation::kControlMatrix,
-                            navigation::kErrorCovarianceMatrix,
-                            navigation::measurement_matrix,
-                            navigation::kMeasurementNoiseCovarianceMatrix );
+  KalmanFilter kalman_filter(
+    initial_state,
+    navigation::ErrorCovarianceMatrix::Zero(),  // If initial position not known exactly, tune
+    navigation::kStateTransitionMatrix,
+    navigation::kControlMatrix,
+    navigation::kErrorCovarianceMatrix,
+    navigation::measurement_matrix,
+    navigation::kMeasurementNoiseCovarianceMatrix);
 
   /*
   kalman_filter.filter(KalmanFilter::StateTransitionMatrix(),
