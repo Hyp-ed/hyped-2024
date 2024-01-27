@@ -35,8 +35,6 @@ class OpticalFlow {
   static constexpr std::uint8_t kXHighAddress = 0x04;
   static constexpr std::uint8_t kYLowAddress  = 0x05;
   static constexpr std::uint8_t kYHighAddress = 0x06;
-  // static constexpr std::uint16_t kDeltaX = 0;
-  // static constexpr std::uint16_t kDeltaY = 0;
 
   static constexpr std::uint8_t kDeviceIdAddress       = 0x00;
   static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;  // unsure that's the value

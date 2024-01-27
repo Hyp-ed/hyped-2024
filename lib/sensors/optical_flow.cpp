@@ -37,8 +37,8 @@ OpticalFlow::~OpticalFlow()
 // (https://github.com/bitcraze/Bitcraze_PMW3901/blob/master/src/Bitcraze_PMW3901.cpp)
 std::uint8_t OpticalFlow::getDeltaX(std::shared_ptr<io::ISpi> spi)
 {
-  uint8_t *x_low;
-  uint8_t *x_high;
+  std::uint8_t *x_low;
+  std::uint8_t *x_high;
 
   spi->read(kXLowAddress, x_low, 1);
   spi->read(kXHighAddress, x_high, 1);
@@ -47,8 +47,8 @@ std::uint8_t OpticalFlow::getDeltaX(std::shared_ptr<io::ISpi> spi)
 }
 std::uint8_t OpticalFlow::getDeltaY(std::shared_ptr<io::ISpi> spi)
 {
-  uint8_t *y_low;
-  uint8_t *y_high;
+  std::uint8_t *y_low;
+  std::uint8_t *y_high;
 
   spi->read(kYLowAddress, y_low, 1);
   spi->read(kYHighAddress, y_high, 1);
