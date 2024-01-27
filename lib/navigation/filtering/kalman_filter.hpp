@@ -7,14 +7,13 @@
 #include <Eigen/Dense>
 #include <core/time.hpp>
 #include <core/types.hpp>
-#include <navigation/control/consts.hpp>
+#include <navigation/control/kalman_matrices.hpp>
 
 namespace hyped::navigation {
 
 class KalmanFilter {
  public:
-  KalmanFilter(std::shared_ptr<core::ITimeSource> time_source,
-               const StateVector initial_state,
+  KalmanFilter(const StateVector initial_state,
                const ErrorCovarianceMatrix initial_error_covariance,
                const StateTransitionMatrix &transition_matrix,
                const ControlMatrix &control_matrix,
@@ -30,8 +29,6 @@ class KalmanFilter {
   inline const ErrorCovarianceMatrix &getErrorCovariance() const { return error_covariance_; }
 
  private:
-  std::shared_ptr<core::ITimeSource> time_source_;
-  core::TimePoint last_update_time_;
   StateVector state_estimate_;
   ErrorCovarianceMatrix error_covariance_;
   StateTransitionMatrix transition_matrix;
@@ -39,7 +36,6 @@ class KalmanFilter {
   StateTransitionCovarianceMatrix transition_covariance;
   MeasurementMatrix measurement_matrix;
   MeasurementNoiseCovarianceMatrix measurement_noise_covariance;
-  
 };
 
 }  // namespace hyped::navigation

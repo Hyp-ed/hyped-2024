@@ -9,6 +9,7 @@
 #include "core/logger.hpp"
 #include "core/types.hpp"
 #include "navigation/control/consts.hpp"
+#include "navigation/control/kalman_matrices.hpp"
 #include "navigation/filtering/kalman_filter.hpp"
 #include "navigation/preprocessing/preprocess_accelerometer.hpp"
 #include "navigation/preprocessing/preprocess_keyence.hpp"

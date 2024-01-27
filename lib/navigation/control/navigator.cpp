@@ -11,7 +11,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       keyence_preprocessor_(logger),
       accelerometer_preprocessor_(logger, time),
       previous_accelerometer_data_(0.0),
-      previous_keyence_reading_(0.0)
+      previous_keyence_reading_(0.0),
 {
 }
 
