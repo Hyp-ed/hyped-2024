@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 IMAGE_NAME="hyped"
 BUILD_CONTAINER_NAME="hyped_build"
 DEV_CONTAINER_NAME="hyped_dev"
