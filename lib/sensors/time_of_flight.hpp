@@ -23,20 +23,14 @@ class TimeOfFlight {
 
   ~TimeOfFlight();
 
-  /**
-   * @brief Reads the measured range in Single-Shot mode
-   * @return Range value in millimetres
-   * @note Implementation based on ST Application Note AN4545
-   */
   std::optional<std::uint8_t> getRangeSingleShot();
 
   std::optional<std::uint8_t> getRangeContinuous();
 
   std::optional<std::uint8_t> getStatus();
 
+  // TODOlater - Confirm if this function works/is required
   std::uint8_t getChannel();
-
-  // TODOLater - Implement any other functions of ToF sensor
 
  private:
   TimeOfFlight(core::ILogger &logger,
@@ -58,6 +52,12 @@ class TimeOfFlight {
    */
   std::optional<std::uint8_t> getRange();
 
+  /**
+   * @brief Check if the sensor is in the appropriate mode before trying to read the range, and set
+   * it to mode_value if it isn't
+   * @param mode_value  0b01 or 0b11 for single-shot or continuous
+   * @return kSuccess if the sensor mode is correct, and kFailure otherwise
+   */
   core::Result checkSensorMode(std::uint8_t mode_value);
 
  private:
@@ -70,8 +70,8 @@ class TimeOfFlight {
   static constexpr std::uint8_t kBusy                 = 0x00;
   static constexpr std::uint8_t kConfigurationSetting = 0x00;
 
-  static constexpr std::uint8_t kModeSingleShot = 0x01;
-  static constexpr std::uint8_t kModeContinuous = 0x03;
+  static constexpr std::uint8_t kModeSingleShot = 0b01;
+  static constexpr std::uint8_t kModeContinuous = 0b11;
 
   // TODOLater - std::uint8_t or std::uint16_t for all regs?
   static constexpr std::uint8_t kSystemFreshOutOfReset  = 0x016;

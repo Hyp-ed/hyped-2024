@@ -33,6 +33,10 @@ TimeOfFlight::TimeOfFlight(core::ILogger &logger,
 {
 }
 
+TimeOfFlight::~TimeOfFlight()
+{
+}
+
 // TODOLater - Implement writing to 16-bit I2C registers first!
 core::Result TimeOfFlight::initialise()
 {
@@ -124,22 +128,35 @@ std::optional<std::uint8_t> TimeOfFlight::getRange()
 {
   // Check the status
   auto status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
-  if (!status) { return std::nullopt; }
+  if (!status) {
+    logger_.log(core::LogLevel::kFatal, "Failed to get time of flight interrupt status");
+    return std::nullopt;
+  }
   auto range_status = *status & 0b111;
 
   // Wait for new measurement ready status
   while (range_status != 0x04) {
     status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
-    if (!status) { return std::nullopt; }
+    if (!status) {
+      logger_.log(core::LogLevel::kFatal, "Failed to get time of flight interrupt status");
+      return std::nullopt;
+    }
     range_status = *status & 0b111;
   }
 
   const auto range = i2c_->readByte(device_address_, kResultRangeVal);
+  if (!range) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read range from time of flight sensor");
+    return std::nullopt;
+  }
 
   // Clear interrupts
   const auto interrupt_reset_status
     = i2c_->writeByteToRegister(device_address_, kSystemInterruptClear, 0b111);
-  if (interrupt_reset_status == core::Result::kFailure) { return std::nullopt; }
+  if (interrupt_reset_status == core::Result::kFailure) {
+    logger_.log(core::LogLevel::kFatal, "Failed to clear interrupts");
+    return std::nullopt;
+  }
 
   return range;
 };
