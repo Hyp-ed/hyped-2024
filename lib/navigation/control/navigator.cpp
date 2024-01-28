@@ -14,8 +14,8 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       previous_accelerometer_data_(0.0),
       previous_optical_reading_(0.0),
       previous_keyence_reading_(0.0),
-      kalman_filter_(initial_state,       // If initial position not known exactly, modify
-                     initial_covariance,  // If initial position not known exactly, tune
+      kalman_filter_(initial_state,       // TODOLater: If initial position not known exactly, modify
+                     initial_covariance,  // TODOLater: If initial position not known exactly, tune
                      kStateTransitionMatrix,
                      kControlMatrix,
                      kErrorCovarianceMatrix,
@@ -27,7 +27,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
   // // check fail state
-  // if (check_trajectory == SensorChecks::kUnacceptable) {
+  //if (check_trajectory == SensorChecks::kUnacceptable) {
   //   logger_.log(core::LogLevel::kFatal,
   //               "Navigation sensors are in disagreement. Unable to accurately determine "
   //               "trajectory.");
@@ -56,17 +56,17 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
               trajectory_.displacement,
               trajectory_.velocity);
 
-  // T0DO: check this
+  // TODOLater: check this
   if (trajectory_.displacement
       > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
-    logger_.log(core::LogLevel::kFatal, "Time to break!");
+    logger_.log(core::LogLevel::kFatal, "Time to brake!");
     return std::nullopt;
   }
 
   return trajectory_;
 }
 
-// : check input from sensors matches this
+// TODOLater: check input from sensors matches this
 core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 {
   // Check keyence strictly increasing

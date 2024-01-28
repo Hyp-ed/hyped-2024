@@ -6,14 +6,14 @@
 #include <memory>
 #include <optional>
 
-#include "core/logger.hpp"
-#include "core/types.hpp"
-#include "navigation/control/consts.hpp"
-#include "navigation/filtering/kalman_filter.hpp"
-#include "navigation/filtering/kalman_matrices.hpp"
-#include "navigation/preprocessing/preprocess_accelerometer.hpp"
-#include "navigation/preprocessing/preprocess_keyence.hpp"
-#include "navigation/preprocessing/preprocess_optical.hpp"
+#include <core/logger.hpp>
+#include <core/types.hpp>
+#include "consts.hpp"
+#include <navigation/filtering/kalman_filter.hpp>
+#include <navigation/filtering/kalman_matrices.hpp>
+#include <navigation/preprocessing/preprocess_accelerometer.hpp>
+#include <navigation/preprocessing/preprocess_keyence.hpp>
+#include <navigation/preprocessing/preprocess_optical.hpp>
 
 namespace hyped::navigation {
 
@@ -40,9 +40,9 @@ class Navigator : public INavigator {
 
   core::Result opticalUpdate(const core::OpticalData &optical_data);
   /**
-   * @brief preprocesses encoder data and updates trajectory
+   * @brief preprocesses accelerometer data and updates trajectory
    *
-   * @param optical_data
+   * @param accelerometer_data
    */
 
   core::Result accelerometerUpdate(
