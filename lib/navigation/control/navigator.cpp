@@ -14,7 +14,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       previous_accelerometer_data_(0.0),
       previous_optical_reading_(0.0),
       previous_keyence_reading_(0.0),
-      kalman_filter_(initial_state,       // TODOLater: If initial position not known exactly, modify
+      kalman_filter_(initial_state,  // TODOLater: If initial position not known exactly, modify
                      initial_covariance,  // TODOLater: If initial position not known exactly, tune
                      kStateTransitionMatrix,
                      kControlMatrix,
@@ -27,7 +27,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
   // // check fail state
-  //if (check_trajectory == SensorChecks::kUnacceptable) {
+  // if (check_trajectory == SensorChecks::kUnacceptable) {
   //   logger_.log(core::LogLevel::kFatal,
   //               "Navigation sensors are in disagreement. Unable to accurately determine "
   //               "trajectory.");
