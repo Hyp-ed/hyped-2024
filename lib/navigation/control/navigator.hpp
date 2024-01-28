@@ -8,7 +8,6 @@
 
 #include <core/logger.hpp>
 #include <core/types.hpp>
-#include "consts.hpp"
 #include <navigation/filtering/kalman_filter.hpp>
 #include <navigation/filtering/kalman_matrices.hpp>
 #include <navigation/preprocessing/preprocess_accelerometer.hpp>
