@@ -76,19 +76,19 @@ core::Result Mqtt::consume()
 {
   for (std::uint32_t i = 0; i < 100; i++) {
     mqtt::const_message_ptr received_msg;
-    auto received = client_->try_consume_message(&received_msg);
+    const auto received = client_->try_consume_message(&received_msg);
     if (!received) {
       logger_.log(core::LogLevel::kDebug, "Consumed %i message(s)", i);
       return core::Result::kSuccess;
     }
-    auto parsed_message = messagePtrToMessage(received_msg);
+    const auto parsed_message = messagePtrToMessage(received_msg);
     if (!parsed_message) {
       logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message");
       return core::Result::kFailure;
     }
     incoming_message_queue_.push(*parsed_message);
   }
-  logger_.log(core::LogLevel::kDebug, "Consumed 100 message(s)");
+  logger_.log(core::LogLevel::kDebug, "Consumed 100 messages");
   return core::Result::kSuccess;
 }
 

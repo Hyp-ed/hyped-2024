@@ -9,8 +9,8 @@ RUN apt-get update && \
 WORKDIR /home
 RUN git clone --recurse-submodules https://github.com/eclipse/paho.mqtt.cpp.git
 WORKDIR /home/paho.mqtt.cpp
-RUN git checkout ef021805c7aca42d72194d85bb2bdccdfe963e28
-RUN cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_STATIC=ON -DPAHO_BUILD_DOCUMENTATION=OFF -DPAHO_BUILD_SAMPLES=ON
+RUN git checkout v1.3.2
+RUN cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_STATIC=ON -DPAHO_BUILD_DOCUMENTATION=OFF -DPAHO_BUILD_SAMPLES=OFF
 RUN sudo cmake --build build/ --target install
 RUN sudo ldconfig
 
