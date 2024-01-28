@@ -17,15 +17,14 @@ TEST(KalmanFilter, construction)
   navigation::ErrorCovarianceMatrix initial_error_covariance;
   KalmanFilter kalman_filter(
     initial_state,
-    navigation::ErrorCovarianceMatrix::Zero(),  //TODOLater: If initial position not known exactly, tune
+    navigation::ErrorCovarianceMatrix::Zero(),  // TODOLater: If initial position not known exactly,
+                                                // tune
+
     navigation::kStateTransitionMatrix,
     navigation::kControlMatrix,
     navigation::kErrorCovarianceMatrix,
     navigation::measurement_matrix,
     navigation::kMeasurementNoiseCovarianceMatrix);
-
-  
-
 }
 
 }  // namespace hyped::test
