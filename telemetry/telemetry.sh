@@ -63,12 +63,12 @@ handle_options "$@"
 
 if [ "$build" = true ]; then
   if [ "$with_mqtt_broker" = true ]; then
-    docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build
+    docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build --abort-on-container-exit
   else
-    docker-compose up --build
+    docker-compose up --build --abort-on-container-exit
   fi
 elif [ "$with_mqtt_broker" = true ]; then
-  docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up
+  docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --abort-on-container-exit
 else
-  docker-compose up
+  docker-compose up --abort-on-container-exit
 fi
