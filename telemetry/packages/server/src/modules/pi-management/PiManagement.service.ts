@@ -71,10 +71,14 @@ export class PiManagementService {
     this.logger.log(`Getting pi ${piId} version in pod ${podId}`);
     // TODOLater: Implement using daemon from PR #51: https://github.com/Hyp-ed/hyped-2024/pull/51
     await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-    return {
-      binaryHash: 'hash_1234',
-      configHash: 'hash_5678',
-    };
+    if (piId === 'pi_1') {
+      return {
+        binaryHash: 'hash_1234',
+        configHash: 'hash_5678',
+      };
+    } else {
+      return null;
+    }
   }
 
   private async getPiStatus(
