@@ -16,7 +16,7 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
   connection_options.set_keep_alive_interval(kKeepAliveInterval);
   connection_options.set_clean_session(true);
   auto mqtt_client = std::make_unique<mqtt::client>(address, id);
-  const auto cb          = std::make_shared<MqttCallback>(logger);
+  const auto cb    = std::make_shared<MqttCallback>(logger);
   mqtt_client->set_callback(*cb);
   mqtt_client->connect(connection_options);
   if (!mqtt_client->is_connected()) {
