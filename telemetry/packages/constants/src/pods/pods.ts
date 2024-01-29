@@ -1,4 +1,5 @@
-import type { Pods } from '@hyped/telemetry-types'; /* TS error - cannot locate module */
+import type { Pods } from '@hyped/telemetry-types';
+
 import {
   accelerometerCommon,
   hallEffectCommon,
@@ -42,11 +43,12 @@ export const pods: Pods = {
       },
 
       // ************************************ NAVIGATION ************************************ //
+      // navigation measurements all derived from accelerometer
       displacement: {
         name: 'Displacement',
         key: 'displacement',
         format: 'float',
-        type: 'displacement',
+        type: 'motion',
         unit: 'm',
         limits: {
           critical: {
@@ -54,14 +56,14 @@ export const pods: Pods = {
             high: 100,
           },
         },
-        timestep: 1000,
-        initialValue: 0,
+        rmsNoise: 0, // no inherent noise, noise is propogated from accelerometer reading
+        sampling_time: accelerometerCommon.sampling_time,
       },
       velocity: {
         name: 'Velocity',
         key: 'velocity',
         format: 'float',
-        type: 'velocity',
+        type: 'motion',
         unit: 'm/s',
         limits: {
           critical: {
@@ -69,14 +71,14 @@ export const pods: Pods = {
             high: 50,
           },
         },
-        timestep: 1000,
-        initialValue: 0,
+        rmsNoise: 0,
+        sampling_time: accelerometerCommon.sampling_time,
       },
       acceleration: {
         name: 'Acceleration',
         key: 'acceleration',
         format: 'float',
-        type: 'acceleration',
+        type: 'motion',
         unit: 'm/s²',
         limits: {
           critical: {
@@ -84,8 +86,8 @@ export const pods: Pods = {
             high: 5,
           },
         },
-        timestep: 1000,
-        initialValue: 0,
+        rmsNoise: accelerometerCommon.rmsNoise,
+        sampling_time: accelerometerCommon.sampling_time,
       },
 
       // ************************************ PRESSURE ************************************ //
@@ -419,8 +421,25 @@ export const pods: Pods = {
             high: 100,
           },
         },
-        timestep: 1000,
-        initialValue: 0,
+        rmsNoise: 1, // estimate
+        sampling_time: 500
+      },
+
+      // ************************************ LEVITATION ************************************ //
+      levitation_height: {
+        name: 'Levitation Height',
+        key: 'levitation_height',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+        rmsNoise: 2, // from Time-of-Flight datasheet
+        sampling_time: 500
       },
     },
   },

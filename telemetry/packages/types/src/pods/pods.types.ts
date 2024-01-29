@@ -23,8 +23,8 @@ export type Limits = {
 export type RangeMeasurement = BaseMeasurement & {
   format: 'float' | 'integer';
   limits: Limits;
-  timestep: number;
-  initialValue: number;
+  rmsNoise: number;
+  sampling_time: number;
 };
 
 // for rest of the variables that have N states enumerated by a number (0 or 1 generally) and descriptive string
