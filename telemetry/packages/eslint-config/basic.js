@@ -17,6 +17,11 @@ module.exports = {
   ],
   rules: {
     'no-console': 'error',
+    // We can tighten up the below rules later. They're not worth the effort at the moment.
+    '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
   },
   root: true,
 };

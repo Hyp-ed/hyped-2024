@@ -4,14 +4,27 @@ import { SERVER_ENDPOINT } from '../core/config';
 import { AugmentedDomainObject } from '../types/AugmentedDomainObject';
 import { socket as socketConstants } from '@hyped/telemetry-constants';
 
+type MeasurementReading = {
+  podId: string;
+  measurementKey: string;
+  value: number;
+  timestamp: number;
+};
+
 export function RealtimeTelemetryPlugin() {
   return function install(openmct: OpenMCT) {
     const socket = io(SERVER_ENDPOINT, { path: '/openmct/data/realtime' });
     // handle socket disconnects
 
-    const listenerCallbacks: any = {};
+    const listenerCallbacks: {
+      [key: string]: (data: {
+        id: string;
+        value: number;
+        timestamp: number;
+      }) => void;
+    } = {};
 
-    socket.on(socketConstants.MEASUREMENT_EVENT, (data) => {
+    socket.on(socketConstants.MEASUREMENT_EVENT, (data: MeasurementReading) => {
       const { podId, measurementKey, value, timestamp } = data;
       const roomName = socketConstants.getMeasurementRoomName(
         podId,
@@ -27,7 +40,10 @@ export function RealtimeTelemetryPlugin() {
       supportsSubscribe: (domainObject: AugmentedDomainObject) => {
         return domainObject.podId !== undefined;
       },
-      subscribe: (domainObject: AugmentedDomainObject, callback: any) => {
+      subscribe: (
+        domainObject: AugmentedDomainObject,
+        callback: () => void,
+      ) => {
         const { podId, identifier } = domainObject;
         const roomName = socketConstants.getMeasurementRoomName(
           podId,

@@ -10,6 +10,7 @@ const App = () => {
     <div className="grid grid-cols-8 bg-hyped-background">
       {VIEWS.map((component) => (
         <div
+          key={component.name}
           className={cn(
             'h-[100vh] w-full col-span-7 p-1',
             !(VIEWS.indexOf(component) === selectedComponent) && 'hidden',

@@ -45,14 +45,14 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
   const mqttConnect = (host: string, mqttOption?: IClientOptions) => {
     log(`Connecting to MQTT broker: ${host}`);
     setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTING);
-    const mqttClient = mqtt.connect(host, mqttOption);
+    const mqttClient = mqtt.connect(host, mqttOption) as MqttClient;
     setClient(mqttClient);
   };
 
   // Connect to MQTT broker on mount
   useEffect(() => {
     mqttConnect(broker);
-  }, []);
+  }, [broker]);
 
   // Handle client changes
   useEffect(() => {
@@ -61,8 +61,8 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         log('MQTT client connected to broker');
         setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTED);
       });
-      client.on('error', (err: any) => {
-        log(`MQTT connection error: ${err}`);
+      client.on('error', (err: unknown) => {
+        log(`MQTT connection error: ${err as string}`);
         setConnectionStatus(MQTT_CONNECTION_STATUS.ERROR);
         client.end();
       });
@@ -73,7 +73,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
       log("MQTT client doesn't exist, reconnecting...");
       mqttConnect(broker);
     }
-  }, [client]);
+  }, [client, broker]);
 
   /**
    * Publish an MQTT message
@@ -87,9 +87,9 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
       log(`MQTT couldn't publish to ${fullTopic} because client is null`);
       return;
     }
-    client.publish(fullTopic, payload, { qos }, (error) => {
+    client.publish(fullTopic, payload, { qos }, (error: unknown) => {
       if (error) {
-        log(`MQTT publish error: ${error}`);
+        log(`MQTT publish error: ${error as string}`);
       }
     });
   };

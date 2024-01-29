@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { z } from 'zod';
 
 const envSchema = z.object({
@@ -23,7 +24,9 @@ const result = envSchema.safeParse({
 });
 
 if (!result.success) {
-  throw new Error('Missing or invalid environment variables!' + result.error);
+  throw new Error(
+    'Missing or invalid environment variables!' + JSON.stringify(result.error),
+  );
 }
 
 // Remove the `VITE_` prefix from the object keys and cast the result to the correct type

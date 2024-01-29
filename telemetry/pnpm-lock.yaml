@@ -333,6 +333,9 @@ importers:
       '@hyped/eslint-config':
         specifier: workspace:*
         version: link:../eslint-config
+      '@hyped/telemetry-server':
+        specifier: workspace:*
+        version: link:../server
       '@hyped/telemetry-types':
         specifier: workspace:*
         version: link:../types

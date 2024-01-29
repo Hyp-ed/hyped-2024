@@ -31,7 +31,7 @@ export function LimitPlugin() {
       supportsLimits: function (domainObject: AugmentedDomainObject) {
         return domainObject.limits !== undefined;
       },
-      getLimitEvaluator: function (domainObject: AugmentedDomainObject) {
+      getLimitEvaluator: function () {
         return {
           evaluate: function (
             datum: Datum,

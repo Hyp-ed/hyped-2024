@@ -13,9 +13,12 @@ export function HistoricalTelemetryPlugin() {
         domainObject: AugmentedDomainObject,
         options: TelemetryRequest,
       ) {
+        // TODOLater: work out how to type this
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const { start, end } = options;
         const podId = domainObject.podId;
         const measurementKey = domainObject.identifier.key;
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
         const url = `openmct/data/historical/pods/${podId}/measurements/${measurementKey}?start=${start}&end=${end}`;
 
         return http

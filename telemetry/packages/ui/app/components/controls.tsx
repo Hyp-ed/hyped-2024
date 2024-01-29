@@ -20,7 +20,7 @@ export const ControlsUI = ({
   selectedComponent: number;
   setSelectedComponent: React.Dispatch<React.SetStateAction<number>>;
 }) => {
-  const [currentPod, setCurrentPod] = useState<string>(DEFAULT_POD);
+  const [currentPod] = useState<string>(DEFAULT_POD);
   const { connectionStatus } = usePod(currentPod);
   const { podState } = usePod(currentPod);
 
@@ -28,7 +28,7 @@ export const ControlsUI = ({
   useEffect(() => {
     toast(`Pod state changed: ${podState}`);
     log(`Pod state changed: ${podState}`, currentPod);
-  }, [podState]);
+  }, [podState, currentPod]);
 
   return (
     <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col gap-2 justify-between bg-hyped-background select-none text-gray-100">
@@ -55,6 +55,7 @@ export const ControlsUI = ({
           <div className="h-full py-2 flex flex-col justify-start gap-2">
             {VIEWS.map((component, index) => (
               <button
+                key={component.name}
                 className={cn(
                   'flex items-start justify-start rounded-md px-3 py-2 gap-2',
                   index === selectedComponent ? 'bg-openmct-dark-gray' : '',

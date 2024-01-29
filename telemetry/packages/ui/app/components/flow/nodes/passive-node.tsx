@@ -4,7 +4,7 @@ import { Handle, NodeProps } from 'reactflow';
 import { BASE_NODE_STYLES } from './styles';
 import { NodeDataType } from '../types';
 
-export const PassiveNode = memo(
+const PassiveNode = memo(
   ({
     data,
   }: Omit<NodeProps, 'data'> & {
@@ -13,7 +13,7 @@ export const PassiveNode = memo(
     <>
       {data.targetPositions &&
         data.targetPositions.map(({ position, id }) => (
-          <Handle type="target" position={position} id={id} />
+          <Handle key={id} type="target" position={position} id={id} />
         ))}
       <div
         className={cn(
@@ -27,8 +27,11 @@ export const PassiveNode = memo(
       </div>
       {data.sourcePositions &&
         data.sourcePositions.map(({ position, id }) => (
-          <Handle type="source" position={position} id={id} />
+          <Handle key={id} type="source" position={position} id={id} />
         ))}
     </>
   ),
 );
+
+PassiveNode.displayName = 'PassiveNode'; // Add display name to the component
+export { PassiveNode }; // Export the component

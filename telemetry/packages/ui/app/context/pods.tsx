@@ -119,7 +119,7 @@ export const PodsProvider = ({
       });
     }, LATENCY_REQUEST_INTERVAL);
     return () => clearInterval(interval);
-  }, [client]);
+  }, [client, podIds, publish]);
 
   useEffect(() => {
     const interval = setTimeout(() => {
@@ -143,7 +143,7 @@ export const PodsProvider = ({
       });
     }, POD_MAX_LATENCY);
     return () => clearInterval(interval);
-  }, [lastLatencyResponse]);
+  }, [lastLatencyResponse, podIds]);
 
   // subscribe to latency messages and calculate latency
   useEffect(() => {
@@ -165,12 +165,18 @@ export const PodsProvider = ({
         // calculate the latency
         const latency =
           new Date().getTime() -
-          parseInt(JSON.parse(message.toString())['latency']);
+          parseInt(
+            (
+              JSON.parse(message.toString()) as {
+                latency: string;
+              }
+            )['latency'],
+          );
 
         // send warning to the server if the latency is too high
         // send warning to the server if the latency is too high
         if (latency > POD_WARNING_LATENCY) {
-          http.post(`pods/${podId}/warnings/latency`);
+          void http.post(`pods/${podId}/warnings/latency`);
         }
 
         setLastLatencyResponse(new Date().getTime());
@@ -216,14 +222,14 @@ export const PodsProvider = ({
 
     return () => {
       podIds.map((podId) => {
-        client.off('message', (topic, message) =>
+        client.off('message', (topic: string, message: Buffer) =>
           getLatency(podId, topic, message),
         );
         unsubscribe('latency/response', podId);
         unsubscribe('state', podId);
       });
     };
-  }, [client]);
+  }, [client, podIds, subscribe, unsubscribe]);
 
   return (
     <PodsContext.Provider value={podsState}>{children}</PodsContext.Provider>

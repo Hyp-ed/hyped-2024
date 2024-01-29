@@ -37,7 +37,6 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
   const [clamped, setClamped] = useState(false);
   const [raised, setRaised] = useState(false);
   const [deadmanSwitch, setDeadmanSwitch] = useState(false);
-  const [stopped, setStopped] = useState(true);
   const [preChargeLive, setPreChargeLive] = useState(false);
 
   const { podState } = usePod(podId);
@@ -46,10 +45,10 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
    * Toggle the precharge/live state of the mc
    * @param value Whether the mc should be live or precharge
    */
-  const togglePreChargeLive = (value: boolean) => {
+  const togglePreChargeLive = async (value: boolean) => {
     setPreChargeLive(value);
-    if (value) http.post(`pods/${podId}/controls/live-mc`);
-    else http.post(`pods/${podId}/controls/pre-charge-mc`);
+    if (value) await http.post(`pods/${podId}/controls/live-mc`);
+    else await http.post(`pods/${podId}/controls/pre-charge-mc`);
   };
 
   return (
@@ -61,7 +60,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
           </Label>
           <Switch
             id="pre-charge-live"
-            onCheckedChange={togglePreChargeLive}
+            onCheckedChange={void togglePreChargeLive}
             disabled={
               !(
                 podState === ALL_POD_STATES.IDLE ||
@@ -78,7 +77,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               'bg-blue-600 hover:bg-blue-700',
             )}
             onClick={() => {
-              levitate(podId);
+              void levitate(podId);
             }}
           >
             <ArrowUpFromLine /> LEVITATE
@@ -89,8 +88,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               'bg-green-600 hover:bg-green-700',
             )}
             onClick={() => {
-              startPod(podId);
-              setStopped(false);
+              void startPod(podId);
             }}
           >
             <Rocket /> LAUNCH
@@ -101,8 +99,7 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               'bg-red-700 hover:bg-red-800',
             )}
             onClick={() => {
-              stopPod(podId);
-              setStopped(true);
+              void stopPod(podId);
             }}
           >
             <Siren /> EMERGENCY STOP
@@ -114,8 +111,8 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               !clamped && 'bg-openmct-light-gray hover:bg-openmct-dark-gray',
             )}
             onClick={() => {
-              if (clamped) retract(podId);
-              else clamp(podId);
+              if (clamped) void retract(podId);
+              else void clamp(podId);
               setClamped(!clamped);
             }}
           >
@@ -128,8 +125,8 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
               !raised && 'bg-openmct-light-gray hover:bg-openmct-dark-gray',
             )}
             onClick={() => {
-              if (raised) lower(podId);
-              else raise(podId);
+              if (raised) void lower(podId);
+              else void raise(podId);
               setRaised(!raised);
             }}
           >
@@ -144,8 +141,8 @@ export const PodControls = ({ podId, show }: PodControlsProps) => {
                 'bg-openmct-light-gray hover:bg-openmct-dark-gray',
             )}
             onClick={() => {
-              if (deadmanSwitch) stopHP(podId);
-              else startHP(podId);
+              if (deadmanSwitch) void stopHP(podId);
+              else void startHP(podId);
               setDeadmanSwitch(!deadmanSwitch);
             }}
           >

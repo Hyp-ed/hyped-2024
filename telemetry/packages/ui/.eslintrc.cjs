@@ -6,5 +6,5 @@ module.exports = {
     project: true,
     tsconfigRootDir: __dirname,
   },
-  ignorePatterns: ['vite.config.ts'],
+  ignorePatterns: ['vite.config.ts', 'app/components/ui/**'],
 };
