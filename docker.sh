@@ -111,6 +111,5 @@ if [ "$docker_dev" = true ]; then
   else
     echo "[!] No existing container found. Creating new container"
     docker run -it -v $(pwd):/home/hyped --name $DEV_CONTAINER_NAME -w /home/hyped/ --entrypoint /bin/bash $IMAGE_NAME 
-    # --mount type=bind,source=$(pwd),target=/home/hyped
   fi
 fi
