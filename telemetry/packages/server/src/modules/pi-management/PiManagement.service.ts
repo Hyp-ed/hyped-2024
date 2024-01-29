@@ -42,6 +42,7 @@ export class PiManagementService {
       this.logger.warn(`Could not get status of pi ${piId} in pod ${podId}`);
       return {
         ...pi,
+        podId,
         versionStatus: 'unknown',
         status: 'offline',
       };
@@ -53,6 +54,7 @@ export class PiManagementService {
       this.logger.warn(`Could not get version of pi ${piId} in pod ${podId}`);
       return {
         ...pi,
+        podId,
         versionStatus: 'unknown',
         status,
       };
@@ -65,6 +67,7 @@ export class PiManagementService {
 
     return {
       ...pi,
+      podId,
       binaryHash,
       configHash,
       status,
@@ -132,20 +135,22 @@ export class PiManagementService {
   }
 
   /**
-   * Updates Pi with latest code.
-   * Builds/compiles code using Docker and uses SFTP to transfer it to the Pi.
+   * Updates Pi with latest binary.
+   * Builds/compiles code using Docker and uses SCP to transfer it to the Pi.
    */
-  public updatePiCode(podId: string, piId: string) {
-    this.logger.log(`Updating pi ${piId} code in pod ${podId}`);
+  public async updatePiBinary(podId: string, piId: string) {
+    this.logger.log(`Updating pi ${piId} binary in pod ${podId}`);
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
     return true;
   }
 
   /**
    * Updates Pi with latest config.
-   * Uses SFTP to transfer it to the Pi.
+   * Uses SCP to transfer it to the Pi.
    */
-  public updatePiConfig(podId: string, piId: string) {
+  public async updatePiConfig(podId: string, piId: string) {
     this.logger.log(`Updating pi ${piId} in pod ${podId}`);
+    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
     return true;
   }
 }

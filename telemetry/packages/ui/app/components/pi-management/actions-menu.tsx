@@ -16,10 +16,15 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Row } from '@tanstack/react-table';
-import { PiWithVersion } from '@hyped/telemetry-types';
+import { PiInfo } from '@hyped/telemetry-types';
+import { updatePiBinary, updatePiConfig } from './actions';
+import { useQueryClient } from 'react-query';
 
-export const ActionsMenu = ({ row }: { row: Row<PiWithVersion> }) => {
+export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
   const pi = row.original;
+
+  const queryClient = useQueryClient();
+  const refresh = () => queryClient.invalidateQueries('pis');
 
   return (
     <DropdownMenu>
@@ -44,15 +49,29 @@ export const ActionsMenu = ({ row }: { row: Row<PiWithVersion> }) => {
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuLabel>Update</DropdownMenuLabel>
-        <DropdownMenuItem className="flex gap-2">
+        <DropdownMenuItem
+          className="flex gap-2"
+          onClick={() => updatePiBinary(pi.podId, pi.id).then(() => refresh())}
+        >
           <Binary size={18} />
           Update Binary
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex gap-2">
+        <DropdownMenuItem
+          className="flex gap-2"
+          onClick={() => updatePiConfig(pi.podId, pi.id).then(() => refresh())}
+        >
           <Settings size={18} />
           Update Config
         </DropdownMenuItem>
-        <DropdownMenuItem className="flex gap-2">
+        <DropdownMenuItem
+          className="flex gap-2"
+          onClick={() => {
+            Promise.all([
+              updatePiBinary(pi.podId, pi.id),
+              updatePiConfig(pi.podId, pi.id),
+            ]).then(() => refresh());
+          }}
+        >
           <HardDriveUpload size={18} />
           Update All
         </DropdownMenuItem>

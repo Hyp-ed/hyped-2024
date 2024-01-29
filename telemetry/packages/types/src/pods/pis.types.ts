@@ -1,4 +1,5 @@
 import { Prettify } from '../utils/Prettify';
+import { PodId } from './pods.types';
 
 export type PiUnknownVersionStatus = 'unknown';
 export type PiKnownVersionStatus = 'up-to-date' | 'out-of-date';
@@ -32,6 +33,7 @@ export type PiInfo = Prettify<
           versionStatus: PiUnknownVersionStatus;
         }
     ) & {
+      podId: PodId;
       status: PiStatus;
     }
 >;

@@ -1,4 +1,4 @@
-import { Controller, Get, HttpException, Param } from '@nestjs/common';
+import { Controller, Get, HttpException, Param, Post } from '@nestjs/common';
 import { PiManagementService } from './PiManagement.service';
 import { validatePodId } from '../common/utils/validatePodId';
 import { pods } from '@hyped/telemetry-constants';
@@ -20,17 +20,17 @@ export class PiManagementController {
     return this.piManagementService.getPi(podId, piId);
   }
 
-  @Get(':piId/update-code')
-  async updatePiCode(
+  @Post(':piId/update-binary')
+  async updatePiBinary(
     @Param('podId') podId: string,
     @Param('piId') piId: string,
   ) {
     validatePodId(podId);
     this.validatePiId(podId, piId);
-    return this.piManagementService.updatePiCode(podId, piId);
+    return this.piManagementService.updatePiBinary(podId, piId);
   }
 
-  @Get(':piId/update-config')
+  @Post(':piId/update-config')
   async updatePiConfig(
     @Param('podId') podId: string,
     @Param('piId') piId: string,
