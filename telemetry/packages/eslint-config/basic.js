@@ -2,7 +2,8 @@
 module.exports = {
   extends: [
     'eslint:recommended',
-    'eslint-config-turbo',
+    // This isn't working properly. Getting an error that I can't figure out.
+    // 'eslint-config-turbo',
     'plugin:@typescript-eslint/recommended',
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'prettier',
