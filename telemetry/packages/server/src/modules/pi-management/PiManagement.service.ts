@@ -2,9 +2,10 @@ import { Injectable, LoggerService } from '@nestjs/common';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { pods } from '@hyped/telemetry-constants';
 import {
-  PiWithVersion,
   PiVersionResult,
   PiStatus,
+  PiInfo,
+  PiVersionStatus,
 } from '@hyped/telemetry-types';
 
 @Injectable()
@@ -19,7 +20,7 @@ export class PiManagementService {
    * @param podId Pod ID to get Pis from
    * @returns All Pis in the pod
    */
-  public async getAllPis(podId: string): Promise<PiWithVersion[]> {
+  public async getAllPis(podId: string): Promise<PiInfo[]> {
     this.logger.log(`Getting all info for pis in pod ${podId}`);
     const pis = pods[podId].pis;
     return Promise.all(Object.keys(pis).map((piId) => this.getPi(podId, piId)));
@@ -31,9 +32,20 @@ export class PiManagementService {
    * @param piId Pi ID to get
    * @returns Pi in the pod
    */
-  public async getPi(podId: string, piId: string): Promise<PiWithVersion> {
+  public async getPi(podId: string, piId: string): Promise<PiInfo> {
     this.logger.log(`Getting info for pi ${piId} in pod ${podId}`);
     const pi = pods[podId].pis[piId];
+
+    const status = await this.getPiStatus(podId, piId);
+
+    if (!status) {
+      this.logger.warn(`Could not get status of pi ${piId} in pod ${podId}`);
+      return {
+        ...pi,
+        versionStatus: 'unknown',
+        status: 'offline',
+      };
+    }
 
     const hashes = await this.getPiVersion(podId, piId);
 
@@ -41,20 +53,22 @@ export class PiManagementService {
       this.logger.warn(`Could not get version of pi ${piId} in pod ${podId}`);
       return {
         ...pi,
-        status: 'unknown',
+        versionStatus: 'unknown',
+        status,
       };
     }
 
     const { binaryHash, configHash } = hashes;
 
     // Determine status of Pi
-    const status = await this.getPiStatus(binaryHash, configHash);
+    const versionStatus = await this.getPiVersionStatus(binaryHash, configHash);
 
     return {
       ...pi,
       binaryHash,
       configHash,
       status,
+      versionStatus,
     };
   }
 
@@ -81,10 +95,22 @@ export class PiManagementService {
     }
   }
 
-  private async getPiStatus(
+  private async getPiStatus(podId: string, piId: string): Promise<PiStatus> {
+    this.logger.log(`Getting pi ${piId} status in pod ${podId}`);
+    // TODOLater: Implement using daemon from PR #51:
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+    // Here we will ping the Pi to see if it is online or offline
+    if (piId === 'pi_1') {
+      return 'online';
+    } else {
+      return 'offline';
+    }
+  }
+
+  private async getPiVersionStatus(
     binaryHash: string,
     configHash: string,
-  ): Promise<PiStatus> {
+  ): Promise<PiVersionStatus> {
     // Get the correct hashes. If the hashes are the same, then the Pi is up-to-date.
     const [upToDateBinaryHash, upToDateConfigHash] = await Promise.all([
       this.getUpToDateBinaryHash(),

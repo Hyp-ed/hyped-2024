@@ -6,7 +6,6 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { PiWithVersion } from '@hyped/telemetry-types';
 import {
   SortingState,
   flexRender,
@@ -22,6 +21,7 @@ import { useQuery } from 'react-query';
 import { Button } from '../ui/button';
 import { columns } from './columns';
 import { cn } from '@/lib/utils';
+import { PiInfo } from '@hyped/telemetry-types';
 
 // temp until debug view is merged
 const POD_ID = 'pod_1';
@@ -34,7 +34,7 @@ export const PiManagement = () => {
     'pis',
     () =>
       http.get(`pods/${POD_ID}/pis`).then((res) => res.json()) as Promise<
-        PiWithVersion[]
+        PiInfo[]
       >,
   );
 

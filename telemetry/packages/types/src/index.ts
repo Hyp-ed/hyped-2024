@@ -14,7 +14,8 @@ export type {
   PiVersionResult,
   Pi,
   PiId,
+  PiVersionStatus,
   PiStatus,
-  PiUnknownStatus,
-  PiWithVersion,
+  PiUnknownVersionStatus,
+  PiInfo,
 } from './pods/pis.types';

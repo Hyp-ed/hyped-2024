@@ -1,8 +1,10 @@
 import { Prettify } from '../utils/Prettify';
 
-export type PiUnknownStatus = 'unknown';
-export type PiKnownStatus = 'up-to-date' | 'out-of-date';
-export type PiStatus = PiUnknownStatus | PiKnownStatus;
+export type PiUnknownVersionStatus = 'unknown';
+export type PiKnownVersionStatus = 'up-to-date' | 'out-of-date';
+export type PiVersionStatus = PiUnknownVersionStatus | PiKnownVersionStatus;
+
+export type PiStatus = 'online' | 'offline';
 
 // Could replace with stricter type in future
 type IpAddress = string;
@@ -20,14 +22,16 @@ export type PiVersionResult = {
   configHash: string;
 };
 
-export type PiWithVersion = Prettify<
+export type PiInfo = Prettify<
   Pi &
     (
       | (PiVersionResult & {
-          status: PiKnownStatus;
+          versionStatus: PiKnownVersionStatus;
         })
       | {
-          status: PiUnknownStatus;
+          versionStatus: PiUnknownVersionStatus;
         }
-    )
+    ) & {
+      status: PiStatus;
+    }
 >;

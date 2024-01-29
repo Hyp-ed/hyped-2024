@@ -1,13 +1,13 @@
-import { PiWithVersion } from '@hyped/telemetry-types';
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { ActionsMenu } from './actions-menu';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
+import { PiInfo } from '@hyped/telemetry-types';
 
 const UNKNOWN = 'unknown';
 
-export const columns: ColumnDef<PiWithVersion>[] = [
+export const columns: ColumnDef<PiInfo>[] = [
   {
     id: 'select',
     header: ({ table }) => (
@@ -45,6 +45,13 @@ export const columns: ColumnDef<PiWithVersion>[] = [
     header: 'IP Address',
   },
   {
+    accessorKey: 'status',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Status</SortableHeader>
+    ),
+    cell: ({ row }) => row.getValue('status') || UNKNOWN,
+  },
+  {
     accessorKey: 'binaryHash',
     header: 'Binary Hash',
     cell: ({ row }) => row.getValue('binaryHash') || UNKNOWN,
@@ -55,11 +62,11 @@ export const columns: ColumnDef<PiWithVersion>[] = [
     cell: ({ row }) => row.getValue('configHash') || UNKNOWN,
   },
   {
-    accessorKey: 'status',
+    accessorKey: 'versionStatus',
     header: ({ column }) => (
-      <SortableHeader column={column}>Status</SortableHeader>
+      <SortableHeader column={column}>Version Status</SortableHeader>
     ),
-    cell: ({ row }) => row.getValue('status') || UNKNOWN,
+    cell: ({ row }) => row.getValue('versionStatus') || UNKNOWN,
   },
   {
     id: 'actions',
@@ -71,13 +78,13 @@ const SortableHeader = ({
   column,
   children,
 }: {
-  column: Column<PiWithVersion, unknown>;
+  column: Column<PiInfo, unknown>;
   children: React.ReactNode;
 }) => {
   return (
     <Button
-      variant="ghost"
-      className="flex gap-1"
+      variant="link"
+      className="flex gap-1 text-muted-foreground px-0"
       onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
     >
       {children}
