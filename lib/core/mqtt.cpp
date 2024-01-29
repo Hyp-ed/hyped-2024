@@ -11,12 +11,12 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
                                                   const std::string &host,
                                                   const std::uint16_t port)
 {
-  std::string address = "tcp://" + host + ":" + std::to_string(port);
+  const std::string address = "tcp://" + host + ":" + std::to_string(port);
   mqtt::connect_options connection_options;
   connection_options.set_keep_alive_interval(kKeepAliveInterval);
   connection_options.set_clean_session(true);
   auto mqtt_client = std::make_unique<mqtt::client>(address, id);
-  auto cb          = std::make_shared<MqttCallback>(logger);
+  const auto cb    = std::make_shared<MqttCallback>(logger);
   mqtt_client->set_callback(*cb);
   mqtt_client->connect(connection_options);
   if (!mqtt_client->is_connected()) {
@@ -76,19 +76,19 @@ core::Result Mqtt::consume()
 {
   for (std::uint32_t i = 0; i < 100; i++) {
     mqtt::const_message_ptr received_msg;
-    auto received = client_->try_consume_message(&received_msg);
+    const auto received = client_->try_consume_message(&received_msg);
     if (!received) {
       logger_.log(core::LogLevel::kDebug, "Consumed %i message(s)", i);
       return core::Result::kSuccess;
     }
-    auto parsed_message = messagePtrToMessage(received_msg);
+    const auto parsed_message = messagePtrToMessage(received_msg);
     if (!parsed_message) {
       logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message");
       return core::Result::kFailure;
     }
     incoming_message_queue_.push(*parsed_message);
   }
-  logger_.log(core::LogLevel::kDebug, "Consumed 100 message(s)");
+  logger_.log(core::LogLevel::kDebug, "Consumed 100 messages");
   return core::Result::kSuccess;
 }
 

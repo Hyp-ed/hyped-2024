@@ -47,7 +47,8 @@ core::Result I2cCommands::addCommands(core::ILogger &logger,
     const auto write_command_name        = std::to_string(bus) + " write";
     const auto write_command_description = "Write to I2C bus " + std::to_string(bus);
     const auto write_command_handler     = [&logger, i2c, bus]() {
-      std::uint32_t device_address, register_address, data;
+      std::uint32_t device_address, data;
+      std::uint16_t register_address;
       std::cout << "Device address: ";
       std::cin >> std::hex >> device_address;
       std::cout << "Register address: ";
@@ -68,6 +69,6 @@ core::Result I2cCommands::addCommands(core::ILogger &logger,
     repl->addCommand(std::move(write_command));
   }
   return core::Result::kSuccess;
-};
+}
 
 }  // namespace hyped::debug
