@@ -4,11 +4,18 @@ import { MQTTProvider } from './context/mqtt';
 import { PodsProvider } from './context/pods';
 import { config } from './config';
 import { QoS } from './types/mqtt';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
-export const Providers = ({ children }: { children: React.ReactNode }) => (
-  <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
-    <PodsProvider podIds={POD_IDS as unknown as string[]}>
-      <LiveLogsProvider>{children}</LiveLogsProvider>
-    </PodsProvider>
-  </MQTTProvider>
-);
+const queryClient = new QueryClient();
+
+export const Providers = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
+        <PodsProvider podIds={POD_IDS as unknown as string[]}>
+          <LiveLogsProvider>{children}</LiveLogsProvider>
+        </PodsProvider>
+      </MQTTProvider>
+    </QueryClientProvider>
+  );
+};

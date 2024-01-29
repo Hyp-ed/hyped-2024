@@ -1,6 +1,11 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { pods } from '@hyped/telemetry-constants';
+import {
+  PiWithVersion,
+  PiVersionResult,
+  PiStatus,
+} from '@hyped/telemetry-types';
 
 @Injectable()
 export class PiManagementService {
@@ -14,7 +19,7 @@ export class PiManagementService {
    * @param podId Pod ID to get Pis from
    * @returns All Pis in the pod
    */
-  public async getAllPis(podId: string) {
+  public async getAllPis(podId: string): Promise<PiWithVersion[]> {
     this.logger.log(`Getting all info for pis in pod ${podId}`);
     const pis = pods[podId].pis;
     return Promise.all(Object.keys(pis).map((piId) => this.getPi(podId, piId)));
@@ -26,25 +31,74 @@ export class PiManagementService {
    * @param piId Pi ID to get
    * @returns Pi in the pod
    */
-  public async getPi(podId: string, piId: string) {
+  public async getPi(podId: string, piId: string): Promise<PiWithVersion> {
     this.logger.log(`Getting info for pi ${piId} in pod ${podId}`);
-    const pi = pods[podId]!.pis[piId];
+    const pi = pods[podId].pis[piId];
 
-    // Get version of Pi
     const hashes = await this.getPiVersion(podId, piId);
 
     if (!hashes) {
       this.logger.warn(`Could not get version of pi ${piId} in pod ${podId}`);
-      return pi;
+      return {
+        ...pi,
+        status: 'unknown',
+      };
     }
 
-    const { binary, config } = hashes;
+    const { binaryHash, configHash } = hashes;
+
+    // Determine status of Pi
+    const status = await this.getPiStatus(binaryHash, configHash);
 
     return {
       ...pi,
-      binary,
-      config,
+      binaryHash,
+      configHash,
+      status,
     };
+  }
+
+  /**
+   * Gets the version of the Pi using the daemon. Returns the hash of the binary and config, or null if the version could not be found.
+   * @param podId Pod ID of Pi
+   * @param piId Pi ID to get version of
+   * @returns Hash of binary and config, or null if version could not be found
+   */
+  private async getPiVersion(
+    podId: string,
+    piId: string,
+  ): Promise<PiVersionResult | null> {
+    this.logger.log(`Getting pi ${piId} version in pod ${podId}`);
+    // TODOLater: Implement using daemon from PR #51: https://github.com/Hyp-ed/hyped-2024/pull/51
+    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
+    return {
+      binaryHash: 'hash_1234',
+      configHash: 'hash_5678',
+    };
+  }
+
+  private async getPiStatus(
+    binaryHash: string,
+    configHash: string,
+  ): Promise<PiStatus> {
+    // Get the correct hashes. If the hashes are the same, then the Pi is up-to-date.
+    const [upToDateBinaryHash, upToDateConfigHash] = await Promise.all([
+      this.getUpToDateBinaryHash(),
+      this.getUpToDateConfigHash(),
+    ]);
+    const upToDate =
+      binaryHash === upToDateBinaryHash && configHash === upToDateConfigHash;
+    return upToDate ? 'up-to-date' : 'out-of-date';
+  }
+
+  public async getUpToDateBinaryHash() {
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+    return 'hash_1234';
+  }
+
+  public async getUpToDateConfigHash() {
+    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+    return 'hash_5678';
   }
 
   /**
@@ -64,27 +118,4 @@ export class PiManagementService {
     this.logger.log(`Updating pi ${piId} in pod ${podId}`);
     return true;
   }
-
-  /**
-   * Gets the version of the Pi using the daemon. Returns the hash of the binary and config, or null if the version could not be found.
-   * @param podId Pod ID of Pi
-   * @param piId Pi ID to get version of
-   */
-  private async getPiVersion(
-    podId: string,
-    piId: string,
-  ): Promise<PiVersionResult | null> {
-    this.logger.log(`Getting pi ${piId} version in pod ${podId}`);
-    // TODOLater: Implement using daemon from PR #51: https://github.com/Hyp-ed/hyped-2024/pull/51
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-    return {
-      binary: 'hash_1234',
-      config: 'hash_5678',
-    };
-  }
 }
-
-type PiVersionResult = {
-  binary: string;
-  config: string;
-};

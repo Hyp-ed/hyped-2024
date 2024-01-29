@@ -1,3 +1,5 @@
+import { Pi, PiId } from './pis.types';
+
 export type BaseMeasurement = {
   name: string;
   key: string;
@@ -31,27 +33,13 @@ export type EnumMeasurement = BaseMeasurement & {
 
 export type Measurement = RangeMeasurement | EnumMeasurement;
 
-// Could replace with stricter type in future
-type IpAddress = string;
-
-type Id = string;
-
-export type Pi = {
-  id: Id;
-  ip: IpAddress;
-  name: string;
-};
-
-export type PiWithVersion = Pi & {
-  binary?: string;
-  config?: string;
-};
-
 export type Pod = {
   name: string;
   id: string;
   measurements: Record<string, Measurement>;
-  pis: Record<Id, Pi>;
+  pis: Record<PiId, Pi>;
 };
 
-export type Pods = Record<Id, Pod>;
+export type PodId = string;
+
+export type Pods = Record<PodId, Pod>;
