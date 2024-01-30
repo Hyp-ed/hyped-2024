@@ -36,9 +36,8 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxStateRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxStateRow>(query);
 
       return {
         currentState: data[0]
@@ -101,9 +100,8 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxStateRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxStateRow>(query);
       const launchTime = new Date(data[0]['_time']).getTime();
 
       return {

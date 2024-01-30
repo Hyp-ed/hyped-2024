@@ -64,9 +64,8 @@ export class HistoricalFaultDataService {
       |> last()`;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxFaultRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxFaultRow>(query);
       return data.map((row) => ({
         timestamp: new Date(row['_time']).getTime(),
         fault: JSON.parse(row['_value']) as OpenMctFault,

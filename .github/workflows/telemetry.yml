@@ -40,7 +40,7 @@ jobs:
       - name: Install pnpm and Prettier
         run: |
           npm install -g pnpm
-          npm install -g prettier
+          npm install -g prettier@3.2.4
 
       - name: Check Formatting
         run: pnpm run format:check

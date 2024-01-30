@@ -16,7 +16,7 @@
     "@types/node": "^18.11.18",
     "@types/rimraf": "^3.0.2",
     "lerna": "^6.4.1",
-    "prettier": "2.8.3",
+    "prettier": "3.2.4",
     "turbo": "^1.7.0",
     "typescript": "^5.1.6"
   },
