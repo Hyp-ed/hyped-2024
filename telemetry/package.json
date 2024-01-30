@@ -12,13 +12,10 @@
     "build": "turbo run build"
   },
   "devDependencies": {
-    "@types/is-ci": "^3.0.0",
     "@types/node": "^18.11.18",
-    "@types/rimraf": "^3.0.2",
-    "lerna": "^6.4.1",
     "prettier": "3.2.4",
-    "turbo": "^1.7.0",
-    "typescript": "^5.1.6"
+    "turbo": "^1.11.3",
+    "typescript": "^5.3.3"
   },
   "pnpm": {
     "patchedDependencies": {

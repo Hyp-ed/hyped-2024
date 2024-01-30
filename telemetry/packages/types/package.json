@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@hyped/eslint-config": "workspace:*",
-    "typescript": "^5.1.6"
+    "@hyped/tsconfig": "workspace:*",
+    "typescript": "^5.3.3"
   }
 }
