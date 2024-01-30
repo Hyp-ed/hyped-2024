@@ -37,11 +37,10 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: Install pnpm
-        run: npm install -g pnpm
-
-      - name: Install Prettier
-        run: pnpm add -g prettier
+      - name: Install pnpm and Prettier
+        run: |
+          npm install -g pnpm
+          npm install -g prettier
 
       - name: Check Formatting
         run: pnpm run format:check
