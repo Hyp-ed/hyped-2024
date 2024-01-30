@@ -13,6 +13,7 @@ COPY packages/server/package.json ./packages/server/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
+COPY packages/tsconfig/package.json ./packages/tsconfig/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
