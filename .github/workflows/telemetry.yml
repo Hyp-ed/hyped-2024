@@ -30,3 +30,15 @@ jobs:
 
       - name: Lint
         run: ./telemetry.sh lint
+
+  telemetry-formatting:
+    name: Telemetry Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Prettier
+        run: npm install -g prettier
+
+      - name: Check Formatting
+        run: pnpm run format:check
