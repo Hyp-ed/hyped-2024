@@ -7,9 +7,6 @@ cp /usr/src/app/packages/ui/.env.docker /usr/src/app/packages/ui/.env
 
 pnpm build
 
-if [ "$PNPM_SCRIPT" = "build" ]; then
-  echo "Build complete"
-  exit 0
+if [ "$PNPM_SCRIPT" != "build" ]; then
+  pnpm run $PNPM_SCRIPT
 fi
-
-pnpm "$PNPM_SCRIPT"
