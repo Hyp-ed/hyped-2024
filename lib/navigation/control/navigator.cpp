@@ -26,13 +26,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  // // check fail state
-  // if (check_trajectory == SensorChecks::kUnacceptable) {
-  //   logger_.log(core::LogLevel::kFatal,
-  //               "Navigation sensors are in disagreement. Unable to accurately determine "
-  //               "trajectory.");
-  //   return std::nullopt;
-  // }
+  // TODOLater: check fail state if
 
   control_input_vector << previous_accelerometer_data_;
   measurement_vector << previous_keyence_reading_, previous_optical_reading_;
@@ -90,7 +84,7 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
 {
   // Run preprocessing on optical
-  auto clean_optical_data = optical_preprocessor_.processData(optical_data);
+  const auto clean_optical_data = optical_preprocessor_.processData(optical_data);
 
   // get mean value
   previous_optical_reading_ = 0.0;

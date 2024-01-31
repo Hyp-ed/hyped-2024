@@ -32,18 +32,16 @@ class Navigator : public INavigator {
    */
   core::Result keyenceUpdate(const core::KeyenceData &keyence_data);
   /**
-   * @brief preprocesses encoder data and updates trajectory
+   * @brief Preprocesses optical flow data and updates trajectory
    *
-   * @param encoder_data
+   * @param optical_data
    */
-
   core::Result opticalUpdate(const core::OpticalData &optical_data);
   /**
    * @brief preprocesses accelerometer data and updates trajectory
    *
    * @param accelerometer_data
    */
-
   core::Result accelerometerUpdate(
     const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
 

@@ -29,10 +29,9 @@ void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInp
     = (transition_matrix.transpose() * error_covariance_ * transition_matrix)
       + transition_covariance;
 
-  const auto repeated_matrix = prop_error_covariance * measurement_matrix.transpose();
+  const auto gain_matrix = prop_error_covariance * measurement_matrix.transpose();
   const auto kalman_gain
-    = repeated_matrix
-      * (measurement_matrix * repeated_matrix + measurement_noise_covariance).inverse();
+    = gain_matrix * (measurement_matrix * gain_matrix + measurement_noise_covariance).inverse();
   state_estimate_
     = prop_state_estimate + kalman_gain * (measurement - measurement_matrix * prop_state_estimate);
 }
