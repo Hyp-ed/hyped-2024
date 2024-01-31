@@ -1,0 +1,20 @@
+Sensor,Protocol,Datasheet,Microcontroller,Address,Where? (specify front/back),How many?,Voltage,Data Ouput Min,Data Output Max,Notes
+Temp ,I2C,STTS22H,"Pi 1,2 and 4",0x70/78/7C/7E,Everywhere,25,3.3,-40C,125C,
+Time-of-Flight ,I2C,VL6180V1,Pi 2 and 4,0x29,TRACTION,8,5,"0mm, anything <10mm is unreliable",255mm,
+Accelerometers,I2C,LIS2DS12,Pi 1,"0x1D,0x1E",Front Box,4,1.8,-16g,16g,
+8 Channel ADC,I2C,https://www.ti.com/lit/ds/symlink/adc128d818.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1696884749582&ref_url=https%253A%252F%252Fwww.mouser.co.uk%252F,Pi 2 and 4,,Front and Back Box,4,COMMS,0V,5V,
+8 Channel i2c mux,I2C,https://www.ti.com/lit/ds/symlink/tca9548a.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1696861733969&ref_url=https%253A%252F%252Fwww.ti.com%252Fgeneral%252Fdocs%252Fsuppproductinfo.tsp%253FdistId%253D26%2526gotoUrl%253Dhttps%253A%252F%252Fwww.ti.com%252Flit%252Fgpn%252Ftca9548a,"Pi 1,2 and 4",0x71 to 0x76,Front and Back Box,8,COMMS,,,
+LED Driver,I2C,https://www.ti.com/lit/ds/symlink/lp5036.pdf?HQS=dis-mous-null-mousermode-dsf-pf-null-wwe&ts=1698441544495&ref_url=https%253A%252F%252Fwww.mouser.co.uk%252F,Pi 4,0x30 to 0x33,Back Plate,1,COMMS,,,
+Keyence optical,GPIO,NAVIGATION,Pi 1,N/A,NAVIGATION,2,24,0,depends on the poles,
+Brakes On/Off,GPIO,https://www.festo.com/us/en/a/download-document/datasheet/575274,Pi 2,N/A,Front Box,1,24,,,
+HP Relay,GPIO,HIGH POWER,Pi 4,N/A,Junction Box (Back),4,5,,,Undecided
+Lateral Suspension ,GPIO,https://www.festo.com/us/en/a/download-document/datasheet/575274,Pi 2 and 4,N/A,Front Box,4,24,,,
+Hall effect sensor,ADC,LOW POWER,Pi 2 and 4,N/A,LOW POWER,LOW POWER,LOW POWER,,,
+Festo high pressure sensor,ADC,https://www.festo.com/gb/en/a/8022773/?q=%7E%3AsortByCoreRangeAndSp2020%7E%3ACC_Pressure_measuring_range_C_FP_GLOBAL%7E%3ACC_Pressure_measuring_range.P25%7E%3ACC_Pneumatic_connection_C_FP_GLOBAL%7E%3ACC_Pneumatic_connection.G12,Pi 2 and 4,N/A,Pneumatics Plate (Front),1,24,0bar/0.328V/4mA,16bar/1.64V/20mA,Assuming output is put across 82R
+Festo low pressure sensor,ADC,https://www.festo.com/media/pim/153/D15000100123153.PDF,Pi 2,N/A,Pneumatics Plate (Front),5,24,0bar/0.328V/4mA,10bar/1.64V/20mA,Assuming output is put across 82R
+Levitation displacement,ADC,TRACTION,"Pi 2 and 4, Nucleos",N/A,Each corner + middle 2,6,TRACTION,TRACTION,TRACTION,
+Motor Controllers,CAN,Custom,MTC Nucleo,N/A,Somewhere in the middle,1,LOW POWER,,,
+IMD,CAN,HIGH POWER,BMS Nucleo,HIGH POWER,Junction Box (Back),1,HIGH POWER,,,
+LP BMS,I2C,https://www.mouser.co.uk/ProductDetail/Texas-Instruments/BQ769142PFBR?qs=CiayqK2gdcJdt9HGyTrt9A%3D%3D,LOW POWER,"0x10, 0x11 (write,read)",Low power box,1,probably 85,,,https://www.ti.com/lit/ug/sluucf2c/sluucf2c.pdf
+BMS,CAN,HIGH POWER,BMS Nucleo,HIGH POWER,Battery Box,1,HIGH POWER,,,
+Optical Flow Sensor(PMW3901),SPI,https://www.codico.com/de/mpattachment/file/download/id/952/,Pi 1,NAVIGATION,NAVIGATION,2,3.3,,,

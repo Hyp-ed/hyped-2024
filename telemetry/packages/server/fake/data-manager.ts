@@ -1,4 +1,5 @@
-import { SensorData } from '../../../types/src';
+import { LiveReading, LiveData } from './src';
+// import { MQTT_BROKER_HOST } from '@/modules/core/config';
 
 interface StoredData {
   [key: string]: (number | string)[];
@@ -6,15 +7,15 @@ interface StoredData {
 
 export class DataManager {
   private static instance: DataManager | null = null; // Static property to hold the single instance
-  private data: SensorData; // Instance property to hold the shared state
+  private data: LiveData; // Instance property to hold the shared state
   public storedPodData: StoredData = {};
 
-  private constructor(initialData: SensorData) {
+  private constructor(initialData: LiveData) {
     // Initialize data
     this.data = initialData;
     // Initialise pod data storage object
     for (const sensor in initialData) {
-      this.storedPodData[sensor] = [this.data[sensor].currentValue];
+      this.storedPodData[sensor] = [this.data[sensor].current_value];
     }
   }
 
@@ -24,14 +25,14 @@ export class DataManager {
    * @param initialConditions initial values for all sensor readings
    * @returns new instance
    */
-  public static getInstance(initialConditions: SensorData): DataManager {
+  public static getInstance(initialConditions: LiveData): DataManager {
     if (!DataManager.instance) {
       DataManager.instance = new DataManager(initialConditions);
     }
     return DataManager.instance;
   }
 
-  getData(): SensorData {
+  getData(): LiveData {
     return this.data;
   }
 
@@ -40,10 +41,10 @@ export class DataManager {
    * Also records value for each sensor in the isntance's stored data object
    * @param newData current iteration of sensor data object
    */
-  updateData(newData: SensorData): void {
+  updateData(newData: LiveData): void {
     this.data = newData;
     Object.keys(newData).forEach((sensor): void => {
-      this.storedPodData[sensor].push(newData[sensor].currentValue);
+      this.storedPodData[sensor].push(newData[sensor].current_value);
     });
     // add functionality to upload or send the data to the GUI so it can be viewed in real time
   }
