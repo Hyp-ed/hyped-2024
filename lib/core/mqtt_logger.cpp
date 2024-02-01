@@ -19,7 +19,7 @@ MqttLogger::MqttLogger(const char *const label,
 
 void MqttLogger::log(const LogLevel level, const char *format, ...)
 {
-  logger_->log(level, format);
+  logger_.log(level, format);
   const auto topic                                     = MqttTopic::kTest;
   std::shared_ptr<rapidjson::Document> message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
