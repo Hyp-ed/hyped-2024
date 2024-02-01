@@ -17,6 +17,7 @@ COPY packages/tsconfig/package.json ./packages/tsconfig/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
+COPY turbo.json ./
 RUN pnpm install
 
 # Expose ports
