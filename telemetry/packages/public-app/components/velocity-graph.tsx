@@ -10,7 +10,7 @@ export const VelocityGraph = () => {
     async () =>
       (await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/velocity?start=0`,
-      ).then(res => res.json())) as {
+      ).then((res) => res.json())) as {
         id: 'velocity';
         timestamp: string;
         value: number;
@@ -19,10 +19,9 @@ export const VelocityGraph = () => {
       refetchInterval: 1000,
     },
   );
-  console.log(typeof data, data);
 
   const velocityData = Array.isArray(data)
-    ? data.map(d => {
+    ? data.map((d) => {
         const time = new Date(d.timestamp);
         return {
           time: format(time, 'HH:mm:ss'),

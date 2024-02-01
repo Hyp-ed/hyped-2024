@@ -1,7 +1,7 @@
 import { Card, Metric, Text } from '@tremor/react';
 
 import { useEffect, useState } from 'react';
-import { Badge, BadgeDelta, Callout } from '@tremor/react';
+import { BadgeDelta } from '@tremor/react';
 import { useQuery } from 'react-query';
 
 export function DigitalTimer(): JSX.Element {
@@ -10,14 +10,13 @@ export function DigitalTimer(): JSX.Element {
     async () =>
       (await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/launch-time`,
-      ).then(res => res.json())) as any,
+      ).then((res) => res.json())) as any,
     {
       refetchInterval: 1000,
     },
   );
 
   const launchTime = data?.launchTime || -1;
-  console.log(launchTime);
 
   const [time, setTime] = useState(-1);
 
@@ -30,19 +29,18 @@ export function DigitalTimer(): JSX.Element {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setTime(time => (time == -1 ? time : time + 1));
+      setTime((time) => (time == -1 ? time : time + 1));
     }, 1000);
 
     return () => clearInterval(interval);
   }, []);
-
-  console.log(time);
 
   return (
     <Card
       // className="max-w-xs mx-auto"
       decoration="top"
       decorationColor="red"
+      className="w-[50%] timer-card"
     >
       <div className="timer">
         <div>

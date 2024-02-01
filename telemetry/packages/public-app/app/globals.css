@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
- 
+
 .fade-in-image {
   animation: fadeIn 6s;
 }
@@ -40,7 +40,6 @@
 }
 
 .levitate {
-
   display: flex;
   justify-content: center;
   align-content: center;
@@ -56,9 +55,6 @@
   position: absolute;
   top: 100px;
   left: -20px;
-  
-  
-  
 }
 
 .levitate-card {
@@ -70,22 +66,21 @@
   align-self: center;
   width: 490px;
   height: 410px;
-
 }
 
 .combined {
   display: flex;
-  flex-direction:column;
+  flex-direction: column;
   gap: 30px;
 }
 
-@media (min-width: 499px) and (max-width: 768px)  {
+@media (min-width: 499px) and (max-width: 768px) {
   .levitate-card {
     width: 360px;
     height: 400px;
     padding-top: 150px;
   }
-  .levitate-2{
+  .levitate-2 {
     padding-left: 50px;
   }
   .levitate {
@@ -97,13 +92,13 @@
   }
 }
 
-@media (max-width: 499px)  {
+@media (max-width: 499px) {
   .levitate-card {
     width: 360px;
     height: 400px;
     padding-top: 150px;
   }
-  .levitate-2{
+  .levitate-2 {
     padding-left: 72px;
     margin-bottom: 0px;
   }
@@ -114,28 +109,23 @@
   .levitate-1 {
     height: 280px;
   }
-  
 }
 
-@media (min-width: 768px) and (max-width: 1023px)  {
+@media (min-width: 768px) and (max-width: 1023px) {
   .levitate-card {
     width: 350px;
     height: 445px;
     padding-top: 150px;
   }
-  .levitate-2{
+  .levitate-2 {
     padding-left: 70px;
     /* display: flex;
     flex-direction: row; */
-
   }
   .levitate {
     margin-bottom: 120px;
     margin-top: 10px;
-    
-    
   }
-  
 }
 
 .v-graph {
@@ -146,10 +136,6 @@
   display: flex;
   justify-content: center;
   align-content: center;
-  
-  
-
-
 }
 
 .heading {
@@ -172,12 +158,9 @@
   flex-direction: row;
   justify-content: space-between;
   padding-right: 5px;
-  
 }
 .levitation {
   position: relative;
-  
-  
 }
 .levitate-title {
   position: absolute;
@@ -188,33 +171,62 @@
   gap: 5px;
 }
 
-.timer{
+.timer {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
 }
-.socials{
+.socials {
   margin-right: 20px;
 }
- .socials:hover{
+.socials:hover {
   width: 30px;
   height: 30px;
-  
 }
 
-@media (max-width: 840px ){
-.dashboard-title {
-  display: none;
-}
-.logo-hyped1{
-  margin-top: 30px
-}
-}
-
-@media ( max-width:780px) {
-  .levitation-badges{
+@media (max-width: 840px) {
+  .dashboard-title {
     display: none;
-    
   }
+  .logo-hyped1 {
+    margin-top: 30px;
+  }
+}
 
+@media (max-width: 780px) {
+  .levitation-badges {
+    display: none;
+  }
+}
+@media (max-width: 1025px) {
+  .section1 {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 130px;
+    height: 165px;
+    width: 100%;
+  }
+  .timer-card {
+    width: 100%;
+  }
+  .gauge-card {
+    width: 100%;
+    height: 155px;
+    justify-content: center;
+    align-content: center;
+  }
+  .gauge-div {
+    margin: auto;
+    width: 50%;
+  }
+}
+
+@media (max-width: 766px) {
+  .gauge-div {
+    margin: auto;
+    width: 95%;
+  }
+  .section1 {
+    margin-bottom: 200px;
+  }
 }

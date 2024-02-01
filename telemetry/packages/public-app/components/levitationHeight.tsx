@@ -15,7 +15,6 @@ import {
   Metric,
   BadgeDelta,
   TabGroup,
-  Badge,
 } from '@tremor/react';
 
 interface products {
@@ -62,21 +61,18 @@ export default function LevitationHeight() {
     async () =>
       await fetch(
         `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/levitation-height?start=0`,
-      ).then(res => res.json()),
+      ).then((res) => res.json()),
     {
       refetchInterval: 1000,
     },
   );
 
   if (!data) return error;
-  console.log('typeof :' + (Object.keys(data)[0] === 'statusCode'));
+
   if (Object.keys(data)[0] === 'statusCode') {
     const error = true;
-    console.log('The data fetch request resulted in error ' + error);
   }
 
-  console.log('Levitation fetch request result ' + Object.keys(data));
- 
   return (
     <Card decoration="top" decorationColor="red" className="h-[560px]">
       <Flex alignItems="start">
@@ -111,7 +107,7 @@ export default function LevitationHeight() {
       {data ? (
         Object.keys(data)
           .slice(0, Object.keys(data).length - 2)
-          .map(height => (
+          .map((height) => (
             <div key={height} className="space-y-2 mt-4">
               <Flex>
                 <Text>{height}</Text>
@@ -131,7 +127,7 @@ export default function LevitationHeight() {
         <div>
           {Object.keys(data)
             .slice(-2)
-            .map(height => (
+            .map((height) => (
               <div key={height} className="space-y-2 mt-4">
                 <Flex>
                   <Text>{height}</Text>
@@ -158,27 +154,23 @@ export default function LevitationHeight() {
           View more
         </Button>
       </Flex>
-     
+
       {show ? null : !(Object.keys(data)[0] === 'statusCode') ? (
-        (console.log('no error', error),
-        console.log('This is data statuscode ' + typeof data['statusCode']),
-        (
-          <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
-            {Object.keys(data).map((height, i) => (
-              <BadgeDelta
-                key={i}
-                deltaType={
-                  data[height][0]?.value > 0
-                    ? 'moderateIncrease'
-                    : 'moderateDecrease'
-                }
-              >
-                Sensor {i}:{' '}
-                {data[height][0]?.value > 0 ? 'Elevated' : 'disconnected'}
-              </BadgeDelta>
-            ))}
-          </div>
-        ))
+        <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
+          {Object.keys(data).map((height, i) => (
+            <BadgeDelta
+              key={i}
+              deltaType={
+                data[height][0]?.value > 0
+                  ? 'moderateIncrease'
+                  : 'moderateDecrease'
+              }
+            >
+              Sensor {i}:{' '}
+              {data[height][0]?.value > 0 ? 'Elevated' : 'disconnected'}
+            </BadgeDelta>
+          ))}
+        </div>
       ) : (
         <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
           <BadgeDelta key={1} deltaType="moderateDecrease">

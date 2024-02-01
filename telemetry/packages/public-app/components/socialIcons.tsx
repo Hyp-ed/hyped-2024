@@ -1,6 +1,6 @@
 import { Icon } from '@tremor/react';
 import React from 'react';
-import Image from 'next/image';
+
 import { Linkedin, Facebook, Instagram, Github, Youtube } from 'lucide-react';
 
 const socialIcons_object = {

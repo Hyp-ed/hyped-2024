@@ -1,23 +1,22 @@
 import { Card, Title, Text, Grid, Badge } from '@tremor/react';
 import { VelocityGraph } from './velocity-graph';
 
-
 import { useState } from 'react';
-import { MeasurementChart } from './measurementsGraph';
+
 import { DisplacementChart } from './DisplacementChart';
 
 import Image from 'next/image';
-import { useEffect } from 'react';
+
 import { DigitalTimer } from './timer';
 import Switch from 'react-switch';
 import LevitationHeight from './levitationHeight';
 import { SocialIcons } from './socialIcons';
+import { Gauge } from './guage';
 
 const CARDS = {
   VELOCITY: <VelocityGraph />,
   ACCELERATION: <DisplacementChart />,
   LEVITATION: <LevitationHeight />,
-  
 };
 
 type Card = keyof typeof CARDS;
@@ -95,19 +94,21 @@ export default function GridDsiplay() {
           )}
         </div>
       </div>
-      <DigitalTimer />
+      <div className="section1 flex row gap-3 w-[100%] h-[170px]">
+        <DigitalTimer />
+        <Gauge />
+      </div>
+
       <div className="mt-5 top-card"> {CARDS[selected]}</div>
       {/* KPI section */}
       <div className="top-card">
         <Grid numItemsMd={2} className="mt-6 gap-6 w-full">
           {(Object.keys(CARDS) as Card[])
-            .filter(c => c !== selected)
-            .map(c => (
+            .filter((c) => c !== selected)
+            .map((c) => (
               <button key={c} onClick={() => setSelected(c)}>
-               
                 <div className="h-0" />
                 {CARDS[c]}
-                
               </button>
             ))}
         </Grid>
