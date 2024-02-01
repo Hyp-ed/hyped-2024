@@ -1,5 +1,4 @@
-import { pods, Limits, LiveData, RangeMeasurement, LiveReading, sensorData } from "./src";
-import { DataManager } from "./data-manager";
+import { Limits, LiveReading, Readings, measurements } from "./src";
 
 // ************************** SHARED SENSOR PROPS/METHODS ************************** //
 class SensorLogic {
@@ -7,18 +6,21 @@ class SensorLogic {
     readonly type: string;
     readonly key: string;
     readonly unit: string;
-    readonly format: typeof sensorData[0]['format'];
+    readonly format: string;
 
     readonly limits: Limits;
-    readonly outputs: string[];
-    readonly rmsNoise: number;
+    readonly rms_noise: number;
     readonly sampling_time: number;
+    readonly readings: Readings;
+    readonly quantity: number;
     
-    protected _current_values: { [key: string]: number };
+    private _time: number; // current time in seconds
 
     constructor(data: LiveReading) {
         Object.assign(this, data);
-        console.log(`Instantiating ${data.type} sensor...`);
+        this.time = 0;
+        // console.log(`Instantiating ${data.type} sensor...`);
+        // console.log('this:', this);
     }
 
     /**
@@ -42,15 +44,16 @@ class SensorLogic {
      * Generates a random noise value from a Gaussian distribution
      * This function will be called for each sensor of a given type, then averaged
      * @param mean self-explanatory
+     * @param rms_noise sensor's RMS noise value, used as the standard deviation
      * @returns a random number defined by the normal distribution of stdDev = RMS noise
      */
-    protected addRandomNoise(mean: number = 0): number {
+    public static addRandomNoise(rms_noise: number, mean: number = 0): number {
         // Using the Box-Muller transform to generate random values from a normal distribution
         const u1 = Math.random();
         const u2 = Math.random();
         const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
     
-        return z * this.rmsNoise + mean;
+        return parseFloat((z * rms_noise + mean).toFixed(2));
     }
 
     public expMovingAvg(vals: number[], alpha: number): number | undefined {
@@ -66,6 +69,14 @@ class SensorLogic {
             return sum / (1 - Math.pow(alpha, vals.length));
         }
 
+    // protected updateTime(timestep: number): void {
+    //     this.time += timestep;
+    // }
+
+    protected set time(t: number) {
+        this._time = t / 1000;
+    }
+
 }
 
 // ************************************ MOTION ************************************ //
@@ -75,11 +86,75 @@ class Motion extends SensorLogic {
     
     constructor(accelerometer: LiveReading) {
         super(accelerometer);
-        const { sampling_time: dt } = accelerometer
-        console.log(this.sampling_time);
-        console.log('dt', dt);
+        // record the velocity and acceleration for ease of access by dependent subclasses
+        this.acceleration = accelerometer.readings.acceleration;
+        this.velocity = accelerometer.readings.velocity;
     }
 
+    /**
+     * Gets current reading from each accelerometer and calculates the other motion variables
+     * @param t current time in milliseconds, which is converted to seconds for calculations
+     * @returns updated readings object
+     */
+    update(t: number): Readings {
+        this.time = t / 1000;
+        for (const unit in this.readings) {
+            switch (unit.replace(/_[^_]*\d$/, '')) {
+                // switch argument coalesces the accelerometers to one string
+                // however each reading will be different due to inidividual random noise
+                case 'accelerometer':
+                    this.readings[unit] = this.getSensorReading();
+                    break;
+                // acceleration reading takes the average of all accelerometer readings
+                case 'acceleration':
+                    this.readings.acceleration = this.averageSensorReadings();
+                    break;
+                // velocity and displacement are calculated from the acceleration reading using basic kinematics
+                case 'velocity':
+                    this.readings.velocity += this.readings.acceleration * this.sampling_time;
+                    break;
+                case 'displacement':
+                    this.readings.displacement += this.readings.velocity * this.sampling_time;
+                    break;
+                default:
+                    break;
+            }
+        }
+        return this.readings;
+    }
+
+    /**
+     * Estimate velocity as a logistic curve
+     * From analytical velocity value, get accelerometer reading
+     * @returns the current timestep's accelerometer reading, with noise added
+     */
+    private getSensorReading(): number {
+
+        // Logistic function describing velocity as a function of time
+        const { velocity: vel, sampling_time: dt } = this.readings;
+        const maxVel = measurements.velocity.limits.critical.high;
+        const maxAccl = measurements.acceleration.limits.critical.high;
+        
+        // Logistic curve parameters, set to ensure acceleration doesn't exceed 5
+        const growthRate = 0.4;
+        const timeOfInflection = 12.5;
+
+        // Calculate expected accelerometer reading from velocity function
+        const nextVel = maxVel / (1 + Math.exp(-growthRate * (this.time - timeOfInflection)))
+        const nextAccl = (nextVel - vel) / (dt / 1000) >= maxAccl ?
+            maxAccl : (nextVel - vel) / (dt / 1000);
+        
+        // Add noise to the reading
+        return nextAccl + SensorLogic.addRandomNoise(this.rms_noise);
+    }
+
+    // Average the sensor readings to determine motion variables
+    // this.quantity is the number of physical sensors in this instance
+    private averageSensorReadings(): number {
+        const { readings, quantity } = this;
+        return Object.values(readings).slice(0, quantity)
+            .reduce( (acc, val) => acc + val, 0) / quantity;
+    }
 }
 
 
@@ -96,6 +171,15 @@ class Pressure extends Motion {
     constructor(gauge: LiveReading) {
         super(gauge);
     }
+
+    /**
+     * Function to categorise the pressure gauges into their respective types and function
+    */
+    public seperateGauges() {
+        console.log(Object.keys(this.readings).forEach( (out: string): void => {
+            out.replace(/.*_(.+)/, '$1') as gaugeType;
+        }));
+    }
     
     /**
      * There are two intake tubes and two exhaust tubes for air, one of each stationed at
@@ -104,12 +188,6 @@ class Pressure extends Motion {
      *  equal to the air pressure out (assuming minimal losses)
      * Therefor
     */
-    private seperateGauges() {
-        this.outputs.forEach( (out: string): void => {
-            out.replace(/.*_(.+)/, '$1') as gaugeType;
-        })
-    }
-
     public getAirflowPressure() {
 
     }
@@ -178,13 +256,13 @@ class Resistance extends Temperature {
  * For the variations with speed, the HE reading variance should be relative small compared to its range,
    as it will be situated so as to limit interference. Use a small coefficient * acceleration.
  */
-class HallEffect extends Motion {
+class Hall_Effect extends Motion {
 
     protected readonly gapHeightSetpoint: number;
 
 
-    constructor(hallEffect: LiveReading) {
-        super(hallEffect);
+    constructor(Hall_Effect: LiveReading) {
+        super(Hall_Effect);
     }
 }
 
@@ -212,7 +290,7 @@ export default {
     Motion,
     Pressure,
     Temperature,
-    HallEffect,
+    Hall_Effect,
     Keyence,
     Resistance,
     Levitation

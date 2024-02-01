@@ -113,8 +113,8 @@ for (const [name, data] of Object.entries(measurements)) {
 
 }
 
+// Setup initial conditions for simulation
 const initialConditions: SensorData = {}
-
 
 for (const [sensor, data] of Object.entries(sensorData)) {
   initialConditions[sensor] = data.readings;
@@ -122,21 +122,6 @@ for (const [sensor, data] of Object.entries(sensorData)) {
 
 // instantiate DataManager instance
 const dataManager = DataManager.getInstance(initialConditions)
-
-
-// create object to store class instances
-const instances: Record<string, any> = {};
-
-// instantiate each sensor class (move inside main function later)
-Object.values(sensors).forEach( (sens: any) => {
-  // ignore if it's the top level class
-  if (Object.getPrototypeOf(sens.prototype) == Object.prototype) {return; }
-  const name = sens.name as string;
-  const instance: SensorInstance<typeof sensors[keyof typeof sensors]> 
-    = new sens(sensorData[sens.name.toLowerCase()]);
-  instances[name.toLowerCase()] = instance;
-});
-
 
 
 /**
@@ -159,45 +144,83 @@ const generateDataSeries: void | any = (
     JSON.stringify(dataManager.data),
   );
   
-  // store the sampling times of each sensor in accessible object
+  // store the predefined sampling times of each sensor in accessible object
   const samplingTimes: Record<string, number> = {};
-  const nextSamplingTimes: Record<string, number> = {};
   Object.entries(sensorData).forEach( ([ name, sensor ]) => {
-      samplingTimes[name] = sensor.sampling_time;
-      nextSamplingTimes[name] = 0;
+    samplingTimes[name] = sensor.sampling_time;
   });
+  // create object to store the next sampling time for each sensor, initialised to the first timestep
+  const nextSamplingTimes: typeof samplingTimes = {...samplingTimes}
     
+  let t = 0;
   
   if (random) {
-    let t = 0;
     while (t <= runTime) {
+      const newData = dataManager.data;
+      t = Math.min(...Object.values(nextSamplingTimes));
       // Set up loop to run for the specified time (will configure individual sensor timesteps later)
       // Section for randomised data generation
       // Because the data is random, a second copy of the data object to be referenced for temporally 
       //   accurate results is not needed
-      for (const sensor in currentData) {
-        if (t >= nextSamplingTimes[sensor]) {
-          for (const unit in currentData[sensor]) {
-            // Get new randomised values and add noise to each value
-            currentData[sensor][unit] = sensors.SensorLogic.getRandomValue(
-              measurements[unit].limits, measurements[unit].format
-              ) + sensors.SensorLogic.addRandomNoise(measurements[unit].rms_noise);
-            }
-          // Set the next sampling time for the sensor
-          nextSamplingTimes[sensor] += samplingTimes[sensor];
+      for (const sensor in newData) {
+        if (t < nextSamplingTimes[sensor]) { continue; }
+        for (const unit in newData[sensor]) {
+          // Get new randomised values and add noise to each value
+          // currentData is modified directly as there are no interdependencies for randomised data
+          newData[sensor][unit] = sensors.SensorLogic.getRandomValue(
+            measurements[unit].limits, measurements[unit].format
+            ) + sensors.SensorLogic.addRandomNoise(measurements[unit].rms_noise);
         }
+        // Set the next sampling time for the sensor
+        nextSamplingTimes[sensor] += samplingTimes[sensor];
       }
       // set next timestep to the sampling time to come soonest
-      t = Math.min(...Object.values(nextSamplingTimes));
-      dataManager.data = currentData;
+      // t += Math.min(...Object.values(samplingTimes));
+      dataManager.data = newData;
+      // console.log(t, newData)
+      // console.log();
     }
     return dataManager.storedPodData;
   }
 
-  // Sensor-specific functionality
-  const referData = {...currentData};
+  // ## Sensor-specific functionality ## //
+  
+  // Create object to store class instances
+  const instances: Record<string, any> = {};
 
+  // instantiate each sensor class (move inside main function later)
+  Object.values(sensors).forEach( (sens: any) => {
+    // ignore if it's the top level class
+    if (Object.getPrototypeOf(sens.prototype) == Object.prototype) {return; }
+    const name = sens.name as string;
+    const instance: SensorInstance<typeof sensors[keyof typeof sensors]> 
+      = new sens(sensorData[sens.name.toLowerCase()]);
+    instances[name.toLowerCase()] = instance;
+  });
+  
+  while (t <= runTime) {
+    t = Math.min(...Object.values(nextSamplingTimes));
+    const newData = {...currentData};
+    
+    for (const sensor in newData) {
+      if (t < nextSamplingTimes[sensor]) { continue; }
+      newData[sensor] = instances[sensor].update(t);
+      for (const unit in newData[sensor]) {
+        // run inner loop for each sensor's reading, referring to current data and changing newData
+        
+      }
+      nextSamplingTimes[sensor] += samplingTimes[sensor];
+    }
+    dataManager.data = newData;
+
+
+
+  instances.Motion.time = 500;
+
+
+  }
 }
 
 // generateDataSeries(1500, true);
+// console.log(generateDataSeries(1500, true));
 console.log(generateDataSeries(1500, true).length);

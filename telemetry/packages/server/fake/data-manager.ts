@@ -39,7 +39,7 @@ export class DataManager {
    */
   set data(newData: SensorData) {
     this._data = newData;
-    this.storedPodData.push(this._data)
+    this.storedPodData.push(newData);
     // To do: Add functionality to upload or send the data to the GUI so it can be viewed in real time
   }
 }
