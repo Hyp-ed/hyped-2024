@@ -1,16 +1,19 @@
-// import types & pod data
+
+// types & pod data
 import { 
   pods,
   Pod,
   Measurement,
   RangeMeasurement,
   LiveReading,
-  LiveData,
-  InitialConditions,
+  SensorData,
+  RunData,
+  sensors,
+  SensorInstance
 } from './src/index'
 
 // data gen simulation utilities and complentary files
-import sensors from './sensors';
+// import Sensors from './sensors';
 import { DataManager } from './data-manager';
 
 
@@ -34,7 +37,7 @@ export const measurements = (Object.values(pods) as Pod[]).reduce(
   {} as Record<string, RangeMeasurement>,
 );
 
-export const sensorData: LiveData = {}
+export const sensorData: Record<string, LiveReading> = {}
 
 // helper functions
 /**
@@ -51,13 +54,15 @@ const countSensors = <T extends Pod['measurements']>(podData: T, currentKey: str
 
 /**
  * Gets an arbitrary initial value for each reading
- * Testing function - To be replaced with user defined params fetched from GUI
+ * Testing functionTo be replaced with user defined params fetched from GUI
  * @param podData a key - value item from the measurements object
  * @param currentKey the sensor data's key (effectively its unique ID)
  * @returns initial value for a given sensor/measurement
  */
 const getInitialValue = <T extends Pod['measurements']>(data: RangeMeasurement): number => {
-  switch(data.key) {
+  // this function is only called once for each type, using the first sensor of that type
+  // e.g. 'accelerometer_1', so the suffix is removed
+  switch(data.key.replace(/_[^_]*\d$/, '')) {
     case 'accelerometer':
     case 'acceleration':
     case 'displacement':
@@ -76,13 +81,13 @@ const getInitialValue = <T extends Pod['measurements']>(data: RangeMeasurement):
     default: 
       if (data.key.startsWith('pressure')) { break; }
     }
-  // pneumatic and brake pressure
-  if (data.key.match(/(push|pull|brakes[^s]) ('$1')/)) { return 1; }
   // reservoir pressure
+  if (data.key.match(/(push|pull|brake)(?!.*reservoir)/)) { return 1; }
+  // pneumatic and brake pressure
   if (data.key.endsWith('reservoir')) { return 5; }
   
   else {
-    console.log('Unrecognised sensor');
+    console.log('Unrecognised sensor', data);
     const { low, high } = data.limits.critical;
     return Math.floor(Math.random() * (high - low)) + low;
   }
@@ -94,44 +99,133 @@ for (const [name, data] of Object.entries(measurements)) {
   if (sensorData[data.type]) continue;
   data.key = data.key.replace(/_[^_]*\d$/, '');
 
+  // fill the properties of the current sensor object
   sensorData[data.type] = {
     ...data as Omit<RangeMeasurement, 'name'>,
-    quantity: countSensors(measurements, data.key),
-    liveData: Object.fromEntries(Object.keys(measurements)
+    // count the number of sensors of current type e.g. pressure, motion, etc.
+    quantity: countSensors(measurements, data.key.replace(/_.*/, '')),
+    // create an object of live data for each sensor type
+    readings: Object.fromEntries(Object.keys(measurements)
       .filter( (name) => !name.endsWith('avg') && measurements[name].type == data.type)
-      .map( el => [el, getInitialValue(data)])
+      .map( el => [el, getInitialValue(measurements[el])])
     )
   } as Omit<LiveReading, 'name'>;
+
+}
+
+const initialConditions: SensorData = {}
+
+for (const [sensor, data] of Object.entries(sensorData)) {
+  initialConditions[sensor] = data.readings;
 }
 
 // instantiate DataManager instance
-const dataManager = DataManager.getInstance(sensorData)
+const dataManager = DataManager.getInstance(initialConditions)
 
-// instantiate sensors
-const accelerometers = new sensors.Motion(sensorData['motion']);
-const pressureGauges = new sensors.Pressure(sensorData['pressure']);
-const thermistors = new sensors.Temperature(sensorData['temperature']);
-const hallEffects = new sensors.HallEffect(sensorData['hall_effect']);
-const keyence = new sensors.Keyence(sensorData['keyence']);
-const resistance = new sensors.Resistance(sensorData['resistance']);
-const levitation = new sensors.Levitation(sensorData['levitation']);
 
+// create object to store class instances
+const instances: Record<string, any> = {};
+
+// instantiate each sensor class (move inside main function later)
+Object.values(sensors).forEach( (sens: any) => {
+  // ignore if it's the top level class
+  if (Object.getPrototypeOf(sens.prototype) == Object.prototype) {return; }
+  const name = sens.name as string;
+  const instance: SensorInstance<typeof sensors[keyof typeof sensors]> 
+    = new sens(sensorData[sens.name.toLowerCase()]);
+  instances[name.toLowerCase()] = instance;
+});
+
+
+
+/**
+ * Main runtime loop function that generates data series
+ * @param runTime simulation time (not real time, based on sensor timesteps)
+ * @param random option to simulate random data - later to be replaced with a config object
+ * which allows user to randomise select sensor readings. Default is false
+ * @param specific an array of specific sensor readings to simulate. Default is false 
+ * i.e. simulate all sensors
+ * @returns 
+ */
 const generateDataSeries = (
   runTime: number,
   random: boolean = false,
   specific: false | string[] = false,
 ) => {
-  const startData: LiveReading = JSON.parse(
-    JSON.stringify(dataManager.getData()),
+  // Create a deep copy so as not to reference the object in memory
+  // Allows interdependent sensor calculations to reference data at the correct timestep
+  const currentData: SensorData = JSON.parse(
+    JSON.stringify(dataManager.data),
   );
 
-  if (random) {
-    for (const sensor of Object.values(startData)) {
-      console.log(sensor);
+  // set up loop to run for the specified time (will configure individual sensor timesteps later)
+  for (let t = 0; t <= runTime; t += 500) {
+  // 
+    if (random) {
+      const newReadings: SensorData = {};
+      for (const sensor in currentData) {
+        newReadings[sensor] = {};
+        for (const unit in currentData[sensor]) {
+          
+          // Get new randomised values
+          // And add noise to each value
+          newReadings[sensor][unit] = sensors.SensorLogic.getRandomValue(
+            measurements[unit].limits, measurements[unit].format
+          ) + sensors.SensorLogic.addRandomNoise(measurements[unit].rms_noise);
+          
+        }      
+      }
+      dataManager.data = newReadings;
     }
-    return;
+    // sensor-specific functionality to be updated from old file and transferred here
   }
-
-  // sensor-specific functionality to be updated from old file and transferred here
-
 }
+
+
+
+// console.log(instancesO)
+// console.log(typeof instances[0]);
+// console.log(instances[0] instanceof sensors.Motion);
+// instances[instances.indexOf(pressure)].testFunc();
+
+// console.log('\n\n')
+// console.log(typeof instancesObj.Motion);
+// console.log(instancesObj.Motion instanceof sensors.Pressure);
+// instancesObj.Motion.expMovingAvg([4, 6, 2, 1], 0.56);
+
+
+
+
+// // pressureGauges.seperateGauges();
+
+
+// /**
+//  * Main runtime loop function that generates data series
+//  * @param runTime simulation time (not real time, based on sensor timesteps)
+//  * @param random option to simulate random data - later to be replaced with a config object
+//  * which allows user to randomise select sensor readings. Default is false
+//  * @param specific an array of specific sensor readings to simulate. Default is false 
+//  * i.e. simulate all sensors
+//  * @returns 
+//  */
+// const generateDataSeries = (
+//   runTime: number,
+//   random: boolean = false,
+//   specific: false | string[] = false,
+// ) => {
+//   // Create a deep copy so as not to reference the object in memory
+//   // Allows interdependent sensor calculations to reference data at the correct timestep
+//   const currentData: LiveReading = JSON.parse(
+//     JSON.stringify(dataManager.data),
+//   );
+//   // 
+//   if (random) {
+//     for (const sensor of Object.values(currentData)) {
+//       console.log(sensor);
+//     }
+//     return;
+//   }
+
+//   // sensor-specific functionality to be updated from old file and transferred here
+
+// }

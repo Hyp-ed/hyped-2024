@@ -1,22 +1,18 @@
-import { LiveReading, LiveData } from './src';
-// import { MQTT_BROKER_HOST } from '@/modules/core/config';
-
-interface StoredData {
-  [key: string]: (number | string)[];
-}
+import { RunData, SensorData } from './src';
+import { MQTT_BROKER_HOST } from '@/modules/core/config';
+import mqtt from 'mqtt';
 
 export class DataManager {
   private static instance: DataManager | null = null; // Static property to hold the single instance
-  private data: LiveData; // Instance property to hold the shared state
-  public storedPodData: StoredData = {};
+  private _data: SensorData; // Instance property to record all transient data
+  public storedPodData: RunData = [];
+  // private _timestamp: number;
 
-  private constructor(initialData: LiveData) {
-    // Initialize data
-    this.data = initialData;
+  private constructor(initialData: SensorData) {
+    this._data = initialData;
     // Initialise pod data storage object
-    for (const sensor in initialData) {
-      this.storedPodData[sensor] = [this.data[sensor].current_value];
-    }
+    // Indicies represent timesteps
+    this.storedPodData.push(this._data);
   }
 
   /**
@@ -25,15 +21,15 @@ export class DataManager {
    * @param initialConditions initial values for all sensor readings
    * @returns new instance
    */
-  public static getInstance(initialConditions: LiveData): DataManager {
+  public static getInstance(initialConditions: SensorData): DataManager {
     if (!DataManager.instance) {
       DataManager.instance = new DataManager(initialConditions);
     }
     return DataManager.instance;
   }
 
-  getData(): LiveData {
-    return this.data;
+  get data(): SensorData {
+    return this._data;
   }
 
   /**
@@ -41,11 +37,9 @@ export class DataManager {
    * Also records value for each sensor in the isntance's stored data object
    * @param newData current iteration of sensor data object
    */
-  updateData(newData: LiveData): void {
-    this.data = newData;
-    Object.keys(newData).forEach((sensor): void => {
-      this.storedPodData[sensor].push(newData[sensor].current_value);
-    });
-    // add functionality to upload or send the data to the GUI so it can be viewed in real time
+  set data(newData: SensorData) {
+    this._data = newData;
+    this.storedPodData.push(this._data)
+    // To do: Add functionality to upload or send the data to the GUI so it can be viewed in real time
   }
 }

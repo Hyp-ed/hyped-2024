@@ -1,6 +1,7 @@
 // type imports from external folders
 export { Measurement, RangeMeasurement, Limits, Pod } from "../../../types/src";
 export { pods } from "../../../constants/src/pods/pods";
-export { LiveReading, LiveData, InitialConditions } from "./types"
+export { Readings, SensorData, LiveReading, SensorInstance, RunData } from "./types"
 export { measurements, sensorData } from "../main";
-export * as Sensors from '../sensors';
+import sensors from '../sensors';
+export { sensors };

@@ -1,5 +1,5 @@
-import type { Pods } from '@hyped/telemetry-types';
-
+import type { Pods } from '@hyped/telemetry-types'; /* TS error - cannot locate module */
+// import type { Pods } from '../../../types/src/pods/pods.types';
 import {
   accelerometerCommon,
   hallEffectCommon,
@@ -13,6 +13,7 @@ export const POD_IDS = ['pod_1'] as const;
 export const pods: Pods = {
   pod_1: {
     id: 'pod_1',
+    key: 2,
     name: 'Pod Ness',
     measurements: {
       // ************************************ ACCELEROMETERS ************************************ //
@@ -56,7 +57,7 @@ export const pods: Pods = {
             high: 100,
           },
         },
-        rmsNoise: 0, // no inherent noise, noise is propogated from accelerometer reading
+        rms_noise: 0, // no inherent noise, noise is propogated from accelerometer reading
         sampling_time: accelerometerCommon.sampling_time,
       },
       velocity: {
@@ -71,7 +72,7 @@ export const pods: Pods = {
             high: 50,
           },
         },
-        rmsNoise: 0,
+        rms_noise: 0,
         sampling_time: accelerometerCommon.sampling_time,
       },
       acceleration: {
@@ -86,7 +87,7 @@ export const pods: Pods = {
             high: 5,
           },
         },
-        rmsNoise: accelerometerCommon.rmsNoise,
+        rms_noise: accelerometerCommon.rms_noise,
         sampling_time: accelerometerCommon.sampling_time,
       },
 
@@ -421,7 +422,7 @@ export const pods: Pods = {
             high: 100,
           },
         },
-        rmsNoise: 1, // estimate
+        rms_noise: 1, // estimate
         sampling_time: 500
       },
 
@@ -438,7 +439,7 @@ export const pods: Pods = {
             high: 100,
           },
         },
-        rmsNoise: 2, // from Time-of-Flight datasheet
+        rms_noise: 2, // from Time-of-Flight datasheet
         sampling_time: 500
       },
     },

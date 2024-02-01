@@ -23,8 +23,8 @@ export type Limits = {
 export type RangeMeasurement = BaseMeasurement & {
   format: 'float' | 'integer';
   limits: Limits;
-  rmsNoise: number;
-  sampling_time: number;
+  rms_noise: number; // RMS value from relevant datasheet
+  sampling_time: number; // sensor timestep configuration (inverse of clock frequency)
 };
 
 // for rest of the variables that have N states enumerated by a number (0 or 1 generally) and descriptive string
