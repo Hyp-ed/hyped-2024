@@ -41,7 +41,7 @@ struct MqttMessage {
     }
     return header.priority < other.header.priority;
   }
-  MqttMessage(MqttTopic topic, Header &header, std::shared_ptr<rapidjson::Document> payload)
+  MqttMessage(MqttTopic topic, const Header &header, std::shared_ptr<rapidjson::Document> payload)
       : topic(topic),
         header(header),
         payload(std::move(payload)){};
