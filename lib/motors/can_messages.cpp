@@ -27,7 +27,8 @@ core::Result CanMessages::CanSend(int operation, int location, int data)
   frame.data[6] = convertToBytes(data, 5)[3];
   frame.data[7] = convertToBytes(data, 5)[4];
 
-  can_->send(frame);
+  core::Result end = can_->send(frame);
+  return end;
 }
 
 core::Result CanMessages::CanError(int error)
@@ -45,7 +46,8 @@ core::Result CanMessages::CanError(int error)
   frame.data[6] = 0x00;
   frame.data[7] = 0x00;
 
-  can_->send(frame);
+  core::Result end = can_->send(frame);
+  return end;
 }
 
 }  // namespace hyped::motors
