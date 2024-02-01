@@ -14,7 +14,7 @@ class CanMessages {
 
  public:
   core::Result CanSend(int operation, int location, int data);
-  core::Result CanMessages::CanError(int error);
+  core::Result CanError(int error);
 
  private:
   CanMessages(std::shared_ptr<io::ICan> can);
