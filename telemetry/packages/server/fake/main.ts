@@ -115,6 +115,7 @@ for (const [name, data] of Object.entries(measurements)) {
 
 const initialConditions: SensorData = {}
 
+
 for (const [sensor, data] of Object.entries(sensorData)) {
   initialConditions[sensor] = data.readings;
 }
@@ -140,14 +141,14 @@ Object.values(sensors).forEach( (sens: any) => {
 
 /**
  * Main runtime loop function that generates data series
- * @param runTime simulation time (not real time, based on sensor timesteps)
+ * @param runTime simulation time in ms (not real time, based on sensor timesteps)
  * @param random option to simulate random data - later to be replaced with a config object
  * which allows user to randomise select sensor readings. Default is false
  * @param specific an array of specific sensor readings to simulate. Default is false 
  * i.e. simulate all sensors
  * @returns 
  */
-const generateDataSeries = (
+const generateDataSeries: void | any = (
   runTime: number,
   random: boolean = false,
   specific: false | string[] = false,
@@ -157,75 +158,46 @@ const generateDataSeries = (
   const currentData: SensorData = JSON.parse(
     JSON.stringify(dataManager.data),
   );
-
-  // set up loop to run for the specified time (will configure individual sensor timesteps later)
-  for (let t = 0; t <= runTime; t += 500) {
-  // 
-    if (random) {
-      const newReadings: SensorData = {};
+  
+  // store the sampling times of each sensor in accessible object
+  const samplingTimes: Record<string, number> = {};
+  const nextSamplingTimes: Record<string, number> = {};
+  Object.entries(sensorData).forEach( ([ name, sensor ]) => {
+      samplingTimes[name] = sensor.sampling_time;
+      nextSamplingTimes[name] = 0;
+  });
+    
+  
+  if (random) {
+    let t = 0;
+    while (t <= runTime) {
+      // Set up loop to run for the specified time (will configure individual sensor timesteps later)
+      // Section for randomised data generation
+      // Because the data is random, a second copy of the data object to be referenced for temporally 
+      //   accurate results is not needed
       for (const sensor in currentData) {
-        newReadings[sensor] = {};
-        for (const unit in currentData[sensor]) {
-          
-          // Get new randomised values
-          // And add noise to each value
-          newReadings[sensor][unit] = sensors.SensorLogic.getRandomValue(
-            measurements[unit].limits, measurements[unit].format
-          ) + sensors.SensorLogic.addRandomNoise(measurements[unit].rms_noise);
-          
-        }      
+        if (t >= nextSamplingTimes[sensor]) {
+          for (const unit in currentData[sensor]) {
+            // Get new randomised values and add noise to each value
+            currentData[sensor][unit] = sensors.SensorLogic.getRandomValue(
+              measurements[unit].limits, measurements[unit].format
+              ) + sensors.SensorLogic.addRandomNoise(measurements[unit].rms_noise);
+            }
+          // Set the next sampling time for the sensor
+          nextSamplingTimes[sensor] += samplingTimes[sensor];
+        }
       }
-      dataManager.data = newReadings;
+      // set next timestep to the sampling time to come soonest
+      t = Math.min(...Object.values(nextSamplingTimes));
+      dataManager.data = currentData;
     }
-    // sensor-specific functionality to be updated from old file and transferred here
+    return dataManager.storedPodData;
   }
+
+  // Sensor-specific functionality
+  const referData = {...currentData};
+
 }
 
-
-
-// console.log(instancesO)
-// console.log(typeof instances[0]);
-// console.log(instances[0] instanceof sensors.Motion);
-// instances[instances.indexOf(pressure)].testFunc();
-
-// console.log('\n\n')
-// console.log(typeof instancesObj.Motion);
-// console.log(instancesObj.Motion instanceof sensors.Pressure);
-// instancesObj.Motion.expMovingAvg([4, 6, 2, 1], 0.56);
-
-
-
-
-// // pressureGauges.seperateGauges();
-
-
-// /**
-//  * Main runtime loop function that generates data series
-//  * @param runTime simulation time (not real time, based on sensor timesteps)
-//  * @param random option to simulate random data - later to be replaced with a config object
-//  * which allows user to randomise select sensor readings. Default is false
-//  * @param specific an array of specific sensor readings to simulate. Default is false 
-//  * i.e. simulate all sensors
-//  * @returns 
-//  */
-// const generateDataSeries = (
-//   runTime: number,
-//   random: boolean = false,
-//   specific: false | string[] = false,
-// ) => {
-//   // Create a deep copy so as not to reference the object in memory
-//   // Allows interdependent sensor calculations to reference data at the correct timestep
-//   const currentData: LiveReading = JSON.parse(
-//     JSON.stringify(dataManager.data),
-//   );
-//   // 
-//   if (random) {
-//     for (const sensor of Object.values(currentData)) {
-//       console.log(sensor);
-//     }
-//     return;
-//   }
-
-//   // sensor-specific functionality to be updated from old file and transferred here
-
-// }
+// generateDataSeries(1500, true);
+console.log(generateDataSeries(1500, true).length);
