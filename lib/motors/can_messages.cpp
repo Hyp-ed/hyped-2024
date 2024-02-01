@@ -1,7 +1,7 @@
 #include "can_messages.hpp"
 
-#include <can.hpp>
 #include <core/types.hpp>
+#include <io/can.hpp>
 
 namespace hyped::motors {
 
@@ -35,7 +35,7 @@ core::Result CanMessages::CanSend(int operation, int location, int data)
 
 core::Result CanMessages::CanError(int error)
 {
-  hyped::io::CanFrame frame;
+  io::CanFrame frame;
 
   frame.can_id  = convertToBytes(error, 1)[0];
   frame.can_dlc = 8;
