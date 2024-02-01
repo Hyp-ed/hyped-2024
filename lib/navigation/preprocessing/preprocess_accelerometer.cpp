@@ -34,7 +34,6 @@ std::optional<core::AccelerometerData> AccelerometerPreprocessor::processData(
 core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
   core::AccelerometerData accelerometer_data)
 {
-
   Quartiles quartiles;
   if (num_reliable_accelerometers_ == core::kNumAccelerometers) {
     quartiles = getQuartiles(accelerometer_data);
