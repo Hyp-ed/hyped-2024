@@ -22,6 +22,8 @@ import { DataManager } from './data-manager';
 
 // const client = mqtt.connect('mqtt://localhost:1883');
 
+
+// ## Sensor Data Extraction from Pod Data ## //
 /**
  * Gets all of the measurements from the `pods.ts` file that we want to generate data for. (Currently excludes enum measurements)
  * Optionally could include a whitelist/blacklist of measurements to generate data for.
