@@ -36,6 +36,8 @@ build
 .cache
 tags
 .DS_Store
+.idea
+.cmake-build-debug
 
 # Telemetry
 .env
