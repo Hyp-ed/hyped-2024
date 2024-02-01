@@ -1,8 +1,5 @@
 #include "can_messages.hpp"
 
-#include <core/types.hpp>
-#include <io/can.hpp>
-
 namespace hyped::motors {
 
 std::vector<uint8_t> convertToBytes(int num, int length)
