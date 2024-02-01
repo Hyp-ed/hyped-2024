@@ -8,8 +8,8 @@
 #include <queue>
 #include <unordered_map>
 
-#include "core/mqtt.hpp"
 #include <boost/unordered_map.hpp>
+#include <core/mqtt.hpp>
 #include <core/types.hpp>
 
 namespace hyped::state_machine {
@@ -17,7 +17,7 @@ namespace hyped::state_machine {
 class StateMachine {
  public:
   StateMachine(std::shared_ptr<core::IMqtt> mqtt, const TransitionTable &transition_table);
-  void startStateMachine();
+  void run();
   State getCurrentState();
   core::Result handleTransition(const State &state);
 
@@ -64,7 +64,7 @@ class StateMachine {
        {State::kSafe, "kSafe"}};
 
   State current_state_;
-  std::shared_ptr<core::IMqtt> mqtt_;
+  const std::shared_ptr<core::IMqtt> mqtt_;
   TransitionTable transition_to_state_;
 };
 

@@ -44,12 +44,11 @@ core::Result StateMachine::handleTransition(const State &state)
 
 void StateMachine::update()
 {
-  mqtt_->consume();
   const auto nextMessage = mqtt_->getMessage();
   if (!nextMessage) { return; }
 
-  const auto doc           = nextMessage->payload;
-  const auto message_state = string_to_state_.find((*doc)["transition"].GetString());
+  const auto payload           = nextMessage->payload;
+  const auto message_state = string_to_state_.find((*payload)["transition"].GetString());
 
   if (message_state != string_to_state_.end()) { handleTransition(message_state->second); }
 }
@@ -58,18 +57,19 @@ void StateMachine::publishCurrentState()
 {
   const auto state_string         = stateToString(getCurrentState());
   const auto topic                = core::MqttTopic::kTest;
-  std::shared_ptr message_payload = std::make_shared<rapidjson::Document>();
+  auto message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
   rapidjson::Value state_value(state_string.c_str(), message_payload->GetAllocator());
   message_payload->AddMember("transition", state_value, message_payload->GetAllocator());
-  core::MqttMessage::Header header{.timestamp = 0, .priority = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage::Header header{.timestamp = 0, .priority = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 
-void StateMachine::startStateMachine()
+void StateMachine::run()
 {
   while (getCurrentState() != State::kShutdown) {
+    mqtt_->consume();
     update();
     publishCurrentState();
   }
