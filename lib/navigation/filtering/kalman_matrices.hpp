@@ -12,7 +12,7 @@ namespace hyped::navigation {
 constexpr std::size_t state_dimension       = 2;
 constexpr std::size_t control_dimension     = 1;
 constexpr std::size_t measurement_dimension = 2;
-const core::Float kDeltaT                   = 0.01;
+constexpr core::Float kDeltaT               = 0.01;
 
 // Constant matrices
 using StateTransitionMatrix = Eigen::Matrix<core::Float, state_dimension, state_dimension>;

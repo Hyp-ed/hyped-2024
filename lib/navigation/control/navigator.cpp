@@ -26,7 +26,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
 
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  // TODOLater: check fail state if
+  // TODOLater: check fail state if required
 
   control_input_vector << previous_accelerometer_data_;
   measurement_vector << previous_keyence_reading_, previous_optical_reading_;
