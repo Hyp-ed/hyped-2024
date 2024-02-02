@@ -41,7 +41,7 @@ export const pressureCommon = {
 
 export const hallEffectCommon = {
   format: 'float',
-  type: 'hall_effect',
+  type: 'magnetism',
   unit: 'A',
   limits: {
     critical: {

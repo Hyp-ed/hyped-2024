@@ -1,7 +1,9 @@
-import { Limits, LiveReading, Readings, measurements } from "./src";
+import { Limits, LiveReading, Readings, measurements, ReadingsMap, SensorData, SensorInstance } from ".";
+
+import { SensorMap } from ".";
 
 // ************************** SHARED SENSOR PROPS/METHODS ************************** //
-class SensorLogic {
+class Sensor {
 
     readonly type: string;
     readonly key: string;
@@ -28,13 +30,16 @@ class SensorLogic {
      * Used when user selects random data generation option
      * Does not require class instantiation
      */ 
-    public static getRandomValue(limits: Limits, format: 'float' | 'integer'): number {
-        const { high, low } = limits.critical;
-        // console.log(this._currentValue)
-        const range = high - low;
-        return format == 'float'
+    public static getRandomValue(limits: Limits, rms_noise: number, format: 'float' | 'integer'): number | void {
+        if (rms_noise != 0) {
+            const { high, low } = limits.critical;
+            // console.log(this._currentValue)
+            const range = high - low;
+            return (format == 'float'
             ? parseFloat((Math.random() * range + low).toFixed(2))
-            : Math.floor(Math.random() * (range + 1)) + low;
+            : Math.floor(Math.random() * (range + 1)) + low
+            ) + this.addRandomNoise(rms_noise);
+        }
       }
 
     
@@ -47,7 +52,7 @@ class SensorLogic {
      * @param rms_noise sensor's RMS noise value, used as the standard deviation
      * @returns a random number defined by the normal distribution of stdDev = RMS noise
      */
-    public static addRandomNoise(rms_noise: number, mean: number = 0): number {
+    protected static addRandomNoise(rms_noise: number, mean: number = 0): number {
         // Using the Box-Muller transform to generate random values from a normal distribution
         const u1 = Math.random();
         const u2 = Math.random();
@@ -56,7 +61,7 @@ class SensorLogic {
         return parseFloat((z * rms_noise + mean).toFixed(2));
     }
 
-    public expMovingAvg(vals: number[], alpha: number): number | undefined {
+    protected static expMovingAvg(vals: number[], alpha: number): number | undefined {
         if (alpha <= 0 || alpha > 1 || !vals.length) {
                 console.log("Invalid parameters");
                 return;
@@ -79,8 +84,10 @@ class SensorLogic {
 
 }
 
+// SPECIFIC SENSORS
+
 // ************************************ MOTION ************************************ //
-class Motion extends SensorLogic {
+class Motion extends Sensor {
     protected velocity: number;
     protected acceleration: number;
     
@@ -120,7 +127,11 @@ class Motion extends SensorLogic {
                     break;
             }
         }
-        return this.readings;
+
+        const { accelerometer_1, accelerometer_2, accelerometer_3, accelerometer_4, ...data } = this.readings;
+
+        // only need to return the derived motion variables, not the individual accelerometer readings
+        return data;
     }
 
     /**
@@ -145,7 +156,7 @@ class Motion extends SensorLogic {
             maxAccl : (nextVel - vel) / (dt / 1000);
         
         // Add noise to the reading
-        return nextAccl + SensorLogic.addRandomNoise(this.rms_noise);
+        return nextAccl + Sensor.addRandomNoise(this.rms_noise);
     }
 
     // Average the sensor readings to determine motion variables
@@ -210,9 +221,9 @@ class Temperature extends Motion {
 
 
 // ************************************ KEYENCE ************************************* //
-class Keyence extends SensorLogic {
+class Keyence extends Motion {
     
-    // get logic from old fake-data file
+    
     
     constructor(keyence: LiveReading) {
         super(keyence);
@@ -256,7 +267,7 @@ class Resistance extends Temperature {
  * For the variations with speed, the HE reading variance should be relative small compared to its range,
    as it will be situated so as to limit interference. Use a small coefficient * acceleration.
  */
-class Hall_Effect extends Motion {
+class magnetism extends Motion {
 
     protected readonly gapHeightSetpoint: number;
 
@@ -286,12 +297,12 @@ class Levitation extends Motion {
 
 
 export default {
-    SensorLogic,
+    Sensor,
     Motion,
     Pressure,
     Temperature,
     Hall_Effect,
     Keyence,
     Resistance,
-    Levitation
+    Levitation,
 };
