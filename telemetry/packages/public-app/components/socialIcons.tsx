@@ -39,8 +39,8 @@ const socialIcons_object = {
 export const SocialIcons = () => {
   return (
     <div className="flex flex-row pt-3 gap-4">
-      {Object.values(socialIcons_object).map((urlIcon) => (
-        <button>{urlIcon}</button>
+      {Object.values(socialIcons_object).map((urlIcon, index) => (
+        <button key={index}>{urlIcon}</button>
       ))}
     </div>
   );

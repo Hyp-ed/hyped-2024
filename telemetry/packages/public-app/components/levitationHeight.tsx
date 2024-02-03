@@ -67,7 +67,7 @@ export default function LevitationHeight() {
     },
   );
 
-  if (!data) return error;
+  if (!data) return 'An error occurred';
 
   if (Object.keys(data)[0] === 'statusCode') {
     const error = true;

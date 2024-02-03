@@ -18,7 +18,7 @@ export function getData() {
 
 export function Gauge() {
   const [data1, setData] = useState(getData);
-  const [widthX, setWidth] = useState<string | number | undefined>(
+  const [widthX, setWidth] = useState<number | undefined>(
     window.innerWidth < 770 ? 300 : 400,
   );
 
@@ -32,7 +32,6 @@ export function Gauge() {
       refetchInterval: 1000,
     },
   );
-  
 
   const options = {
     width: widthX,
