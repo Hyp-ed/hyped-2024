@@ -1,15 +1,8 @@
 {
   "name": "@hyped/telemetry",
   "private": true,
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "packages/*"
-    ]
-  },
   "scripts": {
+    "preinstall": "npx only-allow pnpm",
     "Run": "===========================================================================================================",
     "start": "turbo run start --parallel",
     "Development": "===================================================================================================",
@@ -21,8 +14,7 @@
     "fix": "turbo run fix --parallel",
     "flightcheck": "turbo run flightcheck",
     "Build": "=========================================================================================================",
-    "build": "turbo run build",
-    "postinstall": "patch-package"
+    "build": "turbo run build"
   },
   "devDependencies": {
     "@types/is-ci": "^3.0.0",
@@ -36,10 +28,11 @@
     "turbo": "^1.7.0",
     "typescript": "^5.1.6"
   },
-  "dependencies": {
-    "@flaticon/flaticon-uicons": "^3.0.0",
-    "patch-package": "^6.5.1",
-    "postinstall-postinstall": "^2.1.0",
-    "react-query": "^3.39.3"
+  "pnpm": {
+    "patchedDependencies": {
+      "openmct@2.2.5": "patches/openmct@2.2.5.patch",
+      "@nestjs/common@9.4.2": "patches/@nestjs__common@9.4.2.patch",
+      "nest-mqtt@0.2.0": "patches/nest-mqtt@0.2.0.patch"
+    }
   }
 }

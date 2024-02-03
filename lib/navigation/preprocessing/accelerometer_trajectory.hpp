@@ -22,9 +22,9 @@ class AccelerometerTrajectoryEstimator {
    */
   void update(const core::Float imu_acceleration, const core::TimePoint imu_timestamp);
 
-  core::Float getDisplacementEstimate() const;
+  core::Float getDisplacementEstimate() const { return displacement_estimate_; };
 
-  core::Float getVelocityEstimate() const;
+  core::Float getVelocityEstimate() const { return velocity_estimate_; };
 
  private:
   core::Float displacement_estimate_;
