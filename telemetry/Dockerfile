@@ -12,6 +12,7 @@ COPY packages/constants/package.json ./packages/constants/
 COPY packages/server/package.json ./packages/server/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
+COPY packages/public-app/package.json ./packages/public-app/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches

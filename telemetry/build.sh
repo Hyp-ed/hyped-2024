@@ -69,11 +69,12 @@ if [[ -n ${container} ]]; then
   docker rm $CONTAINER_NAME
 fi
 
-
 docker run -e PNPM_SCRIPT=build --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
   -v /usr/src/app/node_modules \
   -v /usr/src/app/packages/server/node_modules \
   -v /usr/src/app/packages/ui/node_modules \
   -v /usr/src/app/packages/constants/node_modules \
   -v /usr/src/app/packages/types/node_modules \
+  -v /usr/src/app/packages/public-app/node_modules \
+  -v /usr/src/app/packages/public-app/.next \
   $IMAGE_NAME
