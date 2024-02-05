@@ -4,7 +4,7 @@
 
 namespace hyped::navigation {
 
-OpticalPreprocessor::OpticalPreprocessor(core::ILogger &logger) : log_(logger)
+OpticalPreprocessor::OpticalPreprocessor(core::ILogger &logger) : logger_(logger)
 {
 }
 
