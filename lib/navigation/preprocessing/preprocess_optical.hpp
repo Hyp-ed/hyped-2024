@@ -8,7 +8,7 @@ namespace hyped::navigation {
 
 class OpticalPreprocessor {
  public:
-   OpticalPreprocessor(core::ILogger &log_);
+  OpticalPreprocessor(core::ILogger &logger_);
   std::optional<std::array<core::Float, 2>> processData(const core::OpticalData raw_optical_data);
 
  private:
