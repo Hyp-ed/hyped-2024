@@ -38,7 +38,7 @@ export type ReadingsMap = {
     [sensor: string]: Readings;
 }
 
-
+// transient data with indices representing timesteps
 export type RunData = ReadingsMap[];
 
 
@@ -46,23 +46,3 @@ export type RunData = ReadingsMap[];
 export type SensorInstance<T extends new (...args: any[]) => any> = InstanceType<T>;
 // export type SensorInstance<T extends abstract new (...args: any[]) => any> 
 //     = InstanceType<T>;
-
-
-// combine all sensor data into comprehensive object type to be used throughout data generation
-// each array element represents a timestep
-/* e.g.
-const storedData: RunData = [
-    {
-      motion: { reading1: 2, reading2: 5.3 },
-      pressure: { reading1: 5.2, reading2: 4.1, reading3: 0.9 },
-      // other sensors...
-    },
-    {
-      motion: { reading1: 3, reading2: 6.3 },
-      pressure: { reading1: 6.2, reading2: 5.1, reading3: 1.9 },
-      // other sensors...
-    },
-    // other timesteps...
-  ];
-*/
-

@@ -1,5 +1,14 @@
 # Telemetry - Fake Data Generation
 
+# Instructions of Use
+
+To begin the data simulation program, navigate to the `../server/fake/` directory. Run the command `> node main.js`.
+Optional flags:
+<ul>
+    <li><code>--runtime [number]</code>: specifies the simulation time (in seconds) with the following number argument. If left undefined, the default runtime is 30s, with the option to exit the process by running <code>^C</code> anytime.</li>
+    <li><code>--random</code>: sets random flag to true, invoking the randomising data generation logic for the full simulation. Primarily for debugging and front-end testing purposes.</li>
+<ul>
+
 <hr>
 
 ### Purpose
@@ -49,7 +58,7 @@ Similar functions have been or are in the process of being created for the rest 
 New types are defined for this program:
 <ul>
     <li><code>LiveMeasurement</code>: extends <code>RangeMeasurement</code>, adding the properties of <code>currentValue</code> and <code>timestep</code>, allowing the adapted use of prewritten data structures.</li>
-    <li><code>ReadingsMap</code>: <code>{ [x: string]: LiveMeasurement }</code>. This takes the sensor data and puts them back in the standard <code>Record< string, Measurement></code> format.</li>
+    <li><code>SensorData</code>: <code>{ [x: string]: LiveMeasurement }</code>. This takes the sensor data and puts them back in the standard <code>Record< string, Measurement></code> format.</li>
     <li><code>StoredData</code>: <code>{ [key: string]: [(number | string)][] }</code>. This object has the sensors/measurements as keys, and at each sensors' timestep an array containing the time stamp and current value are pushed into the sensor's array. While data points will be uploaded in real-time, they are stored for recording and analysis purposes.</li>
     <li><code>InitialState</code>: <code>[key: string]: { dt: number; initialVal: number; }</code>. This interface defines the object which holds the user-specified properties. Again, the key is the sensor name. The user can read and write to a CSV file to specify any or all of the sensors' initial values and the time interval between their generated readings.</li>
 </ul>
