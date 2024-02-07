@@ -21,6 +21,7 @@ RUN pnpm install
 # Expose ports
 EXPOSE 5173
 EXPOSE 3000
+EXPOSE 3001
 EXPOSE 8086
 
 # Entrypoint

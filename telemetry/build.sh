@@ -69,7 +69,7 @@ if [[ -n ${container} ]]; then
   docker rm $CONTAINER_NAME
 fi
 
-docker run -e PNPM_SCRIPT=build --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
+MSYS_NO_PATHCONV=1 docker run -e PNPM_SCRIPT=build --name $CONTAINER_NAME -v $(pwd):/usr/src/app \
   -v /usr/src/app/node_modules \
   -v /usr/src/app/packages/server/node_modules \
   -v /usr/src/app/packages/ui/node_modules \
