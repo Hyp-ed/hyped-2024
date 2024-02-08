@@ -15,7 +15,7 @@ export const measurements = (Object.values(pods) as Pod[]).reduce(
     {} as Record<string, RangeMeasurement>,
   );
 
-console.log(measurements)
+// console.log(measurements)
   
 /**
  * Gets an arbitrary initial value for each reading
@@ -101,4 +101,4 @@ export const sensorData: SensorData = Object.fromEntries(Object.entries(measurem
     ])
 );
 
-// console.log(sensorData);
+console.log(sensorData);

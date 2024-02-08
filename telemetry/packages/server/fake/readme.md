@@ -7,6 +7,17 @@ Optional flags:
 <ul>
     <li><code>--runtime [number]</code>: specifies the simulation time (in seconds) with the following number argument. If left undefined, the default runtime is 30s, with the option to exit the process by running <code>^C</code> anytime.</li>
     <li><code>--random</code>: sets random flag to true, invoking the randomising data generation logic for the full simulation. Primarily for debugging and front-end testing purposes.</li>
+    <li><code>--specific</code>: Allows the choice to only simulate specific sensors. The permissible sensor types currently include:
+    <ul>
+        <li>motion</li>
+        <li>pressure</li>
+        <li>temperature</li>
+        <li>keyence</li>
+        <li>resistance</li>
+        <li>magnetism</li>
+        <li>levitation</li>
+    </ul>
+    Ensure that they are spelt correctly, as any typos will be rejected by the program and won't be simulated.</li>
 <ul>
 
 <hr>
@@ -36,7 +47,7 @@ Similar functions have been or are in the process of being created for the rest 
 ```generateDataSeries``` takes in a boolean parameter ```random```, set to false by default. If the user sets this to true, iteration will be completely random, selecting sensors' new values as a random number between their critical limits.
 
 
-<pre style="color: white">
+<pre class ="color: white">
 <h3><strong>Project Structure</strong></h3>
 <strong>data-gen</strong>/
 | - <a href="#main">main.ts</a> // <em>runs the program</em>
@@ -63,24 +74,24 @@ New types are defined for this program:
     <li><code>InitialState</code>: <code>[key: string]: { dt: number; initialVal: number; }</code>. This interface defines the object which holds the user-specified properties. Again, the key is the sensor name. The user can read and write to a CSV file to specify any or all of the sensors' initial values and the time interval between their generated readings.</li>
 </ul>
 
-<span style="display: block; height: 2px; background-color: #bbb;"></span>
+<span class ="display: block; height: 2px; background-color: #bbb;"></span>
 
 ### Config
 This setup stage imports nested `measurements` object from <code>pods.ts</code> data. The `rangeFilter` function filters this data into an array of only the measurement/sensor objects of type `RangeMeasurement`, and removes duplicate redundancy, then converts it back into an object of similar format to `measurements`. This makes the code readable and familiar. This new object is exported by default.
 
 The array manipulation removes those without a `limits` property (i.e. of type `EnumMeasurement`), and converts all duplicates into equivalent strings to facilitate filtering e.g. 'thermistor_1', 'thermistor_2' -> both become 'thermistor'. Upon the ultimate conversion back into an object (the code uses `Object.fromEntries( Object.entries(measurements) )`), only one 'thermistor' entry is retained due to the JS Object prototype's inherent unique key characteristics.
 
-Then the `readData` helper function is called. This function reads the CSV data, which consists of `[sensor/quantity, time interval, initial value]`. It returns a Promise, which resolves if the resulting object (of type `InitialState`) is not empty. The result is chained to a `then` block, which requires that `unqSensorObj[sensor].currentValue = response[sensor].initialVal`, ensuring the CSV data has the correct sensor names and number of rows.
+Then the `readData` helper function is called. This function reads the CSV data, which consists of `[sensor/quantity, time interval, initial value]`. It returns a Promise, which resolves if the resulting object (of type `InitialState`) is not empty. The result is chained to a `then` block, which requires that `unqSensorObj[sensor].currentValue=response[sensor].initialVal`, ensuring the CSV data has the correct sensor names and number of rows.
 
 <!-- <em>For more assurance, this can be changed to reject the Promise if the object doesn't have the expected number of sensors.</em> -->
 
-<span style="display: block; height: 1px; background-color: #bbb;"></span>
+<span class ="display: block; height: 1px; background-color: #bbb;"></span>
 
 
 ### Index
 Gathers and exports all exports from relevant project files for ease of access
 
-<span style="display: block; height: 1px; background-color: #bbb;"></span>
+<span class ="display: block; height: 1px; background-color: #bbb;"></span>
 
 
 ### Sensors
@@ -94,12 +105,12 @@ Not all sensors/measurements require their own class instance. For instance, in 
 
 Read more about sensors <a href="#sensorsStructure">here</a>.
 
-<span style="display: block; height: 1px; background-color: #bbb;"></span>
+<span class ="display: block; height: 1px; background-color: #bbb;"></span>
 
 
 ### Data Manager
 
-<span style="display: block; height: 1px; background-color: #bbb;"></span>
+<span class ="display: block; height: 1px; background-color: #bbb;"></span>
 
 
 ## Main
@@ -110,76 +121,98 @@ Imports the adapted `rangeSensors` object from `config.ts` as well as the Sensor
 Runs the main loop with user-defined parameters, with the actual functionality and data management in the other files.
 
 
-<span style="display: block; height: 2px; background-color: #bbb;"></span>
+<span class ="display: block; height: 2px; background-color: #bbb;"></span>
 
 
 ## To-do list
 
-<ol id="todo">
-    <li style="color: #61E786">Complete <code style="color: #61E786">config.ts</code></li>
-    <li style="color: #DB5461">Read the sensor specs for more info to use to estimate functionality specifics, estimated noise reduction quality, etc. to make the data generation more reflective of reality. Add more sensor properties if appropriate.</li>
-    <li style="color: #DB5461">Update current pod measurements data with any new changes from the sensor spec sheet</li>
-    <li style="color: #D46B0F">Add general functionality</li>
+<ol id="list">
+    <li class="done">Complete <code>config.ts</code></li>
+    <li class="done">Read the sensor specs for more info to use to estimate functionality specifics, estimated noise reduction quality, etc. to make the data generation more reflective of reality. Add more sensor properties if appropriate.</li>
+    <li class="done">Add noise and sensor type properties existing pod data with any new changes from the sensor spec sheet</li>
+    <li class="doing">Add general functionality in Utilities</li>
     <ul>
-        <li style="color: #61E786">Write an async function for user to read sensor parameters CSV</li>
-        <li style="color: #D46B0F">Write an async function for user to modify CSV sensor parameters</li>
-        <li style="color: #DB5461">Write function to optimise data generation complexity for any given set of user-defined sensor reading time steps</li>
-        <li style="color: #DB5461">Broadcast data live to an animated GUI graph</li>
-        <li style="color: #DB5461">Write a function to generate noise</li>
-        <li style="color: #DB5461">Write an exponential moving average method with parameters <em>alpha</em> and <em>window (amount of recent data points to average)</em></li>
+        <li class="na">Write an async function for user to read sensor parameters CSV</li>
+        <li class="na">Write an async function for user to modify CSV sensor parameters</li>
+        <li class="doing">Write function to optimise data generation complexity for any given set of user-defined sensor reading time steps</li>
+        <li class="todo">Broadcast data live to an animated GUI graph</li>
+        <li class="done">Write a function to generate noise</li>
+        <li class="done">Write an exponential moving average method with parameters <em>alpha</em> and <em>window (amount of recent data points to average)</em></li>
     </ul>
     </li>
-    <li style="color: #D46B0F">Complete <code style="color: #D46B0F">sensors.ts</code>
+    <li class="doing">sensors.ts</code>
     <ul>
-        <li style="color: #D46B0F">Create logical functions for next data points for all sensor groups</li>
-        <li style="color: #DB5461">Categorise sensors with similar data functionality (by that I mean the nextValue method) into the same class, e.g. class TempDependent, VelocityDependent, Pressure etc.</li>
+        <li class="doing">Create logical functions for next data points for all sensor groups</li>
+        <li class="done">Define sensor reading hierarchy</li>
     </ul>
     </li>
-    <li style="color: #DB5461">Complete <code style="color: #DB5461">data-manager.ts</code>
+    <li class="doing">dataManager.ts</code>
     <ul>
-        <li style="color: #61E786">Create data storage functionality and object interface</li>
-        <li style="color: #D46B0F">Change data access methods to <code>get</code> and <code>set</code></li>
-        <li style="color: #DB5461">Import and connect to mqtt server</li>
-        <li style="color: #DB5461">Upload data values to server within the <code>updateData</code> method</li>
+        <li class="na">Create data storage functionality and object interface</li>
+        <li class="na">Change data access methods to <code>get</code> and <code>set</code></li>
+        <li class="doing">Upload data values to server within the <code>updateData</code> method</li>
+        <li class="doing">Combine randomise and default generateData methods into one with conditional logic</li>
+        <li class="done">Add functionality for cases of different timesteps for different sensors which may depend on each other</li>
     </ul>
     </li>
-    <li style="color: #D46B0F">Complete <code style="color: #D46B0F">main.ts</code>
+    <li class="done">main.ts</code>
     <ul>
-        <li style="color: #D46B0F">Change main function to interact with Sensor classes, not Behaviour (old version's file)</li>
-        <li style="color: #61E786">Provide user freedom to modify parameters:
+        <li class="done">Provide user freedom to modify parameters with CLI input:</li>
         <ul>
-            <li style="color: #61E786">Data generation type: random/logical</li>
-            <li style="color: #61E786">Sensor-specific time intervals at which readings are generated</li>
-            <li style="color: #61E786">Total runtime for the data generation loop</li>
+            <li class="done">Data generation type: random/logical</li>
+            <li class="done">Sensor-specific time intervals at which readings are generated</li>
+            <li class="done">Total runtime for the data generation loop</li>
         </ul>
         </li>
-        <li style="color: #D46B0F">Instantiate sensor classses and finish loop functionality</li>
-        <li style="color: #D46B0F">Add functionality for cases of different timesteps for different sensors which may depend on each other
+        <li class="done">Instantiate sensor classses and finish loop functionality</li>
         <ul>
-            <li style="color: #61E786">Plan the logic conceptually</li>
-            <li style="color: #DB5461">Program it into the loop</li>
+            <li class="done">Plan the logic conceptually</li>
+            <li class="done">Program it into the loop</li>
         </ul>
         </li>
     </ul>
-    <li style="color: #61E786">Create logical and modular file structure <em>(separation of concerns)</em></li>
-    <li style="color: #aaa">Refactor:
+    <li class="done">Create logical and modular file structure <em>(separation of concerns)</em></li>
+    <li class="done">Refactor:
     <ul>
-        <li style="color: #aaa">Minimise code and amount of classes as much as possible</li>
-        <li style="color: #aaa">Review file structure and ensure it is logical, readable and non-repetitive</li>
+        <li class="done">Minimise code and amount of classes as much as possible</li>
+        <li class="done">Review file structure and ensure it is logical, readable and non-repetitive</li>
     </ul>
-    <li style="color: #aaa">Remove comments</li>
+    <li class="done">Remove comments</li>
     </ul></em></li>
 </ol>
 
 <style>
-    ol#todo {
+    :root {
+        --green: #61E786;
+        --orange: #D46B0F;
+        --red: #DB5461;
+        --grey: #8888;
+    }
+
+    .done {
+        color: var(--green);
+    }
+    .doing {
+        color: var(--orange);
+    }
+    .todo {
+        color: var(--red);
+    }
+    .na {
+        color: var(--grey);
+    }
+
+    ol#list {
         list-style-type: none;
         counter-reset: my-counter;
     }
 
-    ol#todo>li::before {
-        content: counter(my-counter);
+    ol#list > li {
         counter-increment: my-counter;
+    }
+
+    ol#list > li::before {
+        content: counter(my-counter);
         color: white;
         margin-right: 0.5em;
     }
@@ -193,14 +226,14 @@ Every single sensor is "reliant" upon velocity or temperature readings for fake 
 Temperature is a function of velocity. Thus every single sensor needs velocity's currentValue to update.
 
 Some have dependencies on both such as pressure, but as vel and temp. are interdependent it is akin to just
-being dependent on velocity. I.e. if, say, brakes pressure reservoir = K * temp, and temp = M * velocity, 
-then pressure = K * M * velocity
+being dependent on velocity. I.e. if, say, brakes pressure reservoir=K * temp, and temp=M * velocity, 
+then pressure=K * M * velocity
 
 Therefore every sensor needs velocity at that instant. So velocity must be calculated at the lowest timestep of
 any sensor, even if the accelerometer does not update as frequently. Otherwise, we could estimate the velocity
 value through linear interpolation.
 
-In terms of classes: Sensor parents all. Navigation returns the values of displacement, velocity and acceleration from the accelerometer sensor. This fake data needs some reasonable function to follow, so a logistic curve for velocity was chosen. The derivative of this function is the acceleration. We can ensure it peaks at just below maxAcceleration. But even though the accelerometer is the sensor, if we have a related function for velocity then it's equivalent to having a velocity sensor instead. So it makes sense to use the velocity logistic curve as the governing variable. Acceleration will be its discrete derivative (vel - prevVel) / dt. Displacement is simply disp = prevVel * currentTime + 1/2 a * currentTime**2.
+In terms of classes: Sensor parents all. Navigation returns the values of displacement, velocity and acceleration from the accelerometer sensor. This fake data needs some reasonable function to follow, so a logistic curve for velocity was chosen. The derivative of this function is the acceleration. We can ensure it peaks at just below maxAcceleration. But even though the accelerometer is the sensor, if we have a related function for velocity then it's equivalent to having a velocity sensor instead. So it makes sense to use the velocity logistic curve as the governing variable. Acceleration will be its discrete derivative (vel - prevVel) / dt. Displacement is simply disp=prevVel * currentTime + 1/2 a * currentTime**2.
 
 Some sensors like Hall Effect don't even care about temperature. They are solely simple functions of velocity.
 
@@ -238,7 +271,7 @@ Ask user which to edit
 Write to file with changes
 Read from file and set new ones as ICs in object below -->
 
-<span style="display: block; height: 1px; background-color: #bbb;"></span>
+<span class ="display: block; height: 1px; background-color: #bbb;"></span>
 
 
 
@@ -251,7 +284,7 @@ Read from file and set new ones as ICs in object below -->
     <li>Create moving average function with ```window``` parameter set to 5 as default. Look into exponential moving average too. The average value will be used to determine whether a reading is out of bounds or it's just the noise.</li>
     <li>Find out how the noise levels compare from different sensors e.g. thermistors, pressure gauges, digital sensors, navigation etc.</li>
     <li>Create a simple function for <strong>reservoir pressure</strong>, it will not vary by much, but increase with temperature slightly. Reading will have some noise.</li>
-    <li>Write functions for the other pressures. Push = acceleration, so front pressure goes up and back goes down (both go further away from atmospheric, their absolute gauge pressure increases). And pull = decelleration, so the opposite. Also double check with David that you're interpreting the pressure variable terms correctly.</li>
+    <li>Write functions for the other pressures. Push=acceleration, so front pressure goes up and back goes down (both go further away from atmospheric, their absolute gauge pressure increases). And pull=decelleration, so the opposite. Also double check with David that you're interpreting the pressure variable terms correctly.</li>
     <li>I am assuming that the accelerometer(s) are all supposed to measure the absolute pod acceleration with respect to a stationay observer, and that's how the navigation parameters are found. Except this assumption seems wrong, as the accelerometer has a range of -150 to 150 m/s^2 while acceleration can only go up to 5 m/s^2. Is this perhaps referring to the sensors' physical limits of its capability to read acceleration, while the pod itself is not built to exceed 5m/s^2? In other words, the accelerometer will be limited to the 0-5 range, it's just not "critical" for the sensor in terms of safety, it's critical for the pod's safety. Perhaps. But another uncertainty is that the pod's acceleration can be easily determined by it's speed, which - <em>I assume</em> - we are controlling. <strong><em>Update: wrong, we are not controlling speed. We just switch on the power and track it using the accelerometer. The sensor's operational range is +-150. Above 150 it won't read the acceleration accurately. The pod cannot exceed 5.</em></strong> We have one sensor to measure navigation quantities, and that's the accelerometer. It has an operating range of -150 to 150. This specific pod prototype, Pod Ness, has an operating acceleration range of 0 to 5 (presumably this means -5 to 5). We generate fake data for the accelerometer sensor, and analyse it with the view of keeping pod acceleration below 5, and we also calculate other navigation quantities starting from acceleration.</li>
 </ol>
 <hr>
@@ -270,13 +303,13 @@ Read from file and set new ones as ICs in object below -->
 </ol>
 
 
-<!-- - [ ] <code style="color: #61E786">**config.ts**</code>
+<!-- - [ ] <code class="done">**config.ts**</code>
     - [ ] Write an async method for user to read sensor parameters CSV
     - [ ] Write an async method for user to modify CSV sensor parameters
     - [ ] Create logical and modular file structure <em>(separation of concerns)</em>
 <hr>
 
-- [ ] <code style="color: #D46B0F">**sensors.ts**</code>
+- [ ] <code class="done">**sensors.ts**</code>
     - [ ] Create logical functions for next data points for all sensor groups
     - [ ] Categorise sensors with similar data functionality into the same class, e.g. class TempDependent, VelocityDependent, Pressure etc. 
 
