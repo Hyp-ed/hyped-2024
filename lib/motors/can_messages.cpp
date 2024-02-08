@@ -6,12 +6,12 @@ CanMessages::CanMessages(std::shared_ptr<io::ICan> can) : can_(can)
 {
 }
 
-std::vector<uint8_t> CanMessages::convertToBytes(std::uint64_t value, std::size_t length)
+std::vector<std::uint8_t> CanMessages::convertToBytes(std::uint64_t value, std::size_t length)
 {
-  std::vector<uint8_t> bytes = {};
+  std::vector<std::uint8_t> bytes = {};
 
   for (int i = 0; i < sizeof(int); i++) {
-    uint8_t byte = (value >> (8 * (length - 1 - i))) & 0xFF;
+    std::uint8_t byte = (value >> (8 * (length - 1 - i))) & 0xFF;
     bytes.push_back(byte);
   }
   return bytes;
@@ -21,8 +21,8 @@ core::Result CanMessages::canSend(Operation operation, Location location, std::u
 {
   io::CanFrame frame;
 
-  const std::vector<uint8_t> locationVector = convertToBytes(location, 2);
-  const std::vector<uint8_t> dataVector     = convertToBytes(data, 4);
+  const std::vector<std::uint8_t> locationVector = convertToBytes(location, 2);
+  const std::vector<std::uint8_t> dataVector     = convertToBytes(data, 4);
 
   frame.can_id  = 0x00;
   frame.can_dlc = 8;
