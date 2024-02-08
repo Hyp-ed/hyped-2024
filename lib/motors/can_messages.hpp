@@ -12,12 +12,12 @@ class CanMessages {
   enum Operation { kRead, kWrite };
   enum Location { kTemperature, kAccelerometer };
   enum Error { Error1, Error2 };
-  static constexpr uint8_t kErrorId = 0;  // TBD
+  static constexpr std::uint8_t kErrorId = 0;  // TBD
 
  public:
   CanMessages(std::shared_ptr<io::ICan> can);
-  core::Result CanMessages::canSend(Operation operation, Location location, std::uint64_t data);
-  core::Result CanMessages::canError(Error error);
+  core::Result canSend(Operation operation, Location location, std::uint64_t data);
+  core::Result canError(Error error);
 
  private:
   std::vector<uint8_t> convertToBytes(std::uint64_t value, std::size_t length);
