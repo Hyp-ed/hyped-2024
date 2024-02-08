@@ -25,9 +25,15 @@ class LowPowerBMS {
   LowPowerBMS(core::ILogger &logger, std::shared_ptr<io::II2c> i2c);
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
-  const std::uint8_t device_address = kDefaultLpBmsAddress;
 
-  static constexpr std::uint8_t kBatteryStatusRegister;
+  const std::uint8_t device_read_address = kDefaultLpBmsReadAddress;
+  const std::uint8_t device_write_address = kDefaultLpBmsWriteAddress;
+ 
+ private:
+  static constexpr std::uint8_t kLEDControlRegister     = 0x02;
+  static constexpr std::uint8_t kBrightnessRegisterBase = 0x08;
+  static constexpr std::uint8_t kColorRegisterBase      = 0x14;
+  static constexpr std::uint8_t kResetRegister          = 0x38;
 
 };
 
