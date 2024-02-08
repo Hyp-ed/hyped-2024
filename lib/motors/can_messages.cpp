@@ -26,7 +26,7 @@ core::Result CanMessages::canSend(Operation operation, Location location, std::u
 
   frame.can_id  = 0x00;
   frame.can_dlc = 8;
-  frame.data[0] = static_cast<uint8_t>(operation);
+  frame.data[0] = static_cast<std::uint8_t>(operation);
   frame.data[1] = locationVector[0];
   frame.data[2] = locationVector[1];
   frame.data[3] = 0x00;
