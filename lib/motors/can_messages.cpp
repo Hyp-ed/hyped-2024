@@ -2,52 +2,63 @@
 
 namespace hyped::motors {
 
-std::vector<uint8_t> convertToBytes(int num, int length)
+CanMessages::CanMessages(std::shared_ptr<io::ICan> can) : can_(can)
 {
-  std::vector<uint8_t> bytes = {0};
+}
 
-  for (int i = 0; i < length; i++) {
-    bytes[i] = (num >> 8 * (length - (i + 1))) & 0xFF;
+std::vector<uint8_t> CanMessages::convertToBytes(std::uint64_t value, std::size_t length)
+{
+  std::vector<uint8_t> bytes = {};
+
+  for (int i = 0; i < sizeof(int); i++) {
+    uint8_t byte = (value >> (8 * (length - 1 - i))) & 0xFF;
+    bytes.push_back(byte);
   }
   return bytes;
 }
 
-core::Result CanMessages::CanSend(int operation, int location, int data)
+core::Result CanMessages::canSend(Operation operation, Location location, std::uint64_t data)
 {
   io::CanFrame frame;
+
+  const std::vector<uint8_t> locationVector = convertToBytes(location, 2);
+  const std::vector<uint8_t> dataVector     = convertToBytes(data, 4);
 
   frame.can_id  = 0x00;
   frame.can_dlc = 8;
-  frame.data[0] = convertToBytes(operation, 1)[0];
-  frame.data[1] = convertToBytes(location, 2)[0];
-  frame.data[2] = convertToBytes(location, 2)[1];
+  frame.data[0] = static_cast<uint8_t>(operation);
+  frame.data[1] = locationVector[0];
+  frame.data[2] = locationVector[1];
   frame.data[3] = 0x00;
-  frame.data[4] = convertToBytes(data, 5)[1];
-  frame.data[5] = convertToBytes(data, 5)[2];
-  frame.data[6] = convertToBytes(data, 5)[3];
-  frame.data[7] = convertToBytes(data, 5)[4];
+  frame.data[4] = dataVector[0];
+  frame.data[5] = dataVector[1];
+  frame.data[6] = dataVector[2];
+  frame.data[7] = dataVector[3];
 
-  core::Result end = can_->send(frame);
-  return end;
+  const core::Result result = can_->send(frame);
+  return result;
 }
 
-core::Result CanMessages::CanError(int error)
+core::Result CanMessages::canError(Error error)
 {
   io::CanFrame frame;
 
-  frame.can_id  = convertToBytes(error, 1)[0];
+  // check location thing
+  const std::vector<uint8_t> errorVector = convertToBytes(error, 4);
+
+  frame.can_id  = kErrorId;
   frame.can_dlc = 8;
-  frame.data[0] = 0x00;
-  frame.data[1] = convertToBytes(/*location*/ 0, 2)[0];  // wherever the location is
-  frame.data[2] = convertToBytes(0, 2)[0];
-  frame.data[3] = 0x00;
+  frame.data[0] = errorVector[0];
+  frame.data[1] = errorVector[1];
+  frame.data[2] = errorVector[2];
+  frame.data[3] = errorVector[3];
   frame.data[4] = 0x00;
   frame.data[5] = 0x00;
   frame.data[6] = 0x00;
   frame.data[7] = 0x00;
 
-  core::Result end = can_->send(frame);
-  return end;
+  const core::Result result = can_->send(frame);
+  return result;
 }
 
 }  // namespace hyped::motors

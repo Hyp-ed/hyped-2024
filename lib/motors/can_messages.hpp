@@ -9,17 +9,18 @@
 namespace hyped::motors {
 
 class CanMessages {
-  enum Operations { kRead, kWrite };
-  enum Locations { temperature, accelerometer };
+  enum Operation { kRead, kWrite };
+  enum Location { kTemperature, kAccelerometer };
+  enum Error { Error1, Error2 };
+  static constexpr uint8_t kErrorId = 0;  // TBD
 
  public:
-  core::Result CanSend(int operation, int location, int data);
-  core::Result CanError(int error);
+  CanMessages(std::shared_ptr<io::ICan> can);
+  core::Result CanMessages::canSend(Operation operation, Location location, std::uint64_t data);
+  core::Result CanMessages::canError(Error error);
 
  private:
-  CanMessages(std::shared_ptr<io::ICan> can);
-
-  std::vector<uint8_t> convertToBytes(int num, int length);
+  std::vector<uint8_t> convertToBytes(std::uint64_t value, std::size_t length);
   std::shared_ptr<io::ICan> can_;
 };
 
