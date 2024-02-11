@@ -12,7 +12,7 @@ std::vector<std::uint8_t> VectorControlCanMessages::convertToBytes(std::uint64_t
 {
   std::vector<std::uint8_t> bytes = {};
 
-  for (size_t i = 0; i < length; i++) {
+  for (std::size_t i = 0; i < length; i++) {
     const std::uint8_t byte = (value >> (8 * (length - 1 - i))) & 0xFF;
     bytes.push_back(byte);
   }
