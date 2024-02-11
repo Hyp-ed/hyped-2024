@@ -2,22 +2,26 @@
 
 namespace hyped::motors {
 
-CanMessages::CanMessages(std::shared_ptr<io::ICan> can) : can_(can)
+VectorControlCanMessages::VectorControlCanMessages(std::shared_ptr<io::ICan> can)
+    : can_(std::move(can))
 {
 }
 
-std::vector<std::uint8_t> CanMessages::convertToBytes(std::uint64_t value, std::size_t length)
+std::vector<std::uint8_t> VectorControlCanMessages::convertToBytes(std::uint64_t value,
+                                                                   std::size_t length)
 {
   std::vector<std::uint8_t> bytes = {};
 
-  for (int i = 0; i < sizeof(int); i++) {
-    std::uint8_t byte = (value >> (8 * (length - 1 - i))) & 0xFF;
+  for (size_t i = 0; i < length; i++) {
+    const std::uint8_t byte = (value >> (8 * (length - 1 - i))) & 0xFF;
     bytes.push_back(byte);
   }
   return bytes;
 }
 
-core::Result CanMessages::canSend(Operation operation, Location location, std::uint64_t data)
+core::Result VectorControlCanMessages::canSend(Operation operation,
+                                               Location location,
+                                               std::uint64_t data)
 {
   io::CanFrame frame;
 
@@ -39,7 +43,7 @@ core::Result CanMessages::canSend(Operation operation, Location location, std::u
   return result;
 }
 
-core::Result CanMessages::canError(Error error)
+core::Result VectorControlCanMessages::canError(Error error)
 {
   io::CanFrame frame;
 

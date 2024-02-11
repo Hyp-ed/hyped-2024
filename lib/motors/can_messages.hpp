@@ -8,14 +8,14 @@
 
 namespace hyped::motors {
 
-class CanMessages {
+class VectorControlCanMessages {
   enum Operation { kRead, kWrite };
   enum Location { kTemperature, kAccelerometer };
   enum Error { Error1, Error2 };
-  static constexpr std::uint8_t kErrorId = 0;  // TBD
+  static constexpr std::uint8_t kErrorId = 0;  // TODOLater decide
 
  public:
-  CanMessages(std::shared_ptr<io::ICan> can);
+  VectorControlCanMessages(std::shared_ptr<io::ICan> can);
   core::Result canSend(Operation operation, Location location, std::uint64_t data);
   core::Result canError(Error error);
 
