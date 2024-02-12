@@ -24,11 +24,6 @@ stm32_fetch_hal(F4)
 find_package(CMSIS COMPONENTS STM32F4 REQUIRED)
 find_package(HAL COMPONENTS "${HAL_COMP_LIST}" REQUIRED)
 
-# Find all device specific drivers: find_package(HAL COMPONENTS STM32L0 STM32F1
-# STM32F4 REQUIRED) Find drivers for all families: find_package(HAL COMPONENTS
-# RCC GPIO CORTEX REQUIRED) Find LL driver: find_package(HAL COMPONENTS LL_GPIO
-# REQUIRED) Find everything: find_package(HAL REQUIRED)
-
 add_executable(stm32-blinky-f4 ${code} stm32f4xx_hal_conf.h)
 target_link_libraries(
   stm32-blinky-f4

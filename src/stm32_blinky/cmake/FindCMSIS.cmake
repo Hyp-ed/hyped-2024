@@ -1,76 +1,15 @@
 # For information about why and how of this file:
 # https://cmake.org/cmake/help/latest/command/find_package.html
 
-set(CMSIS_RTOS RTOS RTOS_V2)
-
 if(NOT CMSIS_FIND_COMPONENTS)
   set(CMSIS_FIND_COMPONENTS ${STM32_SUPPORTED_FAMILIES_LONG_NAME})
 endif()
 
-if(STM32H7 IN_LIST CMSIS_FIND_COMPONENTS)
-  list(REMOVE_ITEM CMSIS_FIND_COMPONENTS STM32H7)
-  list(
-    APPEND
-    CMSIS_FIND_COMPONENTS
-    STM32H7_M7
-    STM32H7_M4
-  )
-endif()
-
-if(STM32WB IN_LIST CMSIS_FIND_COMPONENTS)
-  list(REMOVE_ITEM CMSIS_FIND_COMPONENTS STM32WB)
-  list(APPEND CMSIS_FIND_COMPONENTS STM32WB_M4)
-endif()
-
-if(STM32WL IN_LIST CMSIS_FIND_COMPONENTS)
-  list(REMOVE_ITEM CMSIS_FIND_COMPONENTS STM32WL)
-  list(
-    APPEND
-    CMSIS_FIND_COMPONENTS
-    STM32WL_M4
-    STM32WL_M0PLUS
-  )
-endif()
-
-if(STM32MP1 IN_LIST CMSIS_FIND_COMPONENTS)
-  list(REMOVE_ITEM CMSIS_FIND_COMPONENTS STM32MP1)
-  list(APPEND CMSIS_FIND_COMPONENTS STM32MP1_M4)
-endif()
-
 list(REMOVE_DUPLICATES CMSIS_FIND_COMPONENTS)
-
-# This section fills the RTOS or family components list
-foreach(COMP ${CMSIS_FIND_COMPONENTS})
-  string(TOLOWER ${COMP} COMP_L)
-  string(TOUPPER ${COMP} COMP)
-
-  # Component is RTOS component
-  if(${COMP} IN_LIST CMSIS_RTOS)
-    list(APPEND CMSIS_FIND_COMPONENTS_RTOS ${COMP})
-    continue()
-  endif()
-
-  # Component is not RTOS component, so check whether it is a family component
-  string(
-    REGEX
-      MATCH
-      "^STM32([CFGHLMUW]P?[0-9BL])([0-9A-Z][0-9M][A-Z][0-9A-Z])?_?(M0PLUS|M4|M7)?.*$"
-      COMP
-      ${COMP}
-  )
-  if(CMAKE_MATCH_1)
-    list(APPEND CMSIS_FIND_COMPONENTS_FAMILIES ${COMP})
-  endif()
-endforeach()
 
 if(NOT CMSIS_FIND_COMPONENTS_FAMILIES)
   set(CMSIS_FIND_COMPONENTS_FAMILIES ${STM32_SUPPORTED_FAMILIES_LONG_NAME})
 endif()
-
-if(NOT CMSIS_FIND_COMPONENTS_RTOS)
-  set(CMSIS_FIND_COMPONENTS_RTOS ${CMSIS_RTOS})
-endif()
-
 message(STATUS "Search for CMSIS families: ${CMSIS_FIND_COMPONENTS_FAMILIES}")
 message(STATUS "Search for CMSIS RTOS: ${CMSIS_FIND_COMPONENTS_RTOS}")
 
@@ -89,107 +28,92 @@ function(
 
   set(OUTPUT_LD_FILE "${CMAKE_CURRENT_BINARY_DIR}/${DEVICE}${CORE_U}.ld")
 
-  if(${FAMILY} STREQUAL MP1)
-    string(TOLOWER ${FAMILY} FAMILY_L)
-    find_file(
-      CMSIS_${FAMILY}${CORE_U}_LD_SCRIPT
-      NAMES stm32mp15xx_m4.ld
-      PATHS "${CMSIS_${FAMILY}${CORE_U}_PATH}/Source/Templates/gcc/linker"
-      NO_DEFAULT_PATH
-    )
-    add_custom_command(
-      OUTPUT "${OUTPUT_LD_FILE}"
-      COMMAND ${CMAKE_COMMAND} -E copy ${CMSIS_${FAMILY}${CORE_U}_LD_SCRIPT}
-              ${OUTPUT_LD_FILE}
-    )
-  else()
-    stm32_get_memory_info(
-      FAMILY
-      ${FAMILY}
-      DEVICE
-      ${DEVICE}
-      CORE
-      ${CORE}
-      FLASH
-      SIZE
-      FLASH_SIZE
-      ORIGIN
-      FLASH_ORIGIN
-    )
-    stm32_get_memory_info(
-      FAMILY
-      ${FAMILY}
-      DEVICE
-      ${DEVICE}
-      CORE
-      ${CORE}
-      RAM
-      SIZE
-      RAM_SIZE
-      ORIGIN
-      RAM_ORIGIN
-    )
-    stm32_get_memory_info(
-      FAMILY
-      ${FAMILY}
-      DEVICE
-      ${DEVICE}
-      CORE
-      ${CORE}
-      CCRAM
-      SIZE
-      CCRAM_SIZE
-      ORIGIN
-      CCRAM_ORIGIN
-    )
-    stm32_get_memory_info(
-      FAMILY
-      ${FAMILY}
-      DEVICE
-      ${DEVICE}
-      CORE
-      ${CORE}
-      RAM_SHARE
-      SIZE
-      RAM_SHARE_SIZE
-      ORIGIN
-      RAM_SHARE_ORIGIN
-    )
-    stm32_get_memory_info(
-      FAMILY
-      ${FAMILY}
-      DEVICE
-      ${DEVICE}
-      CORE
-      ${CORE}
-      HEAP
-      SIZE
-      HEAP_SIZE
-    )
-    stm32_get_memory_info(
-      FAMILY
-      ${FAMILY}
-      DEVICE
-      ${DEVICE}
-      CORE
-      ${CORE}
-      STACK
-      SIZE
-      STACK_SIZE
-    )
+  stm32_get_memory_info(
+    FAMILY
+    ${FAMILY}
+    DEVICE
+    ${DEVICE}
+    CORE
+    ${CORE}
+    FLASH
+    SIZE
+    FLASH_SIZE
+    ORIGIN
+    FLASH_ORIGIN
+  )
+  stm32_get_memory_info(
+    FAMILY
+    ${FAMILY}
+    DEVICE
+    ${DEVICE}
+    CORE
+    ${CORE}
+    RAM
+    SIZE
+    RAM_SIZE
+    ORIGIN
+    RAM_ORIGIN
+  )
+  stm32_get_memory_info(
+    FAMILY
+    ${FAMILY}
+    DEVICE
+    ${DEVICE}
+    CORE
+    ${CORE}
+    CCRAM
+    SIZE
+    CCRAM_SIZE
+    ORIGIN
+    CCRAM_ORIGIN
+  )
+  stm32_get_memory_info(
+    FAMILY
+    ${FAMILY}
+    DEVICE
+    ${DEVICE}
+    CORE
+    ${CORE}
+    RAM_SHARE
+    SIZE
+    RAM_SHARE_SIZE
+    ORIGIN
+    RAM_SHARE_ORIGIN
+  )
+  stm32_get_memory_info(
+    FAMILY
+    ${FAMILY}
+    DEVICE
+    ${DEVICE}
+    CORE
+    ${CORE}
+    HEAP
+    SIZE
+    HEAP_SIZE
+  )
+  stm32_get_memory_info(
+    FAMILY
+    ${FAMILY}
+    DEVICE
+    ${DEVICE}
+    CORE
+    ${CORE}
+    STACK
+    SIZE
+    STACK_SIZE
+  )
 
-    add_custom_command(
-      OUTPUT "${OUTPUT_LD_FILE}"
-      COMMAND
-        ${CMAKE_COMMAND} -DFLASH_ORIGIN="${FLASH_ORIGIN}"
-        -DRAM_ORIGIN="${RAM_ORIGIN}" -DCCRAM_ORIGIN="${CCRAM_ORIGIN}"
-        -DRAM_SHARE_ORIGIN="${RAM_SHARE_ORIGIN}" -DFLASH_SIZE="${FLASH_SIZE}"
-        -DRAM_SIZE="${RAM_SIZE}" -DCCRAM_SIZE="${CCRAM_SIZE}"
-        -DRAM_SHARE_SIZE="${RAM_SHARE_SIZE}" -DSTACK_SIZE="${STACK_SIZE}"
-        -DHEAP_SIZE="${HEAP_SIZE}" -DLINKER_SCRIPT="${OUTPUT_LD_FILE}" -P
-        "${STM32_CMAKE_DIR}/stm32/linker_ld.cmake"
-    )
-  endif()
+  add_custom_command(
+    OUTPUT "${OUTPUT_LD_FILE}"
+    COMMAND
+      ${CMAKE_COMMAND} -DFLASH_ORIGIN="${FLASH_ORIGIN}"
+      -DRAM_ORIGIN="${RAM_ORIGIN}" -DCCRAM_ORIGIN="${CCRAM_ORIGIN}"
+      -DRAM_SHARE_ORIGIN="${RAM_SHARE_ORIGIN}" -DFLASH_SIZE="${FLASH_SIZE}"
+      -DRAM_SIZE="${RAM_SIZE}" -DCCRAM_SIZE="${CCRAM_SIZE}"
+      -DRAM_SHARE_SIZE="${RAM_SHARE_SIZE}" -DSTACK_SIZE="${STACK_SIZE}"
+      -DHEAP_SIZE="${HEAP_SIZE}" -DLINKER_SCRIPT="${OUTPUT_LD_FILE}" -P
+      "${STM32_CMAKE_DIR}/stm32/linker_ld.cmake"
+  )
   add_custom_target(CMSIS_LD_${DEVICE}${CORE_U} DEPENDS "${OUTPUT_LD_FILE}")
   add_dependencies(CMSIS::STM32::${DEVICE}${CORE_C} CMSIS_LD_${DEVICE}${CORE_U})
   stm32_add_linker_script(
