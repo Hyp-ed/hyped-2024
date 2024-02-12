@@ -98,62 +98,6 @@ function(stm32_print_size_of_target TARGET)
   )
 endfunction()
 
-# This function calls the objcopy program defined in CMAKE_OBJCOPY to generate
-# file with object format specified in OBJCOPY_BFD_OUTPUT. The generated file
-# has the name of the target output but with extension corresponding to the
-# OUTPUT_EXTENSION argument value. The generated file will be placed in the same
-# directory as the target output file.
-function(
-  _stm32_generate_file
-  TARGET
-  OUTPUT_EXTENSION
-  OBJCOPY_BFD_OUTPUT
-)
-  get_target_property(TARGET_OUTPUT_NAME ${TARGET} OUTPUT_NAME)
-  if(TARGET_OUTPUT_NAME)
-    set(OUTPUT_FILE_NAME "${TARGET_OUTPUT_NAME}.${OUTPUT_EXTENSION}")
-  else()
-    set(OUTPUT_FILE_NAME "${TARGET}.${OUTPUT_EXTENSION}")
-  endif()
-
-  get_target_property(
-    RUNTIME_OUTPUT_DIRECTORY ${TARGET} RUNTIME_OUTPUT_DIRECTORY
-  )
-  if(RUNTIME_OUTPUT_DIRECTORY)
-    set(OUTPUT_FILE_PATH "${RUNTIME_OUTPUT_DIRECTORY}/${OUTPUT_FILE_NAME}")
-  else()
-    set(OUTPUT_FILE_PATH "${OUTPUT_FILE_NAME}")
-  endif()
-
-  add_custom_command(
-    TARGET ${TARGET}
-    POST_BUILD
-    COMMAND ${CMAKE_OBJCOPY} -O ${OBJCOPY_BFD_OUTPUT} "$<TARGET_FILE:${TARGET}>"
-            ${OUTPUT_FILE_PATH}
-    BYPRODUCTS ${OUTPUT_FILE_PATH}
-    COMMENT "Generating ${OBJCOPY_BFD_OUTPUT} file ${OUTPUT_FILE_NAME}"
-  )
-endfunction()
-
-# This function adds post-build generation of the binary file from the target
-# ELF. The generated file will be placed in the same directory as the ELF file.
-function(stm32_generate_binary_file TARGET)
-  _stm32_generate_file(${TARGET} "bin" "binary")
-endfunction()
-
-# This function adds post-build generation of the Motorola S-record file from
-# the target ELF. The generated file will be placed in the same directory as the
-# ELF file.
-function(stm32_generate_srec_file TARGET)
-  _stm32_generate_file(${TARGET} "srec" "srec")
-endfunction()
-
-# This function adds post-build generation of the Intel hex file from the target
-# ELF. The generated file will be placed in the same directory as the ELF file.
-function(stm32_generate_hex_file TARGET)
-  _stm32_generate_file(${TARGET} "hex" "ihex")
-endfunction()
-
 # This function takes FAMILY (e.g. L4) and DEVICE (e.g. L496VG) to output TYPE
 # (e.g. L496xx)
 function(
@@ -255,17 +199,7 @@ function(stm32_get_cores CORES)
     # TODO: I don't get why stm32_get_chip_type is called in stm32_get_cores
     stm32_get_chip_type(${ARG_FAMILY} ${ARG_DEVICE} ARG_TYPE)
   elseif(ARG_FAMILY)
-    if(${ARG_FAMILY} STREQUAL "H7")
-      set(${CORES} M7 M4 PARENT_SCOPE)
-    elseif(${ARG_FAMILY} STREQUAL "WB")
-      set(${CORES} M4 PARENT_SCOPE)
-    elseif(${ARG_FAMILY} STREQUAL "WL")
-      set(${CORES} M4 M0PLUS PARENT_SCOPE)
-    elseif(${ARG_FAMILY} STREQUAL "MP1")
-      set(${CORES} M4 PARENT_SCOPE)
-    else()
-      set(${CORES} "" PARENT_SCOPE)
-    endif()
+    set(${CORES} "" PARENT_SCOPE)
     return()
   else()
     message(
@@ -345,34 +279,10 @@ function(stm32_get_memory_info)
             ${INFO_DEVICE}
   )
 
-  if(SIZE_CODE STREQUAL "3")
-    set(FLASH "8K")
-  elseif(SIZE_CODE STREQUAL "4")
-    set(FLASH "16K")
-  elseif(SIZE_CODE STREQUAL "6")
-    set(FLASH "32K")
-  elseif(SIZE_CODE STREQUAL "8")
-    set(FLASH "64K")
-  elseif(SIZE_CODE STREQUAL "B")
-    set(FLASH "128K")
-  elseif(SIZE_CODE STREQUAL "C")
-    set(FLASH "256K")
-  elseif(SIZE_CODE STREQUAL "D")
-    set(FLASH "384K")
-  elseif(SIZE_CODE STREQUAL "E")
+  if(SIZE_CODE STREQUAL "E")
     set(FLASH "512K")
-  elseif(SIZE_CODE STREQUAL "F")
-    set(FLASH "768K")
-  elseif(SIZE_CODE STREQUAL "G")
-    set(FLASH "1024K")
-  elseif(SIZE_CODE STREQUAL "H")
-    set(FLASH "1536K")
   elseif(SIZE_CODE STREQUAL "I")
     set(FLASH "2048K")
-  elseif(SIZE_CODE STREQUAL "Y")
-    set(FLASH "640K")
-  elseif(SIZE_CODE STREQUAL "Z")
-    set(FLASH "192K")
   else()
     set(FLASH "16K")
     message(WARNING "Unknow flash size for device ${DEVICE}. Set to ${FLASH}")
@@ -406,79 +316,6 @@ function(stm32_get_memory_info)
   set(RAM_ORIGIN 0x20000000)
   set(CCRAM_ORIGIN 0x10000000)
   set(RAM_SHARE_ORIGIN 0x20030000)
-
-  unset(TWO_FLASH_BANKS)
-  if(FAMILY STREQUAL "F1")
-    stm32f1_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      FLASH
-      RAM
-    )
-  elseif(FAMILY STREQUAL "L1")
-    stm32l1_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      FLASH
-      RAM
-    )
-  elseif(FAMILY STREQUAL "F2")
-    stm32f2_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      FLASH
-      RAM
-    )
-  elseif(FAMILY STREQUAL "F3")
-    stm32f3_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      FLASH
-      RAM
-    )
-  elseif(FAMILY STREQUAL "H7")
-    stm32h7_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      "${INFO_CORE}"
-      RAM
-      FLASH_ORIGIN
-      RAM_ORIGIN
-      TWO_FLASH_BANKS
-    )
-  elseif(FAMILY STREQUAL "WL")
-    stm32wl_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      "${INFO_CORE}"
-      RAM
-      FLASH_ORIGIN
-      RAM_ORIGIN
-      TWO_FLASH_BANKS
-    )
-  elseif(FAMILY STREQUAL "WB")
-    stm32wb_get_memory_info(
-      ${INFO_DEVICE}
-      ${INFO_TYPE}
-      "${INFO_CORE}"
-      RAM
-      RAM_ORIGIN
-      TWO_FLASH_BANKS
-    )
-  elseif(FAMILY STREQUAL "MP1")
-    stm32mp1_get_memory_info(${INFO_DEVICE} ${INFO_TYPE} FLASH)
-  endif()
-  # when a device is dual core, each core uses half of total flash
-  if(TWO_FLASH_BANKS)
-    string(
-      REGEX MATCH
-            "([0-9]+)K"
-            FLASH_KB
-            ${FLASH}
-    )
-    math(EXPR FLASH_KB "${CMAKE_MATCH_1} / 2")
-    set(FLASH "${FLASH_KB}K")
-  endif()
 
   if(INFO_FLASH)
     set(SIZE ${FLASH})
