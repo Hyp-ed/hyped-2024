@@ -4,9 +4,7 @@
 #include "vector_controller.hpp"
 
 namespace hyped :: motors {
-    // TODO steps for vector control
-    // TODO defining class most likely in header file
-    // TODO need to look into how the scope is used in HYPED (using scope resolution operator)
+    
     VectorController::VectorController() {
         Kp = 1.0;  
         Ki = 0.1; 
@@ -15,7 +13,7 @@ namespace hyped :: motors {
         theta = 0.0; 
     }
 
-            // Step 1: Measure stator currents and rotor velocity
+            // Measure stator currents and rotor velocity
             void VectorController::measureCurrentsAndVelocity(core::Float ia, core::Float ib, core::Float ic, core::Float velocity) {
                 Ia = ia;
                 Ib = ib;
@@ -23,14 +21,14 @@ namespace hyped :: motors {
                 rotorVelocity = velocity;
             }
 
-            // Step 2: Convert to 2-axis system
+            // Convert to 2-axis system
             void VectorController::convertTo2Axis() {
                 // Perform transformation from 3-phase currents (Ia, Ib, Ic) to 2-axis (Id, Iq)
                 // Implement the Clarke transformation
                 core::Float Ialpha = Ia;
                 core::Float Ibeta = (Ia + 2*Ib)/sqrt(3);
                 
-                // Step 3: Rotate coordinate system to align with rotor flux
+                // Rotate coordinate system to align with rotor flux
                 // Calculate the transformation angle based on the rotor flux alignment
                 // Implement the Park transformation
                 Id = cos(theta) * Ialpha + sin(theta) * Ibeta;
