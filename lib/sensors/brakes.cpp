@@ -17,7 +17,8 @@ std::optional<Brakes> Brakes::create(core::ILogger &logger,
 
 Brakes::Brakes(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
     : gpio_reader_(gpio_reader),
-      logger_(logger)
+      logger_(logger),
+      on(), off()
 {
 }
 
@@ -25,10 +26,12 @@ Brakes::~Brakes()
 {
 }
 
-bool Brakes::open() {
-  return gpio_reader_->read();
+bool Brakes::highLow() {
+    core::DigitalSignal signal = gpio_reader_->read();
+//    std::int8_t currentDistance = ;
+    if (signal <= core::DigitalSignal::kHigh) {
+        return true;
+    }
+    return false;
 }
-
-
-
-}
+}  // namespace hyped::sensors
