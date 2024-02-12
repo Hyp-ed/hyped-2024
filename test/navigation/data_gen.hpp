@@ -12,6 +12,9 @@ class Generator {
   double max;
 
  public:
+
+ //normal distribution, duh
+
   Generator(double min, double max) : min(min), max(max)
   {
     std::random_device rd;
