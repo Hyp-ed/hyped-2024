@@ -28,6 +28,6 @@ class VectorController {
   void convertTo2Axis();
   void inverse2Axis();
   void piControl();
-  void parkTransform();
+  void inverseParkTransform();
     };
 }
