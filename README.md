@@ -10,7 +10,7 @@
 
 &nbsp;
 
-![Build Shield](https://github.com/Hyp-ed/hyped-2023/actions/workflows/build.yml/badge.svg) ![TODO Shield](https://img.shields.io/github/search/hyp-ed/hyped-2023/TODOLater?color=red&label=TODO%20counter)
+![Build Shield](https://github.com/Hyp-ed/hyped-2024/actions/workflows/build.yml/badge.svg) ![TODO Shield](https://img.shields.io/github/search/hyp-ed/hyped-2024/TODOLater?color=red&label=TODO%20counter)
 
 ## Dependencies
 
@@ -57,10 +57,10 @@
   To run the telemetry system, run the following command:
 
   ```
-  ./docker.sh <yarn_script>
+  ./docker.sh <pnpm_script>
   ```
 
-  where `<yarn_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
+  where `<pnpm_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
 
   > The GUI will now be available on `http://localhost:5173`
 

@@ -2,62 +2,19 @@ name: Build
 
 on:
   push:
-    paths-ignore: 
-      - "telemetry/**"
+    paths-ignore:
+      - 'telemetry/**'
 
 jobs:
-  linux-build:
-    strategy:
-      matrix:
-        os: [ubuntu-latest]
-    runs-on: ${{ matrix.os }}
+  build:
+    runs-on: [ubuntu-latest]
 
     steps:
       - uses: actions/checkout@v2
-      - name: Install dependencies
-        uses: jrl-umi3218/github-actions/install-dependencies@master
-        with:
-          compiler: clang
-          ubuntu: |
-            apt: libeigen3-dev libboost-all-dev
-          macos: |
-            brew: eigen boost
-      # TODOLater this is a workaround due to https://github.com/actions/runner-images/issues/8659, remove once fixed
-      - name: Install newer Clang
-        run: |
-          wget https://apt.llvm.org/llvm.sh
-          chmod +x ./llvm.sh
-          sudo ./llvm.sh 17
-      - name: CMake
-        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=clang++-17
-      - name: Build hyped
-        run: make -j
-        working-directory: build
-      - name: Test
-        run: ctest
-        working-directory: build
-  # TODOLater this can be merged with the above once the issue is resolved
-  mac-build:
-    strategy:
-      matrix:
-        os: [macos-latest]
-    runs-on: ${{ matrix.os }}
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Install dependencies
-        uses: jrl-umi3218/github-actions/install-dependencies@master
-        with:
-          compiler: clang
-          ubuntu: |
-            apt: libeigen3-dev libboost-all-dev libncurses5-dev
-          macos: |
-            brew: eigen boost ncurses
-      - name: CMake
-        run: cmake -S . -B build -DCMAKE_CXX_COMPILER=$(which clang++)
-      - name: Build hyped
-        run: make -j
-        working-directory: build
-      - name: Test
-        run: ctest
-        working-directory: build
+      # Setup Docker Buildx
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run build
+        run: ./docker.sh -r -c -b

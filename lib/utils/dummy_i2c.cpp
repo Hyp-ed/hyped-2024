@@ -19,6 +19,13 @@ core::Result DummyI2c::writeByteToRegister(const std::uint8_t device_address,
   return core::Result::kFailure;
 }
 
+core::Result DummyI2c::writeByteToRegister(const std::uint8_t device_address,
+                                           const std::uint16_t register_address,
+                                           const std::uint8_t data)
+{
+  return core::Result::kFailure;
+}
+
 core::Result DummyI2c::writeByte(const std::uint8_t device_address, const std::uint8_t data)
 {
   return core::Result::kFailure;

@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <vector>
 
 #include <core/logger.hpp>
 #include <core/types.hpp>
@@ -23,15 +24,20 @@ class HardwareI2c : public II2c {
   HardwareI2c(core::ILogger &logger, const int file_descriptor);
   ~HardwareI2c();
 
-  virtual std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
-                                               const std::uint8_t register_address);
-  virtual core::Result writeByteToRegister(const std::uint8_t device_address,
-                                           const std::uint8_t register_address,
-                                           const std::uint8_t data);
-  virtual core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data);
+  std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
+                                       const std::uint8_t register_address);
+  core::Result writeByteToRegister(const std::uint8_t device_address,
+                                   const std::uint8_t register_address,
+                                   const std::uint8_t data);
+  core::Result writeByteToRegister(const std::uint8_t device_address,
+                                   const std::uint16_t register_address,
+                                   const std::uint8_t data);
+  core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data);
 
  private:
   void setSensorAddress(const std::uint8_t device_address);
+  core::Result writeBytesToDevice(const std::uint8_t device_address,
+                                  const std::vector<std::uint8_t> &bytes);
 
  private:
   core::ILogger &logger_;
