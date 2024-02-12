@@ -26,7 +26,6 @@ TEST(KalmanFilter, construction)
     navigation::measurement_matrix,
     navigation::kMeasurementNoiseCovarianceMatrix);
 
-  
   navigation::MeasurementVector measurement(navigation::MeasurementVector::Zero());
   navigation::ControlInput control_input(navigation::ControlInput::Zero());
 
@@ -36,7 +35,7 @@ TEST(KalmanFilter, construction)
 
   std::cout << "State estimate: " << state_estimate << std::endl;
 
-
+  EXPECT_EQ(state_estimate, initial_state);
 }
 
 }  // namespace hyped::test
