@@ -65,9 +65,9 @@ namespace hyped :: motors {
                 Vq = Kp * IqError + integral_term_Iq;
             }
 
-            void VectorController::parkTransform() {
-                core::Float Valpha = Vd * cos(theta) + Vq * sin(theta);
-                core::Float Vbeta = - Vd * cos(theta) + Vq * sin(theta);
+            void VectorController::inverseParkTransform() {
+                core::Float Valpha = Vd * cos(theta) - Vq * sin(theta);
+                core::Float Vbeta = Vd * sin(theta) + Vq * cos(theta);
 
                 Vd = Valpha;
                 Vq = Vbeta;
@@ -84,7 +84,7 @@ namespace hyped :: motors {
             // Perform the vector control steps
             motorCtrl.convertTo2Axis();
             motorCtrl.piControl();
-            motorCtrl.parkTransform(); // after this, Vd and Vq would have the desired values
+            motorCtrl.inverseParkTransform(); // after this, Vd and Vq would have the desired values
                                        // space vector modulation next?
             
 
