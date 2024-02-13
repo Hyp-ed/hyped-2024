@@ -1,44 +1,8 @@
-import { Sensor, SensorData } from "../../index";
+import { Sensor } from "../baseSensor";
+import { Motion } from "./motion";
+import { Readings, LiveReading } from "../../index";
 
-class Keyence extends Sensor {
-
-  private podLength: number;
-
-  constructor(data: SensorData, podLength?: number) {
-    super(data);
-    this.podLength = podLength ? podLength: 2.5; // m
-  }
-
-  getData(t: number): Readings {
-    // Sensors are evenly distributed along the pod
-    // Displacement is measured at the nose of the pod
-    //   So the keyence sensor readings each have a displacement lag of 1/numKeyences * podLength
-    const sensorRegion = this.podLength / this.quantity; 
-
-    if (Sensor.isSampled['motion']) {
-      
-    }
-
-    // Check if the displacement reading has been taken at this time step
-    // If not, update the motion instance to get the current displacement
-    if (!Sensor.isSampled['motion']) {
-        super.update(t);
-    }
-    this.readings = Object.fromEntries(
-        Object.keys(this.readings).map( (key, i) => {
-            // Calculate sensor offset from front of pod
-            const sensorOffset = this.displacement - (sensorRegion * i);
-            return [key, Math.floor(sensorOffset) / 16]
-        }
-    ));
-
-    return this.readings;
-  }
-
-}
-
-
-    /**
+/**
      * Integer value in range [0, 16], which directly corresponds to the pod displacement, which
      * has a range of [0m, 100m]. Every 16m, keyence increases by one (pole/stripe). Obviously,
      * this optical sensor has no random noise. Its graph will look like a staircase of varying 
@@ -46,25 +10,34 @@ class Keyence extends Sensor {
      * 
      * It needs to know the displacement at this time t. No point calculating it again if it's already
      * been calculated, so we need to check and reference instances.motion.time.
-    
-    update(t: number): Readings {
-        this.time = t / 1000;
-        // Sensors are evenly distributed along the pod
-        // Displacement is measured at the nose of the pod
-        //   So the keyence sensor readings each have a displacement lag of 1/numKeyences * podLength
-        const sensorRegion = this.podLength / this.quantity;
-        // Check if the displacement reading has been taken at this time step
-        // If not, update the motion instance to get the current displacement
-        if (!Sensor.isSampled['motion']) {
-            super.update(t);
-        }
-        this.readings = Object.fromEntries(
-            Object.keys(this.readings).map( (key, i) => {
-                // Calculate sensor offset from front of pod
-                const sensorOffset = this.displacement - (sensorRegion * i);
-                return [key, Math.floor(sensorOffset) / 16]
-            }
-        ));
+     */
+export class Keyence extends Motion {
 
-        return this.readings;
-    }
+  private podLength: number;
+
+  constructor(data: LiveReading, podLength = 2.5) {
+    super(data);
+  }
+
+  getData(t: number): Readings {
+    // Sensors are evenly distributed along the pod
+    // Displacement is measured at the nose of the pod
+    // So the keyence sensor readings each have a displacement lag of 1/numKeyences * podLength
+    // Subtract 1 as there are n-1 gaps between n sensors placed end to end with rest equally spaced between
+    const sensorRegion = this.podLength / (this.quantity - 1);
+
+    // Check if the displacement reading has been taken at this time step
+    // If not, update the motion instance to get the current displacement
+    this.displacement = Sensor.isSampled['motion'] ? this.displacement : super.getData(t).displacement;
+
+    const readings = Object.keys(Sensor.lastReadings.keyence).map( (key, i) => {
+        // Calculate sensor offset from front of pod
+        const sensorPos = this.displacement - (sensorRegion * i);
+        return [key, Math.floor(sensorPos / 16)];
+    });
+    
+    // return readings in expected format
+    return Object.fromEntries(readings);
+  }
+
+}

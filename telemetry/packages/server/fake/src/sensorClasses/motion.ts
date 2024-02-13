@@ -3,14 +3,21 @@ import { LiveReading, Readings, Utilities, measurements } from "../../index";
 
 export class Motion extends Sensor {
 
+    protected displacement: number;
     protected velocity: number;
     protected acceleration: number;
-  
-    constructor(accelerometer: LiveReading) {
+    private velocityStState: number;
+
+    /**
+     * Constructor for Motion class
+     * @param accelerometer motion-type sensor data in LiveReading format (from sensorData object)
+     * @param velocityStState Desired steady state velocity as percentage of maximum allowable velocity
+     */
+    constructor(accelerometer: LiveReading, velocityStState = 0.95) {
       super(accelerometer);
-      // record the velocity and acceleration for ease of access by dependent subclasses
-      this.acceleration = accelerometer.readings.acceleration;
-      this.velocity = accelerometer.readings.velocity;
+      // store the relevant deconstructed reading values into new variables for legibility
+      const { displacement, velocity, acceleration } = Sensor.lastReadings.motion;
+      Object.assign(this, { displacement, velocity, acceleration });
     }
   
     /**
@@ -23,14 +30,14 @@ export class Motion extends Sensor {
   
       const velocityEstimate = Utilities.logistic(
         t,
-        measurements.velocity.limits.critical.high * 0.95, // setpoint for velocity, reduced by 5% to allow for added noise
+        measurements.velocity.limits.critical.high * this.velocityStState, // setpoint for velocity, reduced by 5% to allow for added noise
         0.4, // exponential growth rate factor
         12.5, // time of inflection that ensures acceleration peaks at its limiting operating value
       );
     
       // calculate acceleration as the rate of change of logistic-fitted velocity
       let accelerometerReading =
-        (velocityEstimate - Sensor.lastReadings.motion.velocity) /
+        (velocityEstimate - this.velocity) /
         this.sampling_time;
       // assert reading is not above critical limit
       accelerometerReading =
@@ -43,10 +50,10 @@ export class Motion extends Sensor {
       //   calculating velocity and displacement using dv*dt and dx*dt
       return {
         acceleration: accelerometerReading,
-        velocity: (Sensor.lastReadings.motion.velocity +=
+        velocity: (this.velocity +=
           accelerometerReading * this.sampling_time),
-        displacement: (Sensor.lastReadings.motion.displacement +=
-          Sensor.lastReadings.motion.velocity * this.sampling_time),
+        displacement: (this.displacement +=
+          this.velocity * this.sampling_time),
       };
     }
   
