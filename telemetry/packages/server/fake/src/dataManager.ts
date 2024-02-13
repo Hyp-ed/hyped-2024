@@ -67,6 +67,10 @@ export class SensorMap {
           this.latestReadings[sensor.type] = readings;
           this.isSampled[sensor.type] = true;
 
+          Object.keys(readings).forEach(
+            
+          )
+
           this.publishData(sensor.type, readings);
         }
       });
@@ -110,7 +114,7 @@ export class SensorMap {
     this.client.publish(
       `hyped/pod_1/measurements/${measurement}`,
       JSON.stringify(readings),
-      (err) => {
+      (err: any) => {
         if (err) {
           console.log(`MQTT publish error: [LOG] (pod_1) ${err}`);
         }

@@ -15,11 +15,11 @@ export class Utilities {
   }
 
   /** Lowest common factor */
-  public static lcm(nums: number[]): number {
-    return nums.reduce((acc, c) => {
-      return (acc * c) / Utilities.gcd(acc, c);
-    });
-  }
+  // public static lcm(nums: number[]): number {
+  //   return nums.reduce((acc, c) => {
+  //     return (acc * c) / Utilities.gcd(acc, c);
+  //   });
+  // }
 
   /**
    * Gets the exponential average of a recent set of values
@@ -82,6 +82,12 @@ export class Utilities {
     // } else { return 0; } // don't randomise motion variables, they will be calculated from the accelerometers
   }
 
+  public static averageReadings(sensors: Readings, qty: number): number {
+    return (
+      Object.values(sensors).reduce( (acc, val) => acc + val, 0) / qty
+    )
+  }
+
   /**
    * Logistic function used to estimate velocity as a function of time
    * @returns the current timestep's reading according to this analytical model
@@ -92,11 +98,11 @@ export class Utilities {
     growthRate: number,
     timeOfInflection: number,
   ): any {
+    return steadyState / (1 + Math.exp(-growthRate * (t - timeOfInflection)));
     // Requires:
     // - setpoint for velocity (arbitrary, around 90-95% of max velocity)
     // - acceleration high limit (from sensorData)
     // - parameters of inflection time and growth height (chosen to ensure acceleration peaks at its max value)
-    return steadyState / (1 + Math.exp(-growthRate * (t - timeOfInflection)));
   }
 
 
@@ -114,32 +120,32 @@ export class Utilities {
    * It needs to know the displacement at this time t. No point calculating it again if it's already
    * been calculated, so we need to check and reference instances.motion.time.
    */
-  public static keyence(
-    podLength: number,
-    quantity: number,
-    displacement: number,
-    time: number,
-  ): Readings {
-    time /= 1000; // convert to seconds
-    // Sensors are evenly distributed along the pod
-    // Displacement is measured at the nose of the pod
-    //   So the keyence sensor readings each have a displacement lag of 1/numKeyences * podLength
-    const sensorRegion = podLength / quantity;
-    // Check if the displacement reading has been taken at this time step
-    // If not, update the motion instance to get the current displacement
-    if (!Sensor.isSampled['motion']) {
-      super.update(t);
-    }
-    readings = Object.fromEntries(
-      Object.keys(readings).map((key, i) => {
-        // Calculate sensor offset from front of pod
-        const sensorOffset = displacement - sensorRegion * i;
-        return [key, Math.floor(sensorOffset) / 16];
-      }),
-    );
+  // public static keyence(
+  //   podLength: number,
+  //   quantity: number,
+  //   displacement: number,
+  //   time: number,
+  // ): Readings {
+  //   time /= 1000; // convert to seconds
+  //   // Sensors are evenly distributed along the pod
+  //   // Displacement is measured at the nose of the pod
+  //   //   So the keyence sensor readings each have a displacement lag of 1/numKeyences * podLength
+  //   const sensorRegion = podLength / quantity;
+  //   // Check if the displacement reading has been taken at this time step
+  //   // If not, update the motion instance to get the current displacement
+  //   if (!Sensor.isSampled['motion']) {
+  //     super.update(t);
+  //   }
+  //   readings = Object.fromEntries(
+  //     Object.keys(readings).map((key, i) => {
+  //       // Calculate sensor offset from front of pod
+  //       const sensorOffset = displacement - sensorRegion * i;
+  //       return [key, Math.floor(sensorOffset) / 16];
+  //     }),
+  //   );
 
-    return readings;
-  }
+  //   return readings;
+  // }
 
   // ## PRESSURE ## //
 
@@ -173,7 +179,7 @@ export class Utilities {
         (acc, val) => acc + val,
       ) / 2;
 
-    const initialMotion = (k, t_0) => this.logistic(t, setpoint + 10, k, t_0);
+    // const initialMotion = (k, t_0) => this.logistic(t, setpoint + 10, k, t_0);
 
     const oscillation = () => {
       const amplitude = 10;
