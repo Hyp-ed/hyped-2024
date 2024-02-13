@@ -70,14 +70,33 @@ core::Result HardwareI2c::writeByteToRegister(const std::uint8_t device_address,
                                               const std::uint8_t register_address,
                                               const std::uint8_t data)
 {
+  const std::vector<std::uint8_t> bytes = {register_address, data};
+  return writeBytesToDevice(device_address, bytes);
+}
+
+core::Result HardwareI2c::writeByteToRegister(const std::uint8_t device_address,
+                                              const std::uint16_t register_address,
+                                              const std::uint8_t data)
+{
+  const std::uint8_t register_address_hi = register_address >> 8;
+  const std::uint8_t register_address_lo = static_cast<std::uint8_t>(register_address);
+  const std::vector<std::uint8_t> bytes  = {register_address_hi, register_address_lo, data};
+  return writeBytesToDevice(device_address, bytes);
+}
+
+// TODOLater - Test code
+core::Result HardwareI2c::writeBytesToDevice(const std::uint8_t device_address,
+                                             const std::vector<std::uint8_t> &bytes)
+{
   if (sensor_address_ != device_address) { setSensorAddress(device_address); }
-  const std::uint8_t write_buffer[2] = {register_address, data};
-  const ssize_t num_bytes_written    = write(file_descriptor_, write_buffer, 2);
-  if (num_bytes_written != 2) {
+  const std::size_t number_of_bytes = bytes.size();
+  const std::uint8_t *write_buffer  = bytes.data();
+  const ssize_t num_bytes_written   = write(file_descriptor_, write_buffer, number_of_bytes);
+  if (num_bytes_written != number_of_bytes) {
     logger_.log(core::LogLevel::kFatal, "Failed to write to i2c device");
     return core::Result::kFailure;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully wrote byte to i2c device register");
+  logger_.log(core::LogLevel::kDebug, "Successfully wrote bytes to i2c device register");
   return core::Result::kSuccess;
 }
 
@@ -96,12 +115,12 @@ core::Result HardwareI2c::writeByte(const std::uint8_t device_address, const std
 
 void HardwareI2c::setSensorAddress(const std::uint8_t device_address)
 {
-  sensor_address_        = device_address;
   const int return_value = ioctl(file_descriptor_, I2C_SLAVE, device_address);
   if (return_value < 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to set sensor address");
     return;
   }
+  sensor_address_ = device_address;
 }
 
 }  // namespace hyped::io
