@@ -10,7 +10,7 @@
 
 &nbsp;
 
-![Build Shield](https://github.com/Hyp-ed/hyped-2023/actions/workflows/build.yml/badge.svg) ![TODO Shield](https://img.shields.io/github/search/hyp-ed/hyped-2023/TODOLater?color=red&label=TODO%20counter)
+![Build Shield](https://github.com/Hyp-ed/hyped-2024/actions/workflows/build.yml/badge.svg) ![TODO Shield](https://img.shields.io/github/search/hyp-ed/hyped-2024/TODOLater?color=red&label=TODO%20counter)
 
 ## Dependencies
 
@@ -20,6 +20,7 @@
 - `eigen3`
 - `boost`
 - `rapidjson`
+- `ncurses`
 
 ## Usage
 
@@ -53,31 +54,15 @@
 
   > Note: The following should be run in the `telemetry` directory.
 
-  To install dependencies:
-  
-  ```
-  pnpm install
-  ```
-
-  To build the project:
+  To run the telemetry system, run the following command:
 
   ```
-  pnpm build
+  ./docker.sh <pnpm_script>
   ```
 
-  To run in development mode:
-
-  ```
-  pnpm dev
-  ```
+  where `<pnpm_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
 
   > The GUI will now be available on `http://localhost:5173`
-
-  To run a script in a particular package, add `--filter <workspace>`, for example:
-
-  ```
-  pnpm --filter @hyped/constants build
-  ```
 
 ## Contributing
 

@@ -3,8 +3,8 @@ lib/sensors @licornes-fluos
 test/sensors @licornes-fluos
 lib/io @licornes-fluos
 test/io @licornes-fluos
-lib/navigation @pkhudov
-test/navigation @pkhudov
+lib/navigation @misha7b
+test/navigation @misha7b
 telemetry @davidbeechey
 lib/motors @lsalhani
 test/motors @lsalhani

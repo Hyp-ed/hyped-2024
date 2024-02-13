@@ -20,6 +20,9 @@ class DummyI2c : public io::II2c {
   virtual core::Result writeByteToRegister(const std::uint8_t device_address,
                                            const std::uint8_t register_address,
                                            const std::uint8_t data);
+  virtual core::Result writeByteToRegister(const std::uint8_t device_address,
+                                           const std::uint16_t register_address,
+                                           const std::uint8_t data);
   virtual core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data);
 };
 

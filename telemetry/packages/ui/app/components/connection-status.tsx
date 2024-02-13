@@ -6,7 +6,6 @@ import {
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-  TooltipArrow,
 } from '@/components/ui/tooltip';
 import { useState, useEffect } from 'react';
 
