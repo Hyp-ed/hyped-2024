@@ -34,98 +34,10 @@
   color: var(--invert-color);
 }
 
-.levitation {
-  transform: rotate(90deg);
-  /* margin-bottom: 100px; */
-}
-
-.levitate {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-  /* align-self: center;
-  justify-self: center;
-   */
-  /* margin-bottom: 10px; */
-}
-
-.levitate-2 {
-  transform: rotate(-90deg);
-  /* padding-left: 50px; */
-  position: absolute;
-  top: 100px;
-  left: -20px;
-}
-
-.levitate-card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-content: center;
-  justify-self: center;
-  align-self: center;
-  width: 490px;
-  height: 410px;
-}
-
 .combined {
   display: flex;
   flex-direction: column;
   gap: 30px;
-}
-
-@media (min-width: 499px) and (max-width: 768px) {
-  .levitate-card {
-    width: 360px;
-    height: 400px;
-    padding-top: 150px;
-  }
-  .levitate-2 {
-    padding-left: 50px;
-  }
-  .levitate {
-    margin-bottom: 120px;
-    margin-top: -10px;
-  }
-  .levitate-1 {
-    height: 280px;
-  }
-}
-
-@media (max-width: 499px) {
-  .levitate-card {
-    width: 360px;
-    height: 400px;
-    padding-top: 150px;
-  }
-  .levitate-2 {
-    padding-left: 72px;
-    margin-bottom: 0px;
-  }
-  .levitate {
-    margin-bottom: 120px;
-    margin-top: 10px;
-  }
-  .levitate-1 {
-    height: 280px;
-  }
-}
-
-@media (min-width: 768px) and (max-width: 1023px) {
-  .levitate-card {
-    width: 350px;
-    height: 445px;
-    padding-top: 150px;
-  }
-  .levitate-2 {
-    padding-left: 70px;
-    /* display: flex;
-    flex-direction: row; */
-  }
-  .levitate {
-    margin-bottom: 120px;
-    margin-top: 10px;
-  }
 }
 
 .v-graph {
@@ -158,17 +70,6 @@
   flex-direction: row;
   justify-content: space-between;
   padding-right: 5px;
-}
-.levitation {
-  position: relative;
-}
-.levitate-title {
-  position: absolute;
-  top: 20px;
-}
-.levitate-2 {
-  flex-direction: row;
-  gap: 5px;
 }
 
 .timer {

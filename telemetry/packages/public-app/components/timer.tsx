@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { BadgeDelta } from '@tremor/react';
 import { useQuery } from 'react-query';
 
-export function DigitalTimer(): JSX.Element {
+export function DigitalTimer() {
   const { data } = useQuery(
     'launch-time',
     async () =>

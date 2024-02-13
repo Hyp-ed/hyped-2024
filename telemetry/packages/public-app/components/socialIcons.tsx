@@ -3,7 +3,7 @@ import React from 'react';
 
 import { Linkedin, Facebook, Instagram, Github, Youtube } from 'lucide-react';
 
-const socialIcons_object = {
+const SOCIAL_ICONS = {
   Facebook: (
     <Facebook
       color="#c91c10"
@@ -39,7 +39,7 @@ const socialIcons_object = {
 export const SocialIcons = () => {
   return (
     <div className="flex flex-row pt-3 gap-4">
-      {Object.values(socialIcons_object).map((urlIcon) => (
+      {Object.values(SOCIAL_ICONS).map((urlIcon) => (
         <button>{urlIcon}</button>
       ))}
     </div>

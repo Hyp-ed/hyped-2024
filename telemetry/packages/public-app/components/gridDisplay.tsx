@@ -41,7 +41,7 @@ export const ColorInverter = () => {
 export default function GridDsiplay() {
   const [selected, setSelected] = useState<Card>('VELOCITY');
   const [clicked, setClicked] = useState(false);
-
+ 
   const switched = () => {
     ColorInverter();
     !clicked && localStorage.getItem('color-theme') === 'dark'
