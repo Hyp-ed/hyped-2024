@@ -4,7 +4,6 @@ import { Utilities } from './sensorUtils';
 import mqtt from 'mqtt';
 
 
-
 export class SensorManager {
   // Create an array to store sensor instances
   private sensors: SensorInstance<
@@ -70,7 +69,7 @@ export class SensorManager {
           // Publish each of the current sensor type's reading values under the topic of
           //   its corresponding measurement key to the MQTT broker
           Object.entries(readings).forEach( ([measurement, value]) => {
-            this.publishData(measurement, value);
+            this.publishData(measurement, value.toString());
           });
         }
         // At each timestep, each sensor should have a value corresponding to the global time
@@ -108,7 +107,7 @@ export class SensorManager {
    * So simply append the key and publish the value as the payload
    * Subscribed clients extract values using payload[measurementKey]
    */
-  private publishData(measurement: string, reading: number): void {
+  private publishData(measurement: string, reading: string): void {
     this.client.publish(
       `hyped/pod_1/measurements/${measurement}`,
       reading,

@@ -6,16 +6,12 @@ export class Motion extends Sensor {
     protected displacement: number;
     protected velocity: number;
     protected acceleration: number;
-    private velocityStState: number;
+    
+    private velocityStState = 0.95; // Desired steady state velocity as percentage of maximum allowable velocity
 
-    /**
-     * Constructor for Motion class
-     * @param accelerometer motion-type sensor data in LiveReading format (from sensorData object)
-     * @param velocityStState Desired steady state velocity as percentage of maximum allowable velocity
-     */
-    constructor(accelerometer: LiveReading, velocityStState = 0.95) {
+    constructor(accelerometer: LiveReading) {
       super(accelerometer);
-      // store the relevant deconstructed reading values into new variables for legibility
+      // store the relevant deconstructed reading values into separate variables for legibility
       const { displacement, velocity, acceleration } = Sensor.lastReadings.motion;
       Object.assign(this, { displacement, velocity, acceleration });
     }
@@ -46,14 +42,21 @@ export class Motion extends Sensor {
           : accelerometerReading;
       accelerometerReading += Utilities.gaussianRandom(this.rms_noise);
         
-      // Return the three variables of interest,
-      //   calculating velocity and displacement using dv*dt and dx*dt
-      return {
-        acceleration: accelerometerReading,
-        velocity: (this.velocity +=
+      // Calculatie velocity and displacement using dv*dt and dx*dt
+      // Set class variables to the new values
+      [ this.displacement, this.velocity, this.acceleration ] = [
+        accelerometerReading,
+        (this.velocity +=
           accelerometerReading * this.sampling_time),
-        displacement: (this.displacement +=
-          this.velocity * this.sampling_time),
+          (this.displacement +=
+            this.velocity * this.sampling_time)
+          ];
+          
+      // Return the three variables of interest
+      return {
+        acceleration: this.acceleration,
+        velocity: this.velocity,
+        displacement: this.displacement,
       };
     }
   

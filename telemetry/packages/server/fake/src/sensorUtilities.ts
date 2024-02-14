@@ -66,13 +66,12 @@ export class Utilities {
 
   /**
    * Simple averages, used to average readings from a set of similar sensors
-   * @param values
-   * @param qty
-   * @returns the average of the readings
+   * @param values numbers to average
+   * @returns arithmetic average
    */
-  public static average(values: Readings, qty: number): number {
+  public static average(values: Readings): number {
     return (
-      Object.values(values).reduce( (acc, val) => acc + val, 0) / qty
+      Object.values(values).reduce( (acc, val) => acc + val, 0) / values.length
     )
   }
 

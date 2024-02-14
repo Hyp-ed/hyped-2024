@@ -11,7 +11,7 @@ export { measurements, sensorData } from './env/config'
 
 // Data managing and sensor utilties classes
 export { SensorManager } from './src/dataManager';
-export { Utilities } from './src/sensorUtils';
+export { Utilities } from './src/sensorUtilities';
 
 // Top-level abstract Sensor class and individual sensor classes
 export { Sensor } from './src/baseSensor';
