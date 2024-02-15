@@ -17,7 +17,7 @@ const style: React.CSSProperties = {
   width: '100vw',
 };
 
-export default function PreLoader(): JSX.Element {
+export default function PreLoader() {
   const [loading, setLoading] = useState<boolean>(true);
   const [processing, setProcessing] = useState<boolean>(true);
   const [processed, setProcessed] = useState<boolean>(true);
