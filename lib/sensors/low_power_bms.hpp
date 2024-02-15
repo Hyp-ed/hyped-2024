@@ -30,10 +30,8 @@ class LowPowerBMS {
   const std::uint8_t device_write_address = kDefaultLpBmsWriteAddress;
  
  private:
-  static constexpr std::uint8_t kLEDControlRegister     = 0x02;
-  static constexpr std::uint8_t kBrightnessRegisterBase = 0x08;
-  static constexpr std::uint8_t kColorRegisterBase      = 0x14;
-  static constexpr std::uint8_t kResetRegister          = 0x38;
+  static constexpr std::uint8_t cell_voltages[] = {0x14, 0x16, 0x18, 0x1A, 0x1C, 0x1E, 0x20, 0x22, 0x24, 0x26, 0x28, 0x2A, 0x2C, 0x2E, 0x30, 0x32};
+  static constexpr std::uint8_t stack_voltage = 0x34
 
 };
 

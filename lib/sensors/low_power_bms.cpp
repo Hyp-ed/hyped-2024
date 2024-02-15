@@ -28,8 +28,6 @@ std::optional<core::BatteryStatus> LowPowerBMS::getBatteryData()
     return std::nullopt;
   }
 
-  core::BatteryStatus status;
-
   return status;
 }
 
