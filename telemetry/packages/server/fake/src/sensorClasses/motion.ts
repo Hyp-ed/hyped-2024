@@ -5,18 +5,20 @@ export class Motion extends Sensor {
   protected displacement: number;
   protected velocity: number;
   protected acceleration: number;
+  private velocityStState: number;
 
   /**
    * Constructor for Motion class
    * @param accelerometer motion-type sensor data in LiveReading format (from sensorData object)
    * @param velocityStState Desired steady state velocity as percentage of maximum allowable velocity
    */
-  constructor(accelerometer: LiveReading, private velocityStState = 0.95) {
+  constructor(accelerometer: LiveReading, velocityStState = 0.95) {
     super(accelerometer);
     // store the relevant deconstructed reading values into new variables for legibility
     const { displacement, velocity, acceleration } = Sensor.lastReadings.motion;
     Object.assign(this, { displacement, velocity, acceleration });
   }
+
   /**
    * Gets current reading from each accelerometer and calculates the other motion variables
    * Estimates velocity-time graph as a logistic function

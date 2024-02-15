@@ -3,8 +3,6 @@ import { Utilities } from './sensorUtils';
 
 import mqtt from 'mqtt';
 
-
-
 export class SensorManager {
   // Create an array to store sensor instances
   private sensors: SensorInstance<
@@ -69,8 +67,8 @@ export class SensorManager {
 
           // Publish each of the current sensor type's reading values under the topic of
           //   its corresponding measurement key to the MQTT broker
-          Object.entries(readings).forEach( ([measurement, value]) => {
-            this.publishData(measurement, value);
+          Object.entries(readings).forEach(([measurement, value]) => {
+            this.publishData(measurement, value.toString());
           });
         }
         // At each timestep, each sensor should have a value corresponding to the global time
@@ -89,7 +87,7 @@ export class SensorManager {
   private instantiateSensors(): void {
     for (const sensorType in sensorData) {
       this.sensors.push(
-        // An array data type is used to preserve order of sensor instances 
+        // An array data type is used to preserve order of sensor instances
         new sensors.default[sensorType](sensorData[sensorType]),
       );
     }
@@ -99,7 +97,9 @@ export class SensorManager {
    * At each timestep, reset all sensors' isSampled flags to back to the false state
    */
   private resetSampledState(): void {
-    Object.keys(Sensor.isSampled).forEach( sensor => Sensor.isSampled[sensor] = false );
+    Object.keys(Sensor.isSampled).forEach(
+      (sensor) => (Sensor.isSampled[sensor] = false),
+    );
   }
 
   /**
@@ -108,7 +108,7 @@ export class SensorManager {
    * So simply append the key and publish the value as the payload
    * Subscribed clients extract values using payload[measurementKey]
    */
-  private publishData(measurement: string, reading: number): void {
+  private publishData(measurement: string, reading: string): void {
     this.client.publish(
       `hyped/pod_1/measurements/${measurement}`,
       reading,
@@ -120,5 +120,4 @@ export class SensorManager {
       },
     );
   }
-  
 }
