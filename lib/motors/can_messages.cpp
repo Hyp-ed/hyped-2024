@@ -19,7 +19,7 @@ std::vector<std::uint8_t> VectorControlCanMessages::convertToBytes(std::uint64_t
   return bytes;
 }
 
-core::Result VectorControlCanMessages::canSend(Operation operation,
+core::Result VectorControlCanMessages::canSend(Operation operation,  // for general update messages
                                                Location location,
                                                std::uint64_t data)
 {
@@ -47,7 +47,6 @@ core::Result VectorControlCanMessages::canError(Error error)
 {
   io::CanFrame frame;
 
-  // check location thing
   const std::vector<uint8_t> errorVector = convertToBytes(error, 4);
 
   frame.can_id  = kErrorId;
