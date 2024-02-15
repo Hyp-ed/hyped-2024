@@ -14,6 +14,10 @@ RUN cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_STATIC=ON -DPAHO_BUILD_
 RUN sudo cmake --build build/ --target install
 RUN sudo ldconfig
 
+# Install Cross-Compile Toolchain
+WORKDIR /home
+RUN git clone https://github.com/raspberrypi/tools.git
+
 WORKDIR /home/hyped_entrypoint
 
 COPY entry.sh ./

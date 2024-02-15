@@ -16,7 +16,14 @@ elif [ ! -d "build" ]; then
     mkdir build
 fi
 
-cd build 
-cmake ..
-make -j
-make test
+if [[ $CROSS_COMPILE = true ]]; then
+    cd build 
+    cmake ..
+    make -j
+    make test
+else
+    cd build 
+    cmake ..
+    make -j
+    make test
+fi 
