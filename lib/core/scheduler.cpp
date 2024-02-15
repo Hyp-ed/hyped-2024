@@ -19,7 +19,7 @@ core::Result Scheduler::run()
     const auto next_result = next_task.handler();
     task_queue_.pop();
     if (next_result == core::Result::kFailure) { return core::Result::kFailure; }
-    if (task_queue_.empty()) { break; }
+    if (task_queue_.empty()) { return core::Result::kSuccess; }
   }
   return core::Result::kSuccess;
 }
@@ -27,7 +27,7 @@ core::Result Scheduler::run()
 void Scheduler::schedule(const core::Duration delay, std::function<core::Result(void)> handler)
 {
   auto execution_timepoint = time_.now() + std::chrono::nanoseconds(delay);
-  const Task task{execution_timepoint, handler};
+  const Task task(execution_timepoint, handler);
   task_queue_.push(task);
 }
 
