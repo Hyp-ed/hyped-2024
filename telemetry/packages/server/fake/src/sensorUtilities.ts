@@ -1,7 +1,6 @@
 import { Readings } from '..';
 
 export class Utilities {
-  
   /** Greatest common divisor */
   public static gcd(nums: number[]): number {
     // ensure numerical array is in descending order
@@ -57,7 +56,6 @@ export class Utilities {
     rms_noise: number,
     format: 'float' | 'integer',
   ): number {
-
     // Check numerical format (i.e. keyence sensor is an integer measurement)
     return format == 'float'
       ? parseFloat(this.gaussianRandom(rms_noise, prevValue).toFixed(2))
@@ -71,14 +69,14 @@ export class Utilities {
    */
   public static average(values: Readings): number {
     return (
-      Object.values(values).reduce( (acc, val) => acc + val, 0) / values.length
-    )
+      Object.values(values).reduce((acc, val) => acc + val, 0) / values.length
+    );
   }
 
   /**
    * Logistic function used as an analytical basis for certain sensor variables' behaviour over time
    * @returns the current timestep's reading according to this analytical model
-  */
+   */
   // Requires:
   // - setpoint for velocity (arbitrary, around 90-95% of max velocity)
   // - acceleration high limit (from sensorData)
@@ -91,5 +89,4 @@ export class Utilities {
   ): any {
     return steadyState / (1 + Math.exp(-growthRate * (t - timeOfInflection)));
   }
-
 }

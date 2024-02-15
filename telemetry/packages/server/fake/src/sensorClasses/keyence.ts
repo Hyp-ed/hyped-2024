@@ -1,18 +1,17 @@
-import { Sensor } from "../baseSensor";
-import { Motion } from "./motion";
-import { Readings, LiveReading } from "../../index";
+import { Sensor } from '../baseSensor';
+import { Motion } from './motion';
+import { Readings, LiveReading } from '../../index';
 
 /**
  * Integer value in range [0, 16], which directly corresponds to the pod displacement, which
  * has a range of [0m, 100m]. Every 16m, keyence increases by one (pole/stripe). Obviously,
- * this optical sensor has no random noise. Its graph will look like a staircase of varying 
+ * this optical sensor has no random noise. Its graph will look like a staircase of varying
  * width per step depending on the velocity.
- * 
+ *
  * It needs to know the displacement at this time t. No point calculating it again if it's already
  * been calculated, so we need to check and reference instances.motion.time.
  */
 export class Keyence extends Motion {
-
   private podLength = 2.5;
 
   constructor(data: LiveReading) {
@@ -31,18 +30,16 @@ export class Keyence extends Motion {
     //   and set the isSampled flag to true so other sensors in this iteration can
     //   immediately extract the calculated displacement value
     if (!Sensor.isSampled['motion']) {
-       this.displacement = super.getData(t).displacement;
-       Sensor.isSampled['motion'] = true;
+      this.displacement = super.getData(t).displacement;
+      Sensor.isSampled['motion'] = true;
     }
 
-    const readings = Object.keys(Sensor.lastReadings.keyence).map( (key, i) => {
-        // Calculate sensor offset from front of pod
-        const sensorPos = this.displacement - (sensorRegion * i);
-        return [key, Math.floor(sensorPos / 16)];
+    const readings = Object.keys(Sensor.lastReadings.keyence).map((key, i) => {
+      // Calculate sensor offset from front of pod
+      const sensorPos = this.displacement - sensorRegion * i;
+      return [key, Math.floor(sensorPos / 16)];
     });
-    
     // return readings in expected format
     return Object.fromEntries(readings);
   }
-
 }

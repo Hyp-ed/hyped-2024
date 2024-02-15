@@ -9,7 +9,7 @@ export abstract class Sensor {
   public static isSampled: Record<string, boolean>;
   // Stores most recent sensor readings for all sensors, accessible by all sensors
   // Null is used to indicate that the sensor has not been sampled at the current time
-  public static lastReadings: Record<string, Readings> = {}; 
+  public static lastReadings: Record<string, Readings> = {};
 
   // Sensor properties
   readonly type: string; // sensor type (same as the name of the object in sensorData)
@@ -33,9 +33,16 @@ export abstract class Sensor {
     rms_noise,
     sampling_time,
     readings,
-    quantity
+    quantity,
   }: LiveReading) {
-    Object.assign(this, { type, format, limits, rms_noise, sampling_time, quantity });
+    Object.assign(this, {
+      type,
+      format,
+      limits,
+      rms_noise,
+      sampling_time,
+      quantity,
+    });
     this.time = 0;
     console.log('readings:', readings);
     // Add initial sensor values to global readings object
@@ -62,5 +69,4 @@ export abstract class Sensor {
     }
     return readings;
   }
-
 }
