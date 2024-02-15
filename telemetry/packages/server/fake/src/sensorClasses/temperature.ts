@@ -15,5 +15,6 @@ export class Temperature extends Sensor {
     // const readings = // ... insert main main logic here
     // this.temperature = Utilities.average(readings); // take thermistor values' average
     // return readings; //
+    return {};
   }
 }

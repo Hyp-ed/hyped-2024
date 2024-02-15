@@ -1,13 +1,12 @@
 import { Sensor, Readings, SensorInstance, sensorData, sensors } from '..';
-import { Utilities } from './sensorUtils';
+import { Utilities } from './sensorUtilities';
 
 import mqtt from 'mqtt';
 
 export class SensorManager {
   // Create an array to store sensor instances
-  private sensors: SensorInstance<
-    (typeof sensors.default)[keyof typeof sensors.default]
-  >[] = [];
+  private sensors: SensorInstance<(typeof sensors)[keyof typeof sensors]>[] =
+    [];
 
   // Record the sampling intervals for each sensor
   private samplingTimes: Record<string, number> = {};
@@ -49,6 +48,8 @@ export class SensorManager {
     const interval = Utilities.gcd(Object.values(this.samplingTimes));
     // Run setInterval to generate and upload the data
     // This essentially acts as a while loop, but using real time (eliminating the chance of inifintie loops)
+
+    console.log(`this.sensors:`, this.sensors);
     const simulationInterval = setInterval(() => {
       // Preset all 'sampled' flags to false
       this.resetSampledState();
@@ -70,7 +71,12 @@ export class SensorManager {
           Object.entries(readings).forEach(([measurement, value]) => {
             this.publishData(measurement, value.toString());
           });
+
+          // this.logData(readings);
+          console.log(readings);
         }
+
+        console.log(`Time: ${this.globalTime}`);
         // At each timestep, each sensor should have a value corresponding to the global time
         // So those which haven't been sampled will remain at their last known value
       });
@@ -79,8 +85,17 @@ export class SensorManager {
       this.globalTime += interval;
       if (this.globalTime >= runTime) {
         clearInterval(simulationInterval);
+        console.log('Simulation complete');
+        process.exit(0);
       }
     }, interval);
+  }
+
+  private logData(data: Readings): void {
+    for (const measurement in data) {
+      console.log(`${measurement}: ${data[measurement]}`);
+    }
+    console.log(`\n`);
   }
 
   // Instantiate sensors with their respective data and store instances in array
@@ -88,7 +103,7 @@ export class SensorManager {
     for (const sensorType in sensorData) {
       this.sensors.push(
         // An array data type is used to preserve order of sensor instances
-        new sensors.default[sensorType](sensorData[sensorType]),
+        new sensors[sensorType](sensorData[sensorType]),
       );
     }
   }

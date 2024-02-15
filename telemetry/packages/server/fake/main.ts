@@ -14,7 +14,7 @@ const args = process.argv.slice(2);
 const shouldRandomise = args.includes('--random') ? true : false;
 const runTime = args.includes('--runtime')
   ? parseInt(args[args.indexOf('--runtime') + 1])
-  : 30000;
+  : 2000;
 
 // If user defined specific sensors, use them, otherwise simulate all sensors
 // Essentially setting default value of the array parameter to all sensors

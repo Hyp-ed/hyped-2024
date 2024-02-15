@@ -13,7 +13,6 @@ export const POD_IDS = ['pod_1'] as const;
 export const pods: Pods = {
   pod_1: {
     id: 'pod_1',
-    key: 2,
     name: 'Pod Ness',
     measurements: {
       // ************************************ ACCELEROMETERS ************************************ //
@@ -423,7 +422,7 @@ export const pods: Pods = {
           },
         },
         rms_noise: 1, // estimate
-        sampling_time: 500
+        sampling_time: 500,
       },
 
       // ************************************ LEVITATION ************************************ //
@@ -440,7 +439,7 @@ export const pods: Pods = {
           },
         },
         rms_noise: 2, // from Time-of-Flight datasheet
-        sampling_time: 500
+        sampling_time: 500,
       },
     },
   },
