@@ -57,7 +57,7 @@
   To run the telemetry system, run the following command:
 
   ```
-  ./docker.sh <pnpm_script>
+  ./telemetry.sh <pnpm_script> (-b --build: rebuild the container) (-m --mosquitto: run with MQTT broker)
   ```
 
   where `<pnpm_script>` is one of the scripts defined in `package.json`. E.g. `dev` or `build`.
