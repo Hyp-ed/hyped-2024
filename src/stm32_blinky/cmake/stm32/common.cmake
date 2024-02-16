@@ -1,59 +1,7 @@
 set(STM32_SUPPORTED_FAMILIES_LONG_NAME STM32F4 STM32F7)
+set(STM32_SUPPORTED_FAMILIES_SHORT_NAME F4 F7)
 
-foreach(FAMILY ${STM32_SUPPORTED_FAMILIES_LONG_NAME})
-  # append short names (F0, F1, H7_M4, ...) to
-  # STM32_SUPPORTED_FAMILIES_SHORT_NAME
-  string(
-    REGEX MATCH
-          "^STM32([CFGHLMUW]P?[0-9BL])_?(M0PLUS|M4|M7)?"
-          FAMILY
-          ${FAMILY}
-  )
-  list(APPEND STM32_SUPPORTED_FAMILIES_SHORT_NAME ${CMAKE_MATCH_1})
-endforeach()
-list(REMOVE_DUPLICATES STM32_SUPPORTED_FAMILIES_SHORT_NAME)
-
-if(NOT STM32_TOOLCHAIN_PATH)
-  if(DEFINED ENV{STM32_TOOLCHAIN_PATH})
-    message(
-      STATUS
-        "Detected toolchain path STM32_TOOLCHAIN_PATH in environmental variables: "
-    )
-    message(STATUS "$ENV{STM32_TOOLCHAIN_PATH}")
-    set(STM32_TOOLCHAIN_PATH $ENV{STM32_TOOLCHAIN_PATH})
-  else()
-    if(NOT CMAKE_C_COMPILER)
-      set(STM32_TOOLCHAIN_PATH "/usr")
-      message(STATUS "No STM32_TOOLCHAIN_PATH specified, using default: "
-                     ${STM32_TOOLCHAIN_PATH}
-      )
-    else()
-      # keep only directory of compiler
-      get_filename_component(STM32_TOOLCHAIN_PATH ${CMAKE_C_COMPILER} DIRECTORY)
-      # remove the last /bin directory
-      get_filename_component(
-        STM32_TOOLCHAIN_PATH ${STM32_TOOLCHAIN_PATH} DIRECTORY
-      )
-    endif()
-  endif()
-  file(TO_CMAKE_PATH "${STM32_TOOLCHAIN_PATH}" STM32_TOOLCHAIN_PATH)
-endif()
-
-if(NOT STM32_TARGET_TRIPLET)
-  if(DEFINED ENV{STM32_TARGET_TRIPLET})
-    message(
-      STATUS
-        "Detected target triplet STM32_TARGET_TRIPLET in environmental variables: "
-    )
-    message(STATUS "$ENV{STM32_TARGET_TRIPLET}")
-    set(STM32_TARGET_TRIPLET $ENV{STM32_TARGET_TRIPLET})
-  else()
-    set(STM32_TARGET_TRIPLET "arm-none-eabi")
-    message(STATUS "No STM32_TARGET_TRIPLET specified, using default: "
-                   ${STM32_TARGET_TRIPLET}
-    )
-  endif()
-endif()
+set(STM32_TARGET_TRIPLET "arm-none-eabi")
 
 set(CMAKE_SYSTEM_NAME Generic)
 set(CMAKE_SYSTEM_PROCESSOR arm)
@@ -119,9 +67,6 @@ function(
     endif()
     math(EXPR INDEX "${INDEX}+1")
   endforeach()
-  if(NOT RESULT_TYPE)
-    message(FATAL_ERROR "Invalid/unsupported device: ${DEVICE}")
-  endif()
   set(${TYPE} ${RESULT_TYPE} PARENT_SCOPE)
 endfunction()
 

@@ -14,18 +14,9 @@ include(stm32/devices)
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
-find_program(
-  CMAKE_C_COMPILER NAMES ${STM32_TARGET_TRIPLET}-gcc
-  HINTS ${TOOLCHAIN_BIN_PATH}
-)
-find_program(
-  CMAKE_CXX_COMPILER NAMES ${STM32_TARGET_TRIPLET}-g++
-  HINTS ${TOOLCHAIN_BIN_PATH}
-)
-find_program(
-  CMAKE_ASM_COMPILER NAMES ${STM32_TARGET_TRIPLET}-gcc
-  HINTS ${TOOLCHAIN_BIN_PATH}
-)
+find_program(CMAKE_C_COMPILER NAMES arm-none-eabi-gcc)
+find_program(CMAKE_CXX_COMPILER NAMES arm-none-eabi-gcc-g++)
+find_program(CMAKE_ASM_COMPILER NAMES arm-none-eabi-gcc-gcc)
 
 set(CMAKE_EXECUTABLE_SUFFIX_C .elf)
 set(CMAKE_EXECUTABLE_SUFFIX_CXX .elf)
