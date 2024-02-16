@@ -14,11 +14,11 @@ services:
     volumes:
       - ./:/usr/src/app
       # Exclude node_modules from being mounted
-      - /usr/src/app/node_modules
-      - /usr/src/app/packages/constants/node_modules
-      - /usr/src/app/packages/server/node_modules
-      - /usr/src/app/packages/types/node_modules
-      - /usr/src/app/packages/ui/node_modules
+      - /usr/src/app/node_modules/
+      - /usr/src/app/packages/constants/node_modules/
+      - /usr/src/app/packages/server/node_modules/
+      - /usr/src/app/packages/types/node_modules/
+      - /usr/src/app/packages/ui/node_modules/
     networks:
       - telemetry
   influxdb:

@@ -63,12 +63,20 @@ handle_options "$@"
 
 if [ "$build" = true ]; then
   if [ "$with_mqtt_broker" = true ]; then
-    docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build
+    command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build -V"
+    echo "Running command: $command"
+    $command
   else
-    docker-compose up --build
+    command="docker-compose up --build -V"
+    echo "Running command: $command"
+    $command
   fi
 elif [ "$with_mqtt_broker" = true ]; then
-  docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up
+  command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up"
+  echo "Running command: $command"
+  $command
 else
-  docker-compose up
+  command="docker-compose up"
+  echo "Running command: $command"
+  $command
 fi
