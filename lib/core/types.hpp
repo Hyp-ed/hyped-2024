@@ -27,12 +27,13 @@ static constexpr std::uint8_t kNumAccelerometers = 4;
 static constexpr std::uint8_t kNumAxis           = 3;
 static constexpr std::uint8_t kNumEncoders       = 4;
 static constexpr std::uint8_t kNumKeyence        = 2;
+static constexpr std::uint8_t kNumOptical        = 1;
 
 // data format for raw sensor data
 using RawAccelerometerData = std::array<std::array<Float, kNumAxis>, kNumAccelerometers>;
 using AccelerometerData    = std::array<Float, kNumAccelerometers>;
-using EncoderData          = std::array<std::uint32_t, kNumEncoders>;
 using KeyenceData          = std::array<std::uint32_t, kNumKeyence>;
+using OpticalData          = std::array<std::array<Float, 2>, kNumOptical>;
 
 // data produced by the accelerometer sensor
 // values are in milli-g (standard gravity)
