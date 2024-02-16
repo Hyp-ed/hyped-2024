@@ -7,6 +7,8 @@ export class Pressure extends Sensor {
   }
 
   getData(t: number): Readings {
-    return {};
+    return {
+      'pressure_front_pull': 2.1, // placeholder
+    };
   }
 }

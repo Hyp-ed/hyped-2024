@@ -67,10 +67,8 @@ export class Utilities {
    * @param values numbers to average
    * @returns arithmetic average
    */
-  public static average(values: Readings): number {
-    return (
-      Object.values(values).reduce((acc, val) => acc + val, 0) / values.length
-    );
+  public static average(values: number[]): number {
+    return values.reduce((acc, c) => acc + c) / values.length;
   }
 
   /**

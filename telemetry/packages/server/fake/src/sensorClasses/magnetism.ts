@@ -7,6 +7,8 @@ export class Magnetism extends Sensor {
   }
 
   getData(t: number): Readings {
-    return {};
+    return {
+      hall_effect_1: 193 // placeholder
+    };
   }
 }

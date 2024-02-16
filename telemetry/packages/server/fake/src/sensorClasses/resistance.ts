@@ -4,7 +4,7 @@ import { LiveReading, Readings, Utilities } from '../../index';
 
 export class Resistance extends Temperature {
   private alpha = 5 * 10 ** -3; // Temperature coefficient of resistance (steel)
-  private r_init: number;
+  private rstemp_init: number;
 
   /**
    * Instantiates a resistance sensor
@@ -15,7 +15,7 @@ export class Resistance extends Temperature {
     super(data);
     // Set initial (reference) resistance
     // When instantiated, the lastReadings will be the predefined initial values
-    this.r_init = Sensor.lastReadings.resistance.power_line_resistance;
+    this.rstemp_init = Sensor.lastReadings.resistance.power_line_resistance;
   }
   /**
    * Resistance is generally assunmed to be constant value, however
@@ -36,7 +36,7 @@ export class Resistance extends Temperature {
     // R = R0 * (1 + α(T - T0))
     const readings = Object.keys(Sensor.lastReadings.resistance).map((key) => {
       const r_val =
-        this.r_init * (1 + this.alpha * (this.temperature - this.T_init));
+        this.rstemp_init * (1 + this.alpha * (this.temperature - this.temp_init));
       return [key, r_val + Utilities.gaussianRandom(this.rms_noise)]; // add noise
     });
 

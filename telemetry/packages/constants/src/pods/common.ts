@@ -9,7 +9,7 @@ export const accelerometerCommon = {
     },
   },
   rms_noise: 16.25 * 10**(-3), // RMS rms_noise [mg] at ±15g range (~ ±150m/s^2)
-  sampling_time: 1000
+  sampling_time: 500
 } as const;
 
 // datasheet: https://www.st.com/en/mems-and-sensors/stts22h.html#st_description_sec-nav-tab

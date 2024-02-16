@@ -10,6 +10,9 @@
 import { SensorManager } from './src/dataManager';
 import { sensorData } from './env/config';
 
+// console.log(sensorData);
+// process.exit(0);
+
 const args = process.argv.slice(2);
 const shouldRandomise = args.includes('--random') ? true : false;
 const runTime = args.includes('--runtime')

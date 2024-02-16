@@ -5,14 +5,14 @@ export class Motion extends Sensor {
   protected displacement: number;
   protected velocity: number;
   protected acceleration: number;
-  private velocityStState: number;
+  private velocityStState = 0.95;
 
   /**
    * Constructor for Motion class
    * @param accelerometer motion-type sensor data in LiveReading format (from sensorData object)
    * @param velocityStState Desired steady state velocity as percentage of maximum allowable velocity
    */
-  constructor(accelerometer: LiveReading, velocityStState = 0.95) {
+  constructor(accelerometer: LiveReading) {
     super(accelerometer);
     // store the relevant deconstructed reading values into new variables for legibility
     const { displacement, velocity, acceleration } = Sensor.lastReadings.motion;
@@ -41,12 +41,20 @@ export class Motion extends Sensor {
         ? this.limits.critical.high
         : accelerometerReading;
     accelerometerReading += Utilities.gaussianRandom(this.rms_noise);
-    // Return the three variables of interest,
-    //   calculating velocity and displacement using dv*dt and dx*dt
+      
+    // Set instance vars to current values using dv*dt and dx*dt
+    // Use trapezoidal rule to estimate velocity and displacement
+    const avgAcceleration = (accelerometerReading + this.acceleration) / 2;
+    this.velocity += avgAcceleration * this.sampling_time;
+    this.displacement += this.velocity * this.sampling_time
+    // Finally, update the acceleration value
+    this.acceleration = accelerometerReading;
+    
+    // Return the three variables of interest
     return {
-      acceleration: accelerometerReading,
-      velocity: (this.velocity += accelerometerReading * this.sampling_time),
-      displacement: (this.displacement += this.velocity * this.sampling_time),
+      acceleration: this.acceleration,
+      velocity: this.velocity,
+      displacement: this.displacement,
     };
   }
 }

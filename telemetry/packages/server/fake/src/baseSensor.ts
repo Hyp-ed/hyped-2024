@@ -44,7 +44,7 @@ export abstract class Sensor {
       quantity,
     });
     this.time = 0;
-    console.log('readings:', readings);
+    // console.log('/nInitial values verification:', readings);
     // Add initial sensor values to global readings object
     Sensor.lastReadings[this.type] = readings;
   }

@@ -3,18 +3,22 @@ import { LiveReading, Readings, Utilities } from '../../index';
 
 export class Temperature extends Sensor {
   protected temperature: number;
-  protected T_init: number;
+  protected temp_init: number;
 
   constructor(data: LiveReading) {
     super(data);
-    this.T_init = Utilities.average(data.readings); // initial temperature
-    this.temperature = this.T_init; // dynamic value, set to initial temp. upon instantiation
+    // Set initial temperature value upon instantiation
+    this.temp_init = Utilities.average(Object.values(data.readings));
+    // Dynamic value used for reference by any sub-class(es)
+    this.temperature = this.temp_init;
   }
 
   getData(t: number): Readings {
     // const readings = // ... insert main main logic here
     // this.temperature = Utilities.average(readings); // take thermistor values' average
     // return readings; //
-    return {};
+    return {
+      thermistor_1: 27.1 // placeholder
+    };
   }
 }
