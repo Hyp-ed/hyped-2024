@@ -1,5 +1,6 @@
 'use client';
 
+import { getVelocity } from '@/helpers';
 import { Card, Title, LineChart } from '@tremor/react';
 import { format } from 'date-fns';
 import { useQuery } from 'react-query';
@@ -7,14 +8,7 @@ import { useQuery } from 'react-query';
 export const VelocityGraph = () => {
   const { data, isLoading, isError } = useQuery(
     'velocity',
-    async () =>
-      (await fetch(
-        `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/velocity?start=0`,
-      ).then((res) => res.json())) as {
-        id: 'velocity';
-        timestamp: string;
-        value: number;
-      }[],
+    async () => await getVelocity(),
     {
       refetchInterval: 1000,
     },

@@ -6,6 +6,11 @@ import {
   LevitationHeightResponse,
   RawLevitationHeight,
 } from '@hyped/telemetry-types';
+import {
+  HistoricalValueResponse,
+  LaunchTimeResponse,
+  StateResponse,
+} from '@hyped/telemetry-types/dist/server/responses';
 
 @Controller('pods/:podId/public-data')
 export class PublicDataController {
@@ -15,13 +20,15 @@ export class PublicDataController {
   ) {}
 
   @Get('launch-time')
-  async getLaunchTime(@Param('podId') podId: string) {
+  async getLaunchTime(
+    @Param('podId') podId: string,
+  ): Promise<LaunchTimeResponse> {
     this.validatePodId(podId);
     return this.publicDataService.getLaunchTime(podId);
   }
 
   @Get('state')
-  async getState(@Param('podId') podId: string) {
+  async getState(@Param('podId') podId: string): Promise<StateResponse> {
     this.validatePodId(podId);
     return this.publicDataService.getState(podId);
   }
@@ -31,7 +38,7 @@ export class PublicDataController {
     @Param('podId') podId: string,
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
-  ) {
+  ): Promise<HistoricalValueResponse> {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
@@ -49,7 +56,7 @@ export class PublicDataController {
     @Param('podId') podId: string,
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
-  ) {
+  ): Promise<HistoricalValueResponse> {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
@@ -67,7 +74,7 @@ export class PublicDataController {
     @Param('podId') podId: string,
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
-  ) {
+  ): Promise<HistoricalValueResponse> {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
@@ -85,7 +92,7 @@ export class PublicDataController {
     @Param('podId') podId: string,
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
-  ) {
+  ): Promise<LevitationHeightResponse> {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }

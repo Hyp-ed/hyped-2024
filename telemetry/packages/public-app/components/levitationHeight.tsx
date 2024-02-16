@@ -16,6 +16,7 @@ import {
   BadgeDelta,
   TabGroup,
 } from '@tremor/react';
+import { getLevitationHeight } from '@/helpers';
 
 interface products {
   title: string;
@@ -56,12 +57,9 @@ export default function LevitationHeight() {
   const selectedLocation = selectedIndex === 0 ? 'A' : 'B';
   const [show, setShow] = useState(false);
 
-  const { data, error } = useQuery<LevitationHeightResponse>(
+  const { data } = useQuery<LevitationHeightResponse>(
     'levitation-height',
-    async () =>
-      await fetch(
-        `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/pod_1/public-data/levitation-height?start=0`,
-      ).then((res) => res.json()),
+    async () => await getLevitationHeight(),
     {
       refetchInterval: 1000,
     },
@@ -145,7 +143,6 @@ export default function LevitationHeight() {
         <Button
           size="xs"
           variant="light"
-          
           iconPosition="right"
           onClick={() => {
             !show ? setShow(true) : setShow(false);
