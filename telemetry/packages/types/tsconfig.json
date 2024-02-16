@@ -1,7 +1,8 @@
 {
   "extends": "@hyped/tsconfig/base.json",
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "noEmit": false,
   },
   "include": ["src"],
   "exclude": ["node_modules"]
