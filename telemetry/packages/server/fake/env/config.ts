@@ -1,4 +1,10 @@
-import { pods, Pod, RangeMeasurement, SensorData, LiveReading } from '../index';
+import {
+  pods,
+  Pod,
+  RangeMeasurement,
+  SensorData,
+  LiveReading,
+} from '../src/index';
 
 // Extract and categorise relevant sensor data
 export const measurements = (Object.values(pods) as Pod[]).reduce(
@@ -90,7 +96,7 @@ export const sensorData: SensorData = Object.fromEntries(
       },
       { seen: new Set(), entries: [] as [string, RangeMeasurement][] },
     )
-    .entries// Add quantity and readings properties, the latter set to the sensors' initial conditions
+    .entries // Add quantity and readings properties, the latter set to the sensors' initial conditions
     .map(([name, data]: [string, RangeMeasurement]) => [
       name,
       {
@@ -111,5 +117,5 @@ export const sensorData: SensorData = Object.fromEntries(
 
 // console.log(sensorData);
 
-// parameter storing distance of track, once finsih point is reached program will end
+// Parameter storing distance of track, once finsih point is reached program will end
 export const trackLength = measurements.displacement.limits.critical.high;

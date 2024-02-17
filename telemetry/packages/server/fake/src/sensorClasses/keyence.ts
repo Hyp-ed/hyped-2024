@@ -1,6 +1,6 @@
 import { Sensor } from '../baseSensor';
 import { Motion } from './motion';
-import { Readings, LiveReading } from '../../index';
+import { Readings, LiveReading, trackLength } from '../index';
 
 /**
  * Integer value in range [0, 16], which directly corresponds to the pod displacement, which
@@ -24,6 +24,7 @@ export class Keyence extends Motion {
     // So the keyence sensor readings each have a displacement lag of 1/numKeyences * podLength
     // Subtract 1 as there are n-1 gaps between n sensors placed end to end with rest equally spaced between
     const sensorRegion = this.podLength / (this.quantity - 1);
+    const noPoles = this.limits.critical.high;
 
     // Check if the displacement reading has been taken at this time step
     // If not, update the motion instance to get the current displacement
@@ -32,12 +33,18 @@ export class Keyence extends Motion {
     if (!Sensor.isSampled['motion']) {
       this.displacement = super.getData(t).displacement;
       Sensor.isSampled['motion'] = true;
+    } else {
+      this.displacement = Sensor.lastReadings['motion'].displacement;
     }
 
     const readings = Object.keys(Sensor.lastReadings.keyence).map((key, i) => {
-      // Calculate sensor offset from front of pod
-      const sensorPos = this.displacement - sensorRegion * i;
-      return [key, Math.floor(sensorPos / 16)];
+      // Calculate sensor relative displacement
+      // Return value cannot be negative as sensor counts physical poles/stripes
+      const relDisp =
+        this.displacement - sensorRegion * i >= 0
+          ? this.displacement - sensorRegion * i
+          : 0;
+      return [key, Math.floor(relDisp * (noPoles / trackLength))];
     });
     // return readings in expected format
     return Object.fromEntries(readings);

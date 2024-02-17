@@ -1,4 +1,4 @@
-import { LiveReading, Readings, Limits, utils } from '../index';
+import { LiveReading, Readings, Limits, utils } from './index';
 
 export abstract class Sensor {
   // Define static objects, updated each timestep //
@@ -18,7 +18,7 @@ export abstract class Sensor {
   // readonly unit: string; // if we want to display units on UI, probably not necessary as front end will already do this
   readonly limits: Limits;
   readonly rms_noise: number;
-  readonly sampling_time: number;
+  readonly delta_t: number;
   readonly quantity: number;
   // readonly quantity: number; // uncomment if needed somewhere like averaging
 
@@ -40,9 +40,9 @@ export abstract class Sensor {
       format,
       limits,
       rms_noise,
-      sampling_time,
       quantity,
     });
+    this.delta_t = sampling_time / 1000; // convert ms to s
     this.time = 0;
     // console.log('/nInitial values verification:', readings);
     // Add initial sensor values to global readings object
@@ -70,6 +70,4 @@ export abstract class Sensor {
     }
     return readings;
   }
-
-  
 }

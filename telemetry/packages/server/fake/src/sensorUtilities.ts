@@ -1,4 +1,4 @@
-// No imports, this file contains pure, general functions 
+// No imports, this file contains pure, general functions
 
 export class Utilities {
   /** Greatest common divisor */
@@ -12,8 +12,8 @@ export class Utilities {
 
   /**
    * Simple floating point rounding method
-   * @param num 
-   * @returns 
+   * @param num
+   * @returns
    */
   public static round2DP(num: number): number {
     return parseFloat(num.toFixed(2));
@@ -96,7 +96,10 @@ export class Utilities {
   ): number {
     // round result for legibility
     return parseFloat(
-      (steadyState / (1 + Math.exp(-growthRate * (t - timeOfInflection)))).toFixed(2)
+      (
+        steadyState /
+        (1 + Math.exp(-growthRate * (t - timeOfInflection)))
+      ).toFixed(2),
     );
   }
 }

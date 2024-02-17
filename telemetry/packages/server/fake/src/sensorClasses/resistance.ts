@@ -1,6 +1,6 @@
 import { Sensor } from '../baseSensor';
 import { Temperature } from './temperature';
-import { LiveReading, Readings, utils } from '../../index';
+import { LiveReading, Readings, utils } from '../index';
 
 export class Resistance extends Temperature {
   private alpha = 5 * 10 ** -3; // Temperature coefficient of resistance (steel)
@@ -28,7 +28,7 @@ export class Resistance extends Temperature {
    * @param t time in seconds
    */
   getData(t: number): Readings {
-    if(!Sensor.isSampled['temperature']) {
+    if (!Sensor.isSampled['temperature']) {
       this.temperature = utils.average(Object.values(super.getData(t)));
       Sensor.isSampled['temperature'] = true;
     }
@@ -36,7 +36,8 @@ export class Resistance extends Temperature {
     // R = R0 * (1 + α(T - T0))
     const readings = Object.keys(Sensor.lastReadings.resistance).map((key) => {
       const r_val =
-        this.rstemp_init * (1 + this.alpha * (this.temperature - this.temp_init));
+        this.rstemp_init *
+        (1 + this.alpha * (this.temperature - this.temp_init));
       return [key, r_val + utils.gaussianRandom(this.rms_noise)]; // add noise
     });
 

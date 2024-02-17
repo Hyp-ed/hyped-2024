@@ -19,8 +19,8 @@
     "noFallthroughCasesInSwitch": true,
     "resolveJsonModule": true,
     "esModuleInterop": true,
-    // "types": ["node"],
     "paths": {
+      // "@hyped/*/*": ["./src/*"],
       "@/modules/*": [
         "src/modules/*",
         "src/fake/*"

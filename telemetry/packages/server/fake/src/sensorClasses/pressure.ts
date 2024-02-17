@@ -1,5 +1,5 @@
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings } from '../../index';
+import { LiveReading, Readings } from '../index';
 
 export class Pressure extends Sensor {
   constructor(data: LiveReading) {
