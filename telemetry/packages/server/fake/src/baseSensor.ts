@@ -1,4 +1,4 @@
-import { LiveReading, Readings, Limits, Utilities } from '../index';
+import { LiveReading, Readings, Limits, utils } from '../index';
 
 export abstract class Sensor {
   // Define static objects, updated each timestep //
@@ -60,8 +60,9 @@ export abstract class Sensor {
   abstract getData(t: number): Readings;
 
   protected getRandomData(prevValue: number, readings: Readings): Readings {
+    // console.log(`Running randomData...`);
     for (const unit in readings) {
-      readings[unit] = Utilities.getRandomValue(
+      readings[unit] = utils.getRandomValue(
         prevValue,
         this.rms_noise,
         this.format,
@@ -69,4 +70,6 @@ export abstract class Sensor {
     }
     return readings;
   }
+
+  
 }

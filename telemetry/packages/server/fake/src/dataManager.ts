@@ -1,7 +1,7 @@
-import { Sensor, Readings, SensorInstance, sensorData, sensors } from '..';
-import { Utilities } from './sensorUtilities';
+import { Sensor, Readings, SensorInstance, sensorData, sensors, trackLength } from '..';
+import { utils } from '../index';
 
-import mqtt from 'mqtt';
+// import mqtt from 'mqtt';
 
 export class SensorManager {
   // Create an array to store sensor instances
@@ -15,7 +15,7 @@ export class SensorManager {
   private globalTime = 0;
 
   // Mqtt client
-  private client: mqtt.MqttClient;
+  // private client: mqtt.MqttClient; // 'can't find mqtt' error, working on fix for next milestone commit
 
   // Sensor dependencies (sub-classes)
   private sensorDependencies: Record<string, string[]> = {
@@ -50,16 +50,15 @@ export class SensorManager {
   /**
    * Runs and manages the entire time series of data generation
    * Updates global variables each iteration
-   * Kills program once runTime has been reached
-   * @param runTime
+   * Kills program once pod reaches end of 100m track
    * @param random boolean input set by user, determines process of data generation (random or the default of mathematically realistic)
    */
-  public generateData(runTime: number, random = false): void {
+  public generateData(random = false): void {
     // Calculate the base interval (in ms) using the lowest common multiple of the various sampling times
-    const interval = Utilities.gcd(Object.values(this.samplingTimes));
+    const interval = utils.gcd(Object.values(this.samplingTimes));
     // Run setInterval to generate and upload the data
     // This essentially acts as a while loop, but using real time (eliminating the chance of inifintie loops)
-
+    console.log(`random: ${random}'\n`);
     console.log(`\nthis.sensors: ${this.sensors}\n`);
     const simulationInterval = setInterval(() => {
       // Preset all 'sampled' flags to false
@@ -81,12 +80,17 @@ export class SensorManager {
 
           // Publish each of the current sensor type's reading values under the topic of
           //   its corresponding measurement key to the MQTT broker
-          // Object.entries(readings).forEach(([measurement, value]) => {
-          //   this.publishData(measurement, value.toString());
-          // });
+          
+          /* Removed until big is fixed
+          Object.entries(readings).forEach(([measurement, value]) => {
+            this.publishData(measurement, value.toFixed(2)); // round and stringify
+          });
+          */
 
-          // this.logData(readings);
-          console.log(readings);
+          // console.log(Object.fromEntries(
+          //   Object.entries(readings).map(([measurement, value]: [string, number]) => {
+          //   return [measurement, utils.round2DP(value)];
+          // })));
         }
 
         // At each timestep, each sensor should have a value corresponding to the global time
@@ -95,7 +99,7 @@ export class SensorManager {
 
       // Increment time by the predefined interval
       this.globalTime += interval;
-      if (this.globalTime >= runTime) {
+      if (Sensor.lastReadings.motion.displacement >= trackLength) {
         clearInterval(simulationInterval);
         console.log('Simulation complete');
         process.exit(0);
@@ -147,7 +151,6 @@ export class SensorManager {
    * The properties of the sensors' readings objects are the keys which are appended to the topic path, i.e. ...measurements/[key]
    * So simply append the key and publish the value as the payload
    * Subscribed clients extract values using payload[measurementKey]
-   */
   private publishData(measurement: string, reading: string): void {
     this.client.publish(
       `hyped/pod_1/measurements/${measurement}`,
@@ -158,6 +161,8 @@ export class SensorManager {
           console.log(`MQTT publish error: [LOG] (pod_1) ${err}`);
         }
       },
-    );
-  }
+      );
+    }
+  
+  */
 }

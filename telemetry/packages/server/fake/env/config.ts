@@ -29,7 +29,8 @@ const getInitialValue = (data: RangeMeasurement): number => {
     accelerometer: 0,
     acceleration: 0,
     displacement: 0,
-    velocity: measurements.velocity.limits.critical.high * 0.1, // initial velocity > 0 for continuity of logistic function
+    // velocity: measurements.velocity.limits.critical.high * 0.1, // initial velocity > 0 for continuity of logistic function
+    velocity: 0.3, // m/s (this aligns closely with logistic curve y-intercept)
     pressure: data.name.endsWith('reservoir') ? 5 : 1,
     thermistor: 25,
     keyence: 0,
@@ -109,3 +110,6 @@ export const sensorData: SensorData = Object.fromEntries(
 );
 
 // console.log(sensorData);
+
+// parameter storing distance of track, once finsih point is reached program will end
+export const trackLength = measurements.displacement.limits.critical.high;

@@ -15,11 +15,11 @@ export {
 export { pods } from '../../constants/src/pods/pods';
 
 // Objects created in initial configuration stage
-export { measurements, sensorData } from './env/config';
+export { measurements, sensorData, trackLength } from './env/config';
 
 // Data managing and sensor utilties classes
 export { SensorManager } from './src/dataManager';
-export { Utilities } from './src/sensorUtilities';
+export { Utilities as utils } from './src/sensorUtilities';
 
 // Top-level abstract Sensor class and individual sensor classes
 export { Sensor } from './src/baseSensor';

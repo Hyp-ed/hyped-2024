@@ -56,12 +56,13 @@ const keyenceData: LiveReading = {
     readings: { keyence_1: 0, keyence_2: 0 }
 }
 
-const runTime = 20 // seconds
+const time_interval = 0.5 // seconds
 
-const testRun = new Keyence(keyenceData, runTime);
+const testRun = new Keyence(keyenceData);
 
-
-for (let t = 0; t < runTime; t++) {
+let t = 0;
+while ()
+for (let t = 0; t < runTime; t += time_interval) {
   testRun.getData(t);
 }
 

@@ -1,5 +1,5 @@
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings, Utilities, measurements } from '../../index';
+import { LiveReading, Readings, utils, measurements } from '../../index';
 
 export class Motion extends Sensor {
   protected displacement: number;
@@ -26,22 +26,32 @@ export class Motion extends Sensor {
    * @returns updated readings object containing acceleratio, velocity and displacement
    */
   getData(t: number): Readings {
-    const velocityEstimate = Utilities.logistic(
+    // console.log(`Running getData at ${t} seconds`);
+    const velocityEstimate = utils.logistic(
       t,
       measurements.velocity.limits.critical.high * this.velocityStState, // setpoint for velocity, reduced by 5% to allow for added noise
       0.4, // exponential growth rate factor
       12.5, // time of inflection that ensures acceleration peaks at its limiting operating value
     );
+    console.log('args for logistic:', [...arguments]);
+    console.log(t);
+    console.log(measurements.velocity.limits.critical.high);
+    console.log('vel estimate:', velocityEstimate);
+
     // calculate acceleration as the rate of change of logistic-fitted velocity
     let accelerometerReading =
       (velocityEstimate - this.velocity) / this.sampling_time;
     // assert reading is not above critical limit
+    console.log('\naccelerometerReading: ', accelerometerReading)
+    ;
     accelerometerReading =
       accelerometerReading >= this.limits.critical.high
         ? this.limits.critical.high
         : accelerometerReading;
-    accelerometerReading += Utilities.gaussianRandom(this.rms_noise);
-      
+    accelerometerReading += utils.gaussianRandom(this.rms_noise);
+
+    console.log('\naccelerometerReading: ${accelerometerReading}');
+    
     // Set instance vars to current values using dv*dt and dx*dt
     // Use trapezoidal rule to estimate velocity and displacement
     const avgAcceleration = (accelerometerReading + this.acceleration) / 2;
@@ -50,6 +60,11 @@ export class Motion extends Sensor {
     // Finally, update the acceleration value
     this.acceleration = accelerometerReading;
     
+    for (const msmt in [this.velocity, this.acceleration, this.displacement]) {
+      
+    };
+
+    console.log('\naccelerometerReading\t next iteration coming up ...\n: ');
     // Return the three variables of interest
     return {
       acceleration: this.acceleration,

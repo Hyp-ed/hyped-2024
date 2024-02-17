@@ -1,4 +1,4 @@
-import { Readings } from '..';
+// No imports, this file contains pure, general functions 
 
 export class Utilities {
   /** Greatest common divisor */
@@ -8,6 +8,15 @@ export class Utilities {
     return nums.reduce((acc, c) => {
       return c === 0 ? acc : Utilities.gcd([c, acc % c]);
     });
+  }
+
+  /**
+   * Simple floating point rounding method
+   * @param num 
+   * @returns 
+   */
+  public static round2DP(num: number): number {
+    return parseFloat(num.toFixed(2));
   }
 
   /**
@@ -84,7 +93,10 @@ export class Utilities {
     steadyState: number, // around 95% of max velocity giving a 5% margin for noise fluctuations
     growthRate: number, // exponential growth rate factor
     timeOfInflection: number, // time at which second derivative reaches a stationary point
-  ): any {
-    return steadyState / (1 + Math.exp(-growthRate * (t - timeOfInflection)));
+  ): number {
+    // round result for legibility
+    return parseFloat(
+      (steadyState / (1 + Math.exp(-growthRate * (t - timeOfInflection)))).toFixed(2)
+    );
   }
 }
