@@ -15,7 +15,7 @@ COPY packages/ui/package.json ./packages/ui/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Expose ports
 EXPOSE 5173

@@ -15,6 +15,9 @@ import {
 import { log } from '@/lib/logger';
 import { config } from '@/config';
 
+/**
+ * Dialog to display when pod disconnects or encounters an error.
+ */
 export const PodDisconnectError = ({
   podId,
   status,

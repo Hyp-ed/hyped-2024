@@ -1,41 +1,49 @@
-import { VIEWS } from '@/views';
+import { VIEWS, VIEW_KEYS, ViewOption } from '@/views';
 import { log } from '@/lib/logger';
 import { cn } from '@/lib/utils';
 import { POD_IDS } from '@hyped/telemetry-constants';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { usePod } from '../context/pods';
+import { useCurrentPod } from '@/context/pods';
 import { Latency } from './latency';
 import { PodControls } from './pod-controls';
-import { PodDisconnectError } from './pod-disconnect-error';
-import { PodConnectionStatus } from './connection-status';
-import { Logo } from './logo';
+import { PodDisconnectError } from '@/components/pod-disconnect-error';
+import { PodConnectionStatus } from './pod-connection-status';
+import { Logo } from '@/components/shared/logo';
+import { PodSelector } from './pod-selector';
 
-const DEFAULT_POD = POD_IDS[0];
-
-export const ControlsUI = ({
-  selectedComponent,
-  setSelectedComponent,
+/**
+ * The custom sidebar for the GUI which allows us to select a pod, control it, view its connection status, and change the view.
+ * AKA the "Controls UI"
+ */
+export const Sidebar = ({
+  currentView,
+  setCurrentView,
 }: {
-  selectedComponent: number;
-  setSelectedComponent: React.Dispatch<React.SetStateAction<number>>;
+  currentView: ViewOption;
+  setCurrentView: React.Dispatch<React.SetStateAction<ViewOption>>;
 }) => {
-  const [currentPod, setCurrentPod] = useState<string>(DEFAULT_POD);
-  const { connectionStatus } = usePod(currentPod);
-  const { podState } = usePod(currentPod);
+  const {
+    currentPod,
+    pod: { podState, connectionStatus },
+  } = useCurrentPod();
 
   // Display notification when the pod state changes
-  useEffect(() => {
-    toast(`Pod state changed: ${podState}`);
-    log(`Pod state changed: ${podState}`, currentPod);
-  }, [podState]);
+  useEffect(
+    function notifyPodStateChanges() {
+      toast(`Pod state changed: ${podState}`);
+      log(`Pod state changed: ${podState}`, currentPod);
+    },
+    [podState],
+  );
 
   return (
-    <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col gap-2 justify-between bg-hyped-background select-none text-gray-100">
+    <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col justify-between bg-hyped-background select-none text-gray-100">
       <div className="flex flex-col gap-12 h-full">
+        <PodSelector />
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">
-          <p className="font-bold text-xl">Connection</p>
+          <p className="font-bold text-xl">Connection to pod</p>
           <PodConnectionStatus podId={currentPod} />
           <PodDisconnectError status={connectionStatus} podId={currentPod} />
           <Latency podId={currentPod} />
@@ -53,16 +61,16 @@ export const ControlsUI = ({
         <div>
           <p className="font-bold text-xl">View</p>
           <div className="h-full py-2 flex flex-col justify-start gap-2">
-            {VIEWS.map((component, index) => (
+            {VIEW_KEYS.map((key) => (
               <button
                 className={cn(
                   'flex items-start justify-start rounded-md px-3 py-2 gap-2',
-                  index === selectedComponent ? 'bg-openmct-dark-gray' : '',
+                  key === currentView ? 'bg-openmct-dark-gray' : '',
                   'hover:ring-1 hover:ring-openmct-light-gray transition',
                 )}
-                onClick={() => setSelectedComponent(index)}
+                onClick={() => setCurrentView(key)}
               >
-                {component.icon} {component.name}
+                {VIEWS[key].icon} {VIEWS[key].name}
               </button>
             ))}
           </div>

@@ -14,12 +14,12 @@ export type Limits = {
     low: number;
     high: number;
   };
-}
+};
 
-export type RangeMeasurement = BaseMeasurement & {  
+export type RangeMeasurement = BaseMeasurement & {
   format: 'float' | 'integer';
   limits: Limits;
-}
+};
 
 export type EnumMeasurement = BaseMeasurement & {
   format: 'enum';
@@ -36,5 +36,3 @@ export type Pod = {
   id: string;
   measurements: Record<string, Measurement>;
 };
-
-export type Pods = Record<string, Pod>;

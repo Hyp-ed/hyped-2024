@@ -1,4 +1,10 @@
+// Here we validate the environment variables and cast them to the correct types using zod
+
 import { z } from 'zod';
+
+const booleanFromString = z
+  .enum(['true', 'false'])
+  .transform((v) => v === 'true');
 
 const envSchema = z.object({
   VITE_SERVER_ENDPOINT: z.string().url(),
@@ -11,7 +17,8 @@ const envSchema = z.object({
       message: 'QoS must be 0, 1, or 2',
     },
   ),
-  VITE_DISCONNECTED_MESSAGE_DISABLED: z.coerce.boolean().optional(),
+  VITE_DISCONNECTED_MESSAGE_DISABLED: booleanFromString.optional(),
+  VITE_EXTENDED_DEBUGGING_TOOLS: booleanFromString.optional(),
 });
 
 const result = envSchema.safeParse({
@@ -20,6 +27,7 @@ const result = envSchema.safeParse({
   VITE_MQTT_QOS: import.meta.env.VITE_MQTT_QOS,
   VITE_DISCONNECTED_MESSAGE_DISABLED: import.meta.env
     .VITE_DISCONNECTED_MESSAGE_DISABLED,
+  VITE_EXTENDED_DEBUGGING_TOOLS: import.meta.env.VITE_EXTENDED_DEBUGGING_TOOLS,
 });
 
 if (!result.success) {
