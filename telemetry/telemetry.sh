@@ -62,7 +62,7 @@ handle_options() {
 handle_options "$@"
 
 if [ "$build" = true ]; then
-  docker-compose rm -v telemetry
+  docker-compose rm -v -f telemetry
   if [ "$with_mqtt_broker" = true ]; then
     command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build -V"
     echo "Running command: $command"

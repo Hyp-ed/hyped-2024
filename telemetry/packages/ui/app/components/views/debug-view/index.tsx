@@ -1,4 +1,3 @@
-import { PodState } from '../../shared/pod-state';
 import { ConnectionStatuses } from './connection-statuses/connection-statuses';
 import { FullControls } from './full-controls';
 import { MqttSender } from './mqtt-sender';
@@ -9,6 +8,7 @@ import {
 } from '@/components/ui/resizable';
 import { useCurrentPod } from '@/context/pods';
 import { PodStateUpdater } from './pod-state-updater';
+import { config } from '@/config';
 
 /**
  * Debug view. Contains components for debugging.
@@ -21,21 +21,31 @@ import { PodStateUpdater } from './pod-state-updater';
 export const DebugView = () => {
   const { currentPod: podId } = useCurrentPod();
 
+  const showExternalDebuggingTools = config.EXTENDED_DEBUGGING_TOOLS ?? false;
+  console.log(config.EXTENDED_DEBUGGING_TOOLS);
+
   return (
     <ResizablePanelGroup direction="vertical">
       <ResizablePanel defaultSize={20}>
         <ResizablePanelGroup direction="horizontal" className="w-full h-full">
           <ResizablePanel defaultSize={50} className="flex items-center">
-            <div className="flex justify-center flex-col items-center w-full gap-2">
+            <div className="flex justify-center flex-col items-center w-full gap-2 p-2">
               <h1 className="font-bold text-xl text-foreground">Placeholder</h1>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground text-center">
                 Something useful will go here at some point...
               </p>
             </div>
           </ResizablePanel>
           <ResizableHandle withHandle />
           <ResizablePanel defaultSize={50} className="flex items-center gap-2">
-            <PodStateUpdater podId={podId} />
+            {showExternalDebuggingTools ? (
+              <PodStateUpdater podId={podId} />
+            ) : (
+              <p className="mx-auto p-2">
+                Enable EXTENDED_DEBUGGING_TOOLS in .env to see more debugging
+                tools.
+              </p>
+            )}
           </ResizablePanel>
         </ResizablePanelGroup>
       </ResizablePanel>
