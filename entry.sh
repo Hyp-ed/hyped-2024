@@ -2,8 +2,6 @@
 
 set -eu
 
-echo "Building..."
-
 # Fix for git
 git config --global --add safe.directory '*'
 
@@ -17,11 +15,13 @@ elif [ ! -d "build" ]; then
 fi
 
 if [[ $CROSS_COMPILE = true ]]; then
+    echo "Cross compiling for Raspberry Pi..."
     cd build 
-    cmake ..
+    cmake .. #TODO add cross compile flags
     make -j
     make test
 else
+    echo "Building..."
     cd build 
     cmake ..
     make -j
