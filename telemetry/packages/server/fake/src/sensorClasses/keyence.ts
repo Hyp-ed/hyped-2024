@@ -38,7 +38,7 @@ export class Keyence extends Motion {
     }
 
     const readings = Object.keys(Sensor.lastReadings.keyence).map((key, i) => {
-      // Calculate sensor relative displacement
+      // Calculate sensor displacement
       // Return value cannot be negative as sensor counts physical poles/stripes
       const relDisp =
         this.displacement - sensorRegion * i >= 0

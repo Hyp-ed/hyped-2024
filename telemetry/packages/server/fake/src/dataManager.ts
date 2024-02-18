@@ -1,3 +1,7 @@
+const { JSDOM } = require('jsdom');
+
+const dom = new JSDOM('<!doctype html><html><body></body></html>');
+
 import {
   Sensor,
   Readings,
@@ -90,6 +94,7 @@ export class SensorManager {
           // Object.entries(readings).forEach(([measurement, value]) => {
           //   this.publishData(measurement, value.toString());
           // });
+          this.graphData(sensor.type, this.globalTime * 1000, readings);
 
           // this.logData(readings);
           console.log(readings);
@@ -108,13 +113,6 @@ export class SensorManager {
 
       this.globalTime += interval;
     }, interval);
-  }
-
-  private logData(data: Readings): void {
-    for (const measurement in data) {
-      console.log(`${measurement}: ${data[measurement]}`);
-    }
-    console.log(`\n`);
   }
 
   // Instantiate sensors with their respective data and store instances in array
@@ -152,6 +150,17 @@ export class SensorManager {
   }
 
   /**
+   * Log data for testing (to be replaced with mqtt upload)
+   * @param data data object whose parameters are to be logged
+   */
+  private logData(data: Readings): void {
+    for (const measurement in data) {
+      console.log(`${measurement}: ${data[measurement]}`);
+    }
+    console.log(`\n`);
+  }
+
+  /**
    * Uploads data through MQTT broker to the frontend
    * The properties of the sensors' readings objects are the keys which are appended to the topic path, i.e. ...measurements/[key]
    * So simply append the key and publish the value as the payload
@@ -169,4 +178,10 @@ export class SensorManager {
   //     },
   //   );
   // }
+
+  private graphData(sensor: string, t: number, data: Readings): void {
+    const root = document.getElementById('container') as HTMLDivElement;
+    const graph = document.getElementById(sensor) as HTMLDivElement;
+    graph.innerText += `Time: ${t}\tAcc: ${data.acceleration.toString()}\tVel: ${data.velocity.toString()}\tDisp: ${data.displacment.toString()}\n`;
+  }
 }

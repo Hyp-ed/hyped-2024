@@ -18,7 +18,7 @@ export class Temperature extends Sensor {
     // this.temperature = utils.average(readings); // take thermistor values' average
     // return readings; //
     return {
-      thermistor_1: 27.1 // placeholder
+      thermistor_1: 27.1, // placeholder
     };
   }
 }
