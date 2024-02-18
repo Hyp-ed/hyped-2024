@@ -278,8 +278,8 @@ importers:
         specifier: ^0.33.2
         version: 0.33.3
       lucide-react:
-        specifier: ^0.242.0
-        version: 0.242.0(react@18.2.0)
+        specifier: ^0.331.0
+        version: 0.331.0(react@18.2.0)
       mqtt:
         specifier: 4.1.0
         version: 4.1.0
@@ -9192,8 +9192,8 @@ packages:
     engines: {node: 14 || >=16.14}
     dev: true
 
-  /lucide-react@0.242.0(react@18.2.0):
-    resolution: {integrity: sha512-aJ8E/rSTnZVZeK1yU7cjbNcVL+Dd7Mv6xwtQbfCBLRToWPkslJBD8X/sdhOchSDzTrSOR/FmErXHsjCJOaLqdA==}
+  /lucide-react@0.331.0(react@18.2.0):
+    resolution: {integrity: sha512-CHFJ0ve9vaZ7bB2VRAl27SlX1ELh6pfNC0jS96qGpPEEzLkLDGq4pDBFU8RhOoRMqsjXqTzLm9U6bZ1OcIHq7Q==}
     peerDependencies:
       react: ^16.5.1 || ^17.0.0 || ^18.0.0
     dependencies:

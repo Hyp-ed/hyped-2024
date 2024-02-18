@@ -33,7 +33,7 @@
     "date-fns": "^2.30.0",
     "embla-carousel-react": "8.0.0-rc19",
     "ky": "^0.33.2",
-    "lucide-react": "^0.242.0",
+    "lucide-react": "^0.331.0",
     "mqtt": "4.1.0",
     "openmct": "git+https://github.com/nasa/openmct.git#v2.2.5",
     "react": "^18.2.0",
