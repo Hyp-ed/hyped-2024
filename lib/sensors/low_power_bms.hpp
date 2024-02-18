@@ -19,8 +19,8 @@ class LowPowerBMS {
                                            std::shared_ptr<io::II2c> i2c);
   ~LowPowerBMS();
 
-  std::optional<LowPowerBMS> getStackVoltage();
-  std::optional<LowPowerBMS> getCellData();
+  const u_int32_t getStackVoltage();
+  const u_int32_t getCellData();
 
  private:
   LowPowerBMS(core::ILogger &logger, std::shared_ptr<io::II2c> i2c);

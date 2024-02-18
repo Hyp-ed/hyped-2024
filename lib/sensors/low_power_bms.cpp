@@ -30,11 +30,11 @@ const u_int32_t LowPowerBMS::getCellData()
   for (int i = 0; i < size; i++) {
     voltages[i] = i2c_->readByte(kDefaultLpBmsReadAddress, cell_voltages[i]);
   }
-  return voltages;l
+  return voltages;
 }
 
-const auto LowPowerBMS::getStackVoltage() {
-  const auto stack_voltage = i2c_->readByte(kDefaultLpBmsReadAddress, stack_voltage);
+const u_int32_t LowPowerBMS::getStackVoltage() {
+  const u_int32_t stack_voltage = i2c_->readByte(kDefaultLpBmsReadAddress, stack_voltage);
   return stack_voltage;
 }
 }  // namespace hyped::sensors
