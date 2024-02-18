@@ -1,4 +1,4 @@
-import { usePod } from '@/context/pods';
+import { useCurrentPod, usePod } from '@/context/pods';
 import { cn } from '@/lib/utils';
 import { POD_CONNECTION_STATUS } from '@/types/PodConnectionStatus';
 import {
@@ -10,7 +10,7 @@ import {
 import { useState, useEffect } from 'react';
 
 /**
- * Displays the connection status of a pod
+ * Displays the connection status of a pod to the base station (GUI).
  * @param podId The ID of the pod
  */
 export const PodConnectionStatus = ({ podId }: { podId: string }) => {

@@ -1,3 +1,6 @@
+/**
+ * OpenMCT view. Creates the `iframe` for loading the OpenMCT dashboard.
+ */
 export const OpenMCT = () => (
   <iframe
     id="openmct"

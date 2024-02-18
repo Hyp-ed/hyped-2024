@@ -18,7 +18,7 @@ COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
 COPY turbo.json ./
-RUN pnpm install
+RUN pnpm install --frozen-lockfile
 
 # Expose ports
 EXPOSE 5173

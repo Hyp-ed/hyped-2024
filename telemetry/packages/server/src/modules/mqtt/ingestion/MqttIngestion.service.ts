@@ -26,7 +26,7 @@ export class MqttIngestionService {
     this.validateMqttMessage({ podId, measurementKey, value });
 
     await this.measurementService.addMeasurementReading({
-      podId,
+      podId: podId as any, // TODOLater: fix this
       measurementKey,
       value,
       timestamp,
@@ -44,8 +44,8 @@ export class MqttIngestionService {
 
     this.validateMqttMessage({ podId, measurementKey: 'state', value });
 
-    this.stateService.addStateReading({
-      podId,
+    await this.stateService.addStateReading({
+      podId: podId as any, // TODOLater: fix this
       value,
       timestamp,
     });

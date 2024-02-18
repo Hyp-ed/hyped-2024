@@ -1,16 +1,16 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Controller, Param, Post, Query } from '@nestjs/common';
 import { PodControlsService } from './PodControls.service';
 
 @Controller('pods/:podId/controls')
 export class PodControlsController {
   constructor(private podControlsService: PodControlsService) {}
 
-  @Post('start')
-  startPod(
+  @Post('levitation-height')
+  setLevitationHeight(
     @Param('podId') podId: string,
-    @Body() options: string | object | Buffer,
+    @Query('height') height: number,
   ) {
-    return this.podControlsService.startPod(podId, options);
+    return this.podControlsService.setLevitationHeight(height, podId);
   }
 
   @Post(':control')
