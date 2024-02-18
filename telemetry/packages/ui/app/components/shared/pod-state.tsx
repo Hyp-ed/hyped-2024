@@ -6,8 +6,6 @@ import {
   NULL_STATES,
   PASSIVE_STATES,
   PodStateCategoryType,
-  PodStateType,
-  pods,
 } from '@hyped/telemetry-constants';
 import {
   Card,

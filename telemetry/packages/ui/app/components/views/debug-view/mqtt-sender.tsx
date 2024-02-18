@@ -31,7 +31,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useCurrentPod, usePods } from '@/context/pods';
+import { useCurrentPod } from '@/context/pods';
 import { QoS } from '@/types/mqtt';
 import { useKeyPress } from '@/hooks/useKeyPress';
 
@@ -64,7 +64,7 @@ export const MqttSender = () => {
 
   // Send MQTT message on Ctrl+Enter
   useKeyPress([['ctrlKey', 'Enter']], () => {
-    form.handleSubmit(onSubmit)();
+    void form.handleSubmit(onSubmit)();
   });
 
   const defaultMqttMessage: MqttMessageSchema = {
@@ -75,7 +75,6 @@ export const MqttSender = () => {
   };
 
   const form = useForm<MqttMessageSchema>({
-    // @ts-ignore - not sure why this is throwing an error
     resolver: zodResolver(mqttMessageSchema),
     defaultValues: defaultMqttMessage,
   });
@@ -100,7 +99,7 @@ export const MqttSender = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={void form.handleSubmit(onSubmit)}>
         <Card className="border-none">
           <CardHeader>
             <CardTitle className="flex gap-2">

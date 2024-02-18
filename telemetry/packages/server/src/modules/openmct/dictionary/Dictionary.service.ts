@@ -1,4 +1,4 @@
-import { POD_IDS, pods } from '@hyped/telemetry-constants';
+import { POD_IDS, PodId, pods } from '@hyped/telemetry-constants';
 import { OpenMctDictionary, OpenMctPod } from '@hyped/telemetry-types';
 import { Injectable } from '@nestjs/common';
 import { mapMeasurementToOpenMct } from './utils/mapMeasurementToOpenMct';
@@ -19,10 +19,8 @@ export class DictionaryService {
   }
 
   getPod(podId: string): OpenMctPod {
+    this.validatePodId(podId);
     const pod = pods[podId];
-    if (!pod) {
-      throw new Error(`Pod ${podId} not found`);
-    }
 
     const measurements = Object.values(pod.measurements).map((measurement) =>
       mapMeasurementToOpenMct(measurement),
@@ -36,10 +34,8 @@ export class DictionaryService {
   }
 
   getMeasurement(podId: string, measurementKey: string) {
+    this.validatePodId(podId);
     const pod = pods[podId];
-    if (!pod) {
-      throw new Error(`Pod ${podId} not found`);
-    }
 
     const measurement = pod.measurements[measurementKey];
     if (!measurement) {
@@ -47,5 +43,11 @@ export class DictionaryService {
     }
 
     return mapMeasurementToOpenMct(measurement);
+  }
+
+  private validatePodId(podId: string): asserts podId is PodId {
+    if (!POD_IDS.includes(podId as PodId)) {
+      throw new Error(`Pod ${podId} not found`);
+    }
   }
 }

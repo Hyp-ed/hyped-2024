@@ -61,9 +61,12 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
   };
 
   // Connect to MQTT broker on mount
-  useEffect(function connectToMqttBrokerOnMount() {
-    mqttConnect(broker);
-  }, [broker]);
+  useEffect(
+    function connectToMqttBrokerOnMount() {
+      mqttConnect(broker);
+    },
+    [broker],
+  );
 
   // Handle client changes
   useEffect(
@@ -74,7 +77,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
           setConnectionStatus(MQTT_CONNECTION_STATUS.CONNECTED);
         });
         client.on('error', (err: any) => {
-          log(`MQTT connection error: ${err}`);
+          log(`MQTT connection error: ${JSON.stringify(err)}`);
           setConnectionStatus(MQTT_CONNECTION_STATUS.ERROR);
           client.end();
         });
@@ -86,7 +89,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
         mqttConnect(broker);
       }
     },
-    [client],
+    [client, broker],
   );
 
   /**
@@ -148,7 +151,7 @@ export const MQTTProvider = ({ broker, qos, children }: MQTTProviderProps) => {
     }
     return client.publish(topic, message, opts, (error) => {
       if (error) {
-        log(`MQTT publish error: ${error}`);
+        log(`MQTT publish error: ${error.name} - ${error.message}`);
       }
     });
   };

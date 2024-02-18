@@ -34,7 +34,7 @@ export const SetLevitationHeight = ({ podId }: { podId: string }) => {
         />
         <Button
           className="bg-white hover:bg-gray-200 text-black"
-          onClick={setLevigationHeight}
+          onClick={void setLevigationHeight}
         >
           Set
         </Button>

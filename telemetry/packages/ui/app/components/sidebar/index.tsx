@@ -34,7 +34,7 @@ export const Sidebar = ({
       toast(`Pod state changed: ${podState}`);
       log(`Pod state changed: ${podState}`, currentPod);
     },
-    [podState],
+    [podState, currentPod],
   );
 
   return (
@@ -63,7 +63,7 @@ export const Sidebar = ({
           <div className="h-full py-2 flex flex-col justify-start gap-2">
             {VIEW_KEYS.map((key) => (
               <button
-                key={component.name}
+                key={key}
                 className={cn(
                   'flex items-start justify-start rounded-md px-3 py-2 gap-2',
                   key === currentView ? 'bg-openmct-dark-gray' : '',

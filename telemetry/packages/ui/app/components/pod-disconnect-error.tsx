@@ -34,7 +34,7 @@ export const PodDisconnectError = ({
       status === POD_CONNECTION_STATUS.ERROR;
     setOpen(disconnected);
     if (disconnected) log('Pod disconnected!', podId);
-  }, [status]);
+  }, [status, podId]);
 
   const close = () => {
     setOpen(false);

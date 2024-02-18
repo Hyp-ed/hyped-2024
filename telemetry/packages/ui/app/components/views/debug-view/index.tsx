@@ -22,7 +22,6 @@ export const DebugView = () => {
   const { currentPod: podId } = useCurrentPod();
 
   const showExternalDebuggingTools = config.EXTENDED_DEBUGGING_TOOLS ?? false;
-  console.log(config.EXTENDED_DEBUGGING_TOOLS);
 
   return (
     <ResizablePanelGroup direction="vertical">

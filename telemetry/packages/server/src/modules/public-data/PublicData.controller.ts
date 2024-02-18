@@ -1,7 +1,7 @@
 import { Controller, Get, HttpException, Param, Query } from '@nestjs/common';
 import { PublicDataService } from './PublicData.service';
 import { HistoricalTelemetryDataService } from '@/modules/openmct/data/historical/HistoricalTelemetryData.service';
-import { POD_IDS, pods } from '@hyped/telemetry-constants';
+import { POD_IDS } from '@hyped/telemetry-constants';
 
 @Controller('pods/:podId/public-data')
 export class PublicDataController {
