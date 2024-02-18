@@ -16,14 +16,15 @@ namespace hyped::sensors {
 class LowPowerBMS {
  public:
   static std::optional<LowPowerBMS> create(core::ILogger &logger,
-                                           std::shared_ptr<io::II2c> i2c);
+                                           std::shared_ptr<io::II2c> i2c,
+                                           const std::uint8_t device_address);
   ~LowPowerBMS();
 
-  const u_int32_t getStackVoltage();
-  const u_int32_t getCellData();
+  std::optional<std::uint8_t> getStackVoltage();
+  std::optional<std::uint8_t> getCellData();
 
  private:
-  LowPowerBMS(core::ILogger &logger, std::shared_ptr<io::II2c> i2c);
+  LowPowerBMS(core::ILogger &logger, std::shared_ptr<io::II2c> i2c, const std::uint8_t device_address);
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
 
