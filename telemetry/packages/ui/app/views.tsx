@@ -1,5 +1,5 @@
 import { OpenMCT } from './components/views/openmct';
-import { PiManagement } from './components/pi-management/pi-management';
+import { PiManagement } from './components/views/pi-management/pi-management';
 import { Bug, LineChart, Cpu, GitBranch, Terminal } from 'lucide-react';
 import { DebugView } from './components/views/debug-view';
 import { StateMachine } from './components/views/state-machine';

@@ -18,24 +18,24 @@ import { Cpu, HardDriveUpload, RefreshCw } from 'lucide-react';
 import { http } from 'openmct/core/http';
 import { useState } from 'react';
 import { useQuery } from 'react-query';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { columns } from './columns';
 import { cn } from '@/lib/utils';
 import { PiInfo } from '@hyped/telemetry-types';
-
-// TODO: Temp until debug view is merged - DO THIS!
-const POD_ID = 'pod_1';
+import { useCurrentPod } from '@/context/pods';
 
 // TODO: Give an option of the branches on the GitHub to select from (for Pi version comparison)
 
 export const PiManagement = () => {
+  const { currentPod: podId } = useCurrentPod();
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
   const { data, isLoading, isRefetching, refetch } = useQuery(
     'pis',
     async () => {
-      const res = await http.get(`pods/${POD_ID}/pis`).then((res) => res.json());
+      const res = await http.get(`pods/${podId}/pis`).then((res) => res.json());
       return res as PiInfo[]
     },
   );

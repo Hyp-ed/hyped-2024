@@ -1,7 +1,7 @@
 import { Column, ColumnDef } from '@tanstack/react-table';
 import { ActionsMenu } from './actions-menu';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
-import { Button } from '../ui/button';
+import { Button } from '../../ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { PiInfo } from '@hyped/telemetry-types';
 
