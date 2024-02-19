@@ -102,4 +102,14 @@ export class Utilities {
       ).toFixed(2),
     );
   }
+
+  public static oscillateDecay(
+    t: number,
+    freq: number,
+    phase: number,
+    decay: number,
+    amp: number,
+  ): number {
+    return amp * Math.exp(-decay * t) * Math.cos(freq * t + phase);
+  }
 }

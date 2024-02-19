@@ -97,7 +97,9 @@ export class SensorManager {
           // this.graphData(sensor.type, this.globalTime * 1000, readings);
 
           // this.logData(readings);
-          console.log(readings);
+          if (this.sensorsToRun.includes(sensor.type)) {
+            console.log(readings);
+          }
         }
 
         // At each timestep, each sensor should have a value corresponding to the global time
@@ -107,7 +109,8 @@ export class SensorManager {
       // Implement exit condition
       if (Sensor.lastReadings.motion.displacement >= trackLength) {
         clearInterval(simulationInterval);
-        console.log('Simulation complete');
+        console.log('\n\n*** Simulation complete ***\n');
+        console.log('Final state:', Sensor.lastReadings, '\n');
         process.exit(0);
       }
 

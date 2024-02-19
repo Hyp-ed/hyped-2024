@@ -6,6 +6,11 @@ export class Temperature extends Motion {
   protected temperature: number;
   protected temp_init: number;
 
+  // Coefficients for estimating temperature changes
+  private airFricCoef = 0.1;
+  private trackFricCoef = 0.3;
+  private heatGenCoef = 0.5;
+
   constructor(data: LiveReading) {
     super(data);
     // Set initial temperature value upon instantiation
@@ -15,22 +20,19 @@ export class Temperature extends Motion {
   }
 
   getData(t: number): Readings {
-    // const readings = // ... insert main main logic here
-    // this.temperature = utils.average(readings); // take thermistor values' average
-    // return readings; //
-    const airFricCoef = 0.001;
-    const trackFricCoef = 0.05;
-    const heatGenCoef = 0.1;
-
-    let temp = Math.pow(this.velocity, 3) * airFricCoef + this.velocity * heatGenCoef;
+    let temp = Math.pow(this.velocity, 3) * this.airFricCoef + this.velocity * this.heatGenCoef;
+    // While on track, temperature increases with work done
+    // After levitation begins, temperature component from track friction gradually falls
     temp += this.velocity < this.levVelocity
-      ? Math.pow(this.velocity, 2) * trackFricCoef
-      : Math.pow(this.velocity, 2) * (this.levVelocity / this.velocity)**0.5 * trackFricCoef;
+      ? Math.pow(this.velocity, 2) * this.trackFricCoef
+      : Math.pow(this.velocity, 2) * (this.levVelocity / this.velocity)**0.5 * this.trackFricCoef;
 
-    return Object.fromEntries(Object.entries(Sensor.lastReadings.temperature)
-      .map(([sensor, value]) => {
-        return [sensor, value + temp + utils.gaussianRandom(this.rms_noise)]
-      })
+    return Object.fromEntries(Object.entries(
+      Sensor.lastReadings.temperature)
+        .map(([sensor, value]) => {
+          return [sensor, utils.round2DP(value + temp + utils.gaussianRandom(this.rms_noise))]
+        })
     );
+
   }
 }

@@ -34,6 +34,7 @@ export class Motion extends Sensor {
       0.4, // Exponential growth rate factor
       12.5, // Time of inflection that ensures acceleration peaks at its limiting operating value
     );
+    /* debugging
     console.log('vel estimate:', velocityEstimate);
     console.log(
       `|\taccl: ${utils.round2DP(
@@ -42,6 +43,7 @@ export class Motion extends Sensor {
         this.velocity,
       )} m/s \tdisp: ${utils.round2DP(this.displacement)} m\t\n`,
     );
+    */
 
     // Calculate acceleration as the rate of change of logistic-fitted velocity
     let accelerometerReading =
@@ -62,9 +64,9 @@ export class Motion extends Sensor {
     this.acceleration = accelerometerReading;
     // Return the three variables of interest
     return {
-      acceleration: this.acceleration,
-      velocity: this.velocity,
-      displacement: this.displacement,
+      acceleration: utils.round2DP(this.acceleration),
+      velocity: utils.round2DP(this.velocity),
+      displacement: utils.round2DP(this.displacement),
     };
   }
 }

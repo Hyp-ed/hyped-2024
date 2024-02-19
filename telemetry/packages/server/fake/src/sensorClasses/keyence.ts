@@ -34,7 +34,7 @@ export class Keyence extends Motion {
       this.displacement = super.getData(t).displacement;
       Sensor.isSampled['motion'] = true;
     } else {
-      this.displacement = Sensor.lastReadings['motion'].displacement;
+      this.displacement = Sensor.lastReadings.motion.displacement;
     }
 
     const readings = Object.keys(Sensor.lastReadings.keyence).map((key, i) => {

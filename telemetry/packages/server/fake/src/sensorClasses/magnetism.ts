@@ -11,17 +11,30 @@ export class Magnetism extends Motion {
     super(data);
   }
 
-  getData(t: number): Readings {
+  getData(t: number, levCheck?: boolean): Readings {
+    if (!Sensor.isSampled['motion']) { 
+      this.velocity = super.getData(t).velocity;
+      Sensor.isSampled['motion'] = true;
+    } else {
+      this.velocity = Sensor.lastReadings.motion.velocity;
+    }
     
-    return Sensor.lastReadings.magnetism.fromEntries(Object.entries(
-      Sensor.lastReadings.magnetism).map(([sensor, value]) => {
+    return Object.fromEntries(Object.keys(
+      Sensor.lastReadings.magnetism).map((sensor) => {
         // either off (0 A of current) or on (250 A, an instantaneous step change)
-        const val = this.velocity < this.levVelocity ? 0 : this.magSetpoint;
-        return [sensor, val + utils.gaussianRandom(this.rms_noise)];
+        if (this.isFieldOn()) return [sensor, 0 + utils.gaussianRandom(this.rms_noise)];
+        // if (this.velocity < this.levVelocity) {
+        //   return [sensor, 0 + utils.gaussianRandom(this.rms_noise)];
+        // }
+        return [sensor, this.magSetpoint + utils.gaussianRandom(this.rms_noise)];
       })
     );
   }
+
+  // EM powers on when velocity over threshold is detected by sensors, hence not calling 
+  //   motion getData method outside of its sampling times
+  protected isFieldOn(): boolean {
+    this.velocity = Sensor.lastReadings.motion.velocity;
+    return this.velocity >= this.levVelocity;
+  }
 }
-
-
-// Initial setpoint is 50mm for levitation and 250A for levitation (arbitray, middle of each range)

@@ -423,7 +423,7 @@ export const pods: Pods = {
             high: 100,
           },
         },
-        rms_noise: 1, // estimate
+        rms_noise: 0.1, // estimate
         sampling_time: 500,
       },
 
