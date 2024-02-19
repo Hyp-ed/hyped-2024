@@ -51,14 +51,18 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
         <DropdownMenuLabel>Update</DropdownMenuLabel>
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => void updatePiBinary(pi.podId, pi.id).then(() => refresh())}
+          onClick={() =>
+            void updatePiBinary(pi.podId, pi.id).then(() => refresh())
+          }
         >
           <Binary size={18} />
           Update Binary
         </DropdownMenuItem>
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => void updatePiConfig(pi.podId, pi.id).then(() => refresh())}
+          onClick={() =>
+            void updatePiConfig(pi.podId, pi.id).then(() => refresh())
+          }
         >
           <Settings size={18} />
           Update Config
