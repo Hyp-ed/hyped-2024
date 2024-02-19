@@ -1,7 +1,8 @@
+import { Motion } from './motion';
 import { Sensor } from '../baseSensor';
 import { LiveReading, Readings, utils } from '../index';
 
-export class Temperature extends Sensor {
+export class Temperature extends Motion {
   protected temperature: number;
   protected temp_init: number;
 
@@ -17,8 +18,19 @@ export class Temperature extends Sensor {
     // const readings = // ... insert main main logic here
     // this.temperature = utils.average(readings); // take thermistor values' average
     // return readings; //
-    return {
-      thermistor_1: 27.1, // placeholder
-    };
+    const airFricCoef = 0.001;
+    const trackFricCoef = 0.05;
+    const heatGenCoef = 0.1;
+
+    let temp = Math.pow(this.velocity, 3) * airFricCoef + this.velocity * heatGenCoef;
+    temp += this.velocity < this.levVelocity
+      ? Math.pow(this.velocity, 2) * trackFricCoef
+      : Math.pow(this.velocity, 2) * (this.levVelocity / this.velocity)**0.5 * trackFricCoef;
+
+    return Object.fromEntries(Object.entries(Sensor.lastReadings.temperature)
+      .map(([sensor, value]) => {
+        return [sensor, value + temp + utils.gaussianRandom(this.rms_noise)]
+      })
+    );
   }
 }

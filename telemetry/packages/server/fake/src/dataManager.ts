@@ -1,6 +1,6 @@
-const { JSDOM } = require('jsdom');
+// const { JSDOM } = require('jsdom');
 
-const dom = new JSDOM('<!doctype html><html><body></body></html>');
+// const dom = new JSDOM('<!doctype html><html><body></body></html>');
 
 import {
   Sensor,
@@ -94,7 +94,7 @@ export class SensorManager {
           // Object.entries(readings).forEach(([measurement, value]) => {
           //   this.publishData(measurement, value.toString());
           // });
-          this.graphData(sensor.type, this.globalTime * 1000, readings);
+          // this.graphData(sensor.type, this.globalTime * 1000, readings);
 
           // this.logData(readings);
           console.log(readings);
@@ -179,9 +179,9 @@ export class SensorManager {
   //   );
   // }
 
-  private graphData(sensor: string, t: number, data: Readings): void {
-    const root = document.getElementById('container') as HTMLDivElement;
-    const graph = document.getElementById(sensor) as HTMLDivElement;
-    graph.innerText += `Time: ${t}\tAcc: ${data.acceleration.toString()}\tVel: ${data.velocity.toString()}\tDisp: ${data.displacment.toString()}\n`;
-  }
+  // private graphData(sensor: string, t: number, data: Readings): void {
+  //   const root = document.getElementById('container') as HTMLDivElement;
+  //   const graph = document.getElementById(sensor) as HTMLDivElement;
+  //   graph.innerText += `Time: ${t}\tAcc: ${data.acceleration.toString()}\tVel: ${data.velocity.toString()}\tDisp: ${data.displacment.toString()}\n`;
+  // }
 }

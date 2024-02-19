@@ -6,6 +6,8 @@ export class Motion extends Sensor {
   protected velocity: number;
   protected acceleration: number;
   private velocityStState = 0.95;
+  // Velocity threshold at which levitation is activated
+  protected levVelocity = 5;
 
   /**
    * Constructor for Motion class
