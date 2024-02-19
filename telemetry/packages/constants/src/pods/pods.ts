@@ -417,6 +417,7 @@ export const pods: Pods = {
         },
       },
     },
+    pis: {},
   },
   pod_2024: {
     id: 'pod_2024',
