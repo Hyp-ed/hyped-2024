@@ -45,7 +45,10 @@ export class RealtimeTelemetryDataGateway {
   sendMeasurementReading(props: MeasurementReading) {
     const { podId, measurementKey, value, timestamp } = props;
 
-    const measurementRoom = socketConstants.getMeasurementRoomName(podId, measurementKey);
+    const measurementRoom = socketConstants.getMeasurementRoomName(
+      podId,
+      measurementKey,
+    );
     this.socket.to(measurementRoom).emit(socketConstants.MEASUREMENT_EVENT, {
       podId,
       measurementKey,

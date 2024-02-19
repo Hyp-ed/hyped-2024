@@ -2,7 +2,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
@@ -16,7 +15,7 @@ import {
   CarouselPrevious,
 } from '@/components/ui/carousel';
 import { Signal } from 'lucide-react';
-import { POD_IDS, pods } from '@hyped/telemetry-constants';
+import { POD_IDS } from '@hyped/telemetry-constants';
 import { ServerConnectionStatus } from './server-connection-status';
 
 /**
@@ -49,7 +48,10 @@ export const ConnectionStatuses = () => {
               <ServerConnectionStatus />
             </CarouselItem>
             {POD_IDS.map((podId) => (
-              <CarouselItem className="lg:basis-1/2 xl:basis-1/3 text-white">
+              <CarouselItem
+                key={podId}
+                className="lg:basis-1/2 xl:basis-1/3 text-white"
+              >
                 <PodConnectionStatus podId={podId} />
               </CarouselItem>
             ))}

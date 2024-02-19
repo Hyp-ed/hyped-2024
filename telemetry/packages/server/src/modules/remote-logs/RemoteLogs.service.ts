@@ -13,7 +13,7 @@ export class RemoteLogsService {
    * @param message The message from the GUI to log
    * @returns True if the message was logged successfully, false otherwise
    */
-  async logRemoteMessage(message: string) {
+  logRemoteMessage(message: string) {
     this.logger.verbose(`[GUI] ${message}`, RemoteLogsService.name);
     return true;
   }
@@ -24,7 +24,7 @@ export class RemoteLogsService {
    * @param message The message from the GUI to log
    * @returns True if the message was logged successfully, false otherwise
    */
-  async logRemoteMessageWithPodID(podId: string, message: string) {
+  logRemoteMessageWithPodID(podId: string, message: string) {
     this.logger.verbose(
       `[GUI - Pod ${podId}] ${message}`,
       RemoteLogsService.name,

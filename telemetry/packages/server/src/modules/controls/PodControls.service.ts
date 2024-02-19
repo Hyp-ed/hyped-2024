@@ -17,7 +17,10 @@ export class PodControlsService {
    * @returns True if the message was sent successfully, false otherwise
    */
   async sendControlMessage(control: string, podId: string) {
-    this.mqttService.publish(`hyped/${podId}/controls/${control}`, control);
+    await this.mqttService.publish(
+      `hyped/${podId}/controls/${control}`,
+      control,
+    );
     this.logger.log(
       `Control message "${control}" sent to pod "${podId}"`,
       PodControlsService.name,
@@ -32,7 +35,7 @@ export class PodControlsService {
    * @returns True if the message was sent successfully, false otherwise
    */
   async setLevitationHeight(height: number, podId: string) {
-    this.mqttService.publish(
+    await this.mqttService.publish(
       `hyped/${podId}/controls/levitation_height`,
       height.toString(),
     );

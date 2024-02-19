@@ -35,7 +35,7 @@ export const useKeyPress = (
         }
       }
     },
-    [keys],
+    [keys, callback],
   );
 
   useEffect(() => {
@@ -43,7 +43,7 @@ export const useKeyPress = (
     return () => {
       node.removeEventListener('keydown', handleKeyPress);
     };
-  }, []);
+  }, [handleKeyPress, node]);
 };
 
 /**

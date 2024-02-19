@@ -22,7 +22,7 @@ export const thermistorCommon = {
     warning: {
       low: 20,
       high: 100,
-    }
+    },
   },
 } as const;
 

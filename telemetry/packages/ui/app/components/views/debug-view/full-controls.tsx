@@ -45,12 +45,12 @@ export const FullControls = ({ podId }: { podId: string }) => {
             <ButtonLabel>Start/stop</ButtonLabel>
             <ButtonPair>
               <LeftButton
-                onClick={() => sendControlMessage(podId, CONTROLS.START)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.START)}
               >
                 Start <Rocket size={16} />
               </LeftButton>
               <RightButton
-                onClick={() => sendControlMessage(podId, CONTROLS.STOP)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.STOP)}
               >
                 Stop <Siren size={16} />
               </RightButton>
@@ -60,19 +60,19 @@ export const FullControls = ({ podId }: { podId: string }) => {
             <ButtonLabel>Active suspension</ButtonLabel>
             <ButtonPair>
               <LeftButton
-                onClick={() => sendControlMessage(podId, CONTROLS.RAISE)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.RAISE)}
               >
                 Raise <ChevronsUp size={16} />
               </LeftButton>
               <RightButton
-                onClick={() => sendControlMessage(podId, CONTROLS.LOWER)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.LOWER)}
               >
                 Lower <ChevronsDown size={16} />
               </RightButton>
             </ButtonPair>
             <ControlButton
               className="flex gap-2"
-              onClick={() => sendControlMessage(podId, CONTROLS.TILT)}
+              onClick={() => void sendControlMessage(podId, CONTROLS.TILT)}
             >
               Tilt <Italic size={16} />
             </ControlButton>
@@ -81,12 +81,12 @@ export const FullControls = ({ podId }: { podId: string }) => {
             <ButtonLabel>Friction brakes</ButtonLabel>
             <ButtonPair>
               <LeftButton
-                onClick={() => sendControlMessage(podId, CONTROLS.CLAMP)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.CLAMP)}
               >
                 Clamp <ArrowDownToLine size={16} />
               </LeftButton>
               <RightButton
-                onClick={() => sendControlMessage(podId, CONTROLS.RETRACT)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.RETRACT)}
               >
                 Retract <ArrowUpFromLine size={16} />
               </RightButton>
@@ -96,12 +96,14 @@ export const FullControls = ({ podId }: { podId: string }) => {
             <ButtonLabel>High power</ButtonLabel>
             <ButtonPair>
               <LeftButton
-                onClick={() => sendControlMessage(podId, CONTROLS.START_HP)}
+                onClick={() =>
+                  void sendControlMessage(podId, CONTROLS.START_HP)
+                }
               >
                 Start HP <PlugZap size={16} />
               </LeftButton>
               <RightButton
-                onClick={() => sendControlMessage(podId, CONTROLS.STOP_HP)}
+                onClick={() => void sendControlMessage(podId, CONTROLS.STOP_HP)}
               >
                 Stop HP <Unplug size={16} />
               </RightButton>
@@ -111,13 +113,15 @@ export const FullControls = ({ podId }: { podId: string }) => {
             <ButtonLabel>Levitation</ButtonLabel>
             <ButtonPair>
               <LeftButton
-                onClick={() => sendControlMessage(podId, CONTROLS.LEVITATE)}
+                onClick={() =>
+                  void sendControlMessage(podId, CONTROLS.LEVITATE)
+                }
               >
                 Levitate <MoveUp size={16} />
               </LeftButton>
               <RightButton
                 onClick={() =>
-                  sendControlMessage(podId, CONTROLS.STOP_LEVITATING)
+                  void sendControlMessage(podId, CONTROLS.STOP_LEVITATING)
                 }
               >
                 Descend <MoveDown size={16} />
@@ -151,11 +155,13 @@ const ControlButton = React.forwardRef<
 >((props, ref) => {
   return (
     <Button
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       ref={ref}
       {...props}
       className={cn(
         'bg-openmct-dark-gray hover:bg-openmct-light-gray w-32 py-6',
+        // eslint-disable-next-line react/prop-types
         props.className,
       )}
     />
@@ -172,11 +178,13 @@ const LeftButton = React.forwardRef<
 >((props, ref) => {
   return (
     <ControlButton
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       ref={ref}
       {...props}
       className={cn(
         'bg-openmct-dark-gray hover:bg-openmct-light-gray rounded-r-none pr-2 flex gap-2',
+        // eslint-disable-next-line react/prop-types
         props.className,
       )}
     />
@@ -193,11 +201,13 @@ const RightButton = React.forwardRef<
 >((props, ref) => {
   return (
     <ControlButton
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       ref={ref}
       {...props}
       className={cn(
         'bg-openmct-dark-gray hover:bg-openmct-light-gray rounded-l-none pl-2 flex gap-2',
+        // eslint-disable-next-line react/prop-types
         props.className,
       )}
     />

@@ -41,7 +41,7 @@ const LevitateButton = ({ podId }: { podId: string }) => (
       'bg-blue-600 hover:bg-blue-700',
     )}
     onClick={() => {
-      sendControlMessage(podId, CONTROLS.LEVITATE);
+      void sendControlMessage(podId, CONTROLS.LEVITATE);
     }}
   >
     <ArrowUpFromLine /> LEVITATE
@@ -64,7 +64,7 @@ const LaunchButton = ({ podId }: { podId: string }) => {
           'bg-green-600 hover:bg-green-700 disabled:bg-gray-400 disabled:cursor-not-allowed',
         )}
         disabled={!enabled}
-        onClick={() => sendControlMessage(podId, CONTROLS.START)}
+        onClick={() => void sendControlMessage(podId, CONTROLS.START)}
       >
         <Rocket /> LAUNCH
       </Button>
@@ -78,7 +78,7 @@ const EmergencyStopButton = ({ podId }: { podId: string }) => (
       'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
       'bg-red-700 hover:bg-red-800',
     )}
-    onClick={() => sendControlMessage(podId, CONTROLS.STOP)}
+    onClick={() => void sendControlMessage(podId, CONTROLS.STOP)}
   >
     <Siren /> EMERGENCY STOP
   </Button>

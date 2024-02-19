@@ -142,6 +142,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
       }, LATENCY_REQUEST_INTERVAL);
       return () => clearInterval(interval);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [client],
   );
 
@@ -190,7 +191,6 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
           const newPodState = message.toString();
           const allowedStates = Object.values(ALL_POD_STATES);
           if ((allowedStates as string[]).includes(newPodState)) {
-            console.log('setting pod state', podId, newPodState);
             setPodsState((prevState) => ({
               ...prevState,
               [podId]: {
@@ -203,11 +203,11 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
           // calculate the latency
           const latency =
             new Date().getTime() -
-            parseInt(JSON.parse(message.toString())['latency']);
+            parseInt(JSON.parse(message.toString())['latency'] as string);
 
           // send warning to the server if the latency is too high
           if (latency > POD_WARNING_LATENCY) {
-            http.post(`pods/${podId}/warnings/latency`);
+            void http.post(`pods/${podId}/warnings/latency`);
           }
 
           setLastLatencyResponse(new Date().getTime());
@@ -255,13 +255,14 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
       return () => {
         POD_IDS.map((podId) => {
           client.off('message', (topic, message) =>
-            processMessage(podId, topic, message),
+            processMessage(podId, topic as string, message as Buffer),
           );
           unsubscribe('latency/response', podId);
           unsubscribe('state', podId);
         });
       };
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [client],
   );
 

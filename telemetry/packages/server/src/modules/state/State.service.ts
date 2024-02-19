@@ -16,7 +16,7 @@ export class StateService {
     @Inject(MqttService) private readonly mqttService: MqttService,
   ) {}
 
-  public async addStateReading(props: StateUpdate) {
+  public addStateReading(props: StateUpdate) {
     const validatedState = this.validateStateUpdate(props);
 
     const { podId, value: state, timestamp } = validatedState;

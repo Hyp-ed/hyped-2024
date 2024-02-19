@@ -6,12 +6,15 @@ export class RemoteLogsController {
   constructor(private remoteLogsService: RemoteLogsService) {}
 
   @Post()
-  logUIMessage(@Body() body: any) {
+  logUIMessage(@Body() body: { message: string }) {
     return this.remoteLogsService.logRemoteMessage(body.message);
   }
 
   @Post(':podId')
-  logUIMessageWithPodID(@Param('podId') podId: string, @Body() body: any) {
+  logUIMessageWithPodID(
+    @Param('podId') podId: string,
+    @Body() body: { message: string },
+  ) {
     return this.remoteLogsService.logRemoteMessageWithPodID(
       podId,
       body.message,

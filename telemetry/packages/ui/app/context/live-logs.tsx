@@ -73,7 +73,7 @@ export const LiveLogsProvider = ({
       socket.off('disconnect', onDisconnect);
       socket.off('log', onLog);
     };
-  }, []);
+  }, [logs.length]);
 
   return (
     <LiveLogsContext.Provider

@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import { Handle, NodeProps, NodeTypes, Position } from 'reactflow';
+import { Handle, NodeProps } from 'reactflow';
 import { BASE_NODE_STYLES } from './styles';
 import { cn } from '@/lib/utils';
 import { NodeDataType } from '../types';
 
-export const FailureNode = memo(
+const FailureNode = memo(
   ({
     data,
   }: Omit<NodeProps, 'data'> & {
@@ -13,7 +13,7 @@ export const FailureNode = memo(
     <>
       {data.targetPositions &&
         data.targetPositions.map(({ position, id }) => (
-          <Handle type="target" position={position} id={id} />
+          <Handle key={id} type="target" position={position} id={id} />
         ))}
       <div
         className={cn(
@@ -28,8 +28,11 @@ export const FailureNode = memo(
       </div>
       {data.sourcePositions &&
         data.sourcePositions.map(({ position, id }) => (
-          <Handle type="source" position={position} id={id} />
+          <Handle key={id} type="source" position={position} id={id} />
         ))}
     </>
   ),
 );
+
+FailureNode.displayName = 'FailureNode'; // Add display name to the component
+export { FailureNode }; // Export the component

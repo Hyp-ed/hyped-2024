@@ -4,7 +4,7 @@ import { BASE_NODE_STYLES } from './styles';
 import { cn } from '@/lib/utils';
 import { NodeDataType } from '../types';
 
-export const ActiveNode = memo(
+const ActiveNode = memo(
   ({
     data,
   }: Omit<NodeProps, 'data'> & {
@@ -13,7 +13,7 @@ export const ActiveNode = memo(
     <>
       {data.targetPositions &&
         data.targetPositions.map(({ position, id }) => (
-          <Handle type="target" position={position} id={id} />
+          <Handle key={id} type="target" position={position} id={id} />
         ))}
       <div
         className={cn(
@@ -28,8 +28,11 @@ export const ActiveNode = memo(
       </div>
       {data.sourcePositions &&
         data.sourcePositions.map(({ position, id }) => (
-          <Handle type="source" position={position} id={id} />
+          <Handle key={id} type="source" position={position} id={id} />
         ))}
     </>
   ),
 );
+
+ActiveNode.displayName = 'ActiveNode'; // Add display name to the component
+export { ActiveNode }; // Export the component

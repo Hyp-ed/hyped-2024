@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { VIEWS, VIEW_KEYS, VIEW_OPTIONS, View, ViewOption } from './views';
+import { VIEWS, VIEW_KEYS, VIEW_OPTIONS, ViewOption } from './views';
 import { Sidebar } from './components/sidebar';
 import { cn } from './lib/utils';
 import {
@@ -13,10 +13,6 @@ import {
  */
 const DEFAULT_VIEW: ViewOption = VIEW_OPTIONS.OPEN_MCT;
 
-/**
- *
- * @returns
- */
 export const App = () => {
   const [currentView, setCurrentView] = useState<ViewOption>(DEFAULT_VIEW);
 
@@ -28,6 +24,7 @@ export const App = () => {
       <ResizablePanel defaultSize={85} minSize={50}>
         {VIEW_KEYS.map((key) => (
           <div
+            key={key}
             className={cn(
               'h-[100vh] w-full col-span-7 p-1',
               currentView !== key && 'hidden',
