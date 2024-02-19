@@ -10,7 +10,7 @@
 
 &nbsp;
 
-![Build Shield](https://github.com/Hyp-ed/hyped-2023/actions/workflows/build.yml/badge.svg) ![TODO Shield](https://img.shields.io/github/search/hyp-ed/hyped-2023/TODOLater?color=red&label=TODO%20counter)
+![Build Shield](https://github.com/Hyp-ed/hyped-2024/actions/workflows/build.yml/badge.svg) ![TODO Shield](https://img.shields.io/github/search/hyp-ed/hyped-2024/TODOLater?color=red&label=TODO%20counter)
 
 ## Dependencies
 

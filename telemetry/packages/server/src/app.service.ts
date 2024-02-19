@@ -29,4 +29,8 @@ export class AppService {
       });
     });
   }
+
+  getPing(): string {
+    return 'pong';
+  }
 }

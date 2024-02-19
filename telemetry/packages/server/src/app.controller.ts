@@ -12,4 +12,9 @@ export class AppController {
       uncommittedChanges: await this.appService.getUncommittedChanges(),
     };
   }
+
+  @Get('ping')
+  getPing(): string {
+    return this.appService.getPing();
+  }
 }

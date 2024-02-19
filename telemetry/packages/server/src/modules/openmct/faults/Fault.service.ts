@@ -12,7 +12,6 @@ import {
 } from './data/historical/HistoricalFaultData.service';
 import { RealtimeFaultDataGateway } from './data/realtime/RealtimeFaultData.gateway';
 import { convertToOpenMctFault } from './utils/convertToOpenMctFault';
-import { INFLUX_FAULTS_BUCKET, INFLUX_ORG } from '@/modules/core/config';
 
 export type Fault = {
   level: FaultLevel;
@@ -48,16 +47,16 @@ export class FaultService {
         `Found existing fault ${existingFault.fault.fault.id}, updating`,
         FaultService.name,
       );
-      await this.updateExistingFault(existingFault, tripReading);
+      this.updateExistingFault(existingFault, tripReading);
       return;
     }
 
     const openMctFault = convertToOpenMctFault(fault);
-    await this.saveFault(fault, openMctFault);
+    this.saveFault(fault, openMctFault);
     this.realtimeService.sendFault(openMctFault);
   }
 
-  private async saveFault(fault: Fault, openMctFault: OpenMctFault) {
+  private saveFault(fault: Fault, openMctFault: OpenMctFault) {
     const { measurement, tripReading } = fault;
 
     const point = new Point('fault')
@@ -76,7 +75,7 @@ export class FaultService {
         `Adding fault with id ${openMctFault.fault.id}`,
         FaultService.name,
       );
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to add fault {${openMctFault.fault.id}}`,
         e,
@@ -85,7 +84,7 @@ export class FaultService {
     }
   }
 
-  private async updateExistingFault(
+  private updateExistingFault(
     influxFault: Unpacked<GetHistoricalFaultsReturn>,
     updatedReading: MeasurementReading,
   ) {
@@ -107,7 +106,7 @@ export class FaultService {
         `Updating fault with id ${updatedFault.fault.id}`,
         FaultService.name,
       );
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to update fault with id ${updatedFault.fault.id}`,
         e,

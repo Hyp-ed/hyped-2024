@@ -1,4 +1,3 @@
-import { POD_IDS } from '@hyped/telemetry-constants';
 import { LiveLogsProvider } from './context/live-logs';
 import { MQTTProvider } from './context/mqtt';
 import { PodsProvider } from './context/pods';
@@ -8,14 +7,16 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
 
-export const Providers = ({ children }: { children: React.ReactNode }) => {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
-        <PodsProvider podIds={POD_IDS as unknown as string[]}>
-          <LiveLogsProvider>{children}</LiveLogsProvider>
-        </PodsProvider>
-      </MQTTProvider>
-    </QueryClientProvider>
-  );
-};
+/**
+ * Provider for all the contexts.
+ * @param children The children to render
+ */
+export const Providers = ({ children }: { children: React.ReactNode }) => (
+  <QueryClientProvider client={queryClient}>
+  <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
+    <PodsProvider>
+      <LiveLogsProvider>{children}</LiveLogsProvider>
+    </PodsProvider>
+  </MQTTProvider>
+  </QueryClientProvider>
+);

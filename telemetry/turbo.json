@@ -2,23 +2,15 @@
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
     "start": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
     "dev": {
-      "cache": false
+      "cache": false,
+      "persistent": true
     },
-    "test": {
-      "outputs": []
-    },
-    "test:watch": {
-      "cache": false
-    },
-    "fix": {
-      "cache": false
-    },
-    "flightcheck": {
-      "outputs": []
-    },
+    "lint": {},
+    "lint:fix": {},
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
