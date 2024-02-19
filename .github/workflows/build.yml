@@ -1,9 +1,6 @@
 name: Build
 
-on:
-  push:
-    paths-ignore:
-      - 'telemetry/**'
+on: push
 
 jobs:
   build:

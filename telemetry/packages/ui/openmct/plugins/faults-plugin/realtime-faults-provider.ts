@@ -7,11 +7,12 @@ import {
   FAULT_MANAGEMENT_TYPES,
 } from './constants';
 
+// TODOLater: work out how to type this
 export function RealtimeFaultsProvider() {
   const socket = io(SERVER_ENDPOINT, { path: '/openmct/faults/realtime' });
   // handle socket disconnects
 
-  var faultCallback: any = null;
+  let faultCallback: any = null;
 
   socket.on(socketConstants.FAULT_EVENT, ({ fault }) => {
     // Give Influx time to save to database
@@ -24,8 +25,9 @@ export function RealtimeFaultsProvider() {
     supportsSubscribe(domainObject: AugmentedDomainObject) {
       return domainObject.type === FAULT_MANAGEMENT_DOMAIN_TYPE;
     },
-    subscribe: (domainObject: AugmentedDomainObject, callback: any) => {
+    subscribe: (callback: any) => {
       socket.emit(socketConstants.EVENTS.SUBSCRIBE_TO_FAULTS);
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       faultCallback = callback;
       // Call once first to get the current state
       callback({ type: FAULT_MANAGEMENT_TYPES.global });

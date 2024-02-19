@@ -2,6 +2,6 @@ export const FAULT_LEVEL = {
   WATCH: 'WATCH',
   WARNING: 'WARNING',
   CRITICAL: 'CRITICAL',
-} as const
+} as const;
 
-export type FaultLevel = typeof FAULT_LEVEL[keyof typeof FAULT_LEVEL];
+export type FaultLevel = (typeof FAULT_LEVEL)[keyof typeof FAULT_LEVEL];
