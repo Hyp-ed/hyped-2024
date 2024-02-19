@@ -15,6 +15,52 @@ message(STATUS "Search for CMSIS RTOS: ${CMSIS_FIND_COMPONENTS_RTOS}")
 
 include(stm32/devices)
 
+function(stm32_get_chip_info CHIP)
+  set(ARG_OPTIONS "")
+  set(ARG_SINGLE FAMILY DEVICE TYPE)
+  set(ARG_MULTIPLE "")
+  cmake_parse_arguments(
+    PARSE_ARGV
+    1
+    ARG
+    "${ARG_OPTIONS}"
+    "${ARG_SINGLE}"
+    "${ARG_MULTIPLE}"
+  )
+
+  string(TOUPPER ${CHIP} CHIP)
+
+  string(
+    REGEX MATCH
+          "^STM32([CFGHLMUW]P?[0-9BL])([0-9A-Z][0-9M][A-Z][0-9A-Z]).*$"
+          CHIP
+          ${CHIP}
+  )
+
+  if((NOT CMAKE_MATCH_1) OR (NOT CMAKE_MATCH_2))
+    message(FATAL_ERROR "Unknown chip ${CHIP}")
+  endif()
+
+  set(STM32_FAMILY ${CMAKE_MATCH_1})
+  set(STM32_DEVICE "${CMAKE_MATCH_1}${CMAKE_MATCH_2}")
+
+  if(NOT (${STM32_FAMILY} IN_LIST STM32_SUPPORTED_FAMILIES_SHORT_NAME))
+    message(FATAL_ERROR "Unsupported family ${STM32_FAMILY} for device ${CHIP}")
+  endif()
+
+  stm32_get_chip_type(${STM32_FAMILY} ${STM32_DEVICE} STM32_TYPE)
+
+  if(ARG_FAMILY)
+    set(${ARG_FAMILY} ${STM32_FAMILY} PARENT_SCOPE)
+  endif()
+  if(ARG_DEVICE)
+    set(${ARG_DEVICE} ${STM32_DEVICE} PARENT_SCOPE)
+  endif()
+  if(ARG_TYPE)
+    set(${ARG_TYPE} ${STM32_TYPE} PARENT_SCOPE)
+  endif()
+endfunction()
+
 function(
   cmsis_generate_default_linker_script
   FAMILY

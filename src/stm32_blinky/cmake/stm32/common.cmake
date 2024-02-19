@@ -54,65 +54,10 @@ function(
   DEVICE
   TYPE
 )
-  set(INDEX 0)
-  foreach(C_TYPE ${STM32_${FAMILY}_TYPES})
-    list(
-      GET
-      STM32_${FAMILY}_TYPE_MATCH
-      ${INDEX}
-      REGEXP
-    )
-    if(${DEVICE} MATCHES ${REGEXP})
-      set(RESULT_TYPE ${C_TYPE})
-    endif()
-    math(EXPR INDEX "${INDEX}+1")
-  endforeach()
-  set(${TYPE} ${RESULT_TYPE} PARENT_SCOPE)
-endfunction()
-
-function(stm32_get_chip_info CHIP)
-  set(ARG_OPTIONS "")
-  set(ARG_SINGLE FAMILY DEVICE TYPE)
-  set(ARG_MULTIPLE "")
-  cmake_parse_arguments(
-    PARSE_ARGV
-    1
-    ARG
-    "${ARG_OPTIONS}"
-    "${ARG_SINGLE}"
-    "${ARG_MULTIPLE}"
-  )
-
-  string(TOUPPER ${CHIP} CHIP)
-
-  string(
-    REGEX MATCH
-          "^STM32([CFGHLMUW]P?[0-9BL])([0-9A-Z][0-9M][A-Z][0-9A-Z]).*$"
-          CHIP
-          ${CHIP}
-  )
-
-  if((NOT CMAKE_MATCH_1) OR (NOT CMAKE_MATCH_2))
-    message(FATAL_ERROR "Unknown chip ${CHIP}")
-  endif()
-
-  set(STM32_FAMILY ${CMAKE_MATCH_1})
-  set(STM32_DEVICE "${CMAKE_MATCH_1}${CMAKE_MATCH_2}")
-
-  if(NOT (${STM32_FAMILY} IN_LIST STM32_SUPPORTED_FAMILIES_SHORT_NAME))
-    message(FATAL_ERROR "Unsupported family ${STM32_FAMILY} for device ${CHIP}")
-  endif()
-
-  stm32_get_chip_type(${STM32_FAMILY} ${STM32_DEVICE} STM32_TYPE)
-
-  if(ARG_FAMILY)
-    set(${ARG_FAMILY} ${STM32_FAMILY} PARENT_SCOPE)
-  endif()
-  if(ARG_DEVICE)
-    set(${ARG_DEVICE} ${STM32_DEVICE} PARENT_SCOPE)
-  endif()
-  if(ARG_TYPE)
-    set(${ARG_TYPE} ${STM32_TYPE} PARENT_SCOPE)
+  if(FAMILY STREQUAL "F4")
+    set(${TYPE} "F401xE" PARENT_SCOPE)
+  elseif(FAMILY STREQUAL "F7")
+    set(${TYPE} "F7xx" PARENT_SCOPE)
   endif()
 endfunction()
 
@@ -298,41 +243,13 @@ function(stm32_get_memory_info)
   endif()
 endfunction()
 
-if(NOT (TARGET STM32::NoSys))
-  add_library(STM32::NoSys INTERFACE IMPORTED)
-  target_compile_options(
-    STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
-  )
-  target_link_options(
-    STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
-  )
-endif()
-
-if(NOT (TARGET STM32::Nano))
-  add_library(STM32::Nano INTERFACE IMPORTED)
-  target_compile_options(
-    STM32::Nano INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nano.specs>
-  )
-  target_link_options(
-    STM32::Nano INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nano.specs>
-  )
-endif()
-
-if(NOT (TARGET STM32::Nano::FloatPrint))
-  add_library(STM32::Nano::FloatPrint INTERFACE IMPORTED)
-  target_link_options(
-    STM32::Nano::FloatPrint INTERFACE
-    $<$<C_COMPILER_ID:GNU>:-Wl,--undefined,_printf_float>
-  )
-endif()
-
-if(NOT (TARGET STM32::Nano::FloatScan))
-  add_library(STM32::Nano::FloatScan INTERFACE IMPORTED)
-  target_link_options(
-    STM32::Nano::FloatScan INTERFACE
-    $<$<C_COMPILER_ID:GNU>:-Wl,--undefined,_scanf_float>
-  )
-endif()
+add_library(STM32::NoSys INTERFACE IMPORTED)
+target_compile_options(
+  STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
+)
+target_link_options(
+  STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
+)
 
 include(stm32/utilities)
 include(stm32/f4)
