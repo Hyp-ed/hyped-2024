@@ -1,5 +1,4 @@
 import { Prettify } from '../utils/Prettify';
-import { PodId } from './pods.types';
 
 export type PiUnknownVersionStatus = 'unknown';
 export type PiKnownVersionStatus = 'up-to-date' | 'out-of-date';
@@ -33,7 +32,7 @@ export type PiInfo = Prettify<
           versionStatus: PiUnknownVersionStatus;
         }
     ) & {
-      podId: PodId;
+      podId: string; // TODOLater: This should be a PodId but that's defined in the `constants` package...
       status: PiStatus;
     }
 >;

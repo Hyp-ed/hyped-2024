@@ -30,12 +30,12 @@ export const PiManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
-  const { data, isLoading, isError, isRefetching, refetch } = useQuery(
+  const { data, isLoading, isRefetching, refetch } = useQuery(
     'pis',
-    () =>
-      http.get(`pods/${POD_ID}/pis`).then((res) => res.json()) as Promise<
-        PiInfo[]
-      >,
+    async () => {
+      const res = await http.get(`pods/${POD_ID}/pis`).then((res) => res.json());
+      return res as PiInfo[]
+    },
   );
 
   const table = useReactTable({
@@ -63,7 +63,7 @@ export const PiManagement = () => {
       <div className="flex justify-between items-center">
         <Button
           variant="outline"
-          onClick={() => refetch()}
+          onClick={() => void refetch()}
           className="flex gap-2 group text-base"
         >
           <RefreshCw size={16} className={cn(isRefetching && 'animate-spin')} />

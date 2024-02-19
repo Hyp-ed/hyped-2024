@@ -39,7 +39,3 @@ export type Pod = {
   measurements: Record<string, Measurement>;
   pis: Record<PiId, Pi>;
 };
-
-export type PodId = string;
-
-export type Pods = Record<PodId, Pod>;

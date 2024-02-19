@@ -38,7 +38,7 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
         <DropdownMenuLabel>Actions</DropdownMenuLabel>
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => navigator.clipboard.writeText(pi.ip)}
+          onClick={() => void navigator.clipboard.writeText(pi.ip)}
         >
           <Copy size={18} />
           Copy IP address
@@ -51,14 +51,14 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
         <DropdownMenuLabel>Update</DropdownMenuLabel>
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => updatePiBinary(pi.podId, pi.id).then(() => refresh())}
+          onClick={() => void updatePiBinary(pi.podId, pi.id).then(() => refresh())}
         >
           <Binary size={18} />
           Update Binary
         </DropdownMenuItem>
         <DropdownMenuItem
           className="flex gap-2"
-          onClick={() => updatePiConfig(pi.podId, pi.id).then(() => refresh())}
+          onClick={() => void updatePiConfig(pi.podId, pi.id).then(() => refresh())}
         >
           <Settings size={18} />
           Update Config
@@ -66,7 +66,7 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
         <DropdownMenuItem
           className="flex gap-2"
           onClick={() => {
-            Promise.all([
+            void Promise.all([
               updatePiBinary(pi.podId, pi.id),
               updatePiConfig(pi.podId, pi.id),
             ]).then(() => refresh());

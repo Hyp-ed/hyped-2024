@@ -1,7 +1,7 @@
 import { Controller, Get, HttpException, Param, Post } from '@nestjs/common';
 import { PiManagementService } from './PiManagement.service';
 import { validatePodId } from '../common/utils/validatePodId';
-import { pods } from '@hyped/telemetry-constants';
+import { PodId, pods } from '@hyped/telemetry-constants';
 
 @Controller('pods/:podId/pis')
 export class PiManagementController {
@@ -40,7 +40,7 @@ export class PiManagementController {
     return this.piManagementService.updatePiConfig(podId, piId);
   }
 
-  private validatePiId(podId: string, piId: string) {
+  private validatePiId(podId: PodId, piId: string) {
     const pi = pods[podId].pis[piId];
     if (!pi) {
       throw new HttpException(`Unknown pi ID: ${piId} on pod ${podId}`, 400);

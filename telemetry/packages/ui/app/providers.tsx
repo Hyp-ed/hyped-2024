@@ -13,10 +13,10 @@ const queryClient = new QueryClient();
  */
 export const Providers = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
-  <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
-    <PodsProvider>
-      <LiveLogsProvider>{children}</LiveLogsProvider>
-    </PodsProvider>
-  </MQTTProvider>
+    <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
+      <PodsProvider>
+        <LiveLogsProvider>{children}</LiveLogsProvider>
+      </PodsProvider>
+    </MQTTProvider>
   </QueryClientProvider>
 );

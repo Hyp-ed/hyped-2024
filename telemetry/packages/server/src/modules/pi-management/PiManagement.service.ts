@@ -7,6 +7,7 @@ import {
   PiInfo,
   PiVersionStatus,
 } from '@hyped/telemetry-types';
+import { validatePodId } from '../common/utils/validatePodId';
 
 @Injectable()
 export class PiManagementService {
@@ -22,6 +23,7 @@ export class PiManagementService {
    */
   public async getAllPis(podId: string): Promise<PiInfo[]> {
     this.logger.log(`Getting all info for pis in pod ${podId}`);
+    validatePodId(podId);
     const pis = pods[podId].pis;
     return Promise.all(Object.keys(pis).map((piId) => this.getPi(podId, piId)));
   }
@@ -34,6 +36,8 @@ export class PiManagementService {
    */
   public async getPi(podId: string, piId: string): Promise<PiInfo> {
     this.logger.log(`Getting info for pi ${piId} in pod ${podId}`);
+
+    validatePodId(podId);
     const pi = pods[podId].pis[piId];
 
     const status = await this.getPiStatus(podId, piId);
