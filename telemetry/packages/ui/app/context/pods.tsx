@@ -142,7 +142,8 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
       }, LATENCY_REQUEST_INTERVAL);
       return () => clearInterval(interval);
     },
-    [client, publish],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [client],
   );
 
   useEffect(
@@ -261,7 +262,8 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
         });
       };
     },
-    [client, subscribe, unsubscribe],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [client],
   );
 
   const value = {
