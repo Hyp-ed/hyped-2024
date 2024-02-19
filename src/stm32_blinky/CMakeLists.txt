@@ -8,6 +8,12 @@ project(
   CXX
   ASM
 )
+
+# get_filename_component(STM32_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
+# list(APPEND CMAKE_MODULE_PATH ${STM32_CMAKE_DIR}/cmake)
+
+# include(stm32/common) include(stm32/devices)
+
 file(GLOB code "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
@@ -21,10 +27,13 @@ set(CMAKE_EXECUTABLE_SUFFIX_C .elf)
 set(CMAKE_EXECUTABLE_SUFFIX_CXX .elf)
 set(CMAKE_EXECUTABLE_SUFFIX_ASM .elf)
 
-set(STM32_FETCH_FAMILIES F4 F7)
-set(STM32_FETCH_CUBE_VERSIONS v1.26.1 v1.16.1)
-set(STM32_FETCH_CMSIS_VERSIONS v2.6.6 v1.2.6)
-set(STM32_FETCH_HAL_VERSIONS v1.7.12 v1.2.9)
+# set(STM32_FETCH_FAMILIES F4 F7)
+
+# set(STM32_FETCH_CUBE_VERSIONS v1.26.1 v1.16.1)
+
+# set(STM32_FETCH_CMSIS_VERSIONS v2.6.6 v1.2.6)
+
+# set(STM32_FETCH_HAL_VERSIONS v1.7.12 v1.2.9)
 
 set(FAMILY F4)
 set(FAMILY_L f4)
@@ -39,21 +48,48 @@ set(HAL_COMP_LIST
     CORTEX
 )
 
-# include(FetchContent)
+include(FetchContent)
 
-# FetchContent_Declare( STM32-CMSIS GIT_REPOSITORY #
-# https://github.com/STMicroelectronics/cmsis_core/ GIT_TAG v5.6.0 GIT_PROGRESS
-# TRUE ) FetchContent_MakeAvailable(STM32-CMSIS)
+FetchContent_Declare(
+  STM32-CMSIS
+  GIT_REPOSITORY https://github.com/STMicroelectronics/cmsis_core/
+  GIT_TAG v5.6.0
+  GIT_PROGRESS TRUE
+)
 
-# FetchContent_Declare( STM32-CMSIS-${FAMILY} GIT_REPOSITORY
-# https://github.com/STMicroelectronics/cmsis_device_${FAMILY_L}/ GIT_TAG
-# ${CMSIS_VERSION} GIT_PROGRESS TRUE )
-# FetchContent_MakeAvailable(STM32-CMSIS-${FAMILY})
+FetchContent_Declare(
+  STM32CubeF4
+  GIT_REPOSITORY https://github.com/STMicroelectronics/STM32CubeF4/
+  GIT_TAG v1.26.1
+  GIT_PROGRESS TRUE
+)
 
-# FetchContent_Declare( STM32-HAL-${FAMILY} GIT_REPOSITORY
-# https://github.com/STMicroelectronics/stm32${FAMILY_L}xx_hal_driver/ GIT_TAG
-# ${HAL_VERSION} GIT_PROGRESS TRUE )
-# FetchContent_MakeAvailable(STM32-HAL-${FAMILY})
+FetchContent_Declare(
+  STM32-CMSIS-F4
+  GIT_REPOSITORY https://github.com/STMicroelectronics/cmsis_device_f4/
+  GIT_TAG v2.6.6
+  GIT_PROGRESS TRUE
+)
+
+FetchContent_Declare(
+  STM32-HAL-F4
+  GIT_REPOSITORY https://github.com/STMicroelectronics/stm32f4xx_hal_driver/
+  GIT_TAG v1.7.12
+  GIT_PROGRESS TRUE
+)
+
+# FetchContent_Declare( STM32CubeF7 GIT_REPOSITORY
+# https://github.com/STMicroelectronics/STM32CubeF7/ GIT_TAG v1.16.1
+# GIT_PROGRESS TRUE )
+
+# FetchContent_Declare( STM32-CMSIS-F7 GIT_REPOSITORY
+# https://github.com/STMicroelectronics/cmsis_device_f7/ GIT_TAG v1.2.6
+# GIT_PROGRESS TRUE )
+
+# FetchContent_Declare( STM32-HAL-F7 GIT_REPOSITORY
+# https://github.com/STMicroelectronics/stm32f7xx_hal_driver/ GIT_TAG v1.2.9
+# GIT_PROGRESS TRUE )
+
 stm32_fetch_cmsis(F4)
 stm32_fetch_hal(F4)
 
