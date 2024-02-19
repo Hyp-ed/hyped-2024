@@ -64,20 +64,20 @@ handle_options "$@"
 if [ "$build" = true ]; then
   docker-compose rm -v -f telemetry
   if [ "$with_mqtt_broker" = true ]; then
-    command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build -V"
+    command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build -V --abort-on-container-exit"
     echo "Running command: $command"
     $command
   else
-    command="docker-compose up --build -V"
+    command="docker-compose up --build -V --abort-on-container-exit"
     echo "Running command: $command"
     $command
   fi
 elif [ "$with_mqtt_broker" = true ]; then
-  command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up"
+  command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --abort-on-container-exit"
   echo "Running command: $command"
   $command
 else
-  command="docker-compose up"
+  command="docker-compose up --abort-on-container-exit"
   echo "Running command: $command"
   $command
 fi
