@@ -90,28 +90,19 @@ export class PiManagementService {
     piId: string,
   ): Promise<PiVersionResult | null> {
     this.logger.log(`Getting pi ${piId} version in pod ${podId}`);
-    // TODOLater: Implement using daemon from PR #51: https://github.com/Hyp-ed/hyped-2024/pull/51
-    await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate delay
-    if (piId === 'pi_1') {
-      return {
-        binaryHash: 'hash_1234',
-        configHash: 'hash_5678',
-      };
-    } else {
-      return null;
-    }
+
+    // TODO: Create socket connection to the daemon - port 48595, will be moved to config later
+    // TODO: For testing purposes, run the Python file from the daemon PR and test on localhost
+
+    return null;
   }
 
   private async getPiStatus(podId: string, piId: string): Promise<PiStatus> {
     this.logger.log(`Getting pi ${piId} status in pod ${podId}`);
-    // TODOLater: Implement using daemon from PR #51:
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
-    // Here we will ping the Pi to see if it is online or offline
-    if (piId === 'pi_1') {
-      return 'online';
-    } else {
-      return 'offline';
-    }
+
+    // TODO: Ping the Pi to see if it is online or offline
+
+    return 'online';
   }
 
   private async getPiVersionStatus(
@@ -128,13 +119,13 @@ export class PiManagementService {
     return upToDate ? 'up-to-date' : 'out-of-date';
   }
 
-  public async getUpToDateBinaryHash() {
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+  public async getUpToDateBinaryHash(branch: string = 'master') {
+    // TODO: Pull the latest commit from the given branch, build the binary using Docker, and get the hash of the binary
     return 'hash_1234';
   }
 
-  public async getUpToDateConfigHash() {
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate delay
+  public async getUpToDateConfigHash(branch: string = 'master') {
+    // TODO: Pull the latest commit from the given branch and hash the config file
     return 'hash_5678';
   }
 
@@ -144,7 +135,9 @@ export class PiManagementService {
    */
   public async updatePiBinary(podId: string, piId: string) {
     this.logger.log(`Updating pi ${piId} binary in pod ${podId}`);
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
+
+    // TODO: `scp` the new binary to the Pi OR Tom will implement this in the daemon
+
     return true;
   }
 
@@ -154,7 +147,9 @@ export class PiManagementService {
    */
   public async updatePiConfig(podId: string, piId: string) {
     this.logger.log(`Updating pi ${piId} in pod ${podId}`);
-    await new Promise((resolve) => setTimeout(resolve, 3000)); // Simulate delay
+
+    // TODO: `scp` the new config to the Pi OR Tom will implement this in the daemon
+
     return true;
   }
 }

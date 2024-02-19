@@ -23,8 +23,10 @@ import { columns } from './columns';
 import { cn } from '@/lib/utils';
 import { PiInfo } from '@hyped/telemetry-types';
 
-// temp until debug view is merged
+// TODO: Temp until debug view is merged - DO THIS!
 const POD_ID = 'pod_1';
+
+// TODO: Give an option of the branches on the GitHub to select from (for Pi version comparison)
 
 export const PiManagement = () => {
   const [sorting, setSorting] = useState<SortingState>([]);
