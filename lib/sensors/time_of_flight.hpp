@@ -93,6 +93,10 @@ class TimeOfFlight {
 
   static constexpr std::uint8_t kSystemInterruptClear = 0x015;
 
+  static constexpr std::uint8_t array_return_addresses[20]
+    = {0x0096, 0x0097, 0x00e3, 0x00e4, 0x00e5, 0x00e6, 0x00e7, 0x00f5, 0x00d9, 0x00db,
+       0x00dc, 0x00dd, 0x009f, 0x00a3, 0x00b7, 0x00bb, 0x00b2, 0x00ca, 0x00ff, 0x0030};
+
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
   const std::uint8_t channel_;
