@@ -93,6 +93,7 @@ export class PiManagementService {
 
     // TODO: Create socket connection to the daemon - port 48595, will be moved to config later
     // TODO: For testing purposes, run the Python file from the daemon PR and test on localhost
+    await this.simulateDelay();
 
     return null;
   }
@@ -101,6 +102,7 @@ export class PiManagementService {
     this.logger.log(`Getting pi ${piId} status in pod ${podId}`);
 
     // TODO: Ping the Pi to see if it is online or offline
+    await this.simulateDelay();
 
     return 'online';
   }
@@ -121,11 +123,15 @@ export class PiManagementService {
 
   public async getUpToDateBinaryHash(branch: string = 'master') {
     // TODO: Pull the latest commit from the given branch, build the binary using Docker, and get the hash of the binary
+    await this.simulateDelay();
+
     return 'hash_1234';
   }
 
   public async getUpToDateConfigHash(branch: string = 'master') {
     // TODO: Pull the latest commit from the given branch and hash the config file
+    await this.simulateDelay();
+
     return 'hash_5678';
   }
 
@@ -137,6 +143,7 @@ export class PiManagementService {
     this.logger.log(`Updating pi ${piId} binary in pod ${podId}`);
 
     // TODO: `scp` the new binary to the Pi OR Tom will implement this in the daemon
+    await this.simulateDelay();
 
     return true;
   }
@@ -149,7 +156,14 @@ export class PiManagementService {
     this.logger.log(`Updating pi ${piId} in pod ${podId}`);
 
     // TODO: `scp` the new config to the Pi OR Tom will implement this in the daemon
+    await this.simulateDelay();
 
     return true;
+  }
+
+  private async simulateDelay() {
+    return new Promise((resolve) => {
+      setTimeout(resolve, 2000);
+    });
   }
 }
