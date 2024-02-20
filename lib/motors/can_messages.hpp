@@ -12,7 +12,7 @@ class ControllerCanProcessor : public io::ICanProcessor {
   enum Operation { kRead, kWrite };
   enum Location { kTemperature, kAccelerometer };
   enum Error { kInvalidOperation };
-  static constexpr std::uint8_t kErrorId = 0;  // TODO Later decide
+  static constexpr std::uint8_t kErrorId = 0;  // TODOLater decide
 
  public:
   ControllerCanProcessor(std::shared_ptr<io::ICan> can);
