@@ -2,13 +2,12 @@
 
 namespace hyped::motors {
 
-VectorControlCanMessages::VectorControlCanMessages(std::shared_ptr<io::ICan> can)
-    : can_(std::move(can))
+ControllerCanProcessor::ControllerCanProcessor(std::shared_ptr<io::ICan> can) : can_(std::move(can))
 {
 }
 
-std::vector<std::uint8_t> VectorControlCanMessages::convertToBytes(std::uint64_t value,
-                                                                   std::size_t length)
+std::vector<std::uint8_t> ControllerCanProcessor::convertToBytes(std::uint64_t value,
+                                                                 std::size_t length)
 {
   std::vector<std::uint8_t> bytes = {};
 
@@ -19,9 +18,8 @@ std::vector<std::uint8_t> VectorControlCanMessages::convertToBytes(std::uint64_t
   return bytes;
 }
 
-core::Result VectorControlCanMessages::canSend(Operation operation,  // for general update messages
-                                               Location location,
-                                               std::uint64_t data)
+core::Result ControllerCanProcessor::sendResponse(
+  Operation operation, Location location, std::uint64_t data)  // for general update messages
 {
   io::CanFrame frame;
 
@@ -43,7 +41,7 @@ core::Result VectorControlCanMessages::canSend(Operation operation,  // for gene
   return result;
 }
 
-core::Result VectorControlCanMessages::canError(Error error)
+core::Result ControllerCanProcessor::sendError(Error error)
 {
   io::CanFrame frame;
 
@@ -61,6 +59,13 @@ core::Result VectorControlCanMessages::canError(Error error)
   frame.data[7] = 0x00;
 
   const core::Result result = can_->send(frame);
+  return result;
+}
+
+core::Result ControllerCanProcessor::receiveMessage(io::CanFrame frame)
+{
+  const core::Result result = io::ICanProcessor::processMessage(frame);
+  sendError(Error::kInvalidOperation);
   return result;
 }
 

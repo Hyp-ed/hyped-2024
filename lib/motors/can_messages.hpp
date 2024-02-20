@@ -8,16 +8,17 @@
 
 namespace hyped::motors {
 
-class VectorControlCanMessages {
+class ControllerCanProcessor : public io::ICanProcessor {
   enum Operation { kRead, kWrite };
   enum Location { kTemperature, kAccelerometer };
-  enum Error { Error1, Error2 };
-  static constexpr std::uint8_t kErrorId = 0;  // TODOLater decide
+  enum Error { kInvalidOperation };
+  static constexpr std::uint8_t kErrorId = 0;  // TODO Later decide
 
  public:
-  VectorControlCanMessages(std::shared_ptr<io::ICan> can);
-  core::Result canSend(Operation operation, Location location, std::uint64_t data);
-  core::Result canError(Error error);
+  ControllerCanProcessor(std::shared_ptr<io::ICan> can);
+  core::Result sendResponse(Operation operation, Location location, std::uint64_t data);
+  core::Result sendError(Error error);
+  core::Result ControllerCanProcessor::receiveMessage(io::CanFrame frame);
 
  private:
   std::vector<uint8_t> convertToBytes(std::uint64_t value, std::size_t length);
