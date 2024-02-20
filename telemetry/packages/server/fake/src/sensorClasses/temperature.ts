@@ -3,36 +3,42 @@ import { Sensor } from '../baseSensor';
 import { LiveReading, Readings, utils } from '../index';
 
 export class Temperature extends Motion {
-  protected temperature: number;
-  protected temp_init: number;
+  protected temp: number;
+  protected temp0: number;
 
-  // Coefficients for estimating temperature changes
-  private airFricCoef = 0.1;
-  private trackFricCoef = 0.3;
-  private heatGenCoef = 0.5;
+  // Arbitrary coefficients for estimating temperature changes
+  private params = {
+    drag: 0.1,
+    friction: 0.3,
+    heatGen: 0.5,
+  };
 
   constructor(data: LiveReading) {
     super(data);
-    // Set initial temperature value upon instantiation
-    this.temp_init = utils.average(Object.values(data.readings));
-    // Dynamic value used for reference by any sub-class(es)
-    this.temperature = this.temp_init;
+    // Initial temp used for reference by subclass(es)
+    this.temp0 = utils.average(Object.values(data.readings));
+    this.temp = this.temp0;
   }
 
   getData(t: number): Readings {
-    let temp = Math.pow(this.velocity, 3) * this.airFricCoef + this.velocity * this.heatGenCoef;
-    // While on track, temperature increases with work done
-    // After levitation begins, temperature component from track friction gradually falls
-    temp += this.velocity < this.levVelocity
-      ? Math.pow(this.velocity, 2) * this.trackFricCoef
-      : Math.pow(this.velocity, 2) * (this.levVelocity / this.velocity)**0.5 * this.trackFricCoef;
+    this.temp += // Air drag and internal heat generation
+      Math.pow(this.velocity, 3) * this.params.drag +
+      this.velocity * this.params.heatGen;
+    this.temp += // On the track, temperature increases with work done
+      this.velocity < this.liftoffSpeed
+        ? Math.pow(this.displacement, 2) * this.params.friction
+        : Math.pow(this.displacement, 2) *
+          (this.liftoffSpeed / this.velocity) *
+          this.displacement *
+          this.params.friction;
 
-    return Object.fromEntries(Object.entries(
-      Sensor.lastReadings.temperature)
-        .map(([sensor, value]) => {
-          return [sensor, utils.round2DP(value + temp + utils.gaussianRandom(this.rms_noise))]
-        })
+    return Object.fromEntries(
+      Object.keys(Sensor.lastReadings.temperature).map((key) => {
+        return [
+          key,
+          utils.round2DP(this.temp + utils.gaussianRandom(this.rms_noise)),
+        ];
+      }),
     );
-
   }
 }
