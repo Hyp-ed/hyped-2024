@@ -18,7 +18,7 @@ class ControllerCanProcessor : public io::ICanProcessor {
   ControllerCanProcessor(std::shared_ptr<io::ICan> can);
   core::Result sendResponse(Operation operation, Location location, std::uint64_t data);
   core::Result sendError(Error error);
-  core::Result ControllerCanProcessor::receiveMessage(io::CanFrame frame);
+  core::Result receiveMessage(io::CanFrame frame);
 
  private:
   std::vector<uint8_t> convertToBytes(std::uint64_t value, std::size_t length);
