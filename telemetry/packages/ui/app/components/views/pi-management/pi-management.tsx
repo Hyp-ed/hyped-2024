@@ -35,8 +35,7 @@ export const PiManagement = () => {
   const { data, isLoading, isRefetching, refetch } = useQuery(
     'pis',
     async () => {
-      const res = await http.get(`pods/${podId}/pis`).then((res) => res.json());
-      return res as PiInfo[];
+      return [];
     },
   );
 

@@ -1,6 +1,6 @@
 import { Injectable, LoggerService } from '@nestjs/common';
 import { Logger } from '@/modules/logger/Logger.decorator';
-import { pods } from '@hyped/telemetry-constants';
+import { PodId, pods } from '@hyped/telemetry-constants';
 import {
   PiVersionResult,
   PiStatus,
@@ -8,6 +8,8 @@ import {
   PiVersionStatus,
 } from '@hyped/telemetry-types';
 import { validatePodId } from '../common/utils/validatePodId';
+import net from 'net';
+import isReachable from 'is-reachable';
 
 @Injectable()
 export class PiManagementService {
@@ -93,18 +95,83 @@ export class PiManagementService {
 
     // TODO: Create socket connection to the daemon - port 48595, will be moved to config later
     // TODO: For testing purposes, run the Python file from the daemon PR and test on localhost
-    await this.simulateDelay();
-
     return null;
+    // Create socket
+    // const socket = new net.Socket();
+    // const port = 48595; // TODO: Move to config
+    // const host = 'localhost'; // TODO: Move to config
+
+    // // Connect to socket
+    // socket.connect(port, host);
+
+    // // Wait for connection
+    // try {
+    //   await new Promise((resolve, reject) => {
+    //     socket.on('connect', resolve);
+    //     // give up after 1 seconds
+    //     setTimeout(reject, 1000);
+    //   });
+    // } catch (e) {
+    //   this.logger.error(`Could not connect to daemon on ${host}:${port}`);
+    //   return null;
+    // }
+
+    // // Send message
+    // socket.write('get_hashes');
+
+    // // Wait for response
+    // const response = await new Promise<
+    //   | {
+    //       result: 'success';
+    //       hyped_pod: string;
+    //       config: string;
+    //     }
+    //   | {
+    //       result: 'error';
+    //       message: string;
+    //     }
+    // >((resolve) => {
+    //   socket.on('data', (data) => {
+    //     resolve(
+    //       JSON.parse(data.toString()) as
+    //         | {
+    //             result: 'success';
+    //             hyped_pod: string;
+    //             config: string;
+    //           }
+    //         | {
+    //             result: 'error';
+    //             message: string;
+    //           },
+    //     );
+    //   });
+    // });
+
+    // if (response.result === 'error') {
+    //   this.logger.error(
+    //     `Error getting version of pi ${piId} in pod ${podId}: ${response.message}`,
+    //   );
+    //   return null;
+    // }
+
+    // const { hyped_pod, config } = response;
+
+    // return {
+    //   binaryHash: hyped_pod,
+    //   configHash: config,
+    // };
   }
 
-  private async getPiStatus(podId: string, piId: string): Promise<PiStatus> {
+  private async getPiStatus(podId: PodId, piId: string): Promise<PiStatus> {
     this.logger.log(`Getting pi ${piId} status in pod ${podId}`);
 
-    // TODO: Ping the Pi to see if it is online or offline
-    await this.simulateDelay();
+    const ip = pods[podId].pis[piId].ip;
+    // const online = await isReachable(ip, {
+    //   timeout: 1000,
+    // });
+    const online = true; // TODO: Remove this line and uncomment the above line
 
-    return 'online';
+    return online ? 'online' : 'offline';
   }
 
   private async getPiVersionStatus(
