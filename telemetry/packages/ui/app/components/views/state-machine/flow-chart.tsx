@@ -1,4 +1,4 @@
-import ReactFlow, { Position } from 'reactflow';
+import ReactFlow, { Background, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
 import { PassiveNode, FailureNode, ActiveNode, TextNode } from './nodes';
@@ -254,71 +254,27 @@ export function StateMachineFlowChart({
         },
         type: getNodeType(ALL_POD_STATES.FAILURE_STOPPED),
       },
-      {
-        id: 'key-label',
-        data: {
-          label: 'Key:',
-        },
-        position: {
-          x: 0,
-          y: 360,
-        },
-        type: 'TextNode',
-      },
-      {
-        id: 'key-passive',
-        data: {
-          label: 'Passive State',
-        },
-        position: {
-          x: 0,
-          y: 400,
-        },
-        type: 'PassiveNode',
-      },
-      {
-        id: 'key-active',
-        data: {
-          label: 'Active State',
-        },
-        position: {
-          x: 175,
-          y: 400,
-        },
-        type: 'ActiveNode',
-      },
-      {
-        id: 'key-failure',
-        data: {
-          label: 'Failure State',
-        },
-        position: {
-          x: 350,
-          y: 400,
-        },
-        type: 'FailureNode',
-      },
     ],
     [currentState],
   );
 
   return (
     <div className="h-full flex flex-col justify-center items-center">
-      <div className="h-[500px] w-[1400px]">
+      <div className="h-full w-full">
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
-          // remove all interactivity
-          panOnDrag={false}
-          panOnScroll={false}
-          zoomOnScroll={false}
-          elementsSelectable={false}
           nodesDraggable={false}
           nodesConnectable={false}
-          zoomOnPinch={false}
-          zoomOnDoubleClick={false}
-        />
+          defaultViewport={{
+            zoom: 1,
+            x: 50,
+            y: 250,
+          }}
+        >
+          <Background />
+        </ReactFlow>
       </div>
     </div>
   );
