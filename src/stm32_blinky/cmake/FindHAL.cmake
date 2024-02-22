@@ -141,13 +141,6 @@ foreach(COMP ${HAL_FIND_COMPONENTS_UNHANDLED})
             COMP_L
             ${COMP_L}
   )
-  if(${COMP_L} IN_LIST HAL_LL_DRIVERS)
-    list(APPEND HAL_FIND_COMPONENTS_DRIVERS_LL ${COMP})
-    message(TRACE
-            "FindHAL: append COMP ${COMP} to HAL_FIND_COMPONENTS_DRIVERS_LL"
-    )
-    continue()
-  endif()
   message(FATAL_ERROR "FindHAL: unknown HAL component: ${COMP}")
 endforeach()
 
@@ -185,16 +178,13 @@ list(REMOVE_DUPLICATES HAL_FIND_COMPONENTS_FAMILIES)
 
 # when no explicit driver and driver_ll is given to find_component(HAL ) then
 # search for all supported driver and driver_ll
-if((NOT HAL_FIND_COMPONENTS_DRIVERS) AND (NOT HAL_FIND_COMPONENTS_DRIVERS_LL))
+if((NOT HAL_FIND_COMPONENTS_DRIVERS))
   set(HAL_FIND_COMPONENTS_DRIVERS ${HAL_DRIVERS})
-  set(HAL_FIND_COMPONENTS_DRIVERS_LL ${HAL_LL_DRIVERS})
 endif()
 list(REMOVE_DUPLICATES HAL_FIND_COMPONENTS_DRIVERS)
-list(REMOVE_DUPLICATES HAL_FIND_COMPONENTS_DRIVERS_LL)
 
 message(STATUS "Search for HAL families: ${HAL_FIND_COMPONENTS_FAMILIES}")
 message(STATUS "Search for HAL drivers: ${HAL_FIND_COMPONENTS_DRIVERS}")
-message(STATUS "Search for HAL LL drivers: ${HAL_FIND_COMPONENTS_DRIVERS_LL}")
 
 foreach(COMP ${HAL_FIND_COMPONENTS_FAMILIES})
   string(TOUPPER ${COMP} COMP_U)
@@ -206,15 +196,6 @@ foreach(COMP ${HAL_FIND_COMPONENTS_FAMILIES})
       COMP_U
       ${COMP_U}
   )
-  if(CMAKE_MATCH_3)
-    set(CORE ${CMAKE_MATCH_3})
-    set(CORE_C "::${CORE}")
-    set(CORE_U "_${CORE}")
-  else()
-    unset(CORE)
-    unset(CORE_C)
-    unset(CORE_U)
-  endif()
 
   set(FAMILY ${CMAKE_MATCH_1})
   string(TOLOWER ${FAMILY} FAMILY_L)
@@ -241,32 +222,6 @@ foreach(COMP ${HAL_FIND_COMPONENTS_FAMILIES})
     )
   endif()
 
-  # Checking HAL patch or release version
-  unset(VERSION_INFO)
-  find_file(PACKAGE_FILE NAMES package.xml PATHS ${STM32_CUBE_${FAMILY}_PATH})
-  if(PACKAGE_FILE)
-    file(READ ${PACKAGE_FILE} PACKAGE_FILE_CONTENT)
-    string(
-      REGEX
-        MATCH
-        "PackDescription Release=\"FW.${FAMILY}.([0-9.]+)\"( Patch=\"FW.${FAMILY}.([0-9.]+)\")?"
-        VERSION_INFO
-        ${PACKAGE_FILE_CONTENT}
-    )
-    if(CMAKE_MATCH_3) # This is the "Patch" revision
-      set(HAL_${COMP}_VERSION ${CMAKE_MATCH_3})
-      set(HAL_VERSION ${CMAKE_MATCH_3})
-    else(CMAKE_MATCH_1) # This is the "Release" version
-      set(HAL_${COMP}_VERSION ${CMAKE_MATCH_1})
-      set(HAL_VERSION ${CMAKE_MATCH_1})
-    endif()
-  endif()
-  if(NOT VERSION_INFO)
-    message(
-      STATUS "Could not read the HAL version from package.xml for ${COMP}"
-    )
-  endif()
-
   find_path(
     HAL_${FAMILY}_PATH
     NAMES Inc/stm32${FAMILY_L}xx_hal.h
@@ -280,41 +235,34 @@ foreach(COMP ${HAL_FIND_COMPONENTS_FAMILIES})
   endif()
 
   find_path(
-    HAL_${FAMILY}${CORE_U}_INCLUDE
+    HAL_${FAMILY}_INCLUDE
     NAMES stm32${FAMILY_L}xx_hal.h
     PATHS "${HAL_${FAMILY}_PATH}/Inc"
     NO_DEFAULT_PATH
   )
   find_file(
-    HAL_${FAMILY}${CORE_U}_SOURCE
+    HAL_${FAMILY}_SOURCE
     NAMES stm32${FAMILY_L}xx_hal.c
     PATHS "${HAL_${FAMILY}_PATH}/Src"
     NO_DEFAULT_PATH
   )
 
-  if((NOT HAL_${FAMILY}${CORE_U}_INCLUDE) OR (NOT HAL_${FAMILY}${CORE_U}_SOURCE
-                                             )
-  )
+  if((NOT HAL_${FAMILY}_INCLUDE) OR (NOT HAL_${FAMILY}_SOURCE))
     set(HAL_${COMP}_FOUND FALSE)
     message(DEBUG "FindHAL: did not find path to HAL /src or /inc dir")
     continue()
   endif()
 
-  if(NOT (TARGET HAL::STM32::${FAMILY}${CORE_C}))
-    message(TRACE "FindHAL: creating library HAL::STM32::${FAMILY}${CORE_C}")
-    add_library(HAL::STM32::${FAMILY}${CORE_C} INTERFACE IMPORTED)
+  if(NOT (TARGET HAL::STM32::${FAMILY}))
+    message(TRACE "FindHAL: creating library HAL::STM32::${FAMILY}")
+    add_library(HAL::STM32::${FAMILY} INTERFACE IMPORTED)
     target_link_libraries(
-      HAL::STM32::${FAMILY}${CORE_C} INTERFACE STM32::${FAMILY}${CORE_C}
-                                               CMSIS::STM32::${FAMILY}${CORE_C}
+      HAL::STM32::${FAMILY} INTERFACE STM32::${FAMILY} CMSIS::STM32::${FAMILY}
     )
     target_include_directories(
-      HAL::STM32::${FAMILY}${CORE_C}
-      INTERFACE "${HAL_${FAMILY}${CORE_U}_INCLUDE}"
+      HAL::STM32::${FAMILY} INTERFACE "${HAL_${FAMILY}_INCLUDE}"
     )
-    target_sources(
-      HAL::STM32::${FAMILY}${CORE_C}
-      INTERFACE "${HAL_${FAMILY}${CORE_U}_SOURCE}"
-    )
+    target_sources(HAL::STM32::${FAMILY} INTERFACE "${HAL_${FAMILY}_SOURCE}")
   endif()
 
   foreach(DRV_COMP ${HAL_FIND_COMPONENTS_DRIVERS})
@@ -326,125 +274,69 @@ foreach(COMP ${HAL_FIND_COMPONENTS_FAMILIES})
     endif()
 
     find_file(
-      HAL_${FAMILY}${CORE_U}_${DRV}_SOURCE
+      HAL_${FAMILY}_${DRV}_SOURCE
       NAMES stm32${FAMILY_L}xx_hal_${DRV_L}.c
       PATHS "${HAL_${FAMILY}_PATH}/Src"
       NO_DEFAULT_PATH
     )
-    list(APPEND HAL_${FAMILY}${CORE_U}_SOURCES "${HAL_${FAMILY}_${DRV}_SOURCE}")
-    if(NOT HAL_${FAMILY}${CORE_U}_${DRV}_SOURCE)
-      message(WARNING "Cannot find ${DRV} driver for ${FAMILY}${CORE_U}")
+    list(APPEND HAL_${FAMILY}_SOURCES "${HAL_${FAMILY}_${DRV}_SOURCE}")
+    if(NOT HAL_${FAMILY}_${DRV}_SOURCE)
+      message(WARNING "Cannot find ${DRV} driver for ${FAMILY}")
       set(HAL_${DRV_COMP}_FOUND FALSE)
       continue()
     endif()
 
     set(HAL_${DRV_COMP}_FOUND TRUE)
-    if(HAL_${FAMILY}${CORE_U}_${DRV}_SOURCE
-       AND (NOT (TARGET HAL::STM32::${FAMILY}::${DRV}))
+    if(HAL_${FAMILY}_${DRV}_SOURCE AND (NOT (TARGET
+                                             HAL::STM32::${FAMILY}::${DRV}))
     )
-      message(TRACE
-              "FindHAL: creating library HAL::STM32::${FAMILY}${CORE_C}::${DRV}"
-      )
-      add_library(HAL::STM32::${FAMILY}${CORE_C}::${DRV} INTERFACE IMPORTED)
+      message(TRACE "FindHAL: creating library HAL::STM32::${FAMILY}::${DRV}")
+      add_library(HAL::STM32::${FAMILY}::${DRV} INTERFACE IMPORTED)
       target_link_libraries(
-        HAL::STM32::${FAMILY}${CORE_C}::${DRV}
-        INTERFACE HAL::STM32::${FAMILY}${CORE_C}
+        HAL::STM32::${FAMILY}::${DRV} INTERFACE HAL::STM32::${FAMILY}
       )
       target_sources(
-        HAL::STM32::${FAMILY}${CORE_C}::${DRV}
-        INTERFACE "${HAL_${FAMILY}${CORE_U}_${DRV}_SOURCE}"
+        HAL::STM32::${FAMILY}::${DRV}
+        INTERFACE "${HAL_${FAMILY}_${DRV}_SOURCE}"
       )
     endif()
 
-    if(HAL_${FAMILY}${CORE_U}_${DRV}_SOURCE AND (${DRV_L} IN_LIST
-                                                 HAL_EX_DRIVERS_${FAMILY})
+    if(HAL_${FAMILY}_${DRV}_SOURCE AND (${DRV_L} IN_LIST
+                                        HAL_EX_DRIVERS_${FAMILY})
     )
       find_file(
-        HAL_${FAMILY}${CORE_U}_${DRV}_EX_SOURCE
+        HAL_${FAMILY}_${DRV}_EX_SOURCE
         NAMES stm32${FAMILY_L}xx_hal_${DRV_L}_ex.c
         PATHS "${HAL_${FAMILY}_PATH}/Src"
         NO_DEFAULT_PATH
       )
-      list(APPEND HAL_${FAMILY}${CORE_U}_SOURCES
-           "${HAL_${FAMILY}${CORE_U}_${DRV}_EX_SOURCE}"
-      )
-      if(NOT HAL_${FAMILY}${CORE_U}_${DRV}_EX_SOURCE)
-        message(WARNING "Cannot find ${DRV}Ex driver for ${FAMILY}${CORE_U}")
+      list(APPEND HAL_${FAMILY}_SOURCES "${HAL_${FAMILY}_${DRV}_EX_SOURCE}")
+      if(NOT HAL_${FAMILY}_${DRV}_EX_SOURCE)
+        message(WARNING "Cannot find ${DRV}Ex driver for ${FAMILY}")
       endif()
 
-      if((TARGET HAL::STM32::${FAMILY}${CORE_C}::${DRV})
-         AND (NOT (TARGET HAL::STM32::${FAMILY}${CORE_C}::${DRV}Ex))
+      if((TARGET HAL::STM32::${FAMILY}::${DRV})
+         AND (NOT (TARGET HAL::STM32::${FAMILY}::${DRV}Ex))
       )
-        message(
-          TRACE
-          "FindHAL: creating library HAL::STM32::${FAMILY}${CORE_C}::${DRV}Ex"
+        message(TRACE
+                "FindHAL: creating library HAL::STM32::${FAMILY}::${DRV}Ex"
         )
-        add_library(HAL::STM32::${FAMILY}${CORE_C}::${DRV}Ex INTERFACE IMPORTED)
+        add_library(HAL::STM32::${FAMILY}::${DRV}Ex INTERFACE IMPORTED)
         target_link_libraries(
-          HAL::STM32::${FAMILY}${CORE_C}::${DRV}Ex
-          INTERFACE HAL::STM32::${FAMILY}${CORE_C}::${DRV}
+          HAL::STM32::${FAMILY}::${DRV}Ex
+          INTERFACE HAL::STM32::${FAMILY}::${DRV}
         )
         target_sources(
-          HAL::STM32::${FAMILY}${CORE_C}::${DRV}Ex
-          INTERFACE "${HAL_${FAMILY}${CORE_U}_${DRV}_EX_SOURCE}"
+          HAL::STM32::${FAMILY}::${DRV}Ex
+          INTERFACE "${HAL_${FAMILY}_${DRV}_EX_SOURCE}"
         )
       endif()
-    endif()
-  endforeach()
-
-  foreach(DRV_COMP ${HAL_FIND_COMPONENTS_DRIVERS_LL})
-    string(TOLOWER ${DRV_COMP} DRV_L)
-    string(
-      REGEX
-      REPLACE "^ll_"
-              ""
-              DRV_L
-              ${DRV_L}
-    )
-    string(TOUPPER ${DRV_L} DRV)
-
-    if(NOT (DRV_L IN_LIST HAL_LL_DRIVERS_${FAMILY}))
-      continue()
-    endif()
-
-    find_file(
-      HAL_${FAMILY}${CORE_U}_${DRV}_LL_SOURCE
-      NAMES stm32${FAMILY_L}xx_ll_${DRV_L}.c
-      PATHS "${HAL_${FAMILY}_PATH}/Src"
-      NO_DEFAULT_PATH
-    )
-    list(APPEND HAL_${FAMILY}${CORE_U}_SOURCES
-         "${HAL_${FAMILY}_${DRV}_LL_SOURCE}"
-    )
-    if(NOT HAL_${FAMILY}${CORE_U}_${DRV}_LL_SOURCE)
-      message(WARNING "Cannot find LL_${DRV} driver for ${FAMILY}${CORE_U}")
-      set(HAL_${DRV_COMP}_FOUND FALSE)
-      continue()
-    endif()
-
-    set(HAL_${DRV_COMP}_FOUND TRUE)
-    if(HAL_${FAMILY}${CORE_U}_${DRV}_LL_SOURCE
-       AND (NOT (TARGET HAL::STM32::${FAMILY}${CORE_C}::LL_${DRV}))
-    )
-      message(
-        TRACE
-        "FindHAL: creating library HAL::STM32::${FAMILY}${CORE_C}::LL_${DRV}"
-      )
-      add_library(HAL::STM32::${FAMILY}${CORE_C}::LL_${DRV} INTERFACE IMPORTED)
-      target_include_directories(
-        HAL::STM32::${FAMILY}${CORE_C}::LL_${DRV}
-        INTERFACE "${HAL_${FAMILY}${CORE_U}_INCLUDE}"
-      )
-      target_sources(
-        HAL::STM32::${FAMILY}${CORE_C}::LL_${DRV}
-        INTERFACE "${HAL_${FAMILY}${CORE_U}_${DRV}_LL_SOURCE}"
-      )
     endif()
   endforeach()
 
   set(HAL_${COMP}_FOUND TRUE)
-  list(APPEND HAL_INCLUDE_DIRS "${HAL_${FAMILY}${CORE_U}_INCLUDE}")
-  list(APPEND HAL_SOURCES "${HAL_${FAMILY}${CORE_U}_SOURCES}")
+  list(APPEND HAL_INCLUDE_DIRS "${HAL_${FAMILY}_INCLUDE}")
+  list(APPEND HAL_SOURCES "${HAL_${FAMILY}_SOURCES}")
 endforeach()
 
 list(REMOVE_DUPLICATES HAL_INCLUDE_DIRS)

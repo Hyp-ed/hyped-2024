@@ -61,59 +61,6 @@ function(
   endif()
 endfunction()
 
-function(stm32_get_cores CORES)
-  set(ARG_OPTIONS "")
-  set(ARG_SINGLE CHIP FAMILY DEVICE)
-  set(ARG_MULTIPLE "")
-  cmake_parse_arguments(
-    PARSE_ARGV
-    1
-    ARG
-    "${ARG_OPTIONS}"
-    "${ARG_SINGLE}"
-    "${ARG_MULTIPLE}"
-  )
-
-  if(ARG_CHIP)
-    # TODO: I don't get why stm32_get_chip_info is called in stm32_get_cores
-    stm32_get_chip_info(
-      ${ARG_CHIP}
-      FAMILY
-      ARG_FAMILY
-      TYPE
-      ARG_TYPE
-      DEVICE
-      ARG_DEVICE
-    )
-  elseif(ARG_FAMILY AND ARG_DEVICE)
-    # TODO: I don't get why stm32_get_chip_type is called in stm32_get_cores
-    stm32_get_chip_type(${ARG_FAMILY} ${ARG_DEVICE} ARG_TYPE)
-  elseif(ARG_FAMILY)
-    set(${CORES} "" PARENT_SCOPE)
-    return()
-  else()
-    message(
-      FATAL_ERROR
-        "Either CHIP or FAMILY or FAMILY/DEVICE should be specified for stm32_get_cores()"
-    )
-  endif()
-
-  # TODO following is the only part really used by FindCMSIS. Maybe a cleanup is
-  # needed
-  if(${ARG_FAMILY} STREQUAL "H7")
-    stm32h7_get_device_cores(${ARG_DEVICE} ${ARG_TYPE} CORE_LIST)
-  elseif(${ARG_FAMILY} STREQUAL "WB")
-    # note STM32WB have an M0 core but in current state of the art it runs ST
-    # stacks and is not needed/allowed to build for customer
-    set(CORE_LIST M4)
-  elseif(${ARG_FAMILY} STREQUAL "MP1")
-    set(CORE_LIST M4)
-  elseif(${ARG_FAMILY} STREQUAL "WL")
-    stm32wl_get_device_cores(${ARG_DEVICE} ${ARG_TYPE} CORE_LIST)
-  endif()
-  set(${CORES} "${CORE_LIST}" PARENT_SCOPE)
-endfunction()
-
 function(stm32_get_memory_info)
   set(ARG_OPTIONS
       FLASH
@@ -127,7 +74,6 @@ function(stm32_get_memory_info)
       CHIP
       FAMILY
       DEVICE
-      CORE
       SIZE
       ORIGIN
   )
@@ -252,5 +198,3 @@ target_link_options(
 )
 
 include(stm32/utilities)
-include(stm32/f4)
-include(stm32/f7)
