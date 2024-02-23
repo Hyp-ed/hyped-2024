@@ -79,59 +79,31 @@ foreach(COMP ${HAL_FIND_COMPONENTS})
   endif()
 endforeach()
 
-# If no family requested look for all families
-if(NOT HAL_FIND_COMPONENTS_FAMILIES)
-  set(HAL_FIND_COMPONENTS_FAMILIES ${STM32_SUPPORTED_FAMILIES_LONG_NAME})
-endif()
+# Find the path to the HAL library
+find_path(
+  HAL_F4_PATH
+  NAMES Inc/stm32f4xx_hal.h
+  PATHS "${STM32_HAL_F4_PATH}"
+        "${STM32_CUBE_F4_PATH}/Drivers/STM32F4xx_HAL_Driver"
+  NO_DEFAULT_PATH
+)
+set(HAL_STM32F4_FOUND TRUE)
 
-# Step 2 : Generating all the valid drivers from requested families
-foreach(family_comp ${HAL_FIND_COMPONENTS_FAMILIES})
-  string(TOUPPER ${family_comp} family_comp)
-  string(
-    REGEX
-      MATCH
-      "^STM32([CFGHLMUW]P?[0-9BL])([0-9A-Z][0-9M][A-Z][0-9A-Z])?_?(M0PLUS|M4|M7)?.*$"
-      family_comp
-      ${family_comp}
-  )
-  if(CMAKE_MATCH_1) # Matches the family part of the provided STM32<FAMILY>[..]
-                    # component
-    set(FAMILY ${CMAKE_MATCH_1})
-    string(TOLOWER ${FAMILY} FAMILY_L)
-  endif()
-  find_path(
-    HAL_${FAMILY}_PATH
-    NAMES Inc/stm32${FAMILY_L}xx_hal.h
-    PATHS "${STM32_HAL_${FAMILY}_PATH}"
-          "${STM32_CUBE_${FAMILY}_PATH}/Drivers/STM32${FAMILY}xx_HAL_Driver"
-    NO_DEFAULT_PATH
-  )
-  if(NOT HAL_${FAMILY}_PATH)
-    message(FATAL_ERROR "could not find HAL for family ${FAMILY}")
-  else()
-    set(HAL_${family_comp}_FOUND TRUE)
-  endif()
-  if(CMAKE_MATCH_1) # Matches the family part of the provided STM32<FAMILY>[..]
-                    # component
-    get_list_hal_drivers(HAL_DRIVERS_${FAMILY} ${HAL_${FAMILY}_PATH} "hal")
-    get_list_hal_drivers(HAL_EX_DRIVERS_${FAMILY} ${HAL_${FAMILY}_PATH} "ex")
-    get_list_hal_drivers(HAL_LL_DRIVERS_${FAMILY} ${HAL_${FAMILY}_PATH} "ll")
-    list(APPEND HAL_DRIVERS ${HAL_DRIVERS_${FAMILY}})
-    list(APPEND HAL_LL_DRIVERS ${HAL_LL_DRIVERS_${FAMILY}})
-  else()
+get_list_hal_drivers(HAL_DRIVERS_F4 ${HAL_F4_PATH} "hal")
+get_list_hal_drivers(HAL_EX_DRIVERS_F4 ${HAL_F4_PATH} "ex")
+get_list_hal_drivers(HAL_LL_DRIVERS_F4 ${HAL_F4_PATH} "ll")
+list(APPEND HAL_DRIVERS ${HAL_DRIVERS_F4})
+list(APPEND HAL_LL_DRIVERS ${HAL_LL_DRIVERS_F4})
 
-  endif()
-endforeach()
 list(REMOVE_DUPLICATES HAL_DRIVERS)
 list(REMOVE_DUPLICATES HAL_LL_DRIVERS)
 
-# Step 3 : Checking the other requested components (Expected to be drivers)
+# Find the drivers
 foreach(COMP ${HAL_FIND_COMPONENTS_UNHANDLED})
   string(TOLOWER ${COMP} COMP_L)
 
   if(${COMP_L} IN_LIST HAL_DRIVERS)
     list(APPEND HAL_FIND_COMPONENTS_DRIVERS ${COMP})
-    message(TRACE "FindHAL: append COMP ${COMP} to HAL_FIND_COMPONENTS_DRIVERS")
     continue()
   endif()
   string(
@@ -144,200 +116,66 @@ foreach(COMP ${HAL_FIND_COMPONENTS_UNHANDLED})
   message(FATAL_ERROR "FindHAL: unknown HAL component: ${COMP}")
 endforeach()
 
-if(STM32H7 IN_LIST HAL_FIND_COMPONENTS_FAMILIES)
-  list(REMOVE_ITEM HAL_FIND_COMPONENTS_FAMILIES STM32H7)
-  list(
-    APPEND
-    HAL_FIND_COMPONENTS_FAMILIES
-    STM32H7_M7
-    STM32H7_M4
-  )
-endif()
-
-if(STM32WB IN_LIST HAL_FIND_COMPONENTS_FAMILIES)
-  list(REMOVE_ITEM HAL_FIND_COMPONENTS_FAMILIES STM32WB)
-  list(APPEND HAL_FIND_COMPONENTS_FAMILIES STM32WB_M4)
-endif()
-
-if(STM32WL IN_LIST HAL_FIND_COMPONENTS_FAMILIES)
-  list(REMOVE_ITEM HAL_FIND_COMPONENTS_FAMILIES STM32WL)
-  list(
-    APPEND
-    HAL_FIND_COMPONENTS_FAMILIES
-    STM32WL_M4
-    STM32WL_M0PLUS
-  )
-endif()
-
-if(STM32MP1 IN_LIST HAL_FIND_COMPONENTS_FAMILIES)
-  list(REMOVE_ITEM HAL_FIND_COMPONENTS_FAMILIES STM32MP1)
-  list(APPEND HAL_FIND_COMPONENTS_FAMILIES STM32MP1_M4)
-endif()
-
 list(REMOVE_DUPLICATES HAL_FIND_COMPONENTS_FAMILIES)
-
-# when no explicit driver and driver_ll is given to find_component(HAL ) then
-# search for all supported driver and driver_ll
-if((NOT HAL_FIND_COMPONENTS_DRIVERS))
-  set(HAL_FIND_COMPONENTS_DRIVERS ${HAL_DRIVERS})
-endif()
-list(REMOVE_DUPLICATES HAL_FIND_COMPONENTS_DRIVERS)
 
 message(STATUS "Search for HAL families: ${HAL_FIND_COMPONENTS_FAMILIES}")
 message(STATUS "Search for HAL drivers: ${HAL_FIND_COMPONENTS_DRIVERS}")
 
-foreach(COMP ${HAL_FIND_COMPONENTS_FAMILIES})
-  string(TOUPPER ${COMP} COMP_U)
+string(TOUPPER STM32F4 COMP_U)
 
-  string(
-    REGEX
-      MATCH
-      "^STM32([CFGHLMUW]P?[0-9BL])([0-9A-Z][0-9M][A-Z][0-9A-Z])?_?(M0PLUS|M4|M7)?.*$"
-      COMP_U
-      ${COMP_U}
-  )
+find_path(
+  HAL_F4_PATH
+  NAMES Inc/stm32f4xx_hal.h
+  PATHS "${STM32_HAL_F4_PATH}"
+        "${STM32_CUBE_F4_PATH}/Drivers/STM32F4xx_HAL_Driver"
+  NO_DEFAULT_PATH
+)
+find_path(
+  HAL_F4_INCLUDE
+  NAMES stm32f4xx_hal.h
+  PATHS "${HAL_F4_PATH}/Inc"
+  NO_DEFAULT_PATH
+)
+find_file(
+  HAL_F4_SOURCE
+  NAMES stm32f4xx_hal.c
+  PATHS "${HAL_F4_PATH}/Src"
+  NO_DEFAULT_PATH
+)
 
-  set(FAMILY ${CMAKE_MATCH_1})
-  string(TOLOWER ${FAMILY} FAMILY_L)
+message(STATUS "FindHAL: creating library HAL::STM32::F4")
+add_library(HAL::STM32::F4 INTERFACE IMPORTED)
+target_link_libraries(HAL::STM32::F4 INTERFACE STM32::F4 CMSIS::STM32::F4)
+target_include_directories(HAL::STM32::F4 INTERFACE "${HAL_F4_INCLUDE}")
+target_sources(HAL::STM32::F4 INTERFACE "${HAL_F4_SOURCE}")
 
-  if((NOT STM32_HAL_${FAMILY}_PATH) AND (NOT STM32_CUBE_${FAMILY}_PATH)
-     AND (DEFINED ENV{STM32_CUBE_${FAMILY}_PATH})
-  )
-    set(STM32_CUBE_${FAMILY}_PATH $ENV{STM32_CUBE_${FAMILY}_PATH}
-        CACHE PATH "Path to STM32Cube${FAMILY}"
-    )
-    message(
-      STATUS
-        "ENV STM32_CUBE_${FAMILY}_PATH specified, using STM32_CUBE_${FAMILY}_PATH: ${STM32_CUBE_${FAMILY}_PATH}"
-    )
+foreach(DRV_COMP ${HAL_FIND_COMPONENTS_DRIVERS})
+  string(TOLOWER ${DRV_COMP} DRV_L)
+  string(TOUPPER ${DRV_COMP} DRV)
+
+  if(NOT (DRV_L IN_LIST HAL_DRIVERS_F4))
+    message(FATAL_ERROR "FindHAL: unknown HAL driver: ${DRV_COMP}")
   endif()
 
-  if((NOT STM32_HAL_${FAMILY}_PATH) AND (NOT STM32_CUBE_${FAMILY}_PATH))
-    set(STM32_CUBE_${FAMILY}_PATH /opt/STM32Cube${FAMILY}
-        CACHE PATH "Path to STM32Cube${FAMILY}"
-    )
-    message(
-      STATUS
-        "Neither STM32_CUBE_${FAMILY}_PATH nor STM32_HAL_${FAMILY}_PATH specified using default STM32_CUBE_${FAMILY}_PATH: ${STM32_CUBE_${FAMILY}_PATH}"
-    )
-  endif()
-
-  find_path(
-    HAL_${FAMILY}_PATH
-    NAMES Inc/stm32${FAMILY_L}xx_hal.h
-    PATHS "${STM32_HAL_${FAMILY}_PATH}"
-          "${STM32_CUBE_${FAMILY}_PATH}/Drivers/STM32${FAMILY}xx_HAL_Driver"
-    NO_DEFAULT_PATH
-  )
-  if(NOT HAL_${FAMILY}_PATH)
-    message(DEBUG "Missing HAL_${FAMILY}_PATH path")
-    continue()
-  endif()
-
-  find_path(
-    HAL_${FAMILY}_INCLUDE
-    NAMES stm32${FAMILY_L}xx_hal.h
-    PATHS "${HAL_${FAMILY}_PATH}/Inc"
-    NO_DEFAULT_PATH
-  )
   find_file(
-    HAL_${FAMILY}_SOURCE
-    NAMES stm32${FAMILY_L}xx_hal.c
-    PATHS "${HAL_${FAMILY}_PATH}/Src"
+    HAL_F4_${DRV}_SOURCE
+    NAMES stm32f4xx_hal_${DRV_L}.c
+    PATHS "${HAL_F4_PATH}/Src"
     NO_DEFAULT_PATH
   )
+  list(APPEND HAL_F4_SOURCES "${HAL_F4_${DRV}_SOURCE}")
 
-  if((NOT HAL_${FAMILY}_INCLUDE) OR (NOT HAL_${FAMILY}_SOURCE))
-    set(HAL_${COMP}_FOUND FALSE)
-    message(DEBUG "FindHAL: did not find path to HAL /src or /inc dir")
-    continue()
-  endif()
+  set(HAL_${DRV_COMP}_FOUND TRUE)
 
-  if(NOT (TARGET HAL::STM32::${FAMILY}))
-    message(TRACE "FindHAL: creating library HAL::STM32::${FAMILY}")
-    add_library(HAL::STM32::${FAMILY} INTERFACE IMPORTED)
-    target_link_libraries(
-      HAL::STM32::${FAMILY} INTERFACE STM32::${FAMILY} CMSIS::STM32::${FAMILY}
-    )
-    target_include_directories(
-      HAL::STM32::${FAMILY} INTERFACE "${HAL_${FAMILY}_INCLUDE}"
-    )
-    target_sources(HAL::STM32::${FAMILY} INTERFACE "${HAL_${FAMILY}_SOURCE}")
-  endif()
-
-  foreach(DRV_COMP ${HAL_FIND_COMPONENTS_DRIVERS})
-    string(TOLOWER ${DRV_COMP} DRV_L)
-    string(TOUPPER ${DRV_COMP} DRV)
-
-    if(NOT (DRV_L IN_LIST HAL_DRIVERS_${FAMILY}))
-      continue()
-    endif()
-
-    find_file(
-      HAL_${FAMILY}_${DRV}_SOURCE
-      NAMES stm32${FAMILY_L}xx_hal_${DRV_L}.c
-      PATHS "${HAL_${FAMILY}_PATH}/Src"
-      NO_DEFAULT_PATH
-    )
-    list(APPEND HAL_${FAMILY}_SOURCES "${HAL_${FAMILY}_${DRV}_SOURCE}")
-    if(NOT HAL_${FAMILY}_${DRV}_SOURCE)
-      message(WARNING "Cannot find ${DRV} driver for ${FAMILY}")
-      set(HAL_${DRV_COMP}_FOUND FALSE)
-      continue()
-    endif()
-
-    set(HAL_${DRV_COMP}_FOUND TRUE)
-    if(HAL_${FAMILY}_${DRV}_SOURCE AND (NOT (TARGET
-                                             HAL::STM32::${FAMILY}::${DRV}))
-    )
-      message(TRACE "FindHAL: creating library HAL::STM32::${FAMILY}::${DRV}")
-      add_library(HAL::STM32::${FAMILY}::${DRV} INTERFACE IMPORTED)
-      target_link_libraries(
-        HAL::STM32::${FAMILY}::${DRV} INTERFACE HAL::STM32::${FAMILY}
-      )
-      target_sources(
-        HAL::STM32::${FAMILY}::${DRV}
-        INTERFACE "${HAL_${FAMILY}_${DRV}_SOURCE}"
-      )
-    endif()
-
-    if(HAL_${FAMILY}_${DRV}_SOURCE AND (${DRV_L} IN_LIST
-                                        HAL_EX_DRIVERS_${FAMILY})
-    )
-      find_file(
-        HAL_${FAMILY}_${DRV}_EX_SOURCE
-        NAMES stm32${FAMILY_L}xx_hal_${DRV_L}_ex.c
-        PATHS "${HAL_${FAMILY}_PATH}/Src"
-        NO_DEFAULT_PATH
-      )
-      list(APPEND HAL_${FAMILY}_SOURCES "${HAL_${FAMILY}_${DRV}_EX_SOURCE}")
-      if(NOT HAL_${FAMILY}_${DRV}_EX_SOURCE)
-        message(WARNING "Cannot find ${DRV}Ex driver for ${FAMILY}")
-      endif()
-
-      if((TARGET HAL::STM32::${FAMILY}::${DRV})
-         AND (NOT (TARGET HAL::STM32::${FAMILY}::${DRV}Ex))
-      )
-        message(TRACE
-                "FindHAL: creating library HAL::STM32::${FAMILY}::${DRV}Ex"
-        )
-        add_library(HAL::STM32::${FAMILY}::${DRV}Ex INTERFACE IMPORTED)
-        target_link_libraries(
-          HAL::STM32::${FAMILY}::${DRV}Ex
-          INTERFACE HAL::STM32::${FAMILY}::${DRV}
-        )
-        target_sources(
-          HAL::STM32::${FAMILY}::${DRV}Ex
-          INTERFACE "${HAL_${FAMILY}_${DRV}_EX_SOURCE}"
-        )
-      endif()
-    endif()
-  endforeach()
-
-  set(HAL_${COMP}_FOUND TRUE)
-  list(APPEND HAL_INCLUDE_DIRS "${HAL_${FAMILY}_INCLUDE}")
-  list(APPEND HAL_SOURCES "${HAL_${FAMILY}_SOURCES}")
+  message(STATUS "FindHAL: creating library HAL::STM32::F4::${DRV}")
+  add_library(HAL::STM32::F4::${DRV} INTERFACE IMPORTED)
+  target_link_libraries(HAL::STM32::F4::${DRV} INTERFACE HAL::STM32::F4)
+  target_sources(HAL::STM32::F4::${DRV} INTERFACE "${HAL_F4_${DRV}_SOURCE}")
 endforeach()
+
+set(HAL_STM32F4_FOUND TRUE)
+list(APPEND HAL_INCLUDE_DIRS "${HAL_F4_INCLUDE}")
+list(APPEND HAL_SOURCES "${HAL_F4_SOURCES}")
 
 list(REMOVE_DUPLICATES HAL_INCLUDE_DIRS)
 list(REMOVE_DUPLICATES HAL_SOURCES)

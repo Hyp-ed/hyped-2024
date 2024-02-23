@@ -3,7 +3,6 @@ if(${CMAKE_VERSION} VERSION_LESS "3.16.0")
     WARNING
       "Current CMake version is ${CMAKE_VERSION}. stm32-cmake requires CMake 3.16 or greater"
   )
-
 endif()
 
 get_filename_component(STM32_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
@@ -26,25 +25,6 @@ set(TOOLCHAIN_LIB_PATH "${STM32_TOOLCHAIN_PATH}/${STM32_TARGET_TRIPLET}/lib")
 
 set(CMAKE_SYSROOT ${TOOLCHAIN_SYSROOT})
 
-find_program(
-  CMAKE_OBJCOPY NAMES ${STM32_TARGET_TRIPLET}-objcopy
-  HINTS ${TOOLCHAIN_BIN_PATH}
-)
-find_program(
-  CMAKE_OBJDUMP NAMES ${STM32_TARGET_TRIPLET}-objdump
-  HINTS ${TOOLCHAIN_BIN_PATH}
-)
-find_program(
-  CMAKE_SIZE NAMES ${STM32_TARGET_TRIPLET}-size HINTS ${TOOLCHAIN_BIN_PATH}
-)
-find_program(
-  CMAKE_DEBUGGER NAMES ${STM32_TARGET_TRIPLET}-gdb HINTS ${TOOLCHAIN_BIN_PATH}
-)
-find_program(
-  CMAKE_CPPFILT NAMES ${STM32_TARGET_TRIPLET}-c++filt
-  HINTS ${TOOLCHAIN_BIN_PATH}
-)
-
 add_library(STM32::NoSys INTERFACE IMPORTED)
 target_compile_options(
   STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
@@ -52,10 +32,6 @@ target_compile_options(
 target_link_options(
   STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
 )
-
-include(stm32/utilities)
-
-set(STM32_ALL_DEVICES F401RE F767ZI)
 
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 

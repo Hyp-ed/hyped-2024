@@ -1,12 +1,7 @@
-# For information about why and how of this file:
-# https://cmake.org/cmake/help/latest/command/find_package.html
+set(CMSIS_FIND_COMPONENTS STM32F4)
 
-set(CMSIS_FIND_COMPONENTS ${STM32_SUPPORTED_FAMILIES_LONG_NAME})
-
-set(CMSIS_FIND_COMPONENTS_FAMILIES ${STM32_SUPPORTED_FAMILIES_LONG_NAME})
+set(CMSIS_FIND_COMPONENTS_FAMILIES STM32F4)
 message(STATUS "Search for CMSIS families: ${CMSIS_FIND_COMPONENTS_FAMILIES}")
-
-set(STM32_ALL_DEVICES F401RE)
 
 # search for Include/cmsis_gcc.h
 find_path(

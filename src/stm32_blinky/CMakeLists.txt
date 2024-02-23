@@ -95,7 +95,28 @@ set(STM32_F4_TYPE_MATCH "F401.[ED]")
 set(STM32_F4_RAM_SIZES 96K)
 set(STM32_F4_CCRAM_SIZES 0K)
 
-stm32_util_create_family_targets(F4)
+add_library(STM32::F4 INTERFACE IMPORTED)
+# Set compiler flags for target -Wall: all warnings activated
+# -ffunction-sections -fdata-sections: remove unused code
+target_compile_options(
+  STM32::F4
+  INTERFACE -mthumb
+            -Wall
+            -ffunction-sections
+            -fdata-sections
+)
+# Set linker flags -mthumb: Generate thumb code -Wl,--gc-sections: Remove unused
+# code
+target_link_options(
+  STM32::F4
+  INTERFACE
+  -mthumb
+  -Wl,--gc-sections
+)
+target_compile_definitions(STM32::F4 INTERFACE STM32F4)
+add_library(STM32::F401xE INTERFACE IMPORTED)
+target_link_libraries(STM32::F401xE INTERFACE STM32::F4)
+target_compile_definitions(STM32::F401xE INTERFACE STM32F401xE)
 
 target_compile_options(
   STM32::F4 INTERFACE -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard
@@ -117,8 +138,13 @@ target_link_options(
 # -mfloat-abi=hard ) target_link_options( STM32::F7 INTERFACE -mcpu=cortex-m7
 # -mfpu=fpv5-sp-d16 -mfloat-abi=hard )
 
-stm32_fetch_cmsis(F4)
-stm32_fetch_hal(F4)
+FetchContent_MakeAvailable(STM32-CMSIS)
+set(STM32_CMSIS_PATH ${stm32-cmsis_SOURCE_DIR})
+FetchContent_MakeAvailable(STM32-CMSIS-F4)
+set(STM32_CMSIS_F4_PATH ${stm32-cmsis-f4_SOURCE_DIR})
+
+FetchContent_MakeAvailable(STM32-HAL-F4)
+set(STM32_HAL_F4_PATH ${stm32-hal-f4_SOURCE_DIR})
 
 find_package(CMSIS COMPONENTS STM32F4 REQUIRED)
 find_package(HAL COMPONENTS "${HAL_COMP_LIST}" REQUIRED)
