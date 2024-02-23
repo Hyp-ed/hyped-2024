@@ -15,6 +15,9 @@ import {
 import { log } from '@/lib/logger';
 import { config } from '@/config';
 
+/**
+ * Dialog to display when pod disconnects or encounters an error.
+ */
 export const PodDisconnectError = ({
   podId,
   status,
@@ -31,7 +34,7 @@ export const PodDisconnectError = ({
       status === POD_CONNECTION_STATUS.ERROR;
     setOpen(disconnected);
     if (disconnected) log('Pod disconnected!', podId);
-  }, [status]);
+  }, [status, podId]);
 
   const close = () => {
     setOpen(false);

@@ -72,7 +72,7 @@ export class MeasurementService {
         `Added measurement {${props.podId}/${props.measurementKey}}: ${props.value}`,
         MeasurementService.name,
       );
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to add measurement {${props.podId}/${props.measurementKey}}: ${props.value}`,
         e,

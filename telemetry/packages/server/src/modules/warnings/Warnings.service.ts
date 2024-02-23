@@ -8,7 +8,7 @@ export class WarningsService {
     private readonly logger: LoggerService,
   ) {}
 
-  async createLatencyWarning(podId: string) {
+  createLatencyWarning(podId: string) {
     this.logger.log(
       `Creating latency warning for pod ${podId}`,
       WarningsService.name,

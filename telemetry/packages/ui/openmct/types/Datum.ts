@@ -3,4 +3,4 @@ export type Datum = {
   mctLimitState: string | undefined;
   timestamp: number;
   value: number;
-}
+};

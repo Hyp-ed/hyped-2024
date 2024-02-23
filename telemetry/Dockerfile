@@ -12,10 +12,13 @@ COPY packages/constants/package.json ./packages/constants/
 COPY packages/server/package.json ./packages/server/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
+COPY packages/eslint-config/package.json ./packages/eslint-config/
+COPY packages/tsconfig/package.json ./packages/tsconfig/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
-RUN pnpm install
+COPY turbo.json ./
+RUN pnpm install --frozen-lockfile
 
 # Expose ports
 EXPOSE 5173
