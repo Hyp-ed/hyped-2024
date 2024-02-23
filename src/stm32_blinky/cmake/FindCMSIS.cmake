@@ -47,7 +47,7 @@ function(stm32_get_chip_info CHIP)
     message(FATAL_ERROR "Unsupported family ${STM32_FAMILY} for device ${CHIP}")
   endif()
 
-  stm32_get_chip_type(${STM32_FAMILY} ${STM32_DEVICE} STM32_TYPE)
+  set(STM32_TYPE F401xE)
 
   if(ARG_FAMILY)
     set(${ARG_FAMILY} ${STM32_FAMILY} PARENT_SCOPE)
@@ -58,88 +58,6 @@ function(stm32_get_chip_info CHIP)
   if(ARG_TYPE)
     set(${ARG_TYPE} ${STM32_TYPE} PARENT_SCOPE)
   endif()
-endfunction()
-
-function(cmsis_generate_default_linker_script FAMILY DEVICE)
-
-  set(OUTPUT_LD_FILE "${CMAKE_CURRENT_BINARY_DIR}/${DEVICE}.ld")
-
-  stm32_get_memory_info(
-    FAMILY
-    ${FAMILY}
-    DEVICE
-    ${DEVICE}
-    FLASH
-    SIZE
-    FLASH_SIZE
-    ORIGIN
-    FLASH_ORIGIN
-  )
-  stm32_get_memory_info(
-    FAMILY
-    ${FAMILY}
-    DEVICE
-    ${DEVICE}
-    RAM
-    SIZE
-    RAM_SIZE
-    ORIGIN
-    RAM_ORIGIN
-  )
-  stm32_get_memory_info(
-    FAMILY
-    ${FAMILY}
-    DEVICE
-    ${DEVICE}
-    CCRAM
-    SIZE
-    CCRAM_SIZE
-    ORIGIN
-    CCRAM_ORIGIN
-  )
-  stm32_get_memory_info(
-    FAMILY
-    ${FAMILY}
-    DEVICE
-    ${DEVICE}
-    RAM_SHARE
-    SIZE
-    RAM_SHARE_SIZE
-    ORIGIN
-    RAM_SHARE_ORIGIN
-  )
-  stm32_get_memory_info(
-    FAMILY
-    ${FAMILY}
-    DEVICE
-    ${DEVICE}
-    HEAP
-    SIZE
-    HEAP_SIZE
-  )
-  stm32_get_memory_info(
-    FAMILY
-    ${FAMILY}
-    DEVICE
-    ${DEVICE}
-    STACK
-    SIZE
-    STACK_SIZE
-  )
-
-  add_custom_command(
-    OUTPUT "${OUTPUT_LD_FILE}"
-    COMMAND
-      ${CMAKE_COMMAND} -DFLASH_ORIGIN="${FLASH_ORIGIN}"
-      -DRAM_ORIGIN="${RAM_ORIGIN}" -DCCRAM_ORIGIN="${CCRAM_ORIGIN}"
-      -DRAM_SHARE_ORIGIN="${RAM_SHARE_ORIGIN}" -DFLASH_SIZE="${FLASH_SIZE}"
-      -DRAM_SIZE="${RAM_SIZE}" -DCCRAM_SIZE="${CCRAM_SIZE}"
-      -DRAM_SHARE_SIZE="${RAM_SHARE_SIZE}" -DSTACK_SIZE="${STACK_SIZE}"
-      -DHEAP_SIZE="${HEAP_SIZE}" -DLINKER_SCRIPT="${OUTPUT_LD_FILE}" -P
-      "${STM32_CMAKE_DIR}/stm32/linker_ld.cmake"
-  )
-  add_custom_target(CMSIS_LD_${DEVICE} DEPENDS "${OUTPUT_LD_FILE}")
-  add_dependencies(CMSIS::STM32::${DEVICE}${} CMSIS_LD_${DEVICE})
 endfunction()
 
 foreach(COMP ${CMSIS_FIND_COMPONENTS_FAMILIES})
@@ -299,7 +217,7 @@ foreach(COMP ${CMSIS_FIND_COMPONENTS_FAMILIES})
   foreach(DEVICE ${STM_DEVICES})
     message(TRACE "FindCMSIS: Iterating DEVICE ${DEVICE}")
 
-    stm32_get_chip_type(${FAMILY} ${DEVICE} TYPE)
+    set(TYPE F401xE)
     string(TOLOWER ${DEVICE} DEVICE_L)
     string(TOLOWER ${TYPE} TYPE_L)
 
@@ -351,7 +269,6 @@ foreach(COMP ${CMSIS_FIND_COMPONENTS_FAMILIES})
     target_link_libraries(
       CMSIS::STM32::${DEVICE}${} INTERFACE CMSIS::STM32::${TYPE}${}
     )
-    cmsis_generate_default_linker_script(${FAMILY} ${DEVICE})
   endforeach()
 
   if(STM_DEVICES_FOUND)
