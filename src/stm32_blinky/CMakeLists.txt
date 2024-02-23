@@ -132,4 +132,3 @@ target_link_libraries(
   CMSIS::STM32::F401RE
   STM32::NoSys
 )
-stm32_print_size_of_target(stm32-blinky-f4)
