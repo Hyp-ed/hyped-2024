@@ -64,8 +64,7 @@ core::Result ControllerCanProcessor::sendError(Error error)
 
 core::Result ControllerCanProcessor::receiveMessage(io::CanFrame frame)
 {
-  const core::Result result = io::ICanProcessor::processMessage(frame);
-  sendError(Error::kInvalidOperation);
+  const core::Result result = sendError(Error::kInvalidOperation);
   return result;
 }
 
