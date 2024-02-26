@@ -3,8 +3,10 @@
 set -eu
 
 IMAGE_NAME="hyped"
+CC_IMAGE_NAME="hyped_cc"
 BUILD_CONTAINER_NAME="hyped_build"
 DEV_CONTAINER_NAME="hyped_dev"
+CC_CONTAINER_NAME="hyped_cc"
 
 # Adapted from: https://medium.com/@wujido20/handling-flags-in-bash-scripts-4b06b4d0ed04
 
@@ -84,9 +86,16 @@ handle_options() {
 handle_options "$@"
 
 if [ "$rebuild" = true ]; then
-  echo "Rebuild"
-  docker build -t $IMAGE_NAME .
+  if [ "$cross_compile" = true ]; then
+    echo "Rebuild"
+    docker buildx build --platform=linux/arm64 -t $CC_IMAGE_NAME .
+  else
+    echo "Rebuild"
+    docker build -t $IMAGE_NAME .
+  fi
 fi
+
+# TODO: check if the cross compile image exists
 
 if [ "$docker_build" = true ]; then
   # Check if the container name already exists
@@ -98,7 +107,12 @@ if [ "$docker_build" = true ]; then
     docker rm $BUILD_CONTAINER_NAME
   fi
 
-  docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
+  if [ "$cross_compile" = true ]; then
+    echo "[!] Cross-compiling for Raspberry Pi"
+    docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
+  else
+    docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
+  fi
 fi
 
 if [ "$docker_dev" = true ]; then
@@ -110,6 +124,6 @@ if [ "$docker_dev" = true ]; then
     docker start -i $DEV_CONTAINER_NAME
   else
     echo "[!] No existing container found. Creating new container"
-    docker run -it -v $(pwd):/home/hyped -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile --name $DEV_CONTAINER_NAME -w /home/hyped/ --entrypoint /bin/bash $IMAGE_NAME 
+    docker run -it -v $(pwd):/home/hyped --name $DEV_CONTAINER_NAME -w /home/hyped/ --entrypoint /bin/bash $IMAGE_NAME 
   fi
 fi

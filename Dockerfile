@@ -17,7 +17,6 @@ RUN sudo ldconfig
 # Set up Cross Compile Toolchain
 WORKDIR /home
 RUN mkdir -p /home/opt
-# TODO figure out which cc we need
 RUN wget -O- https://github.com/tttapa/docker-arm-cross-toolchain/releases/latest/download/x-tools-aarch64-rpi3-linux-gnu.tar.xz | tar xJ -C /home/opt
 ENV PATH="$PATH:/home/opt/x-tools/aarch64-rpi3-linux-gnu/bin" 
 

@@ -17,9 +17,8 @@ fi
 if [[ $CROSS_COMPILE = true ]]; then
     echo "Cross compiling for Raspberry Pi..."
     cd build 
-    cmake .. #TODO add cross compile flags
+    cmake  -DCMAKE_CXX_COMPILER=aarch64-rpi3-linux-gnu-g++ -DCURSES_LIBRARY=/usr/lib/x86_64-linux-gnu/libncurses.so -DCURSES_INCLUDE_PATH=/usr/include ..
     make -j
-    make test
 else
     echo "Building..."
     cd build 
