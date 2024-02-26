@@ -61,15 +61,15 @@ const getInitialValue = (data: RangeMeasurement): number => {
 
 /**
  * Counts quantity of sensors of each type, categorised by the physical quantity(ies) they measure
- * @param podData Key - value item from the measurements object
+ * @param podMeasurement Key - value item from the measurements object
  * @param currentKey Sensor key representing its unique ID
  * @returns Amount of sensors present of given type
  */
 const countSensors = <T extends Pod['measurements']>(
-  podData: T,
+  podMeasurement: T,
   currentKey: string,
 ): number => {
-  return Object.values(podData).filter((sensor: T[keyof T]) => {
+  return Object.values(podMeasurement).filter((sensor) => {
     return sensor.key.startsWith(currentKey) && !sensor.key.endsWith('avg');
   }).length;
 };
