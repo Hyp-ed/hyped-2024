@@ -1,9 +1,7 @@
 #pragma once
-
 #include <cstdint>
 #include <memory>
 #include <optional>
-
 #include <core/logger.hpp>
 #include <io/gpio.hpp>
 
