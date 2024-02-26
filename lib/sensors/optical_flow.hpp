@@ -12,7 +12,7 @@
 namespace hyped::sensors {
 
 class OpticalFlow {
-  // include "magic sauce" optimisation?
+  // ToDoLater: include "magic sauce" optimisation?
  public:
   static std::optional<OpticalFlow> create(core::ILogger &logger,
                                            std::shared_ptr<io::ISpi> spi,
