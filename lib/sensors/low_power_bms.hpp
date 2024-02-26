@@ -20,7 +20,7 @@ class LowPowerBMS {
   ~LowPowerBMS();
 
   std::optional<std::uint8_t> getStackVoltage();
-  std::optional<std::uint8_t> getCellData();
+  std::optional<std::array<std::uint8_t, 16>> getCellData();
 
  private:
   LowPowerBMS(core::ILogger &logger,
@@ -36,6 +36,7 @@ class LowPowerBMS {
     0x1C, 0x1E, 0x20, 0x22, 
     0x24, 0x26, 0x28, 0x2A, 
     0x2C, 0x2E, 0x30, 0x32};
+  static constexpr std::uint8_t cells = sizeof(cell_voltages);
   static constexpr std::uint8_t stack_voltage = 0x34;
 };
 }  // namespace hyped::sensors
