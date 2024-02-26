@@ -7,7 +7,7 @@
 #include <core/logger.hpp>
 #include <io/gpio.hpp>
 
-whatever
+
 namespace hyped::sensors {
     class Brakes {
     public:
@@ -32,8 +32,3 @@ namespace hyped::sensors {
         core::ILogger &logger_;
     };
 }
-
-//#ifndef HYPED_2024_BRAKES_H
-//#define HYPED_2024_BRAKES_H
-//
-//#endif  // HYPED_2024_BRAKES_H
