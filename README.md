@@ -21,6 +21,9 @@
 - `boost`
 - `rapidjson`
 - `ncurses`
+- `Paho MQTT C++`
+
+Install instructions for Paho can be found [here](https://github.com/eclipse/paho.mqtt.cpp). Due to the convoluted install process, we strongly recommend developing using Docker.
 
 ## Usage
 
@@ -49,6 +52,18 @@ To run tests (in `./build`):
 ```
 ctest
 ```
+
+### Docker
+
+Install Docker Desktop from [here](https://www.docker.com/products/docker-desktop/), and make sure the Docker Engine is running.
+
+Run `./docker.sh -r`, which will build the Docker image. This may take a few minutes.
+
+Then run `./docker.sh --dev` or `./docker.sh -d` to enter the development environment inside the Docker container. This will add the Hyped code as a volume, so you can edit the code inside the container.
+
+You can follow the same build instructions as the previous section in the container, or run `./docker.sh --build` or `./docker.sh -b` from outside the development container to build.
+
+Run `./docker.sh --help` for the complete list of commands.
 
 ### Telemetry
 
