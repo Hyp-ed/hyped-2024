@@ -18,7 +18,7 @@ namespace hyped::sensors {
         ~Brakes();
 
 //  bool open();
-        bool highLow();
+        bool isValve();
 
 
     private:
