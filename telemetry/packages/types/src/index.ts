@@ -1,5 +1,4 @@
 export type {
-  Pods,
   Measurement,
   RangeMeasurement,
   Limits,
@@ -16,5 +15,3 @@ export type {
 } from './openmct/openmct-object-types.types';
 export type { OpenMctFault } from './openmct/openmct-fault.types';
 export type { Unpacked } from './utils/Unpacked';
-
-

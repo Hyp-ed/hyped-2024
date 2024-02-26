@@ -12,9 +12,7 @@
     "build": "turbo run build"
   },
   "devDependencies": {
-    "@types/mqtt": "^2.5.0",
     "@types/node": "^18.11.18",
-    "mqtt": "^5.3.5",
     "prettier": "3.2.4",
     "turbo": "^1.11.3",
     "typescript": "^5.3.3"

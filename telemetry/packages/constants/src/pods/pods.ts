@@ -1,7 +1,3 @@
-// import type { Pods } from '@hyped/telemetry-types'; /* TS error - cannot locate module */
-// import type { Pods } from '../../../types/src/pods/pods.types';
-import type { Pods } from '@hyped/telemetry-types/src';
-// import type { Pods } from '../types/src/pods/pods.types';
 import {
   accelerometerCommon,
   hallEffectCommon,
@@ -9,8 +5,11 @@ import {
   pressureCommon,
   thermistorCommon,
 } from './common';
+import { Pod } from '@hyped/telemetry-types';
 
-export const POD_IDS = ['pod_1'] as const;
+export const POD_IDS = ['pod_1', 'pod_2024'] as const;
+export type PodId = (typeof POD_IDS)[number];
+export type Pods = Record<PodId, Pod>;
 
 export const pods: Pods = {
   pod_1: {
@@ -444,5 +443,10 @@ export const pods: Pods = {
         sampling_time: 500,
       },
     },
+  },
+  pod_2024: {
+    id: 'pod_2024',
+    name: 'Poddington',
+    measurements: {},
   },
 };
