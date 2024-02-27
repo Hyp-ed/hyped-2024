@@ -1,14 +1,10 @@
-import {
-  Sensor,
-  Readings,
-  SensorInstance,
-  sensorData,
-  sensors,
-  utils,
-  trackLength,
-} from '.';
-
 import MQTT from 'mqtt';
+import { sensors } from './sensorClasses/sensorIndex';
+import { Readings, SensorInstance } from './types';
+import { sensorData, trackLength } from './config';
+import { Sensor } from './baseSensor';
+import { Utilities } from './sensorUtilities';
+
 export class SensorManager {
   // Create an array to store sensor instances
   private sensors: SensorInstance<(typeof sensors)[keyof typeof sensors]>[] =
@@ -54,7 +50,7 @@ export class SensorManager {
    */
   public generateData(random = false): void {
     // Calculate base sampling interval using lowest common divisor of all sensors' sampling periods
-    const interval = utils.gcd(Object.values(this.samplingTimes));
+    const interval = Utilities.gcd(Object.values(this.samplingTimes));
 
     const simulationInterval = setInterval(() => {
       // Reset all 'sampled' flags to false

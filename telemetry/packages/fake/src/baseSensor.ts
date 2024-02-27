@@ -1,4 +1,6 @@
-import { LiveReading, Readings, Limits, utils } from './index';
+import { Limits } from '@hyped/telemetry-types';
+import { LiveReading, Readings } from './types';
+import { Utilities } from './sensorUtilities';
 
 export abstract class Sensor {
   // Define static objects, updated each timestep //
@@ -62,7 +64,7 @@ export abstract class Sensor {
   protected getRandomData(prevValue: number, readings: Readings): Readings {
     // console.log(`Running randomData...`);
     for (const unit in readings) {
-      readings[unit] = utils.getRandomValue(
+      readings[unit] = Utilities.getRandomValue(
         prevValue,
         this.rms_noise,
         this.format,

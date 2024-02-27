@@ -1,6 +1,7 @@
 import { Motion } from './motion';
 import { Sensor } from '../baseSensor';
-import { Readings, LiveReading, trackLength } from '../index';
+import { LiveReading, Readings } from '../types';
+import { trackLength } from '../config';
 
 /**
  * Integer value in range [0, 16], which directly corresponds to the track distance.

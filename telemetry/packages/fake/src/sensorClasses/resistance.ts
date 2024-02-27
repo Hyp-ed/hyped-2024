@@ -1,6 +1,7 @@
 import { Temperature } from './temperature';
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings, utils } from '../index';
+import { LiveReading, Readings } from '../types';
+import { Utilities as utils } from '../sensorUtilities';
 
 export class Resistance extends Temperature {
   private alpha = 5 * 10 ** -3; // Temperature coefficient of resistance (steel)

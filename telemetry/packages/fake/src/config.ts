@@ -1,10 +1,6 @@
-import {
-  pods,
-  Pod,
-  RangeMeasurement,
-  SensorData,
-  LiveReading,
-} from '../src/index';
+import { pods } from '@hyped/telemetry-constants';
+import { Pod, RangeMeasurement } from '@hyped/telemetry-types';
+import { LiveReading, SensorData } from './types';
 
 // Extract and categorise relevant sensor data
 export const measurements = (Object.values(pods) as Pod[]).reduce(

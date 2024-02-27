@@ -1,6 +1,7 @@
 import { Motion } from './motion';
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings, utils } from '../index';
+import { LiveReading, Readings } from '../types';
+import { Utilities } from '../sensorUtilities';
 
 export class Temperature extends Motion {
   protected temp: number;
@@ -16,7 +17,7 @@ export class Temperature extends Motion {
   constructor(data: LiveReading) {
     super(data);
     // Initial temp used for reference by subclass(es)
-    this.temp0 = utils.average(Object.values(data.readings));
+    this.temp0 = Utilities.average(Object.values(data.readings));
     this.temp = this.temp0;
   }
 
@@ -36,7 +37,9 @@ export class Temperature extends Motion {
       Object.keys(Sensor.lastReadings.temperature).map((key) => {
         return [
           key,
-          utils.round2DP(this.temp + utils.gaussianRandom(this.rms_noise)),
+          Utilities.round2DP(
+            this.temp + Utilities.gaussianRandom(this.rms_noise),
+          ),
         ];
       }),
     );

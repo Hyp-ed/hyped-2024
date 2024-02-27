@@ -1,4 +1,4 @@
-import { RangeMeasurement } from './src';
+import { RangeMeasurement } from '.';
 
 // for the variables representing physical sensors, not derived measurements
 // export type LiveReading = Omit<RangeMeasurement, 'name'> & {

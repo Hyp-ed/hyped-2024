@@ -1,6 +1,7 @@
 import { Magnetism } from './magnetism';
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings, utils } from '../index';
+import { LiveReading, Readings } from '../types';
+import { Utilities } from '../sensorUtilities';
 
 export class Levitation extends Magnetism {
   private timeActive: number; // dynamic time variable
@@ -62,7 +63,7 @@ export class Levitation extends Magnetism {
     if (this.isActive) {
       if (this.timeActive <= this.logRiseParams.t_f) {
         this.prevVals.push(
-          utils.logistic(
+          Utilities.logistic(
             this.timeActive,
             this.logRiseParams.l_peak,
             this.logRiseParams.growth,
@@ -79,7 +80,7 @@ export class Levitation extends Magnetism {
       ) {
         this.prevVals.push(
           this.setpoint +
-            utils.oscillateDecay(
+            Utilities.oscillateDecay(
               this.timeActive - this.logRiseParams.t_f,
               this.oscParams.freq,
               this.oscParams.phase,
@@ -113,7 +114,7 @@ export class Levitation extends Magnetism {
       this.prevVals.push(
         this.setpoint *
           (1 -
-            utils.logistic(
+            Utilities.logistic(
               this.timeActive,
               1,
               this.logFallParams.growth,
@@ -137,10 +138,10 @@ export class Levitation extends Magnetism {
       Object.keys(Sensor.lastReadings.levitation).map((key) => {
         return [
           key,
-          utils.round2DP(
+          Utilities.round2DP(
             prevVals.slice(-1)[0] +
               // Add noise if levitating, otherwise value is fixed so noise is negated
-              (onTrack ? 0 : utils.gaussianRandom(this.rms_noise)),
+              (onTrack ? 0 : Utilities.gaussianRandom(this.rms_noise)),
           ),
         ];
       }),

@@ -1,5 +1,5 @@
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings } from '../index';
+import { LiveReading, Readings } from '../types';
 
 export class Pressure extends Sensor {
   constructor(data: LiveReading) {
@@ -8,7 +8,7 @@ export class Pressure extends Sensor {
 
   getData(t: number): Readings {
     return {
-      'pressure_front_pull': 2.1, // placeholder
+      pressure_front_pull: 2.1, // placeholder
     };
   }
 }

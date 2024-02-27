@@ -1,5 +1,7 @@
 import { Sensor } from '../baseSensor';
-import { LiveReading, Readings, utils, measurements } from '../index';
+import { measurements } from '../config';
+import { Utilities } from '../sensorUtilities';
+import { LiveReading, Readings } from '../types';
 
 export class Motion extends Sensor {
   protected displacement: number;
@@ -23,7 +25,7 @@ export class Motion extends Sensor {
   }
 
   getData(t: number): Readings {
-    const velocityEstimate = utils.logistic(
+    const velocityEstimate = Utilities.logistic(
       t,
       this.logParams.stState,
       this.logParams.growth,
@@ -38,7 +40,7 @@ export class Motion extends Sensor {
       accelerometerReading >= this.limits.critical.high
         ? this.limits.critical.high
         : accelerometerReading;
-    accelerometerReading += utils.gaussianRandom(this.rms_noise);
+    accelerometerReading += Utilities.gaussianRandom(this.rms_noise);
 
     // Use trapezoidal integration to find velocity, displacement
     const avgAcceleration = (accelerometerReading + this.acceleration) / 2;
@@ -47,9 +49,9 @@ export class Motion extends Sensor {
     this.acceleration = accelerometerReading;
 
     return {
-      acceleration: utils.round2DP(this.acceleration),
-      velocity: utils.round2DP(this.velocity),
-      displacement: utils.round2DP(this.displacement),
+      acceleration: Utilities.round2DP(this.acceleration),
+      velocity: Utilities.round2DP(this.velocity),
+      displacement: Utilities.round2DP(this.displacement),
     };
   }
 }

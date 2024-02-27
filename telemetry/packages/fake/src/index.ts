@@ -7,8 +7,8 @@
  * i.e. simulate all sensors
  */
 
-import { SensorManager } from './src/dataManager';
-import { sensorData } from './env/config';
+import { SensorManager } from './dataManager';
+import { sensorData } from './config';
 
 // console.log(sensorData);
 // process.exit(0);
