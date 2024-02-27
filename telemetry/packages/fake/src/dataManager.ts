@@ -39,7 +39,7 @@ export class SensorManager {
       this.samplingTimes[s] = sensorData[s].sampling_time;
     });
 
-    this.client = MQTT.connect('MQTT://localhost:1883');
+    this.client = MQTT.connect('MQTT://mosquitto:1883');
   }
 
   /**
@@ -86,7 +86,8 @@ export class SensorManager {
         clearInterval(simulationInterval);
         console.log('\n\n*** Simulation complete ***\n');
         console.log('Final state:', Sensor.lastReadings, '\n');
-        process.exit(0);
+        // reset and go again
+        this.generateData();
       }
 
       this.globalTime += interval;
@@ -135,8 +136,9 @@ export class SensorManager {
    * Subscribed clients extract values using payload[measurementKey]
    */
   private publishData(measurement: string, reading: string): void {
+    console.log(`Publishing ${measurement} reading: ${reading}`);
     this.client.publish(
-      `hyped/pod_1/measurements/${measurement}`,
+      `hyped/pod_1/measurement/${measurement}`,
       reading,
       { qos: 1 },
       (err: any) => {

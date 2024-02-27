@@ -5,6 +5,7 @@
     "preinstall": "npx only-allow pnpm",
     "start": "turbo run start",
     "dev": "turbo run dev",
+    "dev:test": "turbo run dev:test",
     "lint": "turbo run lint --parallel",
     "lint:fix": "turbo run lint:fix --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
