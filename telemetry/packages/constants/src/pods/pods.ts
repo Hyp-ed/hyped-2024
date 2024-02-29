@@ -421,7 +421,7 @@ export const pods: Pods = {
   },
   pod_2024: {
     id: 'pod_2024',
-    name: 'Pod 2024',
+    name: 'Poddington',
     measurements: {
       // ************************************ ACCELEROMETERS ************************************ //
       accelerometer_1: {
