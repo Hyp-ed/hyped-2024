@@ -11,7 +11,7 @@
 namespace hyped::sensors {
 
 static constexpr std::uint8_t kDefaultLpBmsAddress = 0x10;
-static constexpr std::uint8_t kNumCells = 16;
+static constexpr std::uint8_t kNumCells            = 16;
 
 class LowPowerBMS {
  public:
