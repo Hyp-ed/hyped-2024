@@ -1,3 +1,5 @@
+import { Pi, PiId } from './pis.types';
+
 export type BaseMeasurement = {
   name: string;
   key: string;
@@ -35,4 +37,5 @@ export type Pod = {
   name: string;
   id: string;
   measurements: Record<string, Measurement>;
+  pis: Record<PiId, Pi>;
 };

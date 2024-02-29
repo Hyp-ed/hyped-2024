@@ -10,3 +10,12 @@ export type {
 } from './openmct/openmct-object-types.types';
 export type { OpenMctFault } from './openmct/openmct-fault.types';
 export type { Unpacked } from './utils/Unpacked';
+export type {
+  PiVersionResult,
+  Pi,
+  PiId,
+  PiVersionStatus,
+  PiStatus,
+  PiUnknownVersionStatus,
+  PiInfo,
+} from './pods/pis.types';

@@ -417,6 +417,7 @@ export const pods: Pods = {
         },
       },
     },
+    pis: {},
   },
   pod_2024: {
     id: 'pod_2024',
@@ -816,6 +817,18 @@ export const pods: Pods = {
             high: 100,
           },
         },
+      },
+    },
+    pis: {
+      pi_1: {
+        id: 'pi_1',
+        ip: '192.168.1.41',
+        name: 'pi-1',
+      },
+      pi_2: {
+        id: 'pi-2',
+        ip: '192.168.1.42',
+        name: 'pi-2',
       },
     },
   },
