@@ -1,4 +1,4 @@
-import { Sensor } from '../baseSensor';
+import { Sensor } from '../base';
 import { measurements } from '../config';
 import { Utilities } from '../sensorUtilities';
 import { LiveReading, Readings } from '../types';

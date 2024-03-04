@@ -1,4 +1,4 @@
-import { Sensor } from '../baseSensor';
+import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
 
 export class Pressure extends Sensor {

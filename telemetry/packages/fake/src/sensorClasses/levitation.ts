@@ -1,5 +1,5 @@
 import { Magnetism } from './magnetism';
-import { Sensor } from '../baseSensor';
+import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
 import { Utilities } from '../sensorUtilities';
 

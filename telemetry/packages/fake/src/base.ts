@@ -1,6 +1,6 @@
 import { Limits } from '@hyped/telemetry-types';
 import { LiveReading, Readings } from './types';
-import { Utilities } from './sensorUtilities';
+import { Utilities } from './utils';
 
 export abstract class Sensor {
   // Define static objects, updated each timestep //

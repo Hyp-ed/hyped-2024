@@ -115,4 +115,3 @@ export class Utilities {
   }
 }
 
-console.log(Utilities.gaussianRandom(2, 0));

@@ -1,28 +1,26 @@
-import { RangeMeasurement } from '.';
-
-// for the variables representing physical sensors, not derived measurements
-// export type LiveReading = Omit<RangeMeasurement, 'name'> & {
-export type LiveReading = RangeMeasurement & {
-  quantity: number; // don't think this is used anywhere or needed, just use .length
-  // unique variable readinfgs it provides; e.g. accelerometer gives values for acceleration, displacement and velocity (latter two indirectly)
-  readings: Readings;
-};
+import type { RangeMeasurement } from "@hyped/telemetry-types"
+/**
+ * Unique variable readinfgs each sensor provides
+ * E.g. accelerometers generate values for acceleration, displacement and velocity 
+ */
+export type LiveReading = RangeMeasurement & { readings: Readings };
 
 export type SensorData = Record<string, LiveReading>;
 
-// sensor's output readings
+/**
+ * Sensor property containing values for each of its measured quantities
+ */
 export type Readings = {
   [measurement: string]: number;
 };
 
-// all sensor's readings data
-export type ReadingsMap = {
-  [sensor: string]: Readings;
-};
 
-// transient data with indices representing timesteps
-export type RunData = ReadingsMap[];
+/**
+ * Return type for sensor class instantiation
+ */
+interface BaseSensor {
+  getData: (t: number) => Readings;
+}
 
-// return type for sensor class instantiation
-export type SensorInstance<T extends new (...args: any[]) => any> =
+export type SensorInstance<T extends new (...args: any[]) => BaseSensor> =
   InstanceType<T>;

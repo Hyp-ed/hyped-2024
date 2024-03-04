@@ -1,5 +1,5 @@
 import { Temperature } from './temperature';
-import { Sensor } from '../baseSensor';
+import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
 import { Utilities as utils } from '../sensorUtilities';
 
