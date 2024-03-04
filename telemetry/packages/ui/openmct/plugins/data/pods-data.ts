@@ -1,7 +1,7 @@
 import { OpenMctMeasurement, OpenMctPod } from '@hyped/telemetry-types';
 import { http } from '../../core/http';
 
-export function fetchPodIds() {
+export async function fetchPodIds() {
   return http
     .get('openmct/dictionary/pods')
     .json<{ ids: string[] }>()
@@ -10,7 +10,7 @@ export function fetchPodIds() {
     });
 }
 
-export function fetchPod(id: string) {
+export async function fetchPod(id: string) {
   return http
     .get(`openmct/dictionary/pods/${id}`)
     .json<OpenMctPod>()
@@ -19,7 +19,7 @@ export function fetchPod(id: string) {
     });
 }
 
-export function fetchMeasurement(podId: string, measurementKey: string) {
+export async function fetchMeasurement(podId: string, measurementKey: string) {
   return http
     .get(`openmct/dictionary/pods/${podId}/measurements/${measurementKey}`)
     .json<OpenMctMeasurement>()

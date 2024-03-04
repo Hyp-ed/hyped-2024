@@ -1,7 +1,7 @@
 import { OpenMctObjectTypes } from '@hyped/telemetry-types';
 import { http } from '../../core/http';
 
-export function fetchObjectTypes() {
+export async function fetchObjectTypes() {
   return http
     .get('openmct/object-types')
     .json<OpenMctObjectTypes>()

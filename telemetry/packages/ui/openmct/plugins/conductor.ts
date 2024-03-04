@@ -1,5 +1,6 @@
 import { OpenMCT } from 'openmct/dist/openmct';
 
+const TEN_SECONDS = 10 * 1000;
 const THIRTY_SECONDS = 30 * 1000;
 const ONE_MINUTE = THIRTY_SECONDS * 2;
 const FIVE_MINUTES = ONE_MINUTE * 5;
@@ -20,7 +21,7 @@ export function ConductorPlugin() {
             clock: 'local',
             clockOffsets: {
               start: -THIRTY_SECONDS,
-              end: THIRTY_SECONDS,
+              end: TEN_SECONDS,
             },
             presets: [
               {
