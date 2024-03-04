@@ -39,3 +39,7 @@ tags
 
 # Telemetry
 .env
+
+# Doxygen
+html/
+latex/
