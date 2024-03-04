@@ -18,11 +18,15 @@ TEST(KalmanFilter, construction)
 // Initial velocity: 0
 // Initial position: 0
 // Measurments taken every 1s
+// 20 measurments taken
 
 // Variacnce of measurments:
 //  Distance: 10
 //  Velocity: 5
 //  Acceleration: 3
+
+// Expected displacement: 4000m
+// Expected velocity: 400ms^-1
 
 {
   using KalmanFilter     = navigation::KalmanFilter;
