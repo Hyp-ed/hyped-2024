@@ -23,34 +23,38 @@ KalmanFilter::KalmanFilter(const StateVector &initial_state,
 
 void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInput &control_input)
 
-
-
-
 {
-  //Predict
-  //x_k = Fx_k-1 + Bu_k
+  // Predict
+  // x_k = Fx_k-1 + Bu_k
 
-  state_estimate_ = transition_matrix * state_estimate_  + control_matrix * control_input;
+  state_estimate_ = transition_matrix * state_estimate_ + control_matrix * control_input;
 
-  //P_k = F*P_k-1*F^T + Q
+  // P_k = F*P_k-1*F^T + Q
 
-  error_covariance_ = transition_matrix * error_covariance_ * transition_matrix.transpose() + transition_covariance;
+  error_covariance_
+    = transition_matrix * error_covariance_ * transition_matrix.transpose() + transition_covariance;
 
-  //Update
+  // Update
 
-  //K_k = P_k*H^T*(H*P_k*H^T + R)^-1
+  // K_k = P_k*H^T*(H*P_k*H^T + R)^-1
 
-  auto kalman_gain = error_covariance_ * measurement_matrix.transpose() * (measurement_matrix * error_covariance_ * measurement_matrix.transpose() + measurement_noise_covariance).inverse();
+  auto kalman_gain = error_covariance_ * measurement_matrix.transpose()
+                     * (measurement_matrix * error_covariance_ * measurement_matrix.transpose()
+                        + measurement_noise_covariance)
+                         .inverse();
 
-  //x_k = x_k + K_k*(z_k - H*x_k)
+  // x_k = x_k + K_k*(z_k - H*x_k)
 
-  state_estimate_ = state_estimate_ + kalman_gain * (measurement - measurement_matrix * state_estimate_);
+  state_estimate_
+    = state_estimate_ + kalman_gain * (measurement - measurement_matrix * state_estimate_);
 
-  //P_k = (I - K_k*H)*P_k*(I - K_k*H)^T + K_k*R*K_k^T
+  // P_k = (I - K_k*H)*P_k*(I - K_k*H)^T + K_k*R*K_k^T
 
-  auto difference = (Eigen::Matrix<core::Float, state_dimension, state_dimension>::Identity() - kalman_gain * measurement_matrix);
+  auto difference = (Eigen::Matrix<core::Float, state_dimension, state_dimension>::Identity()
+                     - kalman_gain * measurement_matrix);
 
-  error_covariance_ = difference * error_covariance_ * difference.transpose() + kalman_gain * measurement_noise_covariance * kalman_gain.transpose();
-} 
+  error_covariance_ = difference * error_covariance_ * difference.transpose()
+                      + kalman_gain * measurement_noise_covariance * kalman_gain.transpose();
+}
 
-} // namespace hyped::navigation
+}  // namespace hyped::navigation
