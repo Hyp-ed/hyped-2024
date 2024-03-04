@@ -117,5 +117,3 @@ TEST(KalmanFilter, construction)
   std::cout << "Velocity RMSE: " << vel_rmse << std::endl;
 }
 }  // namespace hyped::test
-
-// namespace hyped::test
