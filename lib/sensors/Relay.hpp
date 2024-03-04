@@ -29,7 +29,7 @@ class RelayWriter :
        ~RelayWriter();
 
    //  bool open();
-     bool HighLow();  
+     bool Write();  
 
    private:
      RelayWriter(core::ILogger &logger_, const int write_file_descriptor_);
