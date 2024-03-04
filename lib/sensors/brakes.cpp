@@ -27,8 +27,9 @@ namespace hyped::sensors {
     }
 
     bool Brakes::highLow() {
-        core::DigitalSignal signal = gpio_reader_->read();
-//    std::int8_t currentDistance = ;
+        auto sig = gpio_reader_->read();
+
+        core::DigitalSignal signal = sig.value();
         if (signal <= core::DigitalSignal::kHigh) {
             return true;
         }
