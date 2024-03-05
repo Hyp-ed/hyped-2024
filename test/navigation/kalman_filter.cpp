@@ -1,5 +1,4 @@
 #include <iostream>
-#include <random>
 
 #include <gtest/gtest.h>
 
@@ -10,23 +9,23 @@
 
 namespace hyped::test {
 
-TEST(KalmanFilter, construction)
-
 // Test simulating simple cart movement
 
 // Acceleration: 20ms^-2
 // Initial velocity: 0
 // Initial position: 0
 // Measurments taken every 1s
-// 20 measurments taken
+// 20 measurements taken
 
-// Variacnce of measurments:
+// Variance of measurments:
 //  Distance: 10
 //  Velocity: 5
 //  Acceleration: 3
 
 // Expected displacement: 4000m
 // Expected velocity: 400ms^-1
+
+TEST(KalmanFilter, cartRunSimulation)
 
 {
   using KalmanFilter     = navigation::KalmanFilter;
