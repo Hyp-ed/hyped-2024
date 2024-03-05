@@ -25,7 +25,7 @@ export function RealtimeFaultsProvider() {
     supportsSubscribe(domainObject: AugmentedDomainObject) {
       return domainObject.type === FAULT_MANAGEMENT_DOMAIN_TYPE;
     },
-    subscribe: (callback: any) => {
+    subscribe: (_: any, callback: any) => {
       socket.emit(socketConstants.EVENTS.SUBSCRIBE_TO_FAULTS);
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       faultCallback = callback;

@@ -3,7 +3,8 @@ import { FAULT_MANAGEMENT_DOMAIN_TYPE } from './constants';
 import { http } from 'openmct/core/http';
 
 // David change next year :)
-const POD_ID = 'pod_1';
+// TODO: Change this to be dynamic
+const POD_ID = 'pod_2024';
 
 export function HistoricalFaultsProvider() {
   return {

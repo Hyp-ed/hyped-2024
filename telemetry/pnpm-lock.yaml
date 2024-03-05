@@ -11,9 +11,9 @@ patchedDependencies:
   nest-mqtt@0.2.0:
     hash: qjumkzopjk674jgnda4nhej66i
     path: patches/nest-mqtt@0.2.0.patch
-  openmct@2.2.5:
-    hash: cyh32tol7hndyeeqonjpog7pri
-    path: patches/openmct@2.2.5.patch
+  openmct@3.2.0:
+    hash: pdhhr3h2d2ouw4eul3ppcxtptm
+    path: patches/openmct@3.2.0.patch
 
 importers:
 
@@ -284,8 +284,8 @@ importers:
         specifier: 4.1.0
         version: 4.1.0
       openmct:
-        specifier: git+https://github.com/nasa/openmct.git#v2.2.5
-        version: github.com/nasa/openmct/55d0efa510ad1da827f969e46cb8d0f0f8325bf5(patch_hash=cyh32tol7hndyeeqonjpog7pri)
+        specifier: ^3.2.0
+        version: 3.2.0(patch_hash=pdhhr3h2d2ouw4eul3ppcxtptm)
       react:
         specifier: ^18.2.0
         version: 18.2.0
@@ -9783,6 +9783,12 @@ packages:
       mimic-fn: 2.1.0
     dev: true
 
+  /openmct@3.2.0(patch_hash=pdhhr3h2d2ouw4eul3ppcxtptm):
+    resolution: {integrity: sha512-WJroqNZ7dTMztEa0G3N1g9ON6nBrV90j0vfdPWc99CQn1tJiuxQEjsbw1xhVE4nApUr5LmaxxevG4DMTSLwzDQ==}
+    engines: {node: '>=16.19.1 <20'}
+    dev: false
+    patched: true
+
   /optionator@0.8.3:
     resolution: {integrity: sha512-+IW9pACdk3XWmmTXG8m3upGUJst5XRGzxMRjXzAuJ1XnIFNvfhjjIuYkDvysnPQ7qzqVzLt78BCruntqRhWQbA==}
     engines: {node: '>= 0.8.0'}
@@ -13099,13 +13105,3 @@ packages:
       react: 18.2.0
       use-sync-external-store: 1.2.0(react@18.2.0)
     dev: false
-
-  github.com/nasa/openmct/55d0efa510ad1da827f969e46cb8d0f0f8325bf5(patch_hash=cyh32tol7hndyeeqonjpog7pri):
-    resolution: {tarball: https://codeload.github.com/nasa/openmct/tar.gz/55d0efa510ad1da827f969e46cb8d0f0f8325bf5}
-    id: github.com/nasa/openmct/55d0efa510ad1da827f969e46cb8d0f0f8325bf5
-    name: openmct
-    version: 2.2.5
-    engines: {node: '>=16.19.1 <20'}
-    requiresBuild: true
-    dev: false
-    patched: true
