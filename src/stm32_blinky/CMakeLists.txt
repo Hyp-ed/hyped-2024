@@ -3,9 +3,6 @@ set(target stm32-blinky-f4)
 set(CMAKE_TOOLCHAIN_FILE ${CMAKE_SOURCE_DIR}/cmake/stm32.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake)
 
-message(STATUS "CMAKE_TOOLCHAIN_FILE: ${CMAKE_TOOLCHAIN_FILE}")
-message(STATUS "CMAKE_MODULE_PATH: ${CMAKE_MODULE_PATH}")
-
 # get_filename_component(STM32_CMAKE_DIR ${CMAKE_CURRENT_LIST_FILE} DIRECTORY)
 # list(APPEND CMAKE_MODULE_PATH ${STM32_CMAKE_DIR}/cmake)
 
@@ -147,7 +144,6 @@ find_package(CMSIS COMPONENTS STM32F4 REQUIRED)
 find_package(HAL COMPONENTS "${HAL_COMP_LIST}" REQUIRED)
 
 add_library(STM32::NoSys INTERFACE IMPORTED)
-message(STATUS "STM32::NoSys")
 
 add_executable(stm32-blinky-f4 ${code} stm32f4xx_hal_conf.h)
 target_link_libraries(
