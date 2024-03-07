@@ -1,7 +1,7 @@
 import { Motion } from './motion';
 import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
-import { Utilities } from '../sensorUtilities';
+import { Utilities } from '../utils';
 
 export class Temperature extends Motion {
   protected temp: number;
@@ -21,7 +21,7 @@ export class Temperature extends Motion {
     this.temp = this.temp0;
   }
 
-  getData(t: number): Readings {
+  getData(): Readings {
     this.temp += // Air drag and internal heat generation
       Math.pow(this.velocity, 3) * this.params.drag +
       this.velocity * this.params.heatGen;

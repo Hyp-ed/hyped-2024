@@ -21,8 +21,6 @@ export abstract class Sensor {
   readonly limits: Limits;
   readonly rms_noise: number;
   readonly delta_t: number;
-  readonly quantity: number;
-  // readonly quantity: number; // uncomment if needed somewhere like averaging
 
   // Variable sensor data
   protected time: number; // current time in seconds
@@ -35,14 +33,12 @@ export abstract class Sensor {
     rms_noise,
     sampling_time,
     readings,
-    quantity,
   }: LiveReading) {
     Object.assign(this, {
       type,
       format,
       limits,
       rms_noise,
-      quantity,
     });
     this.delta_t = sampling_time / 1000; // convert ms to s
     this.time = 0;
@@ -61,11 +57,11 @@ export abstract class Sensor {
    */
   abstract getData(t: number): Readings;
 
-  protected getRandomData(prevValue: number, readings: Readings): Readings {
+  getRandomData(readings: Readings): Readings {
     // console.log(`Running randomData...`);
     for (const unit in readings) {
       readings[unit] = Utilities.getRandomValue(
-        prevValue,
+        readings[unit],
         this.rms_noise,
         this.format,
       );

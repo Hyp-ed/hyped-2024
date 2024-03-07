@@ -3,7 +3,7 @@ import { Pod, RangeMeasurement } from '@hyped/telemetry-types';
 import { LiveReading, SensorData } from './types';
 
 // Extract and categorise relevant sensor data
-export const measurements = (Object.values(pods) as Pod[]).reduce(
+export const measurements = (Object.values(pods as Pod[])).reduce(
   (acc, pod) => (
     Object.entries(pod.measurements).forEach(([key, measurement]) => {
       if (measurement.format === 'enum') return;
@@ -42,41 +42,27 @@ const getInitialValue = (data: RangeMeasurement): number => {
   };
 
   // Set initial value based on sensor types defined above
-  if (initialVals.hasOwnProperty(data.name)) {
+  if (
+    Object.prototype.hasOwnProperty.call(initialVals, data.name)
+  ) {
     return initialVals[data.name];
   } else if (data.name.startsWith('pressure')) {
     // Pressure gauges are subdivided into push, pull, brake and reservoir with different initial values
     return initialVals.pressure;
   } else {
     // If the sensor is not recognised, return a random value within the critical limits
-    console.log('Unrecognised sensor', data);
     const { low, high } = data.limits.critical;
     return Math.floor(Math.random() * (high - low)) + low;
   }
 };
 
-/**
- * Counts quantity of sensors of each type, categorised by the physical quantity(ies) they measure
- * @param podMeasurement Key - value item from the measurements object
- * @param currentKey Sensor key representing its unique ID
- * @returns Amount of sensors present of given type
- */
-const countSensors = <T extends Pod['measurements']>(
-  podMeasurement: T,
-  currentKey: string,
-): number => {
-  return Object.values(podMeasurement).filter((sensor) => {
-    return sensor.key.startsWith(currentKey) && !sensor.key.endsWith('avg');
-  }).length;
-};
-
 // Create new object to store existing and supplemental sensor parameters for live data testing
 export const sensorData: SensorData = Object.fromEntries(
-  Object.entries(measurements)
+  Object.values(measurements)
 
     // Group sensors by type
     .reduce(
-      (acc, [key, sensor]): any => {
+      (acc, sensor): any => {
         // Initialise set of unique sensor keys if it doesn't already exist
         if (!acc.seen) acc.seen = new Set();
 
@@ -97,7 +83,6 @@ export const sensorData: SensorData = Object.fromEntries(
       name,
       {
         ...data,
-        quantity: countSensors(measurements, data.name),
         // Create object with a key-value pair for each measurement of a given sensor type
         readings: Object.fromEntries(
           Object.keys(measurements)
@@ -110,8 +95,6 @@ export const sensorData: SensorData = Object.fromEntries(
       } as LiveReading,
     ]),
 );
-
-// console.log(sensorData);
 
 // Parameter storing distance of track, once finsih point is reached program will end
 export const trackLength = measurements.displacement.limits.critical.high;

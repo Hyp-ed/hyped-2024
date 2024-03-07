@@ -18,7 +18,8 @@ export class Keyence extends Motion {
   getData(t: number): Readings {
     // Keyence sensors are evenly distributed along the pod
     // Displacement is measured at the nose of the pod
-    const sensorRegion = this.podLength / (this.quantity - 1);
+    const sensorRegion =
+      this.podLength / (Object.keys(Sensor.lastReadings.keyence).length - 1);
     const noPoles = this.limits.critical.high;
 
     if (!Sensor.isSampled['motion']) {

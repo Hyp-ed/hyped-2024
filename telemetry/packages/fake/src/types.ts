@@ -1,7 +1,7 @@
-import type { RangeMeasurement } from "@hyped/telemetry-types"
+import type { RangeMeasurement } from '@hyped/telemetry-types';
 /**
  * Unique variable readinfgs each sensor provides
- * E.g. accelerometers generate values for acceleration, displacement and velocity 
+ * E.g. accelerometers generate values for acceleration, displacement and velocity
  */
 export type LiveReading = RangeMeasurement & { readings: Readings };
 
@@ -14,12 +14,12 @@ export type Readings = {
   [measurement: string]: number;
 };
 
-
 /**
  * Return type for sensor class instantiation
  */
-interface BaseSensor {
+export type BaseSensor = {
   getData: (t: number) => Readings;
+  getRandomData: (prevValue: number, readings: Readings) => Readings;
 }
 
 export type SensorInstance<T extends new (...args: any[]) => BaseSensor> =

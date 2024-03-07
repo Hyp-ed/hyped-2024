@@ -103,7 +103,6 @@ export class Utilities {
    */
   public expMovingAvg(vals: number[], alpha: number): number | undefined {
     if (alpha <= 0 || alpha > 1 || !vals.length) {
-      console.log('Invalid parameters');
       return;
     }
     let sum = 0;
@@ -114,4 +113,3 @@ export class Utilities {
     return sum / (1 - Math.pow(alpha, vals.length));
   }
 }
-

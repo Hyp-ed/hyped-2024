@@ -55,9 +55,6 @@ export class SensorManager {
     const simulationInterval = setInterval(() => {
       // Reset all 'sampled' flags to false
       this.resetSampledState();
-
-      console.log(`\n***** \t *****\nTime: ${this.globalTime * 0.001} s`);
-
       this.sensors.forEach((sensor) => {
         // Generate data if current time corresponds to sensor's sampling time
         if ((this.globalTime / 1000) % sensor.delta_t == 0) {
@@ -74,19 +71,12 @@ export class SensorManager {
           Object.entries(readings).forEach(([measurement, value]) => {
             this.publishData(measurement, value.toString());
           });
-          // Log output
-          if (this.sensorsToRun.includes(sensor.type)) {
-            console.log(readings);
-          }
         }
       });
 
       // Implement exit condition
       if (Sensor.lastReadings.motion.displacement >= trackLength) {
         clearInterval(simulationInterval);
-        console.log('\n\n*** Simulation complete ***\n');
-        console.log('Final state:', Sensor.lastReadings, '\n');
-        // reset and go again
         this.generateData();
       }
 
@@ -136,16 +126,10 @@ export class SensorManager {
    * Subscribed clients extract values using payload[measurementKey]
    */
   private publishData(measurement: string, reading: string): void {
-    console.log(`Publishing ${measurement} reading: ${reading}`);
     this.client.publish(
       `hyped/pod_1/measurement/${measurement}`,
       reading,
-      { qos: 1 },
-      (err: any) => {
-        if (err) {
-          console.log(`MQTT publish error: [LOG] (pod_1) ${err}`);
-        }
-      },
+      { qos: 1 }
     );
   }
 }

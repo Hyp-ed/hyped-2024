@@ -1,6 +1,6 @@
 import { Sensor } from '../base';
 import { measurements } from '../config';
-import { Utilities } from '../sensorUtilities';
+import { Utilities } from '../utils';
 import { LiveReading, Readings } from '../types';
 
 export class Motion extends Sensor {

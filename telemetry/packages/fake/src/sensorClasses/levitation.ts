@@ -1,7 +1,7 @@
 import { Magnetism } from './magnetism';
 import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
-import { Utilities } from '../sensorUtilities';
+import { Utilities } from '../utils';
 
 export class Levitation extends Magnetism {
   private timeActive: number; // dynamic time variable
@@ -34,7 +34,7 @@ export class Levitation extends Magnetism {
     super(data);
     // 10 values ensures minimal error for small sampling times
     //   and sufficient reaction time for large sampling times
-    this.prevVals = Array(10).fill(0);
+    this.prevVals = Array<number>(10).fill(0);
   }
 
   // Reset time at rising and falling stages

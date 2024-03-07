@@ -1,7 +1,7 @@
 import { Temperature } from './temperature';
 import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
-import { Utilities as utils } from '../sensorUtilities';
+import { Utilities as utils } from '../utils';
 
 export class Resistance extends Temperature {
   private alpha = 5 * 10 ** -3; // Temperature coefficient of resistance (steel)
@@ -19,9 +19,9 @@ export class Resistance extends Temperature {
    * This data verifies the power line's continual safety by checking resistance
    *   is as expected during operation.
    */
-  getData(t: number): Readings {
+  getData(): Readings {
     if (!Sensor.isSampled['temperature']) {
-      this.temp = utils.average(Object.values(super.getData(t)));
+      this.temp = utils.average(Object.values(super.getData()));
       Sensor.isSampled['temperature'] = true;
     }
 

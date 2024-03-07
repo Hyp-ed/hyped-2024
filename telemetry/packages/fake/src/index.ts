@@ -10,18 +10,8 @@
 import { SensorManager } from './dataControl';
 import { sensorData } from './config';
 
-// console.log(sensorData);
-// process.exit(0);
-
 const args = process.argv.slice(2);
 const shouldRandomise = args.includes('--random') ? true : false;
-console.log(args, shouldRandomise);
-
-/* program will end once displacement reaches 100m (user can exit with ^C if bugs occur)
-const runTime = args.includes('--runtime')
-  ? parseInt(args[args.indexOf('--runtime') + 1])
-  : 2000;
-*/
 
 // If user defined specific sensors, use them, otherwise simulate all sensors
 // Essentially setting default value of the array parameter to all sensors
@@ -32,15 +22,13 @@ const sensorsToRun = args.includes('--specific')
   ? args
       .slice(args.indexOf('--specific') + 1)
       .map((s: string) => s.toLowerCase())
-      .filter((s: string) => sensorData.hasOwnProperty(s))
+      .filter((s: string) => Object.prototype.hasOwnProperty.call
+        (sensorData, s)
+      )
   : Object.keys(sensorData);
-// i.e. constructor(... , sensorsToRun: string[])
-
-// Also --random could have following args to randomise select sensors
 
 // Instantiate sensor manager
 const sensorMgmt = new SensorManager(sensorsToRun);
 
-// Run data generation simulation for user-defined time period
 // This function handles everything from simulationg sensor readings to uploading them to the server
 sensorMgmt.generateData(shouldRandomise);

@@ -1,7 +1,7 @@
 import { Motion } from './motion';
 import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
-import { Utilities } from '../sensorUtilities';
+import { Utilities } from '../utils';
 
 export class Magnetism extends Motion {
   protected magSetpoint = 250; // A
