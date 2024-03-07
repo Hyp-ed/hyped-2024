@@ -6,15 +6,13 @@
  * @param specific (CLI) an array of specific sensor readings to simulate. Default is false
  * i.e. simulate all sensors
  */
-
 import { SensorManager } from './dataControl';
 import { sensorData } from './config';
 
 const args = process.argv.slice(2);
 const shouldRandomise = args.includes('--random') ? true : false;
 
-// If user defined specific sensors, use them, otherwise simulate all sensors
-// Essentially setting default value of the array parameter to all sensors
+// Filter for user-defined specific sensors, otherwise simulate all
 Object.keys(sensorData).filter((sensor) => args.includes(sensor));
 
 // Ensure input sensor options are valid and format them appropriately
@@ -22,8 +20,8 @@ const sensorsToRun = args.includes('--specific')
   ? args
       .slice(args.indexOf('--specific') + 1)
       .map((s: string) => s.toLowerCase())
-      .filter((s: string) => Object.prototype.hasOwnProperty.call
-        (sensorData, s)
+      .filter((s: string) =>
+        Object.prototype.hasOwnProperty.call(sensorData, s),
       )
   : Object.keys(sensorData);
 

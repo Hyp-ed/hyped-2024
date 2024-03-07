@@ -1,4 +1,3 @@
-import { Sensor } from '../base';
 // Individual sensor classes
 import { Motion } from './motion';
 import { Keyence } from './keyence';
@@ -8,10 +7,23 @@ import { Resistance } from './resistance';
 import { Magnetism } from './magnetism';
 import { Levitation } from './levitation';
 
+type SensorType =
+  | typeof Motion
+  | typeof Keyence
+  | typeof Pressure
+  | typeof Temperature
+  | typeof Resistance
+  | typeof Magnetism
+  | typeof Levitation;
+
 // Package all sensors into one object to be iterated through easily in SensorManager
 export type sensorObj = {
-  [sensor: string]: typeof Sensor;
-}
+  [sensor: string]: SensorType;
+};
+
+// Instance type for sensor classes
+export type SensorInstance<T extends new (...args: any[]) => any> =
+  InstanceType<T>;
 
 // Export object containing all sensor classes
 export const sensors = {
@@ -23,12 +35,3 @@ export const sensors = {
   magnetism: Magnetism,
   levitation: Levitation,
 } as sensorObj;
-
-export type SensorType = 
-  typeof Motion | 
-  typeof Keyence |
-  typeof Pressure |
-  typeof Temperature |
-  typeof Resistance |
-  typeof Magnetism |
-  typeof Levitation

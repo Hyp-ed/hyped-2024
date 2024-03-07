@@ -20,7 +20,4 @@ export type Readings = {
 export type BaseSensor = {
   getData: (t: number) => Readings;
   getRandomData: (prevValue: number, readings: Readings) => Readings;
-}
-
-export type SensorInstance<T extends new (...args: any[]) => BaseSensor> =
-  InstanceType<T>;
+};

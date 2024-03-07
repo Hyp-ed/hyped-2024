@@ -1,12 +1,12 @@
 import MQTT from 'mqtt';
-import { sensors } from './sensorClasses/index';
-import { Readings, SensorInstance } from './types';
+import { sensors, SensorInstance } from './sensorClasses/index';
+import { Readings } from './types';
 import { sensorData, trackLength } from './config';
 import { Sensor } from './base';
 import { Utilities as utils } from './utils';
 
 export class SensorManager {
-  // Create an array to store sensor instances
+  // Create array to store sensor instances
   private sensors: SensorInstance<(typeof sensors)[keyof typeof sensors]>[] =
     [];
   // Record the sampling intervals for each sensor
@@ -16,11 +16,18 @@ export class SensorManager {
   // Mqtt client
   private client: MQTT.MqttClient;
 
-  // Sensor dependencies (sub-classes)
+  /**
+   * The sensors form a hierarchical dependency tree
+   * At the top level is Motion, which relies only on time
+   * All other sensor data relies on motion readings, either
+   *  directly or as a grandchild of the motion class
+   * Key = sensor
+   * Value = parent class
+   */
   private dependencies: Record<string, string | null> = {
     motion: null,
     keyence: 'motion',
-    temperature: 'motion', // possibly pressure too, avoid circular logic though
+    temperature: 'motion',
     pressure: 'temperature',
     resistance: 'temperature',
     magnetism: 'motion',
@@ -28,17 +35,18 @@ export class SensorManager {
   };
 
   /**
-   * Sensor manager singleton class, controls and connects all individual sensor classes
+   * Sensor manager singleton class
+   * Controls and connects all sensor classes
    * @param sensorsToRun user-defined array of sensor names to be run in the current simulation
    */
   constructor(private sensorsToRun: string[]) {
     // Create sensor instances
     this.instantiateSensors(this.sensorsToRun);
-    // Store the sampling times for the current run's sensor type in accessible object
+    // Record fixed sampling time periods
     this.sensorsToRun.forEach((s: string) => {
       this.samplingTimes[s] = sensorData[s].sampling_time;
     });
-
+    // Initialize MQTT connection
     this.client = MQTT.connect('MQTT://mosquitto:1883');
   }
 
@@ -58,16 +66,16 @@ export class SensorManager {
       this.sensors.forEach((sensor) => {
         // Generate data if current time corresponds to sensor's sampling time
         if ((this.globalTime / 1000) % sensor.delta_t == 0) {
-          // Get the sensors' output readings
+          // Get the sensors' output data
           const readings: Readings = !random
             ? sensor.getData(this.globalTime / 1000) // convert time to seconds for calculations
             : sensor.getRandomData(Sensor.lastReadings[sensor.type]);
-          // Store latest readings and set isSampled flag to true
+          // Store latest readings and set sensors' sampled state to true
           Sensor.lastReadings[sensor.type] = readings;
           Sensor.isSampled[sensor.type] = true;
 
-          // Publish each of the current sensor type's reading values under the topic of
-          //   its corresponding measurement key to the MQTT broker
+          // Publish sensor readings under the topic of
+          //   each and for each measurement key to the data broker
           Object.entries(readings).forEach(([measurement, value]) => {
             this.publishData(measurement, value.toString());
           });
@@ -77,7 +85,7 @@ export class SensorManager {
       // Implement exit condition
       if (Sensor.lastReadings.motion.displacement >= trackLength) {
         clearInterval(simulationInterval);
-        this.generateData();
+        this.generateData(random);
       }
 
       this.globalTime += interval;
@@ -126,10 +134,8 @@ export class SensorManager {
    * Subscribed clients extract values using payload[measurementKey]
    */
   private publishData(measurement: string, reading: string): void {
-    this.client.publish(
-      `hyped/pod_1/measurement/${measurement}`,
-      reading,
-      { qos: 1 }
-    );
+    this.client.publish(`hyped/pod_1/measurement/${measurement}`, reading, {
+      qos: 1,
+    });
   }
 }

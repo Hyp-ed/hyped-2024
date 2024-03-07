@@ -3,7 +3,7 @@ import { Pod, RangeMeasurement } from '@hyped/telemetry-types';
 import { LiveReading, SensorData } from './types';
 
 // Extract and categorise relevant sensor data
-export const measurements = (Object.values(pods as Pod[])).reduce(
+export const measurements = Object.values(pods).reduce(
   (acc, pod) => (
     Object.entries(pod.measurements).forEach(([key, measurement]) => {
       if (measurement.format === 'enum') return;
@@ -42,9 +42,7 @@ const getInitialValue = (data: RangeMeasurement): number => {
   };
 
   // Set initial value based on sensor types defined above
-  if (
-    Object.prototype.hasOwnProperty.call(initialVals, data.name)
-  ) {
+  if (Object.prototype.hasOwnProperty.call(initialVals, data.name)) {
     return initialVals[data.name];
   } else if (data.name.startsWith('pressure')) {
     // Pressure gauges are subdivided into push, pull, brake and reservoir with different initial values
