@@ -14,7 +14,7 @@ namespace hyped::test {
 // Acceleration: 20ms^-2
 // Initial velocity: 0
 // Initial position: 0
-// Measurments taken every 1s
+// Measurements taken every 1s
 // 20 measurements taken
 
 // Variance of measurments:
@@ -64,25 +64,25 @@ TEST(KalmanFilter, cartRunSimulation)
 
   // Noisy measurements
 
-  std::array<double, 20> acc_measurements
+  const std::array<double, 20> acc_measurements
     = {20.38, 15.02, 19.17, 19.36, 20.6,  16.89, 20.42, 20.33, 21.53, 19.98,
        26.08, 17.63, 21.01, 17.06, 21.83, 23.18, 26.03, 17.67, 22.99, 18.78};
 
-  std::array<double, 20> dist_measurements
+  const std::array<double, 20> dist_measurements
     = {28.59,   51.7,    87.64,   169.39,  244.96,  363.2,   493.0,  626.97,  817.84,  1021.23,
        1192.21, 1423.34, 1689.46, 1964.72, 2261.09, 2565.47, 2902.0, 3239.25, 3627.35, 4011.47};
 
-  std::array<double, 20> vel_measurements
+  const std::array<double, 20> vel_measurements
     = {20.06,  42.43,  66.23,  83.03,  104.47, 122.93, 135.85, 157.55, 179.02, 201.75,
        216.53, 240.63, 262.97, 285.75, 307.43, 321.04, 331.48, 354.47, 374.19, 394.29};
 
   // Actual measurements
 
-  std::array<double, 20> actual_distances
+  const std::array<double, 20> actual_distances
     = {10,   40,   90,   160,  250,  360,  490,  640,  810,  1000,
        1210, 1440, 1690, 1960, 2250, 2560, 2890, 3240, 3610, 4000};
 
-  std::array<double, 20> actual_velocities = {20,  40,  60,  80,  100, 120, 140, 160, 180, 200,
+  const std::array<double, 20> actual_velocities = {20,  40,  60,  80,  100, 120, 140, 160, 180, 200,
                                               220, 240, 260, 280, 300, 320, 340, 360, 380, 400};
 
   double dist_error_sum = 0.0;

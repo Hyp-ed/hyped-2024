@@ -38,7 +38,7 @@ void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInp
 
   // K_k = P_k*H^T*(H*P_k*H^T + R)^-1
 
-  auto kalman_gain = error_covariance_ * measurement_matrix.transpose()
+  const auto kalman_gain = error_covariance_ * measurement_matrix.transpose()
                      * (measurement_matrix * error_covariance_ * measurement_matrix.transpose()
                         + measurement_noise_covariance)
                          .inverse();
@@ -50,7 +50,7 @@ void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInp
 
   // P_k = (I - K_k*H)*P_k*(I - K_k*H)^T + K_k*R*K_k^T
 
-  auto difference = Eigen::Matrix<core::Float, state_dimension, state_dimension>::Identity()
+   const auto difference = Eigen::Matrix<core::Float, state_dimension, state_dimension>::Identity()
                     - kalman_gain * measurement_matrix;
 
   error_covariance_ = difference * error_covariance_ * difference.transpose()
