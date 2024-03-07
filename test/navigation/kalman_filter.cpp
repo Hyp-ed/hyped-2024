@@ -82,8 +82,8 @@ TEST(KalmanFilter, cartRunSimulation)
     = {10,   40,   90,   160,  250,  360,  490,  640,  810,  1000,
        1210, 1440, 1690, 1960, 2250, 2560, 2890, 3240, 3610, 4000};
 
-  const std::array<double, 20> actual_velocities = {20,  40,  60,  80,  100, 120, 140, 160, 180, 200,
-                                              220, 240, 260, 280, 300, 320, 340, 360, 380, 400};
+  const std::array<double, 20> actual_velocities = {
+    20, 40, 60, 80, 100, 120, 140, 160, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400};
 
   double dist_error_sum = 0.0;
   double vel_error_sum  = 0.0;
@@ -102,8 +102,8 @@ TEST(KalmanFilter, cartRunSimulation)
 
     // Add error
 
-    double dist_error = state_estimate[0] - actual_distances[i];
-    double vel_error  = state_estimate[1] - actual_velocities[i];
+    const double dist_error = state_estimate[0] - actual_distances[i];
+    const double vel_error  = state_estimate[1] - actual_velocities[i];
 
     dist_error_sum += dist_error * dist_error;
     vel_error_sum += vel_error * vel_error;
@@ -113,8 +113,8 @@ TEST(KalmanFilter, cartRunSimulation)
 
   // Calculate RMSE
 
-  double dist_rmse = std::sqrt(dist_error_sum / 20);
-  double vel_rmse  = std::sqrt(vel_error_sum / 20);
+  const double dist_rmse = std::sqrt(dist_error_sum / 20);
+  const double vel_rmse  = std::sqrt(vel_error_sum / 20);
 
   std::cout << "Distance RMSE: " << dist_rmse << std::endl;
   std::cout << "Velocity RMSE: " << vel_rmse << std::endl;
