@@ -1,5 +1,5 @@
 import { pods } from '@hyped/telemetry-constants';
-import { Pod, RangeMeasurement } from '@hyped/telemetry-types';
+import { RangeMeasurement } from '@hyped/telemetry-types';
 import { LiveReading, SensorData } from './types';
 
 // Extract and categorise relevant sensor data

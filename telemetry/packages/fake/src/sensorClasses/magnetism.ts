@@ -1,7 +1,7 @@
 import { Motion } from './motion';
 import { Sensor } from '../base';
 import { LiveReading, Readings } from '../types';
-import { Utilities } from '../utils';
+import { Utilities as utils } from '../utils';
 
 export class Magnetism extends Motion {
   protected magSetpoint = 250; // A
@@ -24,7 +24,7 @@ export class Magnetism extends Motion {
         return [
           key,
           (this.velocity >= this.liftoffSpeed ? this.magSetpoint : 0) +
-            Utilities.gaussianRandom(this.rms_noise),
+            utils.gaussianRandom(this.rms_noise),
         ];
       }),
     );
