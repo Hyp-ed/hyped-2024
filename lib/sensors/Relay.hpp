@@ -3,7 +3,6 @@
 #include <cstdint>
 #include <memory>
 
-#include <optional>
 #include <core/logger.hpp>
 #include <io/gpio.hpp>
 
@@ -11,28 +10,28 @@ namespace hyped::sensors {
 
 class Relay {
  public:
-        static std::optional <Relay> create(core::ILogger &logger,
-                                             std::shared_ptr <io::IGpio> gpio,
-                                             const std::uint8_t new_pin);
+    static std::optional<Relay> create(core::ILogger& logger,
+                                       std::shared_ptr<io::IGpio> gpio,
+                                       const std::uint8_t new_pin);
 
-        ~Relay(); 
+    ~Relay();
 
-    private:
-       Relay(core::ILogger &logger, std::shared_ptr <io::IGpioWriter> gpio_writer);
+ private:
+    Relay(core::ILogger& logger, std::shared_ptr<io::IGpioWriter> gpio_writer);
 };
 
-class RelayWriter :
+class RelayWriter {
  public:
-       static std::optional <RelayWriter>create(core::ILogger &logger,
-                                                const int write_file_descriptor);
+    static std::optional<RelayWriter> create(core::ILogger& logger,
+                                             const int write_file_descriptor);
 
-       ~RelayWriter();
+    ~RelayWriter();
 
-   //  bool open();
-     bool Write();  
+    // bool open();
+    bool Write();
 
-   private:
-     RelayWriter(core::ILogger &logger_, const int write_file_descriptor_);
+ private:
+    RelayWriter(core::ILogger& logger_, const int write_file_descriptor_);
 };
 
 }  // namespace hyped::sensors
