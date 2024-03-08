@@ -26,7 +26,6 @@ namespace hyped::test {
 // Expected velocity: 400ms^-1
 
 TEST(KalmanFilter, cartRunSimulation)
-
 {
   using KalmanFilter     = navigation::KalmanFilter;
   const auto manual_time = std::make_shared<utils::ManualTime>();
