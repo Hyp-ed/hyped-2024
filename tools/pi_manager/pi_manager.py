@@ -1,3 +1,5 @@
+#!/usr/bin/python3
+
 import hashlib
 from os import execv, fork
 import socket
