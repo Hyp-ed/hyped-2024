@@ -137,7 +137,7 @@ Runs the main loop with user-defined parameters, with the actual functionality a
         <li class="na">Write an async function for user to read sensor parameters CSV</li>
         <li class="na">Write an async function for user to modify CSV sensor parameters</li>
         <li class="doing">Write function to optimise data generation complexity for any given set of user-defined sensor reading time steps</li>
-        <li class="todo">Broadcast data live to an animated GUI graph</li>
+        <li class="done">Broadcast data live to an animated GUI graph</li>
         <li class="done">Write a function to generate noise</li>
         <li class="done">Write an exponential moving average method with parameters <em>alpha</em> and <em>window (amount of recent data points to average)</em></li>
     </ul>
@@ -197,7 +197,7 @@ Runs the main loop with user-defined parameters, with the actual functionality a
     .doing {
         color: var(--orange);
     }
-    .todo {
+    .to_do {
         color: var(--red);
     }
     .na {
