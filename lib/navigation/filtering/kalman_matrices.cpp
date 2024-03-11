@@ -26,8 +26,8 @@ MeasurementVector measurement_vector = MeasurementVector::Zero();
 
 MeasurementMatrix measurement_matrix = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
 
-Measurement_matrix mm_optical_only = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
+MeasurementMatrix mm_optical_only = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
 
-Measurement_matrix mm_optical_and_keyence = ((MeasurementMatrix() << 1, 0, 0, kDeltaT).finished());
+MeasurementMatrix mm_optical_and_keyence = ((MeasurementMatrix() << 1, 0, 0, kDeltaT).finished());
 
 }  // namespace hyped::navigation
