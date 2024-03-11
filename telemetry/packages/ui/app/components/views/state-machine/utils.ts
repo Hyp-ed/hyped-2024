@@ -6,9 +6,9 @@ import {
 } from '@hyped/telemetry-constants';
 
 /**
- * Returns the node type based on the state of the pod (okay, failure, static)
+ * Returns the node type based on the state of the pod (active, failure, static)
  * @param state The PodState of the pod
- * @returns The node type (okayNode, failureNode, defaultNode)
+ * @returns The state-corresponding node type
  */
 export const getNodeType = (state: PodStateType) => {
   if (state in FAILURE_STATES) return 'FailureNode';

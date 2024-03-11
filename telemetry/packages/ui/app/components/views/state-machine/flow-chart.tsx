@@ -31,54 +31,56 @@ export function StateMachineFlowChart({
           label: 'Idle',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.IDLE,
         },
-        position: { x: 0, y: 200 },
+        position: { x: 200, y: -100 },
         type: getNodeType(ALL_POD_STATES.IDLE),
       },
       {
-        id: 'calibrating',
+        id: 'calibrate',
         data: {
-          label: 'Calibrating',
+          label: 'Calibrate',
           sourcePositions: [
-            {
-              position: Position.Right,
-              id: 'right',
-            },
-            {
-              position: Position.Top,
-              id: 'top',
-            },
-          ],
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
-          active: currentState === ALL_POD_STATES.CALIBRATING,
-        },
-        position: { x: 200, y: 200 },
-        type: getNodeType(ALL_POD_STATES.CALIBRATING),
-      },
-      {
-        id: 'failure-calibrating',
-        data: {
-          label: 'Failure Calibrating',
-          targetPositions: [
             {
               position: Position.Bottom,
               id: 'bottom',
             },
           ],
-          active: currentState === ALL_POD_STATES.FAILURE_CALIBRATING,
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.CALIBRATE,
         },
         position: { x: 200, y: 0 },
-        type: getNodeType(ALL_POD_STATES.FAILURE_CALIBRATING),
+        type: getNodeType(ALL_POD_STATES.CALIBRATE),
+      },
+      {
+        id: 'precharge',
+        data: {
+          label: 'Precharge',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.PRECHARGE,
+        },
+        position: { x: 200, y: 100 },
+        type: getNodeType(ALL_POD_STATES.PRECHARGE),
       },
       {
         id: 'ready',
