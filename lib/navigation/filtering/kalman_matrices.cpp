@@ -15,12 +15,6 @@ const ErrorCovarianceMatrix kErrorCovarianceMatrix
 const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
   = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0.01).finished();
 
-const MeasurementMatrix obs_matrix_no_keyence
-  = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
-
-const MeasurementMatrix obs_matrix_with_keyence
-  = ((MeasurementMatrix() << 1, 0, 0, kDeltaT).finished());
-
 // Changing matrices
 StateVector initial_state = (StateVector::Zero());
 
