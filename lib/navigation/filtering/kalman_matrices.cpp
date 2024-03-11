@@ -15,6 +15,12 @@ const ErrorCovarianceMatrix kErrorCovarianceMatrix
 const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
   = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0.01).finished();
 
+const MeasurementMatrix obs_matrix_no_keyence
+  = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
+
+const MeasurementMatrix obs_matrix_with_keyence
+  = ((MeasurementMatrix() << 1, 0, 0, kDeltaT).finished());
+
 // Changing matrices
 StateVector initial_state = (StateVector::Zero());
 
@@ -25,9 +31,5 @@ ControlInput control_input_vector = ControlInput::Zero();
 MeasurementVector measurement_vector = MeasurementVector::Zero();
 
 MeasurementMatrix measurement_matrix = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
-
-MeasurementMatrix mm_optical_only = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
-
-MeasurementMatrix mm_optical_and_keyence = ((MeasurementMatrix() << 1, 0, 0, kDeltaT).finished());
 
 }  // namespace hyped::navigation
