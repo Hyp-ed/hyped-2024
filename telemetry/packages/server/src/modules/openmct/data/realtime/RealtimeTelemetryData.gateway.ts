@@ -53,7 +53,8 @@ export class RealtimeTelemetryDataGateway {
       podId,
       measurementKey,
       value,
-      timestamp,
+      // convert timestamp from nanoseconds to milliseconds
+      timestamp: Math.floor(Number(timestamp) / 1e6),
     });
 
     this.logger.debug(
