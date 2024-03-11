@@ -77,7 +77,7 @@ export const sensorData: SensorData = Object.fromEntries(
       },
       { seen: new Set(), entries: [] as [string, RangeMeasurement][] },
     )
-    .entries// Set new readings property to the sensors' initial conditions
+    .entries // Set new readings property to the sensors' initial conditions
     .map(([name, data]: [string, RangeMeasurement]) => [
       name,
       {

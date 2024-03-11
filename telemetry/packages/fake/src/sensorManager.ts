@@ -113,8 +113,8 @@ export class SensorManager {
     // Define sensor instances
     // Correct sorting is automatic as recursion forces all parent class sensors to be
     //   added before their inheriting classes
-    activeSensors.forEach((s) => this.sensors.push(
-      new sensors[s](sensorData[s]))
+    activeSensors.forEach((s) =>
+      this.sensors.push(new sensors[s](sensorData[s])),
     );
   }
 
