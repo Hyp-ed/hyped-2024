@@ -48,7 +48,7 @@ export const pods: Pods = {
         name: 'Displacement',
         key: 'displacement',
         format: 'float',
-        type: 'displacement',
+        type: 'motion',
         unit: 'm',
         limits: {
           critical: {
@@ -56,12 +56,14 @@ export const pods: Pods = {
             high: 100,
           },
         },
+        rms_noise: 0,
+        sampling_time: accelerometerCommon.sampling_time,
       },
       velocity: {
         name: 'Velocity',
         key: 'velocity',
         format: 'float',
-        type: 'velocity',
+        type: 'motion',
         unit: 'm/s',
         limits: {
           critical: {
@@ -69,12 +71,14 @@ export const pods: Pods = {
             high: 50,
           },
         },
+        rms_noise: accelerometerCommon.rms_noise,
+        sampling_time: accelerometerCommon.sampling_time,
       },
       acceleration: {
         name: 'Acceleration',
         key: 'acceleration',
         format: 'float',
-        type: 'acceleration',
+        type: 'motion',
         unit: 'm/s²',
         limits: {
           critical: {
@@ -82,6 +86,8 @@ export const pods: Pods = {
             high: 5,
           },
         },
+        rms_noise: accelerometerCommon.rms_noise,
+        sampling_time: accelerometerCommon.sampling_time,
       },
 
       // ************************************ PRESSURE ************************************ //
@@ -415,9 +421,12 @@ export const pods: Pods = {
             high: 100,
           },
         },
+        rms_noise: 0.1,
+        sampling_time: 500,
       },
     },
   },
+
   pod_2024: {
     id: 'pod_2024',
     name: 'Poddington',
@@ -454,7 +463,7 @@ export const pods: Pods = {
         name: 'Displacement',
         key: 'displacement',
         format: 'float',
-        type: 'displacement',
+        type: 'motion',
         unit: 'm',
         limits: {
           critical: {
@@ -462,12 +471,14 @@ export const pods: Pods = {
             high: 100,
           },
         },
+        rms_noise: 0,
+        sampling_time: accelerometerCommon.sampling_time,
       },
       velocity: {
         name: 'Velocity',
         key: 'velocity',
         format: 'float',
-        type: 'velocity',
+        type: 'motion',
         unit: 'm/s',
         limits: {
           critical: {
@@ -475,12 +486,14 @@ export const pods: Pods = {
             high: 50,
           },
         },
+        rms_noise: 0,
+        sampling_time: accelerometerCommon.sampling_time,
       },
       acceleration: {
         name: 'Acceleration',
         key: 'acceleration',
         format: 'float',
-        type: 'acceleration',
+        type: 'motion',
         unit: 'm/s²',
         limits: {
           critical: {
@@ -488,6 +501,8 @@ export const pods: Pods = {
             high: 5,
           },
         },
+        rms_noise: accelerometerCommon.rms_noise,
+        sampling_time: accelerometerCommon.sampling_time,
       },
 
       // ************************************ PRESSURE ************************************ //
@@ -801,6 +816,8 @@ export const pods: Pods = {
             high: 100,
           },
         },
+        rms_noise: 0.1,
+        sampling_time: 500,
       },
 
       // ************************************ LEVITATION ************************************ //
@@ -816,6 +833,8 @@ export const pods: Pods = {
             high: 100,
           },
         },
+        rms_noise: 2, // from Time-of-Flight datasheet
+        sampling_time: 500,
       },
     },
   },

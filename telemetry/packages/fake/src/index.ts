@@ -6,7 +6,7 @@
  * @param specific (CLI) an array of specific sensor readings to simulate. Default is false
  * i.e. simulate all sensors
  */
-import { SensorManager } from './dataControl';
+import { SensorManager } from './sensorManager';
 import { sensorData } from './config';
 
 const args = process.argv.slice(2);
@@ -28,5 +28,5 @@ const sensorsToRun = args.includes('--specific')
 // Instantiate sensor manager
 const sensorMgmt = new SensorManager(sensorsToRun);
 
-// This function handles everything from simulationg sensor readings to uploading them to the server
+// Simulates sensor readings and uploads to the server
 sensorMgmt.generateData(shouldRandomise);

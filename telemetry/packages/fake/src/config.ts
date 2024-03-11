@@ -1,22 +1,26 @@
 import { pods } from '@hyped/telemetry-constants';
-import { RangeMeasurement } from '@hyped/telemetry-types';
+import { Pod, RangeMeasurement } from '@hyped/telemetry-types';
 import { LiveReading, SensorData } from './types';
 
-// Extract and categorise relevant sensor data
-export const measurements = Object.values(pods).reduce(
-  (acc, pod) => (
-    Object.entries(pod.measurements).forEach(([key, measurement]) => {
-      if (measurement.format === 'enum') return;
-      acc[key] = measurement;
-      // Normalise sensor name to its category's base name, as this function is called only once for each sensor type
-      // replace name with base name, effectively categoring sensors by type and function
-      acc[key].name = key.replace(/_[^_]*\d$/, '');
-    }),
-    acc
-  ),
-  {} as Record<string, RangeMeasurement>,
-);
+type podID = keyof typeof pods;
 
+/**
+ * Extracts and categorises relevant sensor data
+ */
+const filterMeasurements = (id: podID) => {
+  const pod = Object.values(pods).find((pod: Pod) => pod.id === id) as Pod;
+  const filteredData = {} as Record<string, RangeMeasurement>;
+  //
+  Object.entries(pod.measurements).forEach(([key, meas]) => {
+    if (meas.format !== 'enum') {
+      filteredData[key] = meas;
+      filteredData[key].name = key.replace(/_[^_]*\d$/, '');
+    }
+  });
+  return filteredData;
+};
+
+export const measurements = filterMeasurements('pod_2024');
 
 /**
  * Gets an arbitrary initial value for each reading
@@ -53,16 +57,15 @@ const getInitialValue = (data: RangeMeasurement): number => {
   }
 };
 
-// Create new object to store existing and supplemental sensor parameters for live data testing
+/**
+ * Create new object to store existing and additional sensor parameters
+ * Groups sensors by data source by replacing sensor type with group's type
+ */
 export const sensorData: SensorData = Object.fromEntries(
   Object.values(measurements)
-
-    // Group sensors by type
     .reduce(
       (acc, sensor): any => {
-        // Initialise set of unique sensor keys if it doesn't already exist
         if (!acc.seen) acc.seen = new Set();
-
         // Check if the sensor key has already been processed
         if (!acc.seen.has(sensor.type)) {
           acc.seen.add(sensor.type);
@@ -70,12 +73,11 @@ export const sensorData: SensorData = Object.fromEntries(
           // Each type holds all data on its constituent sensors
           acc.entries.push([sensor.type, sensor]);
         }
-
         return acc;
       },
       { seen: new Set(), entries: [] as [string, RangeMeasurement][] },
     )
-    .entries // Add quantity and readings properties, the latter set to the sensors' initial conditions
+    .entries// Set new readings property to the sensors' initial conditions
     .map(([name, data]: [string, RangeMeasurement]) => [
       name,
       {
