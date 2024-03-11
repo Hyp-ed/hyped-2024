@@ -2,8 +2,8 @@
 
 # Must be run as root
 if [ "$EUID" -ne 0 ]
-  then echo "Please run as root"
-  exit
+  then echo "This script must be run as root"
+  exit 1
 fi
 
 # Install the pi_manager service
