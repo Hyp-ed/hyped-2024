@@ -4,7 +4,7 @@
 
 # Function to display script usage
 usage() {
- echo "Usage: $0 <yarn_script> [OPTIONS]"
+ echo "Usage: $0 <pnpm_script> [OPTIONS]"
  echo "Options:"
  echo " -h, --help              Display this help message"
  echo " -b, --build             Build the docker image before running the container"
@@ -26,12 +26,12 @@ build=false
 with_mqtt_broker=false
 
 if [ -z "$1" ]; then
-  echo "Missing argument: yarn_script" >&2
+  echo "Missing argument: pnpm_script" >&2
   usage
   exit 1
 fi
 
-export YARN_SCRIPT=$1
+export PNPM_SCRIPT=$1
 shift
 
 # Function to handle options and arguments
@@ -62,13 +62,22 @@ handle_options() {
 handle_options "$@"
 
 if [ "$build" = true ]; then
+  docker-compose rm -v -f telemetry
   if [ "$with_mqtt_broker" = true ]; then
-    docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build
+    command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --build -V --abort-on-container-exit"
+    echo "Running command: $command"
+    $command
   else
-    docker-compose up --build
+    command="docker-compose up --build -V --abort-on-container-exit"
+    echo "Running command: $command"
+    $command
   fi
 elif [ "$with_mqtt_broker" = true ]; then
-  docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up
+  command="docker-compose -f docker-compose.yml -f docker-compose.mqtt.yml up --abort-on-container-exit"
+  echo "Running command: $command"
+  $command
 else
-  docker-compose up
+  command="docker-compose up --abort-on-container-exit"
+  echo "Running command: $command"
+  $command
 fi

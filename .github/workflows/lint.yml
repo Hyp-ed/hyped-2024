@@ -1,9 +1,6 @@
 name: Linter
 
-on:
-  push:
-    paths-ignore: 
-      - "telemetry/**"
+on: push
 
 jobs:
   clang-format:
@@ -15,6 +12,15 @@ jobs:
         with:
           clang-format-version: "13"
           style: "file"
+
+  cmake-format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run cmake-format style check
+        uses: PuneetMatharu/cmake-format-lint-action@v1.0.4
+        with:
+          args: --check
 
   find-todos-fixme:
     runs-on: ubuntu-latest

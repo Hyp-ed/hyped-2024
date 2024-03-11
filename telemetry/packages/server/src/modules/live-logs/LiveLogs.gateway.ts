@@ -16,7 +16,7 @@ export class LiveLogsGateway {
   socket: Server;
 
   @SubscribeMessage('send-log')
-  handleMessage(_client: Socket, payload: any) {
+  handleMessage(_client: Socket, payload: unknown) {
     this.socket.emit('log', payload);
   }
 }

@@ -9,21 +9,26 @@
 #include <unordered_map>
 
 #include <boost/unordered_map.hpp>
+#include <core/mqtt.hpp>
 #include <core/types.hpp>
 
 namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine(const TransitionTable &transition_table);
-  State stringToState(const std::string &state_name);
-  std::string stateToString(const State &state);
+  StateMachine(std::shared_ptr<core::IMqtt> mqtt, const TransitionTable &transition_table);
+  void run();
   State getCurrentState();
   core::Result handleTransition(const State &state);
 
  private:
+  void publishCurrentState();
+  State stringToState(const std::string &state_name);
+  std::string stateToString(const State &state);
+  void update();
   const std::unordered_map<std::string, State> string_to_state_
-    = {{"kCalibrate", State::kCalibrate},
+    = {{"kIdle", State::kIdle},
+       {"kCalibrate", State::kCalibrate},
        {"kPrecharge", State::kPrecharge},
        {"kReadyForLeviation", State::kReadyForLevitation},
        {"kBeginLevitation", State::kBeginLevitation},
@@ -40,7 +45,8 @@ class StateMachine {
        {"kFailure", State::kFailure},
        {"kSafe", State::kSafe}};
   const std::unordered_map<State, std::string> state_to_string_
-    = {{State::kCalibrate, "kCalibrate"},
+    = {{State::kIdle, "kIdle"},
+       {State::kCalibrate, "kCalibrate"},
        {State::kPrecharge, "kPrecharge"},
        {State::kReadyForLevitation, "kReadyForLevitation"},
        {State::kBeginLevitation, "kBeginLevitation"},
@@ -58,6 +64,7 @@ class StateMachine {
        {State::kSafe, "kSafe"}};
 
   State current_state_;
+  const std::shared_ptr<core::IMqtt> mqtt_;
   TransitionTable transition_to_state_;
 };
 

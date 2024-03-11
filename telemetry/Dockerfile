@@ -3,19 +3,27 @@ FROM node:18.17.0
 # Create app directory
 WORKDIR /usr/src/app
 
+# Install pnpm
+RUN npm install -g pnpm
+
 # Install dependencies
 COPY package.json ./
 COPY packages/constants/package.json ./packages/constants/
 COPY packages/server/package.json ./packages/server/
 COPY packages/types/package.json ./packages/types/
 COPY packages/ui/package.json ./packages/ui/
-COPY yarn.lock ./
+COPY packages/eslint-config/package.json ./packages/eslint-config/
+COPY packages/tsconfig/package.json ./packages/tsconfig/
+COPY pnpm-lock.yaml ./
+COPY pnpm-workspace.yaml ./
 COPY patches ./patches
-RUN yarn install
+COPY turbo.json ./
+RUN pnpm install --frozen-lockfile
 
 # Expose ports
 EXPOSE 5173
 EXPOSE 3000
+EXPOSE 8086
 
 # Entrypoint
 COPY entry.sh ./

@@ -12,12 +12,15 @@
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "prepare": "tsdx build"
+    "lint": "eslint \"src/**/*.ts\" --max-warnings 0 --report-unused-disable-directives",
+    "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "devDependencies": {
-    "@hyped/telemetry-types": "*",
+    "@hyped/telemetry-types": "workspace:*",
+    "@hyped/eslint-config": "workspace:*",
+    "@hyped/tsconfig": "workspace:*",
     "tsdx": "^0.14.1",
     "tslib": "^2.5.3",
-    "typescript": "^5.1.6"
+    "typescript": "^5.3.3"
   }
 }

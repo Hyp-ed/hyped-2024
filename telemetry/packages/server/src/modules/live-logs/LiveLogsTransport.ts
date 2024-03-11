@@ -23,7 +23,7 @@ export class LiveLogsTransport extends Transport {
     >;
   }
 
-  log(info: any, callback: () => void) {
+  log(info: unknown, callback: () => void) {
     setImmediate(() => {
       this.socket.emit('send-log', info);
     });

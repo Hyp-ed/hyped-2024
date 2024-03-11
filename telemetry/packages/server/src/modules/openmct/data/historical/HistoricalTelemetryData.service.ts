@@ -46,7 +46,7 @@ export class HistoricalTelemetryDataService {
         timestamp: new Date(row['_time']).getTime(),
         value: row['_value'],
       }));
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get historical reading for {${podId}/${measurementKey}}`,
         e,

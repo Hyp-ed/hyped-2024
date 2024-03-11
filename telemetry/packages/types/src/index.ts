@@ -1,4 +1,4 @@
-export type { Pods, Measurement, Pod } from './pods/pods.types';
+export type { Measurement, Pod } from './pods/pods.types';
 export type {
   OpenMctDictionary,
   OpenMctPod,

@@ -37,6 +37,8 @@ export const ALL_POD_STATE_TYPES = [
   'NULL',
 ] as const;
 
+export type PodStateCategoryType = (typeof ALL_POD_STATE_TYPES)[number];
+
 export const getStateType = (
   state: string,
 ): (typeof ALL_POD_STATE_TYPES)[number] => {

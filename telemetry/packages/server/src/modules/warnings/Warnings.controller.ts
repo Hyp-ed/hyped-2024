@@ -6,7 +6,7 @@ export class WarningsController {
   constructor(private warningsService: WarningsService) {}
 
   @Post('latency')
-  async createLatencyWarning(@Param('podId') podId: string) {
-    await this.warningsService.createLatencyWarning(podId);
+  createLatencyWarning(@Param('podId') podId: string) {
+    this.warningsService.createLatencyWarning(podId);
   }
 }

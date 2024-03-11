@@ -5,6 +5,7 @@ import { ObjectIdentitifer } from '../types/ObjectIdentifier';
 import { fetchObjectTypes } from './data/object-types-data';
 import { fetchMeasurement, fetchPod, fetchPodIds } from './data/pods-data';
 import { convertNamespaceToPodId } from './utils/convertNamespaceToPodId';
+import CompositionProvider from 'openmct/dist/src/api/composition/CompositionProvider';
 
 const podObjectProvider = {
   get: (identifier: ObjectIdentitifer) => {
@@ -27,7 +28,7 @@ const measurementsObjectProvider = {
         throw new Error('Measurement not found');
       }
 
-      const telemetryValue = measurement.values.find(m => m?.key === 'value');
+      const telemetryValue = measurement.values.find((m) => m?.key === 'value');
       if (!telemetryValue) {
         throw new Error('Measurement does not have a telemetry source value');
       }
@@ -68,7 +69,7 @@ const compositionProvider = {
 };
 
 export function DictionaryPlugin() {
-  return function install(openmct: OpenMCT) {
+  return async function install(openmct: OpenMCT) {
     fetchPodIds()
       .then(({ ids }) => {
         ids.forEach((podId) => {
@@ -87,12 +88,11 @@ export function DictionaryPlugin() {
 
         openmct.objects.addProvider(`hyped.taxonomy`, podObjectProvider);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         throw new Error('Failed to load dictionary');
       });
 
-    fetchObjectTypes().then((objectTypes) => {
+    await fetchObjectTypes().then((objectTypes) => {
       objectTypes.forEach((objectType) => {
         openmct.types.addType(`hyped.${objectType.id}`, {
           name: objectType.name,
@@ -101,6 +101,6 @@ export function DictionaryPlugin() {
       });
     });
 
-    openmct.composition.addProvider(compositionProvider as any);
+    openmct.composition.addProvider(compositionProvider as CompositionProvider);
   };
 }

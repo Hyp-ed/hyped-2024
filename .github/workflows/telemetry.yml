@@ -1,16 +1,15 @@
-name: Telemetry Build
+name: Telemetry
 
-on:
-  push:
-    paths:
-      - 'telemetry/**'
+on: push
+
+defaults:
+  run:
+    working-directory: telemetry
 
 jobs:
   telemetry-build:
+    name: Telemetry Build
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: telemetry
     steps:
       - uses: actions/checkout@v3
 
@@ -19,3 +18,29 @@ jobs:
 
       - name: Build
         run: ./build.sh
+
+  telemetry-lint:
+    name: Telemetry Lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Docker
+        uses: docker/setup-buildx-action@v3
+
+      - name: Lint
+        run: ./telemetry.sh lint
+
+  telemetry-formatting:
+    name: Telemetry Formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install pnpm and Prettier
+        run: |
+          npm install -g pnpm
+          npm install -g prettier@3.2.4
+
+      - name: Check Formatting
+        run: pnpm run format:check
