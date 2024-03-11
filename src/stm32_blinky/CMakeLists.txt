@@ -14,8 +14,12 @@ set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
 
 find_program(CMAKE_C_COMPILER NAMES arm-none-eabi-gcc)
-find_program(CMAKE_CXX_COMPILER NAMES arm-none-eabi-gcc-g++)
-find_program(CMAKE_ASM_COMPILER NAMES arm-none-eabi-gcc-gcc)
+find_program(CMAKE_CXX_COMPILER NAMES arm-none-eabi-g++)
+find_program(CMAKE_ASM_COMPILER NAMES arm-none-eabi-gcc)
+
+message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
+message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")
+message(STATUS "CMAKE_ASM_COMPILER: ${CMAKE_ASM_COMPILER}")
 
 set(CMAKE_EXECUTABLE_SUFFIX_C .elf)
 set(CMAKE_EXECUTABLE_SUFFIX_CXX .elf)
