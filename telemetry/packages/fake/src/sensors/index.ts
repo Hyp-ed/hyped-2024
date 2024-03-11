@@ -16,11 +16,6 @@ type SensorType =
   | typeof Magnetism
   | typeof Levitation;
 
-// Package all sensors into one object to be iterated through easily in SensorManager
-export type sensorObj = {
-  [sensor: string]: SensorType;
-};
-
 // Instance type for sensor classes
 export type SensorInstance<T extends new (...args: any[]) => any> =
   InstanceType<T>;
@@ -34,4 +29,4 @@ export const sensors = {
   pressure: Pressure,
   magnetism: Magnetism,
   levitation: Levitation,
-} as sensorObj;
+} as Record<string, SensorType>;

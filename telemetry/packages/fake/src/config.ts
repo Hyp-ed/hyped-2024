@@ -17,7 +17,6 @@ export const measurements = Object.values(pods).reduce(
   {} as Record<string, RangeMeasurement>,
 );
 
-// console.log(measurements)
 
 /**
  * Gets an arbitrary initial value for each reading

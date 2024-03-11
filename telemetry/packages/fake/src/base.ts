@@ -15,9 +15,7 @@ export abstract class Sensor {
 
   // Sensor properties
   readonly type: string; // sensor type (same as the name of the object in sensorData)
-  // readonly key: string; // sensor id, but this not as a top-level property, instead the readings all have unique keys
   readonly format: 'float' | 'integer'; // for random ternary logic (keyence is integer, rest are float)
-  // readonly unit: string; // if we want to display units on UI, probably not necessary as front end will already do this
   readonly limits: Limits;
   readonly rms_noise: number;
   readonly delta_t: number;
@@ -42,7 +40,6 @@ export abstract class Sensor {
     });
     this.delta_t = sampling_time / 1000; // convert ms to s
     this.time = 0;
-    // console.log('/nInitial values verification:', readings);
     // Add initial sensor values to global readings object
     Sensor.lastReadings[this.type] = readings;
   }
@@ -58,7 +55,6 @@ export abstract class Sensor {
   abstract getData(t: number): Readings;
 
   getRandomData(readings: Readings): Readings {
-    // console.log(`Running randomData...`);
     for (const unit in readings) {
       readings[unit] = Utilities.getRandomValue(
         readings[unit],

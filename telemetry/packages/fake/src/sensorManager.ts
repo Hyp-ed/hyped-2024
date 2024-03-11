@@ -1,5 +1,5 @@
 import MQTT from 'mqtt';
-import { sensors, SensorInstance } from './sensorClasses/index';
+import { sensors, SensorInstance } from './sensors/index';
 import { Readings } from './types';
 import { sensorData, trackLength } from './config';
 import { Sensor } from './base';
