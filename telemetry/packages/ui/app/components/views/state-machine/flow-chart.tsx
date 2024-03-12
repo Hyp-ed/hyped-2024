@@ -177,8 +177,8 @@ export function StateMachineFlowChart({
           active: currentState === ALL_POD_STATES.TEXT,
         },
         position: {
-          x: 800,
-          y: -200
+          x: 500,
+          y: 300
         },
         type: getNodeType(ALL_POD_STATES.TEXT),
       },
@@ -189,8 +189,8 @@ export function StateMachineFlowChart({
           label: 'Accelerate',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Left,
+              id: 'left',
             },
             {
               position: Position.Bottom,
@@ -217,8 +217,8 @@ export function StateMachineFlowChart({
           label: 'LIM Brake',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Left,
+              id: 'left',
             },
             {
               position: Position.Bottom,
@@ -249,8 +249,8 @@ export function StateMachineFlowChart({
               id: 'bottom',
             },
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Left,
+              id: 'left',
             },
           ],
           targetPositions: [
@@ -275,8 +275,8 @@ export function StateMachineFlowChart({
           label: 'Failure Braking',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Right,
+              id: 'right',
             },
           ],
           targetPositions: [
@@ -288,7 +288,7 @@ export function StateMachineFlowChart({
           active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
         },
         position: {
-          x: 800,
+          x: 500,
           y: 400,
         },
         type: getNodeType(ALL_POD_STATES.FAILURE_BRAKING),
@@ -313,8 +313,8 @@ export function StateMachineFlowChart({
           active: currentState === ALL_POD_STATES.STOP_LEVITATION,
         },
         position: {
-          x: 500,
-          y: 200,
+          x: 800,
+          y: 100,
         },
         type: getNodeType(ALL_POD_STATES.STOP_LEVITATION),
       },
@@ -337,8 +337,8 @@ export function StateMachineFlowChart({
           active: currentState === ALL_POD_STATES.STOPPED
         },
         position: {
-          x: 500,
-          y: 300,
+          x: 800,
+          y: 200,
         },
         type: getNodeType(ALL_POD_STATES.STOPPED),
       },
@@ -361,8 +361,8 @@ export function StateMachineFlowChart({
           active: currentState === ALL_POD_STATES.BATTERY_RECHARGE,
         },
         position: {
-          x: 500,
-          y: 400,
+          x: 800,
+          y: 300,
         },
         type: getNodeType(ALL_POD_STATES.BATTERY_RECHARGE),
       },
@@ -382,15 +382,15 @@ export function StateMachineFlowChart({
               id: 'top',
             },
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Left,
+              id: 'left',
             },
           ],
           active: currentState === ALL_POD_STATES.CAPACITOR_DISCHARGE,
         },
         position: {
-          x: 500,
-          y: 500,
+          x: 800,
+          y: 400,
         },
         type: getNodeType(ALL_POD_STATES.CAPACITOR_DISCHARGE),
       },
@@ -413,8 +413,8 @@ export function StateMachineFlowChart({
           active: currentState === ALL_POD_STATES.SAFE,
         },
         position: {
-          x: 500,
-          y: 600,
+          x: 800,
+          y: 500,
         },
         type: getNodeType(ALL_POD_STATES.SAFE),
       },
