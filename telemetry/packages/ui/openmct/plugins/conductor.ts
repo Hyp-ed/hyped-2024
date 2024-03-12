@@ -20,8 +20,8 @@ export function ConductorPlugin() {
             timeSystem: 'utc',
             clock: 'local',
             clockOffsets: {
-              start: -THIRTY_SECONDS,
-              end: TEN_SECONDS,
+              start: -FIVE_MINUTES,
+              end: ONE_MINUTE,
             },
             presets: [
               {
