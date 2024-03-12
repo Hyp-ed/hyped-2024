@@ -1,7 +1,7 @@
 import ReactFlow, { Background, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
-import { PassiveNode, FailureNode, ActiveNode, TextNode } from './nodes';
+import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo } from 'react';
 import './styles.css';
 import { getNodeType } from './utils';
@@ -18,7 +18,7 @@ export function StateMachineFlowChart({
       FailureNode,
       PassiveNode,
       ActiveNode,
-      TextNode,
+      NeutralNode,
     }),
     [],
   );
@@ -163,6 +163,26 @@ export function StateMachineFlowChart({
         },
         type: getNodeType(ALL_POD_STATES.READY_FOR_LAUNCH),
       },
+
+      {
+        id: 'other-states',
+        data: {
+          label: 'All other States',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.TEXT,
+        },
+        position: {
+          x: 800,
+          y: -200
+        },
+        type: getNodeType(ALL_POD_STATES.TEXT),
+      },
+
       {
         id: 'accelerate',
         data: {

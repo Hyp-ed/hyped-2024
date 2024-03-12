@@ -24,6 +24,10 @@ export const ACTIVE_STATES = {
   CAPACITOR_DISCHARGE: 'CAPACITOR_DISCHARGE',
 } as const;
 
+export const NEUTRAL_STATES = {
+  TEXT: 'TEXT',
+} as const;
+
 export const NULL_STATES = {
   UNKNOWN: 'UNKNOWN',
 } as const;
@@ -32,6 +36,7 @@ export const ALL_POD_STATES = {
   ...FAILURE_STATES,
   ...PASSIVE_STATES,
   ...ACTIVE_STATES,
+  ...NEUTRAL_STATES,
   ...NULL_STATES,
 };
 
@@ -39,6 +44,7 @@ export const ALL_POD_STATE_TYPES = [
   'FAILURE',
   'PASSIVE',
   'ACTIVE',
+  'NEUTRAL',
   'NULL',
 ] as const;
 
@@ -51,6 +57,7 @@ export const getStateType = (
   if (FAILURE_STATES[state as keyof typeof FAILURE_STATES]) return 'FAILURE';
   if (PASSIVE_STATES[state as keyof typeof PASSIVE_STATES]) return 'PASSIVE';
   if (ACTIVE_STATES[state as keyof typeof ACTIVE_STATES]) return 'ACTIVE';
+  if (NEUTRAL_STATES[state as keyof typeof NEUTRAL_STATES]) return 'NEUTRAL';
   if (NULL_STATES[state as keyof typeof NULL_STATES]) return 'NULL';
   throw new Error(`Unknown state: ${state}`);
 };
