@@ -22,3 +22,8 @@ export type OpenMctFault = {
     };
   };
 };
+
+export type HistoricalFaults = {
+  timestamp: number;
+  fault: OpenMctFault;
+}[];

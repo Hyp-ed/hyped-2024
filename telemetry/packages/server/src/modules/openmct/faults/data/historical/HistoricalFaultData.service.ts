@@ -3,8 +3,9 @@ import { InfluxRow } from '@/modules/common/types/InfluxRow';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { OpenMctFault } from '@hyped/telemetry-types';
+import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 import { fluxExpression, fluxString } from '@influxdata/influxdb-client';
-import { Injectable, LoggerService } from '@nestjs/common';
+import { HttpException, Injectable, LoggerService } from '@nestjs/common';
 
 interface InfluxFaultRow extends InfluxRow {
   fault: string;
@@ -19,11 +20,6 @@ type GetHistoricalFaultsOptions = {
   includeAcknowledged?: boolean;
 };
 
-export type GetHistoricalFaultsReturn = {
-  timestamp: number;
-  fault: OpenMctFault;
-}[];
-
 @Injectable()
 export class HistoricalFaultDataService {
   constructor(
@@ -37,7 +33,7 @@ export class HistoricalFaultDataService {
     options: GetHistoricalFaultsOptions = {
       includeAcknowledged: true,
     },
-  ) {
+  ): Promise<HistoricalFaults> {
     const { podId, measurementKey } = props;
     const { includeAcknowledged: getAcknowledged } = options;
 
@@ -76,6 +72,7 @@ export class HistoricalFaultDataService {
         e,
         HistoricalFaultDataService.name,
       );
+      throw new HttpException("Couldn't get historical faults", 500);
     }
   }
 }

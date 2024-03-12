@@ -4,6 +4,9 @@ import { Datum } from 'openmct/types/Datum';
 import { Unpacked } from 'openmct/types/Unpacked';
 import { AugmentedDomainObject } from '../types/AugmentedDomainObject';
 
+/**
+ * Base limits for telemetry data.
+ */
 const LIMITS = {
   criticalHigh: {
     cssClass: 'is-limit--upr is-limit--red',
@@ -25,12 +28,26 @@ const LIMITS = {
   },
 };
 
+/**
+ * The Limit plugin for Open MCT.
+ * Provides limit evaluation and retrieval for telemetry data in order to display
+ * limit indicators/lines on telemetry plots.
+ * @see https://github.com/nasa/openmct/blob/master/API.md#limit-evaluators-draft
+ * @see https://github.com/nasa/openmct/blob/master/example/generator/SinewaveLimitProvider.js (example implementation)
+ * @returns The limit plugin function.
+ */
 export function LimitPlugin() {
   return function install(openmct: OpenMCT) {
     const provider = {
+      // We only support limits for domain objects that have limits
       supportsLimits: function (domainObject: AugmentedDomainObject) {
         return domainObject.limits !== undefined;
       },
+      /**
+       * Gets a limit evaluator function for a domain object which is used to
+       * evaluate telemetry data against the domain object's limits.
+       * @returns The limit evaluator function.
+       */
       getLimitEvaluator: function () {
         return {
           evaluate: function (
@@ -43,6 +60,8 @@ export function LimitPlugin() {
             if (!limits) {
               throw new Error('No limits found');
             }
+
+            // Return the limit that the value exceeds
 
             if (value > limits.critical.high) {
               return {
@@ -78,6 +97,11 @@ export function LimitPlugin() {
           },
         };
       },
+      /**
+       * Get the limits for a domain object.
+       * @param domainObject The domain object to get the limits for.
+       * @returns The limits for the domain object.
+       */
       getLimits: function (domainObject: AugmentedDomainObject) {
         const { limits } = domainObject;
         if (!limits) {

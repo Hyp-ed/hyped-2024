@@ -6,13 +6,12 @@ import { OpenMctFault, Unpacked } from '@hyped/telemetry-types';
 import { RangeMeasurement } from '@hyped/telemetry-types/dist/pods/pods.types';
 import { Point } from '@influxdata/influxdb-client';
 import { Injectable, LoggerService } from '@nestjs/common';
-import {
-  GetHistoricalFaultsReturn,
-  HistoricalFaultDataService,
-} from './data/historical/HistoricalFaultData.service';
+import { HistoricalFaultDataService } from './data/historical/HistoricalFaultData.service';
 import { RealtimeFaultDataGateway } from './data/realtime/RealtimeFaultData.gateway';
 import { convertToOpenMctFault } from './utils/convertToOpenMctFault';
+import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 
+// TODO: should this type be moved?
 export type Fault = {
   level: FaultLevel;
   measurement: RangeMeasurement;
@@ -29,6 +28,10 @@ export class FaultService {
     private realtimeService: RealtimeFaultDataGateway,
   ) {}
 
+  /**
+   * Adds a limit breach fault to the database and sends it to the client.
+   * @param fault The fault to add
+   */
   public async addLimitBreachFault(fault: Fault) {
     const { measurement, tripReading } = fault;
 
@@ -41,6 +44,7 @@ export class FaultService {
         { includeAcknowledged: false },
       );
 
+    // If there's an existing fault, update it instead of creating a new one
     if (possibleExistingFaults && possibleExistingFaults?.length > 0) {
       const existingFault = possibleExistingFaults[0];
       this.logger.debug(
@@ -56,6 +60,11 @@ export class FaultService {
     this.realtimeService.sendFault(openMctFault);
   }
 
+  /**
+   * Saves a fault to the database.
+   * @param fault The fault to save
+   * @param openMctFault The Open MCT fault object to save
+   */
   private saveFault(fault: Fault, openMctFault: OpenMctFault) {
     const { measurement, tripReading } = fault;
 
@@ -84,8 +93,13 @@ export class FaultService {
     }
   }
 
+  /**
+   * Updates an existing fault in the database.
+   * @param influxFault The fault to update
+   * @param updatedReading The updated reading
+   */
   private updateExistingFault(
-    influxFault: Unpacked<GetHistoricalFaultsReturn>,
+    influxFault: Unpacked<HistoricalFaults>,
     updatedReading: MeasurementReading,
   ) {
     const updatedFault = influxFault.fault;

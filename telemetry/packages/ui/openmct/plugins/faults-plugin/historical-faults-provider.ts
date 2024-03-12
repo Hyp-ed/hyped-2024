@@ -1,23 +1,31 @@
 import { AugmentedDomainObject } from 'openmct/types/AugmentedDomainObject';
 import { FAULT_MANAGEMENT_DOMAIN_TYPE } from './constants';
 import { http } from 'openmct/core/http';
+import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 
 // David change next year :)
 // TODO: Change this to be dynamic
 const POD_ID = 'pod_2024';
 
+/**
+ * The Historical Faults provider for Open MCT.
+ * Provides historical fault data by querying the telemetry server for faults.
+ * @returns The historical faults provider function.
+ */
 export function HistoricalFaultsProvider() {
   return {
+    // The only domain object type we support is fault management
     supportsRequest(domainObject: AugmentedDomainObject) {
       return domainObject.type === FAULT_MANAGEMENT_DOMAIN_TYPE;
     },
-    request: () => {
+    /**
+     * Fetches historical fault data for a domain object from the telemetry server.
+     * @returns The historical fault data.
+     */
+    request: async () => {
       const url = `openmct/faults/historical/pods/${POD_ID}`;
-
-      return http
-        .get(url)
-        .json()
-        .then((data: any) => data.map((fault: any) => fault.fault));
+      const data = await http.get(url).json<HistoricalFaults>();
+      return data.map((fault: any) => fault.fault);
     },
   };
 }

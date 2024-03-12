@@ -8,9 +8,16 @@
     "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./app/*"]
-    }
+      "@/*": ["./app/*"],
+    },
+  },
+  "tsc-alias": {
+    "replacers": {
+      "base-url": {
+        "enabled": false,
+      },
+    },
   },
   "include": ["app", "vite.config.ts", "openmct", "mqtt.d.ts", "app/config.ts"],
-  "exclude": ["node_modules", "dist"]
+  "exclude": ["node_modules", "dist"],
 }

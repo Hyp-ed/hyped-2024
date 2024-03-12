@@ -23,6 +23,7 @@ openmct.install(
 );
 
 // Time
+// TODO: update with the new Time API
 openmct.install(openmct.plugins.UTCTimeSystem());
 openmct.time.clock('local', { start: -TEN_SECONDS, end: 0 });
 openmct.install(ConductorPlugin());
@@ -71,11 +72,13 @@ openmct.install(
   }),
 );
 
+// TODO: extract to utils
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 // Wait for all plugins to be installed before starting
+// TODO: do we need this?
 void sleep(1000).then(() => {
   openmct.start();
 });
