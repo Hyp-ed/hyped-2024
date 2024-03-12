@@ -99,7 +99,7 @@ export const edges: Edge[] = [
     id: 'other-states-failure-braking',
     source: 'other-states',
     target: 'failure-braking',
-    sourceHandle: 'bottom',
+    targetHandle: 'bottom',
     type: 'step',
     markerEnd: arrow,
   },

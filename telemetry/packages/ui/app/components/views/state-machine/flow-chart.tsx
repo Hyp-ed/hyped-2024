@@ -170,15 +170,15 @@ export function StateMachineFlowChart({
           label: 'All other States',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           active: currentState === ALL_POD_STATES.TEXT,
         },
         position: {
           x: 500,
-          y: 300
+          y: 400
         },
         type: getNodeType(ALL_POD_STATES.TEXT),
       },
@@ -281,15 +281,19 @@ export function StateMachineFlowChart({
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Left,
+              id: 'left',
+            },
+            {
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
         },
         position: {
           x: 500,
-          y: 400,
+          y: 300,
         },
         type: getNodeType(ALL_POD_STATES.FAILURE_BRAKING),
       },
@@ -314,7 +318,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 800,
-          y: 100,
+          y: 0,
         },
         type: getNodeType(ALL_POD_STATES.STOP_LEVITATION),
       },
@@ -338,7 +342,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 800,
-          y: 200,
+          y: 100,
         },
         type: getNodeType(ALL_POD_STATES.STOPPED),
       },
@@ -362,7 +366,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 800,
-          y: 300,
+          y: 200,
         },
         type: getNodeType(ALL_POD_STATES.BATTERY_RECHARGE),
       },
@@ -390,7 +394,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 800,
-          y: 400,
+          y: 300,
         },
         type: getNodeType(ALL_POD_STATES.CAPACITOR_DISCHARGE),
       },
@@ -414,7 +418,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 800,
-          y: 500,
+          y: 400,
         },
         type: getNodeType(ALL_POD_STATES.SAFE),
       },
