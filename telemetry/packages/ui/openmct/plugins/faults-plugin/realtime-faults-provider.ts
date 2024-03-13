@@ -6,7 +6,6 @@ import {
   FAULT_MANAGEMENT_DOMAIN_TYPE,
   FAULT_MANAGEMENT_TYPES,
 } from './constants';
-import { RealtimeTelemetryListenerCallback } from 'openmct/types/RealtimeTelemetryListenerCallback';
 import { RealtimeFaultsListenerCallback } from 'openmct/types/RealtimeFaultsListenerCallback';
 
 /**

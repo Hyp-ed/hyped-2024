@@ -12,7 +12,7 @@ interface InfluxFaultRow extends InfluxRow {
 }
 
 type GetHistoricalFaultsInput = {
-  podId: string;
+  podId?: string;
   measurementKey?: string;
 };
 
@@ -39,9 +39,7 @@ export class HistoricalFaultDataService {
 
     const query = `from(bucket: "${INFLUX_FAULTS_BUCKET}")
       |> range(start: -24h)
-      |> filter(fn: (r) => r["podId"] == ${
-        fluxString(podId) as unknown as string
-      })
+      ${podId ? `|> filter(fn: (r) => r["podId"] == ${fluxString(podId) as unknown as string})` : ''}
       ${
         measurementKey
           ? `|> filter(fn: (r) => r["measurementKey"] == ${

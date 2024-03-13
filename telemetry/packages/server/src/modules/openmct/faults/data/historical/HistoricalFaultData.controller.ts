@@ -6,8 +6,13 @@ import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fa
 export class HistoricalFaultsDataController {
   constructor(private historicalDataService: HistoricalFaultDataService) {}
 
+  @Get()
+  getAllFaults(): Promise<HistoricalFaults> {
+    return this.historicalDataService.getHistoricalFaults({});
+  }
+
   @Get('pods/:podId')
-  getFaults(@Param('podId') podId: string): Promise<HistoricalFaults> {
+  getFaultsForPod(@Param('podId') podId: string): Promise<HistoricalFaults> {
     return this.historicalDataService.getHistoricalFaults({
       podId,
     });

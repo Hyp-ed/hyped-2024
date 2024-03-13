@@ -3,10 +3,6 @@ import { FAULT_MANAGEMENT_DOMAIN_TYPE } from './constants';
 import { http } from 'openmct/core/http';
 import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 
-// David change next year :)
-// TODO: Change this to be dynamic
-const POD_ID = 'pod_2024';
-
 /**
  * The Historical Faults provider for Open MCT.
  * Provides historical fault data by querying the telemetry server for faults.
@@ -23,7 +19,7 @@ export function HistoricalFaultsProvider() {
      * @returns The historical fault data.
      */
     request: async () => {
-      const url = `openmct/faults/historical/pods/${POD_ID}`;
+      const url = 'openmct/faults/historical';
       const data = await http.get(url).json<HistoricalFaults>();
       return data.map((fault: any) => fault.fault);
     },
