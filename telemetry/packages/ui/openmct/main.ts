@@ -8,8 +8,6 @@ import { ConductorPlugin } from './plugins/conductor';
 import { FaultsPlugin } from './plugins/faults-plugin/faults-plugin';
 import { SERVER_ENDPOINT } from './core/config';
 
-const TEN_SECONDS = 10 * 1000;
-
 openmct.setAssetPath('/openmct-lib');
 
 // Local storage of dashbaords
@@ -23,9 +21,7 @@ openmct.install(
 );
 
 // Time
-// TODO: update with the new Time API
 openmct.install(openmct.plugins.UTCTimeSystem());
-openmct.time.clock('local', { start: -TEN_SECONDS, end: 0 });
 openmct.install(ConductorPlugin());
 
 // Theme
@@ -72,13 +68,12 @@ openmct.install(
   }),
 );
 
-// TODO: extract to utils
+// TODOLater: extract to utils
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Wait for all plugins to be installed before starting
-// TODO: do we need this?
+// Wait for all plugins to be installed before starting (this is actually needed)
 void sleep(1000).then(() => {
   openmct.start();
 });
