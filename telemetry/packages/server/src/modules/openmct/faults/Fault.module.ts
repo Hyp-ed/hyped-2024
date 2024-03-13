@@ -4,10 +4,11 @@ import { FaultService } from './Fault.service';
 import { HistoricalFaultDataService } from './data/historical/HistoricalFaultData.service';
 import { RealtimeFaultDataGateway } from './data/realtime/RealtimeFaultData.gateway';
 import { HistoricalFaultsDataController } from './data/historical/HistoricalFaultData.controller';
+import { FaultsController } from './Fault.controller';
 
 @Module({
   imports: [InfluxModule],
-  controllers: [HistoricalFaultsDataController],
+  controllers: [FaultsController, HistoricalFaultsDataController],
   providers: [
     FaultService,
     HistoricalFaultDataService,

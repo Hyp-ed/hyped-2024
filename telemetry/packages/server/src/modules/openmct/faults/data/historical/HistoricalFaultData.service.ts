@@ -8,16 +8,18 @@ import { fluxExpression, fluxString } from '@influxdata/influxdb-client';
 import { HttpException, Injectable, LoggerService } from '@nestjs/common';
 
 interface InfluxFaultRow extends InfluxRow {
-  fault: string;
+  faultId: string;
+  measurementKey: string;
+  /**
+   * This is the result of JSON.stringify on an OpenMctFault
+   */
+  openMctFault: string;
 }
 
 type GetHistoricalFaultsInput = {
   podId?: string;
   measurementKey?: string;
-};
-
-type GetHistoricalFaultsOptions = {
-  includeAcknowledged?: boolean;
+  faultId?: string;
 };
 
 @Injectable()
@@ -30,12 +32,8 @@ export class HistoricalFaultDataService {
 
   public async getHistoricalFaults(
     props: GetHistoricalFaultsInput,
-    options: GetHistoricalFaultsOptions = {
-      includeAcknowledged: true,
-    },
   ): Promise<HistoricalFaults> {
-    const { podId, measurementKey } = props;
-    const { includeAcknowledged: getAcknowledged } = options;
+    const { podId, measurementKey, faultId } = props;
 
     const query = `from(bucket: "${INFLUX_FAULTS_BUCKET}")
       |> range(start: -24h)
@@ -48,10 +46,8 @@ export class HistoricalFaultDataService {
           : ''
       }
       ${
-        !getAcknowledged
-          ? (fluxExpression(
-              `|> filter(fn: (r) => r["acknowledged"] == "false")`,
-            ) as unknown as string)
+        faultId
+          ? `|> filter(fn: (r) => r["faultId"] == ${fluxString(faultId) as unknown as string})`
           : ''
       }
       |> group(columns: ["faultId"])
@@ -61,8 +57,11 @@ export class HistoricalFaultDataService {
       const data =
         await this.influxService.query.collectRows<InfluxFaultRow>(query);
       return data.map((row) => ({
+        faultId: row['faultId'],
         timestamp: new Date(row['_time']).getTime(),
-        fault: JSON.parse(row['_value']) as OpenMctFault,
+        openMctFault: JSON.parse(row['_value']) as OpenMctFault,
+        podId: row['podId'],
+        measurementKey: row['measurementKey'],
       }));
     } catch (e: unknown) {
       this.logger.error(

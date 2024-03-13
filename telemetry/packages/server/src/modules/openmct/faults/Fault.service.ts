@@ -36,19 +36,16 @@ export class FaultService {
     const { measurement, tripReading } = fault;
 
     const possibleExistingFaults =
-      await this.historicalService.getHistoricalFaults(
-        {
-          podId: tripReading.podId,
-          measurementKey: measurement.key,
-        },
-        { includeAcknowledged: false },
-      );
+      await this.historicalService.getHistoricalFaults({
+        podId: tripReading.podId,
+        measurementKey: measurement.key,
+      });
 
     // If there's an existing fault, update it instead of creating a new one
     if (possibleExistingFaults && possibleExistingFaults?.length > 0) {
       const existingFault = possibleExistingFaults[0];
       this.logger.debug(
-        `Found existing fault ${existingFault.fault.fault.id}, updating`,
+        `Found existing fault ${existingFault.openMctFault.fault.id}, updating`,
         FaultService.name,
       );
       this.updateExistingFault(existingFault, tripReading);
@@ -58,6 +55,56 @@ export class FaultService {
     const openMctFault = convertToOpenMctFault(fault);
     this.saveFault(fault, openMctFault);
     this.realtimeService.sendFault(openMctFault);
+  }
+
+  public async acknowledgeFault(faultId: string, comment: string) {
+    this.logger.debug(
+      `Acknowledging fault with id ${faultId}`,
+      FaultService.name,
+    );
+
+    // Get the fault from the database
+    const possibleFault = await this.historicalService.getHistoricalFaults({
+      faultId,
+    });
+
+    if (!possibleFault || possibleFault.length === 0) {
+      this.logger.error(
+        `Fault with id ${faultId} not found`,
+        FaultService.name,
+      );
+      return;
+    }
+
+    const fault = possibleFault[0];
+    const updatedFault = fault.openMctFault;
+    updatedFault.fault.acknowledged = true;
+
+    const now = new Date(Date.now());
+
+    const point = new Point('fault')
+      .timestamp(now)
+      .tag('faultId', updatedFault.fault.id)
+      .tag('podId', fault.podId)
+      .tag('measurementKey', fault.measurementKey)
+      .stringField('fault', JSON.stringify(updatedFault));
+
+    try {
+      this.influxService.faultsWrite.writePoint(point);
+
+      this.logger.debug(
+        `Acknowledged fault with id ${updatedFault.fault.id}`,
+        FaultService.name,
+      );
+    } catch (e: unknown) {
+      this.logger.error(
+        `Failed to acknowledge fault with id ${updatedFault.fault.id}`,
+        e,
+        FaultService.name,
+      );
+    }
+
+    this.realtimeService.sendFault(updatedFault);
   }
 
   /**
@@ -73,7 +120,6 @@ export class FaultService {
       .tag('faultId', openMctFault.fault.id)
       .tag('podId', tripReading.podId)
       .tag('measurementKey', measurement.key)
-      .tag('acknowledged', 'false')
       // is influx the right choice? probably not - but we're already using it for telemetry
       .stringField('fault', JSON.stringify(openMctFault));
 
@@ -102,7 +148,7 @@ export class FaultService {
     influxFault: Unpacked<HistoricalFaults>,
     updatedReading: MeasurementReading,
   ) {
-    const updatedFault = influxFault.fault;
+    const updatedFault = influxFault.openMctFault;
     updatedFault.fault.currentValueInfo.value = updatedReading.value;
 
     const point = new Point('fault')
@@ -110,7 +156,6 @@ export class FaultService {
       .tag('faultId', updatedFault.fault.id)
       .tag('podId', updatedReading.podId)
       .tag('measurementKey', updatedReading.measurementKey)
-      .tag('acknowledged', influxFault.fault.fault.acknowledged.toString())
       .stringField('fault', JSON.stringify(updatedFault));
 
     try {

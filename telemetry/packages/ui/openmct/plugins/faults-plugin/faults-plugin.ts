@@ -1,6 +1,9 @@
 import { OpenMCT } from 'openmct/dist/openmct';
 import { HistoricalFaultsProvider } from './historical-faults-provider';
 import { RealtimeFaultsProvider } from './realtime-faults-provider';
+import { http } from 'openmct/core/http';
+import { OpenMctFault } from '@hyped/telemetry-types';
+import { log } from '@/lib/logger';
 
 /**
  * The Faults plugin for Open MCT.
@@ -21,6 +24,31 @@ export function FaultsPlugin() {
       supportsSubscribe: realtimeProvider.supportsSubscribe,
       subscribe: realtimeProvider.subscribe,
       request: historicalProvider.request,
+      acknowledgeFault,
     });
   };
 }
+
+/**
+ * Sends an acknowledgement for a fault to the server.
+ * @param fault The Open MCT fault object.
+ * @param comment The comment to send with the acknowledgement.
+ * In the future we could also do something with the comments, but for now we will just log them.
+ */
+const acknowledgeFault = async (
+  fault: OpenMctFault['fault'],
+  { comment }: { comment: string },
+) => {
+  const url = `openmct/faults/acknowledge`;
+  await http.post(url, {
+    body: JSON.stringify({
+      faultId: fault.id,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  log(
+    `Acknowledged fault with id ${fault.id}.${comment ? ` Comment: ${comment}` : ''}`,
+  );
+};
