@@ -18,9 +18,7 @@ const NeutralNode = memo(
       <div
         className={cn(
           BASE_NODE_STYLES,
-          data.active
-          ? 'border-2 bg-white text-black'
-          : 'border-2 text-white border-gray border-dashed italic',
+          'border-2 border-slate-400 text-white border-dashed italic',
         )}
       >
         {data.label}

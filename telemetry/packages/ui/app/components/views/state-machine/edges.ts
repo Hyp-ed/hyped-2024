@@ -107,7 +107,7 @@ export const edges: Edge[] = [
     id: 'friction-brake-stop-lev',
     source: 'friction-brake',
     target: 'stop-lev',
-    sourceHandle: 'bottom',
+    sourceHandle: 'right',
     type: 'step',
     markerEnd: arrow,
   },

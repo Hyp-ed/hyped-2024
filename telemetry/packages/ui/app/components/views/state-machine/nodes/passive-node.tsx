@@ -19,8 +19,8 @@ const PassiveNode = memo(
         className={cn(
           BASE_NODE_STYLES,
           data.active
-            ? 'border-2 bg-white text-black italic'
-            : 'border-2 text-white border-blue border-dashed text italic',
+            ? 'border-2 border-sky-200 bg-sky-700 text-sky-200'
+            : 'border-2 border-sky-600 text-white border-dashed',
         )}
       >
         {data.label}

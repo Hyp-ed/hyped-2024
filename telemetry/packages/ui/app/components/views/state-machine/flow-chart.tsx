@@ -1,8 +1,8 @@
 import ReactFlow, { Background, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
+import { PodStateType, ALL_POD_STATES, FAILSAFE_STATES } from '@hyped/telemetry-constants';
 import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import './styles.css';
 import { getNodeType } from './utils';
 import { edges } from './edges';
@@ -23,6 +23,8 @@ export function StateMachineFlowChart({
     [],
   );
 
+  const [failNode, setFailNode] = useState({ x: -10000, y: -10000 });
+
   const nodes: CustomNodeType[] = useMemo(
     () => [
       {
@@ -31,15 +33,15 @@ export function StateMachineFlowChart({
           label: 'Idle',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           active: currentState === ALL_POD_STATES.IDLE,
         },
         position: {
           x: 200,
-          y: -100
+          y: 400
         },
         type: getNodeType(ALL_POD_STATES.IDLE),
       },
@@ -49,21 +51,21 @@ export function StateMachineFlowChart({
           label: 'Calibrate',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.CALIBRATE,
         },
         position: {
           x: 200,
-          y: 0
+          y: 300
         },
         type: getNodeType(ALL_POD_STATES.CALIBRATE),
       },
@@ -73,21 +75,21 @@ export function StateMachineFlowChart({
           label: 'Precharge',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.PRECHARGE,
         },
         position: {
           x: 200,
-          y: 100
+          y: 200
         },
         type: getNodeType(ALL_POD_STATES.PRECHARGE),
       },
@@ -97,21 +99,21 @@ export function StateMachineFlowChart({
           label: 'Ready for Levitation',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.READY_FOR_LEVITATION,
         },
         position: {
           x: 200,
-          y: 200,
+          y: 100,
         },
         type: getNodeType(ALL_POD_STATES.READY_FOR_LEVITATION),
       },
@@ -121,21 +123,21 @@ export function StateMachineFlowChart({
           label: 'Begin Levitation',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.BEGIN_LEVITATION,
         },
         position: {
           x: 200,
-          y: 300,
+          y: 0,
         },
         type: getNodeType(ALL_POD_STATES.BEGIN_LEVITATION),
       },
@@ -145,21 +147,21 @@ export function StateMachineFlowChart({
           label: 'Ready for Launch',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Right,
+              id: 'right',
             },
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.READY_FOR_LAUNCH,
         },
         position: {
           x: 200,
-          y: 400,
+          y: -100,
         },
         type: getNodeType(ALL_POD_STATES.READY_FOR_LAUNCH),
       },
@@ -207,7 +209,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 500,
-          y: -100,
+          y: 0,
         },
         type: getNodeType(ALL_POD_STATES.ACCELERATE),
       },
@@ -235,7 +237,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 500,
-          y: 0,
+          y: 100,
         },
         type: getNodeType(ALL_POD_STATES.LIM_BRAKE),
       },
@@ -245,8 +247,8 @@ export function StateMachineFlowChart({
           label: 'Friction Brake',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Right,
+              id: 'right',
             },
             {
               position: Position.Left,
@@ -263,11 +265,10 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 500,
-          y: 100,
+          y: 200,
         },
         type: getNodeType(ALL_POD_STATES.FRICTION_BRAKE),
       },
-
 
       {
         id: 'failure-braking',
@@ -275,25 +276,23 @@ export function StateMachineFlowChart({
           label: 'Failure Braking',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
             {
-              position: Position.Left,
-              id: 'left',
-            },
-            {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Right,
+              id: 'right',
             },
           ],
           active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
         },
         position: {
-          x: 500,
-          y: 300,
+          x: failNode.x || 0,
+          y: failNode.y || 300,
+          // x: 0,
+          // y: 0
         },
         type: getNodeType(ALL_POD_STATES.FAILURE_BRAKING),
       },
@@ -310,8 +309,8 @@ export function StateMachineFlowChart({
           ],
           targetPositions: [
             {
-              position: Position.Top,
-              id: 'top',
+              position: Position.Left,
+              id: 'left',
             },
           ],
           active: currentState === ALL_POD_STATES.STOP_LEVITATION,
@@ -424,8 +423,17 @@ export function StateMachineFlowChart({
       },
 
     ],
-    [currentState],
+    [currentState, failNode],
   );
+
+  useEffect(() => {
+    const active = nodes.find((n => n.data.active)) as CustomNodeType;
+    console.log(active.id)
+    setFailNode({
+      x: active.position.x - 300,
+      y: active.position.y
+    })
+  }, [currentState, nodes]);
 
   return (
     <div className="h-full flex flex-col justify-center items-center">
