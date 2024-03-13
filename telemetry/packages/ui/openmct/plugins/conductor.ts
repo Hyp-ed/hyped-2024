@@ -1,6 +1,5 @@
 import { OpenMCT } from 'openmct/dist/openmct';
 
-const TEN_SECONDS = 10 * 1000;
 const THIRTY_SECONDS = 30 * 1000;
 const ONE_MINUTE = THIRTY_SECONDS * 2;
 const FIVE_MINUTES = ONE_MINUTE * 5;

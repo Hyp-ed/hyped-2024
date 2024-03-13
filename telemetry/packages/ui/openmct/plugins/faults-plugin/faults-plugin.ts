@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/unbound-method */
+
 import { OpenMCT } from 'openmct/dist/openmct';
 import { HistoricalFaultsProvider } from './historical-faults-provider';
 import { RealtimeFaultsProvider } from './realtime-faults-provider';
@@ -36,10 +38,10 @@ export function FaultsPlugin() {
  * @param comment The comment to send with the acknowledgement.
  * In the future we could also do something with the comments, but for now we will just log them.
  */
-const acknowledgeFault = async (
+async function acknowledgeFault(
   fault: OpenMctFault['fault'],
   { comment }: { comment: string },
-) => {
+) {
   const url = `openmct/faults/acknowledge`;
   await http.post(url, {
     body: JSON.stringify({
@@ -53,7 +55,7 @@ const acknowledgeFault = async (
   log(
     `Acknowledged fault with id ${fault.id}.${comment ? ` Comment: ${comment}` : ''}`,
   );
-};
+}
 
 /**
  * Sends a shelve request for a fault to the server.
@@ -62,7 +64,7 @@ const acknowledgeFault = async (
  * @param comment The comment to send with the acknowledgement.
  * In the future we could also do something with the comments, but for now we will just log them.
  */
-const shelveFault = async (
+async function shelveFault(
   fault: OpenMctFault['fault'],
   {
     shelveDuration,
@@ -73,7 +75,7 @@ const shelveFault = async (
     comment: string;
     shelved: boolean;
   },
-) => {
+) {
   const url = `openmct/faults/shelve`;
   await http.post(url, {
     body: JSON.stringify({
@@ -87,6 +89,6 @@ const shelveFault = async (
     },
   });
   log(
-    `Shelving (${shelved}) fault with id ${fault.id} for ${shelveDuration} seconds.${comment ? ` Comment: ${comment}` : ''}`,
+    `${shelved ? 'Shelving' : 'Unshelving'} fault with id ${fault.id} for ${shelveDuration} seconds.${comment ? ` Comment: ${comment}` : ''}`,
   );
-};
+}

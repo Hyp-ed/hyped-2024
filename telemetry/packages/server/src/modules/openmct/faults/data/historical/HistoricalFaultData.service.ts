@@ -4,7 +4,7 @@ import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { OpenMctFault } from '@hyped/telemetry-types';
 import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
-import { fluxExpression, fluxString } from '@influxdata/influxdb-client';
+import { fluxString } from '@influxdata/influxdb-client';
 import { HttpException, Injectable, LoggerService } from '@nestjs/common';
 
 interface InfluxFaultRow extends InfluxRow {

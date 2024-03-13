@@ -19,7 +19,7 @@ export function HistoricalTelemetryPlugin() {
       },
       request: async function (
         domainObject: AugmentedDomainObject,
-        options: TelemetryRequestOptions,
+        options: { start: number; end: number } & TelemetryRequestOptions,
       ) {
         const { start, end } = options;
         const podId = domainObject.podId;

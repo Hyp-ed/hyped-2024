@@ -169,7 +169,7 @@ export class FaultService {
           `Automatically unshelving fault with id ${faultId} because the shelve duration has passed`,
           FaultService.name,
         );
-        this.shelveFault(faultId, false, 0, '');
+        void this.shelveFault(faultId, false, 0, '');
       }, shelveDuration);
     }
 

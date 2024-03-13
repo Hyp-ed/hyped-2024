@@ -6,7 +6,7 @@ import {
   FAULT_MANAGEMENT_DOMAIN_TYPE,
   FAULT_MANAGEMENT_TYPES,
 } from './constants';
-import { RealtimeFaultsListenerCallback } from 'openmct/types/RealtimeFaultsListenerCallback';
+import { OpenMctFault } from '@hyped/telemetry-types';
 
 /**
  * The Realtime Faults provider for Open MCT.
@@ -16,15 +16,18 @@ import { RealtimeFaultsListenerCallback } from 'openmct/types/RealtimeFaultsList
 export function RealtimeFaultsProvider() {
   const socket = io(SERVER_ENDPOINT, { path: '/openmct/faults/realtime' });
 
-  let faultCallback: RealtimeFaultsListenerCallback | null = null;
+  let faultCallback: any = null;
 
   // When we get a new fault, call the callback
-  socket.on(socketConstants.FAULT_EVENT, ({ fault }) => {
-    // Give Influx time to save to database
-    setTimeout(() => {
-      if (faultCallback) faultCallback(fault);
-    }, 100);
-  });
+  socket.on(
+    socketConstants.FAULT_EVENT,
+    ({ fault }: { fault: OpenMctFault }) => {
+      // Give Influx time to save to database
+      setTimeout(() => {
+        if (faultCallback) faultCallback(fault);
+      }, 100);
+    },
+  );
 
   return {
     // The only domain object type we support is fault management
@@ -37,7 +40,10 @@ export function RealtimeFaultsProvider() {
      * @param callback The callback to call when new fault data is received.
      * @returns A function to unsubscribe from the fault data.
      */
-    subscribe: (_domainObject: AugmentedDomainObject, callback: any) => {
+    subscribe: (
+      _domainObject: AugmentedDomainObject,
+      callback: (args: any) => void,
+    ) => {
       socket.emit(socketConstants.EVENTS.SUBSCRIBE_TO_FAULTS);
 
       faultCallback = callback;
