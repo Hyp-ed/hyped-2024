@@ -57,9 +57,14 @@ export class FaultService {
     this.realtimeService.sendFault(openMctFault);
   }
 
+  /**
+   * Acknowledges a fault in the database and sends it to the client.
+   * @param faultId The id of the fault to acknowledge
+   * @param comment The comment sent with the acknowledgement
+   */
   public async acknowledgeFault(faultId: string, comment: string) {
     this.logger.debug(
-      `Acknowledging fault with id ${faultId}`,
+      `Acknowledging fault with id ${faultId}. Comment: ${comment}`,
       FaultService.name,
     );
 
@@ -99,6 +104,68 @@ export class FaultService {
     } catch (e: unknown) {
       this.logger.error(
         `Failed to acknowledge fault with id ${updatedFault.fault.id}`,
+        e,
+        FaultService.name,
+      );
+    }
+
+    this.realtimeService.sendFault(updatedFault);
+  }
+
+  /**
+   * Shelves or unshelves a fault in the database and sends it to the client.
+   * @param faultId The id of the fault to shelve
+   * @param shelved Whether to shelve or unshelve the fault
+   * @param shelveDuration The duration to shelve the fault for (in seconds)
+   * @param comment The comment sent with the shelve
+   */
+  public async shelveFault(
+    faultId: string,
+    shelved: boolean,
+    shelveDuration: number,
+    comment: string,
+  ) {
+    this.logger.debug(
+      `Shelving fault with id ${faultId} for ${shelveDuration} seconds.${comment ? ` Comment: ${comment}` : ''}`,
+      FaultService.name,
+    );
+
+    // Get the fault from the database
+    const possibleFault = await this.historicalService.getHistoricalFaults({
+      faultId,
+    });
+
+    if (!possibleFault || possibleFault.length === 0) {
+      this.logger.error(
+        `Fault with id ${faultId} not found`,
+        FaultService.name,
+      );
+      return;
+    }
+
+    const fault = possibleFault[0];
+    const updatedFault = fault.openMctFault;
+    updatedFault.fault.shelved = shelved;
+
+    const now = new Date(Date.now());
+
+    const point = new Point('fault')
+      .timestamp(now)
+      .tag('faultId', updatedFault.fault.id)
+      .tag('podId', fault.podId)
+      .tag('measurementKey', fault.measurementKey)
+      .stringField('fault', JSON.stringify(updatedFault));
+
+    try {
+      this.influxService.faultsWrite.writePoint(point);
+
+      this.logger.debug(
+        `Shelved fault with id ${updatedFault.fault.id}`,
+        FaultService.name,
+      );
+    } catch (e: unknown) {
+      this.logger.error(
+        `Failed to shelve fault with id ${updatedFault.fault.id}`,
         e,
         FaultService.name,
       );

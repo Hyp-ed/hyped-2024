@@ -12,8 +12,26 @@ export class FaultsController {
     return this.faultsService.acknowledgeFault(faultId, comment);
   }
 
-  // @Get('shelve/:faultId')
-  // shelveFault(@Param('faultId') faultId: string) {
-  //   return this.faultsService.shelveFault(faultId);
-  // }
+  @Post('shelve')
+  shelveFault(
+    @Body()
+    {
+      faultId,
+      shelved,
+      shelveDuration,
+      comment,
+    }: {
+      faultId: string;
+      shelved: boolean;
+      shelveDuration: number;
+      comment: string;
+    },
+  ) {
+    return this.faultsService.shelveFault(
+      faultId,
+      shelved,
+      shelveDuration,
+      comment,
+    );
+  }
 }

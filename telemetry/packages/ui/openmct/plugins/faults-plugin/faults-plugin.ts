@@ -25,6 +25,7 @@ export function FaultsPlugin() {
       subscribe: realtimeProvider.subscribe,
       request: historicalProvider.request,
       acknowledgeFault,
+      shelveFault,
     });
   };
 }
@@ -43,6 +44,7 @@ const acknowledgeFault = async (
   await http.post(url, {
     body: JSON.stringify({
       faultId: fault.id,
+      comment,
     }),
     headers: {
       'Content-Type': 'application/json',
@@ -50,5 +52,41 @@ const acknowledgeFault = async (
   });
   log(
     `Acknowledged fault with id ${fault.id}.${comment ? ` Comment: ${comment}` : ''}`,
+  );
+};
+
+/**
+ * Sends a shelve request for a fault to the server.
+ * @param fault The Open MCT fault object.
+ * @param shelveDuration The duration to shelve the fault for (in seconds).
+ * @param comment The comment to send with the acknowledgement.
+ * In the future we could also do something with the comments, but for now we will just log them.
+ */
+const shelveFault = async (
+  fault: OpenMctFault['fault'],
+  {
+    shelveDuration,
+    comment,
+    shelved = false,
+  }: {
+    shelveDuration: number;
+    comment: string;
+    shelved: boolean;
+  },
+) => {
+  const url = `openmct/faults/shelve`;
+  await http.post(url, {
+    body: JSON.stringify({
+      faultId: fault.id,
+      shelved,
+      shelveDuration,
+      comment,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+  log(
+    `Shelving (${shelved}) fault with id ${fault.id} for ${shelveDuration} seconds.${comment ? ` Comment: ${comment}` : ''}`,
   );
 };
