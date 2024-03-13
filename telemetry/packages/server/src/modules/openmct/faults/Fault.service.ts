@@ -11,7 +11,6 @@ import { RealtimeFaultDataGateway } from './data/realtime/RealtimeFaultData.gate
 import { convertToOpenMctFault } from './utils/convertToOpenMctFault';
 import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 
-// TODO: should this type be moved?
 export type Fault = {
   level: FaultLevel;
   measurement: RangeMeasurement;
