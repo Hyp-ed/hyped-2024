@@ -5,8 +5,9 @@ export {
   PASSIVE_STATES,
   ACTIVE_STATES,
   NULL_STATES,
-  NEUTRAL_STATES,
   FAILURE_STATES,
+  NEUTRAL_STATES,
+  FAILSAFE_STATES,
   getStateType,
 } from './pods/states';
 export type { PodStateType, PodStateCategoryType } from './pods/states';
