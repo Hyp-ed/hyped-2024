@@ -115,7 +115,7 @@ export class FaultService {
    * Shelves or unshelves a fault in the database and sends it to the client.
    * @param faultId The id of the fault to shelve
    * @param shelved Whether to shelve or unshelve the fault
-   * @param shelveDuration The duration to shelve the fault for (in seconds)
+   * @param shelveDuration The duration to shelve the fault for (in milliseconds)
    * @param comment The comment sent with the shelve
    */
   public async shelveFault(
@@ -170,7 +170,7 @@ export class FaultService {
           FaultService.name,
         );
         this.shelveFault(faultId, false, 0, '');
-      }, shelveDuration * 1000);
+      }, shelveDuration);
     }
 
     try {

@@ -58,7 +58,7 @@ const acknowledgeFault = async (
 /**
  * Sends a shelve request for a fault to the server.
  * @param fault The Open MCT fault object.
- * @param shelveDuration The duration to shelve the fault for (in seconds).
+ * @param shelveDuration The duration to shelve the fault for (in milliseconds).
  * @param comment The comment to send with the acknowledgement.
  * In the future we could also do something with the comments, but for now we will just log them.
  */
