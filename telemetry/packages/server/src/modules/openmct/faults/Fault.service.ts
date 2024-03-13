@@ -62,9 +62,9 @@ export class FaultService {
    * @param faultId The id of the fault to acknowledge
    * @param comment The comment sent with the acknowledgement
    */
-  public async acknowledgeFault(faultId: string, comment: string) {
+  public async acknowledgeFault(faultId: string, comment?: string) {
     this.logger.debug(
-      `Acknowledging fault with id ${faultId}. Comment: ${comment}`,
+      `Acknowledging fault with id ${faultId}. ${comment ? `Comment: ${comment}` : ''}`,
       FaultService.name,
     );
 
@@ -123,10 +123,10 @@ export class FaultService {
     faultId: string,
     shelved: boolean,
     shelveDuration: number,
-    comment: string,
+    comment?: string,
   ) {
     this.logger.debug(
-      `Shelving fault with id ${faultId} for ${shelveDuration} seconds.${comment ? ` Comment: ${comment}` : ''}`,
+      `Shelving fault with id ${faultId} for ${shelveDuration} seconds. ${comment ? `Comment: ${comment}` : ''}`,
       FaultService.name,
     );
 
@@ -155,6 +155,24 @@ export class FaultService {
       .tag('podId', fault.podId)
       .tag('measurementKey', fault.measurementKey)
       .stringField('fault', JSON.stringify(updatedFault));
+
+    // If the fault is being shelved, set a timer to unshelve it
+    if (shelved) {
+      this.logger.debug(
+        `Setting timer to unshelve fault with id ${faultId}`,
+        FaultService.name,
+      );
+      // This isn't ideal, since this doesn't persist if the server restarts.
+      // Also, if the fault is manually unshelved before the timer runs out, the timer should be cancelled and it isn't.
+      // (So the fault will be unshelved twice, once manually and once automatically. Plus, if the fault is unshelved and then shelved again, the timer won't be reset.)
+      setTimeout(() => {
+        this.logger.debug(
+          `Automatically unshelving fault with id ${faultId} because the shelve duration has passed`,
+          FaultService.name,
+        );
+        this.shelveFault(faultId, false, 0, '');
+      }, shelveDuration * 1000);
+    }
 
     try {
       this.influxService.faultsWrite.writePoint(point);
