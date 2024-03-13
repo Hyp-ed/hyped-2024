@@ -11,8 +11,8 @@ export const StateMachine = () => {
   } = useCurrentPod();
 
   return (
-    <div className="h-full pb-64">
-      <PodState podId={id} />
+    <div className="h-full">
+      {/* <PodState podId={id} /> */}
       <StateMachineFlowChart currentState={podState} />
     </div>
   );

@@ -1,7 +1,7 @@
-import ReactFlow, { Position } from 'reactflow';
+import ReactFlow, { Background, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
-import { PassiveNode, FailureNode, ActiveNode, TextNode } from './nodes';
+import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo } from 'react';
 import './styles.css';
 import { getNodeType } from './utils';
@@ -18,7 +18,7 @@ export function StateMachineFlowChart({
       FailureNode,
       PassiveNode,
       ActiveNode,
-      TextNode,
+      NeutralNode,
     }),
     [],
   );
@@ -31,134 +31,292 @@ export function StateMachineFlowChart({
           label: 'Idle',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.IDLE,
         },
-        position: { x: 0, y: 200 },
+        position: {
+          x: 200,
+          y: -100
+        },
         type: getNodeType(ALL_POD_STATES.IDLE),
       },
       {
-        id: 'calibrating',
+        id: 'calibrate',
         data: {
-          label: 'Calibrating',
+          label: 'Calibrate',
           sourcePositions: [
-            {
-              position: Position.Right,
-              id: 'right',
-            },
-            {
-              position: Position.Top,
-              id: 'top',
-            },
-          ],
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
-          active: currentState === ALL_POD_STATES.CALIBRATING,
-        },
-        position: { x: 200, y: 200 },
-        type: getNodeType(ALL_POD_STATES.CALIBRATING),
-      },
-      {
-        id: 'failure-calibrating',
-        data: {
-          label: 'Failure Calibrating',
-          targetPositions: [
             {
               position: Position.Bottom,
               id: 'bottom',
             },
           ],
-          active: currentState === ALL_POD_STATES.FAILURE_CALIBRATING,
-        },
-        position: { x: 200, y: 0 },
-        type: getNodeType(ALL_POD_STATES.FAILURE_CALIBRATING),
-      },
-      {
-        id: 'ready',
-        data: {
-          label: 'Ready',
-          sourcePositions: [
-            {
-              position: Position.Right,
-              id: 'right',
-            },
-          ],
           targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
-          active: currentState === ALL_POD_STATES.READY,
-        },
-        position: {
-          x: 400,
-          y: 200,
-        },
-        type: getNodeType(ALL_POD_STATES.READY),
-      },
-      {
-        id: 'accelerating',
-        data: {
-          label: 'Accelerating',
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
-          sourcePositions: [
-            {
-              position: Position.Right,
-              id: 'right',
-            },
             {
               position: Position.Top,
               id: 'top',
             },
           ],
-          active: currentState === ALL_POD_STATES.ACCELERATING,
+          active: currentState === ALL_POD_STATES.CALIBRATE,
         },
         position: {
-          x: 600,
-          y: 200,
+          x: 200,
+          y: 0
         },
-        type: getNodeType(ALL_POD_STATES.ACCELERATING),
+        type: getNodeType(ALL_POD_STATES.CALIBRATE),
       },
       {
-        id: 'nominal-braking',
+        id: 'precharge',
         data: {
-          label: 'Nominal Braking',
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
+          label: 'Precharge',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Bottom,
+              id: 'bottom',
             },
+          ],
+          targetPositions: [
             {
               position: Position.Top,
               id: 'top',
             },
           ],
-          active: currentState === ALL_POD_STATES.NOMINAL_BRAKING,
+          active: currentState === ALL_POD_STATES.PRECHARGE,
+        },
+        position: {
+          x: 200,
+          y: 100
+        },
+        type: getNodeType(ALL_POD_STATES.PRECHARGE),
+      },
+      {
+        id: 'ready-lev',
+        data: {
+          label: 'Ready for Levitation',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.READY_FOR_LEVITATION,
+        },
+        position: {
+          x: 200,
+          y: 200,
+        },
+        type: getNodeType(ALL_POD_STATES.READY_FOR_LEVITATION),
+      },
+      {
+        id: 'begin-lev',
+        data: {
+          label: 'Begin Levitation',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.BEGIN_LEVITATION,
+        },
+        position: {
+          x: 200,
+          y: 300,
+        },
+        type: getNodeType(ALL_POD_STATES.BEGIN_LEVITATION),
+      },
+      {
+        id: 'ready-launch',
+        data: {
+          label: 'Ready for Launch',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.READY_FOR_LAUNCH,
+        },
+        position: {
+          x: 200,
+          y: 400,
+        },
+        type: getNodeType(ALL_POD_STATES.READY_FOR_LAUNCH),
+      },
+
+      {
+        id: 'other-states',
+        data: {
+          label: 'All other States',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.TEXT,
         },
         position: {
           x: 800,
+          y: -200
+        },
+        type: getNodeType(ALL_POD_STATES.TEXT),
+      },
+
+      {
+        id: 'accelerate',
+        data: {
+          label: 'Accelerate',
+          sourcePositions: [
+            {
+              position: Position.Right,
+              id: 'right',
+            },
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.ACCELERATE,
+        },
+        position: {
+          x: 500,
+          y: -100,
+        },
+        type: getNodeType(ALL_POD_STATES.ACCELERATE),
+      },
+      {
+        id: 'lim-brake',
+        data: {
+          label: 'LIM Brake',
+          sourcePositions: [
+            {
+              position: Position.Right,
+              id: 'right',
+            },
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.LIM_BRAKE,
+        },
+        position: {
+          x: 500,
+          y: 0,
+        },
+        type: getNodeType(ALL_POD_STATES.LIM_BRAKE),
+      },
+      {
+        id: 'friction-brake',
+        data: {
+          label: 'Friction Brake',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+            {
+              position: Position.Right,
+              id: 'right',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.FRICTION_BRAKE,
+        },
+        position: {
+          x: 500,
+          y: 100,
+        },
+        type: getNodeType(ALL_POD_STATES.FRICTION_BRAKE),
+      },
+
+
+      {
+        id: 'failure-braking',
+        data: {
+          label: 'Failure Braking',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
+        },
+        position: {
+          x: 800,
+          y: 400,
+        },
+        type: getNodeType(ALL_POD_STATES.FAILURE_BRAKING),
+      },
+
+      {
+        id: 'stop-lev',
+        data: {
+          label: 'Stop Levitation',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.STOP_LEVITATION,
+        },
+        position: {
+          x: 500,
           y: 200,
         },
-        type: getNodeType(ALL_POD_STATES.NOMINAL_BRAKING),
+        type: getNodeType(ALL_POD_STATES.STOP_LEVITATION),
       },
       {
         id: 'stopped',
@@ -166,159 +324,122 @@ export function StateMachineFlowChart({
           label: 'Stopped',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
-          active: currentState === ALL_POD_STATES.STOPPED,
-        },
-        position: {
-          x: 1000,
-          y: 200,
-        },
-        type: getNodeType(ALL_POD_STATES.STOPPED),
-      },
-      {
-        id: 'off',
-        data: {
-          label: 'Off',
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
             {
               position: Position.Top,
               id: 'top',
             },
           ],
-          active: currentState === ALL_POD_STATES.OFF,
+          active: currentState === ALL_POD_STATES.STOPPED
         },
         position: {
-          x: 1200,
-          y: 200,
+          x: 500,
+          y: 300,
         },
-        type: getNodeType(ALL_POD_STATES.OFF),
+        type: getNodeType(ALL_POD_STATES.STOPPED),
       },
       {
-        id: 'failure-braking',
+        id: 'battery-recharge',
         data: {
-          label: 'Failure Braking',
-          sourcePositions: [
-            {
-              position: Position.Right,
-              id: 'right',
-            },
-          ],
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
-          active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
-        },
-        position: {
-          x: 1000,
-          y: 0,
-        },
-        type: getNodeType(ALL_POD_STATES.FAILURE_BRAKING),
-      },
-      {
-        id: 'failure-stopped',
-        data: {
-          label: 'Failure Stopped',
-          targetPositions: [
-            {
-              position: Position.Left,
-              id: 'left',
-            },
-          ],
+          label: 'Battery Recharge',
           sourcePositions: [
             {
               position: Position.Bottom,
               id: 'bottom',
             },
           ],
-          active: currentState === ALL_POD_STATES.FAILURE_STOPPED,
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.BATTERY_RECHARGE,
         },
         position: {
-          x: 1200,
-          y: 0,
-        },
-        type: getNodeType(ALL_POD_STATES.FAILURE_STOPPED),
-      },
-      {
-        id: 'key-label',
-        data: {
-          label: 'Key:',
-        },
-        position: {
-          x: 0,
-          y: 360,
-        },
-        type: 'TextNode',
-      },
-      {
-        id: 'key-passive',
-        data: {
-          label: 'Passive State',
-        },
-        position: {
-          x: 0,
+          x: 500,
           y: 400,
         },
-        type: 'PassiveNode',
+        type: getNodeType(ALL_POD_STATES.BATTERY_RECHARGE),
       },
       {
-        id: 'key-active',
+        id: 'capacitor-discharge',
         data: {
-          label: 'Active State',
+          label: 'Capacitor Discharge',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+            {
+              position: Position.Right,
+              id: 'right',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.CAPACITOR_DISCHARGE,
         },
         position: {
-          x: 175,
-          y: 400,
+          x: 500,
+          y: 500,
         },
-        type: 'ActiveNode',
+        type: getNodeType(ALL_POD_STATES.CAPACITOR_DISCHARGE),
       },
       {
-        id: 'key-failure',
+        id: 'safe',
         data: {
-          label: 'Failure State',
+          label: 'Safe',
+          sourcePositions: [
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+          ],
+          targetPositions: [
+            {
+              position: Position.Top,
+              id: 'top',
+            },
+          ],
+          active: currentState === ALL_POD_STATES.SAFE,
         },
         position: {
-          x: 350,
-          y: 400,
+          x: 500,
+          y: 600,
         },
-        type: 'FailureNode',
+        type: getNodeType(ALL_POD_STATES.SAFE),
       },
+
     ],
     [currentState],
   );
 
   return (
     <div className="h-full flex flex-col justify-center items-center">
-      <div className="h-[500px] w-[1400px]">
+      <div className="h-full w-full">
         <ReactFlow
           nodes={nodes}
           edges={edges}
           nodeTypes={nodeTypes}
-          // remove all interactivity
-          panOnDrag={false}
-          panOnScroll={false}
-          zoomOnScroll={false}
-          elementsSelectable={false}
           nodesDraggable={false}
           nodesConnectable={false}
-          zoomOnPinch={false}
-          zoomOnDoubleClick={false}
-        />
+          defaultViewport={{
+            zoom: 1,
+            x: 50,
+            y: 250,
+          }}
+        >
+          <Background />
+        </ReactFlow>
       </div>
     </div>
   );

@@ -1,10 +1,10 @@
+import { memo } from 'react';
 import { Handle, NodeProps } from 'reactflow';
 import { BASE_NODE_STYLES } from './styles';
-import { memo } from 'react';
 import { cn } from '@/lib/utils';
 import { NodeDataType } from '../types';
 
-const PassiveNode = memo(
+const NeutralNode = memo(
   ({
     data,
   }: Omit<NodeProps, 'data'> & {
@@ -19,8 +19,8 @@ const PassiveNode = memo(
         className={cn(
           BASE_NODE_STYLES,
           data.active
-            ? 'border-2 bg-white text-black italic'
-            : 'border-2 text-white border-blue border-dashed text italic',
+          ? 'border-2 bg-white text-black'
+          : 'border-2 text-white border-gray border-dashed italic',
         )}
       >
         {data.label}
@@ -33,5 +33,5 @@ const PassiveNode = memo(
   ),
 );
 
-PassiveNode.displayName = 'PassiveNode'; // Add display name to the component
-export { PassiveNode }; // Export the component
+NeutralNode.displayName = 'NeutralNode'; // Add display name to the component
+export { NeutralNode }; // Export the component
