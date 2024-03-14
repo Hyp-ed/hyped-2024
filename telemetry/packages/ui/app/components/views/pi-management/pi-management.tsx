@@ -24,19 +24,23 @@ import { cn } from '@/lib/utils';
 import { PiInfo } from '@hyped/telemetry-types';
 import { useCurrentPod } from '@/context/pods';
 
+const getPis = async (podId: string): Promise<PiInfo[]> => {
+  const res = await http.get(`pods/${podId}/pis`).then((res) => res.json());
+  return res as PiInfo[];
+};
+
 // TODO: Give an option of the branches on the GitHub to select from (for Pi version comparison)
 
 export const PiManagement = () => {
-  const { currentPod: podId } = useCurrentPod();
+  // const { currentPod } = useCurrentPod();
+  const currentPod = 'pod_2024';
 
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
   const { data, isLoading, isRefetching, refetch } = useQuery(
-    'pis',
-    async () => {
-      return [];
-    },
+    ['pis', currentPod],
+    () => getPis(currentPod),
   );
 
   const table = useReactTable({
@@ -56,7 +60,7 @@ export const PiManagement = () => {
   const numSelectedRows = table.getFilteredSelectedRowModel().rows.length;
 
   return (
-    <div className="max-w-6xl mx-auto flex flex-col h-full gap-4 p-16">
+    <div className="flex flex-col h-full gap-4 p-16">
       <h1 className="text-4xl font-bold mb-8 flex gap-4 items-center">
         <Cpu size={32} />
         Pi Management Console

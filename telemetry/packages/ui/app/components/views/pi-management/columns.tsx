@@ -47,26 +47,37 @@ export const columns: ColumnDef<PiInfo>[] = [
   {
     accessorKey: 'status',
     header: ({ column }) => (
-      <SortableHeader column={column}>Status</SortableHeader>
+      <SortableHeader column={column}>Connection Status</SortableHeader>
     ),
     cell: ({ row }) => row.getValue('status') || UNKNOWN,
   },
   {
     accessorKey: 'binaryHash',
-    header: 'Binary Hash',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Binary Hash</SortableHeader>
+    ),
     cell: ({ row }) => row.getValue('binaryHash') || UNKNOWN,
   },
   {
+    accessorKey: 'binaryStatus',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Binary Status</SortableHeader>
+    ),
+    cell: ({ row }) => row.getValue('binaryStatus') || UNKNOWN,
+  },
+  {
     accessorKey: 'configHash',
-    header: 'Config Hash',
+    header: ({ column }) => (
+      <SortableHeader column={column}>Config Hash</SortableHeader>
+    ),
     cell: ({ row }) => row.getValue('configHash') || UNKNOWN,
   },
   {
-    accessorKey: 'versionStatus',
+    accessorKey: 'configStatus',
     header: ({ column }) => (
-      <SortableHeader column={column}>Version Status</SortableHeader>
+      <SortableHeader column={column}>Config Status</SortableHeader>
     ),
-    cell: ({ row }) => row.getValue('versionStatus') || UNKNOWN,
+    cell: ({ row }) => row.getValue('configStatus') || UNKNOWN,
   },
   {
     id: 'actions',

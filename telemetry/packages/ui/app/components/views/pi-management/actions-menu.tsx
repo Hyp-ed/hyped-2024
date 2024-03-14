@@ -77,7 +77,7 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
           }}
         >
           <HardDriveUpload size={18} />
-          Update All
+          Update Both
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

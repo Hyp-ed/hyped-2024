@@ -11,11 +11,10 @@ export type {
 export type { OpenMctFault } from './openmct/openmct-fault.types';
 export type { Unpacked } from './utils/Unpacked';
 export type {
-  PiVersionResult,
   Pi,
   PiId,
-  PiVersionStatus,
-  PiStatus,
-  PiUnknownVersionStatus,
+  VersionStatus,
+  PiConnectionStatus,
   PiInfo,
+  Hashes,
 } from './pods/pis.types';
