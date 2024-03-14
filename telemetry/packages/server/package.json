@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "nest start --watch",
+    "dev:test": "nest start --watch",
     "build": "nest build",
     "start": "nest start",
     "start:debug": "nest start --debug --watch",
@@ -20,7 +21,6 @@
     "@nestjs/platform-express": "^9.2.1",
     "@nestjs/platform-socket.io": "^9.4.2",
     "@nestjs/websockets": "^9.4.2",
-    "@types/random": "^3.0.1",
     "dotenv": "^16.0.3",
     "env-var": "^7.3.0",
     "mqtt": "^4.3.7",
