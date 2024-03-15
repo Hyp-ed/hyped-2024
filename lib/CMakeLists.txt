@@ -1,5 +1,7 @@
 add_subdirectory(core)
-add_subdirectory(debug)
+if(NOT BUILD_STM32)
+  add_subdirectory(debug)
+endif()
 add_subdirectory(io)
 add_subdirectory(motors)
 add_subdirectory(navigation)

@@ -6,7 +6,7 @@
 #include <memory>
 
 #include <core/types.hpp>
-#include <io/hardware_can.hpp>
+#include <io/can.hpp>
 
 namespace hyped::motors {
 

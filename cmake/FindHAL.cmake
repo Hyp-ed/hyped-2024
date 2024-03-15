@@ -1,5 +1,8 @@
-# For information about why and how of this file:
-# https://cmake.org/cmake/help/latest/command/find_package.html
+# Portions of this code are derived from
+# https://github.com/ObKo/stm32-cmake/tree/master?tab=MIT-1-ov-file#readme
+# available under the MIT License. You may obtain a copy of the MIT License at
+#
+# https://opensource.org/licenses/MIT
 
 # This function gets a list of hal_driver using a given prefix and suffix
 #
