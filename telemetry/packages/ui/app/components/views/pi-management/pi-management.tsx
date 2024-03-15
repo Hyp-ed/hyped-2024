@@ -25,10 +25,17 @@ import { PiInfo } from '@hyped/telemetry-types';
 import { useCurrentPod } from '@/context/pods';
 import { SelectBranch } from './select-branch';
 
-const getPis = async (podId: string): Promise<PiInfo[]> => {
-  const res = await http.get(`pods/${podId}/pis`).then((res) => res.json());
+const getPis = async (
+  podId: string,
+  compareBranch: string,
+): Promise<PiInfo[]> => {
+  const res = await http
+    .get(`pods/${podId}/pis?compareBranch=${compareBranch}`)
+    .then((res) => res.json());
   return res as PiInfo[];
 };
+
+export const DEFAULT_BRANCH = 'master';
 
 // TODO: Give an option of the branches on the GitHub to select from (for Pi version comparison)
 
@@ -36,17 +43,19 @@ export const PiManagement = () => {
   // const { currentPod } = useCurrentPod();
   const currentPod = 'pod_2024';
 
+  const [compareBranch, setCompareBranch] = useState<string>(DEFAULT_BRANCH);
+
   const [sorting, setSorting] = useState<SortingState>([]);
   const [rowSelection, setRowSelection] = useState({});
 
   const { data, isLoading, isRefetching, refetch } = useQuery(
     ['pis', currentPod],
-    () => getPis(currentPod),
+    () => getPis(currentPod, compareBranch),
   );
 
   const table = useReactTable({
     data: data || [],
-    columns,
+    columns: columns(compareBranch),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     onSortingChange: setSorting,
@@ -66,10 +75,6 @@ export const PiManagement = () => {
         <Cpu size={32} />
         Pi Management Console
       </h1>
-      <div>
-        Compare to...
-        <SelectBranch />
-      </div>
       <div className="flex justify-between items-center">
         <Button
           variant="outline"
@@ -80,6 +85,10 @@ export const PiManagement = () => {
           Refresh
         </Button>
         <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
+            Compare to...
+            <SelectBranch setCompareBranch={setCompareBranch} />
+          </div>
           <Button variant="outline" className="flex gap-2">
             <HardDriveUpload size={16} />
             Update all

@@ -826,7 +826,7 @@ export const pods: Pods = {
         hostname: 'pi-1',
       },
       pi_2: {
-        id: 'pi-2',
+        id: 'pi_2',
         ip: '192.168.1.42',
         hostname: 'pi-2',
       },

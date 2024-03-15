@@ -21,22 +21,33 @@ export class PiManagementService {
   /**
    * Returns all Pis in a pod.
    * @param podId Pod ID to get Pis from
+   * @param compareBranch Branch to compare the Pi versions to
    * @returns All Pis in the pod
    */
-  public async getAllPis(podId: string): Promise<PiInfo[]> {
+  public async getAllPis(
+    podId: string,
+    compareBranch: string,
+  ): Promise<PiInfo[]> {
     this.logger.log(`Getting all info for pis in pod ${podId}`);
     validatePodId(podId);
     const pis = pods[podId].pis;
-    return Promise.all(Object.keys(pis).map((piId) => this.getPi(podId, piId)));
+    return Promise.all(
+      Object.keys(pis).map((piId) => this.getPi(podId, piId, compareBranch)),
+    );
   }
 
   /**
    * Returns a Pi in a pod.
    * @param podId Pod ID to get Pi from
    * @param piId Pi ID to get
+   * @param compareBranch Branch to compare the Pi versions to
    * @returns Pi in the pod
    */
-  public async getPi(podId: string, piId: string): Promise<PiInfo> {
+  public async getPi(
+    podId: string,
+    piId: string,
+    compareBranch: string,
+  ): Promise<PiInfo> {
     this.logger.log(`Getting info for pi ${piId} in pod ${podId}`);
 
     validatePodId(podId);
@@ -62,10 +73,10 @@ export class PiManagementService {
     const { binaryHash, configHash } = hashes;
 
     const binaryStatus = binaryHash
-      ? await this.getBinaryVersionStatus(binaryHash)
+      ? await this.getBinaryVersionStatus(binaryHash, compareBranch)
       : 'unknown';
     const configStatus = configHash
-      ? await this.getConfigVersionStatus(configHash)
+      ? await this.getConfigVersionStatus(configHash, compareBranch)
       : 'unknown';
 
     return {
@@ -179,42 +190,50 @@ export class PiManagementService {
 
   private async getBinaryVersionStatus(
     binaryHash: string,
+    compareBranch: string,
   ): Promise<VersionStatus> {
     // Get the correct hashes. If the hashes are the same, then the Pi is up-to-date.
-    const upToDateBinaryHash = await this.getUpToDateBinaryHash();
+    const upToDateBinaryHash = await this.getUpToDateBinaryHash(compareBranch);
     const upToDate = binaryHash === upToDateBinaryHash;
     return upToDate ? 'up-to-date' : 'out-of-date';
   }
 
   private async getConfigVersionStatus(
     configHash: string,
+    compareBranch: string,
   ): Promise<VersionStatus> {
     // Get the correct hashes. If the hashes are the same, then the Pi is up-to-date.
-    const upToDateConfigHash = await this.getUpToDateConfigHash();
+    const upToDateConfigHash = await this.getUpToDateConfigHash(compareBranch);
     const upToDate = configHash === upToDateConfigHash;
     return upToDate ? 'up-to-date' : 'out-of-date';
   }
 
-  public async getUpToDateBinaryHash(branch: string = 'master') {
+  public async getUpToDateBinaryHash(compareBranch: string = 'master') {
     // TODO: Pull the latest commit from the given branch, build the binary using Docker, and get the hash of the binary
     await this.simulateDelay();
 
-    return branch;
+    return compareBranch;
   }
 
-  public async getUpToDateConfigHash(branch: string = 'master') {
+  public async getUpToDateConfigHash(compareBranch: string = 'master') {
     // TODO: Pull the latest commit from the given branch and hash the config file
     await this.simulateDelay();
 
-    return branch;
+    return compareBranch;
   }
 
   /**
    * Updates Pi with latest binary.
    * Builds/compiles code using Docker and uses SCP to transfer it to the Pi.
    */
-  public async updatePiBinary(podId: string, piId: string) {
-    this.logger.log(`Updating pi ${piId} binary in pod ${podId}`);
+  public async updatePiBinary(
+    podId: string,
+    piId: string,
+    compareBranch: string,
+  ) {
+    this.logger.log(
+      `Updating pi ${piId} binary in pod ${podId} to the version on branch "${compareBranch}"`,
+    );
 
     // TODO: `scp` the new binary to the Pi OR Tom will implement this in the daemon
     await this.simulateDelay();
@@ -226,8 +245,14 @@ export class PiManagementService {
    * Updates Pi with latest config.
    * Uses SCP to transfer it to the Pi.
    */
-  public async updatePiConfig(podId: string, piId: string) {
-    this.logger.log(`Updating pi ${piId} in pod ${podId}`);
+  public async updatePiConfig(
+    podId: string,
+    piId: string,
+    compareBranch: string,
+  ) {
+    this.logger.log(
+      `Updating pi ${piId} config in pod ${podId} to the version on branch "${compareBranch}"`,
+    );
 
     // TODO: `scp` the new config to the Pi OR Tom will implement this in the daemon
     await this.simulateDelay();

@@ -7,7 +7,7 @@ import { PiInfo } from '@hyped/telemetry-types';
 
 const UNKNOWN = 'unknown';
 
-export const columns: ColumnDef<PiInfo>[] = [
+export const columns = (compareBranch: string): ColumnDef<PiInfo>[] => [
   {
     id: 'select',
     header: ({ table }) => (
@@ -35,9 +35,9 @@ export const columns: ColumnDef<PiInfo>[] = [
     header: ({ column }) => <SortableHeader column={column}>ID</SortableHeader>,
   },
   {
-    accessorKey: 'name',
+    accessorKey: 'hostname',
     header: ({ column }) => (
-      <SortableHeader column={column}>Name</SortableHeader>
+      <SortableHeader column={column}>Hostname</SortableHeader>
     ),
   },
   {
@@ -81,7 +81,7 @@ export const columns: ColumnDef<PiInfo>[] = [
   },
   {
     id: 'actions',
-    cell: ActionsMenu,
+    cell: ({ row }) => <ActionsMenu row={row} compareBranch={compareBranch} />,
   },
 ];
 

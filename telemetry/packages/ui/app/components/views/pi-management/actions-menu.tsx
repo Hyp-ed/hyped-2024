@@ -20,7 +20,13 @@ import { PiInfo } from '@hyped/telemetry-types';
 import { updatePiBinary, updatePiConfig } from './actions';
 import { useQueryClient } from 'react-query';
 
-export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
+export const ActionsMenu = ({
+  row,
+  compareBranch,
+}: {
+  row: Row<PiInfo>;
+  compareBranch: string;
+}) => {
   const pi = row.original;
 
   const queryClient = useQueryClient();
@@ -54,7 +60,9 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
           <DropdownMenuItem
             className="flex gap-2"
             onClick={() =>
-              void updatePiBinary(pi.podId, pi.id).then(() => refresh())
+              void updatePiBinary(pi.podId, pi.id, compareBranch).then(() =>
+                refresh(),
+              )
             }
           >
             <Binary size={18} />
@@ -63,7 +71,9 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
           <DropdownMenuItem
             className="flex gap-2"
             onClick={() =>
-              void updatePiConfig(pi.podId, pi.id).then(() => refresh())
+              void updatePiConfig(pi.podId, pi.id, compareBranch).then(() =>
+                refresh(),
+              )
             }
           >
             <Settings size={18} />
@@ -73,8 +83,8 @@ export const ActionsMenu = ({ row }: { row: Row<PiInfo> }) => {
             className="flex gap-2"
             onClick={() => {
               void Promise.all([
-                updatePiBinary(pi.podId, pi.id),
-                updatePiConfig(pi.podId, pi.id),
+                updatePiBinary(pi.podId, pi.id, compareBranch),
+                updatePiConfig(pi.podId, pi.id, compareBranch),
               ]).then(() => refresh());
             }}
           >
