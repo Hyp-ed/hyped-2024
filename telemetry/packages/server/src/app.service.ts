@@ -62,7 +62,12 @@ export class AppService {
         if (err) {
           reject(err);
         } else {
-          resolve(stdout.split('\n').map((branch) => branch.trim()));
+          resolve(
+            stdout
+              .split('\n')
+              .map((branch) => branch.trim())
+              .filter((branch) => branch.length > 0),
+          );
         }
       });
     });

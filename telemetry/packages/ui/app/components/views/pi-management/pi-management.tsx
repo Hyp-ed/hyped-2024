@@ -23,6 +23,7 @@ import { columns } from './columns';
 import { cn } from '@/lib/utils';
 import { PiInfo } from '@hyped/telemetry-types';
 import { useCurrentPod } from '@/context/pods';
+import { SelectBranch } from './select-branch';
 
 const getPis = async (podId: string): Promise<PiInfo[]> => {
   const res = await http.get(`pods/${podId}/pis`).then((res) => res.json());
@@ -65,6 +66,10 @@ export const PiManagement = () => {
         <Cpu size={32} />
         Pi Management Console
       </h1>
+      <div>
+        Compare to...
+        <SelectBranch />
+      </div>
       <div className="flex justify-between items-center">
         <Button
           variant="outline"
