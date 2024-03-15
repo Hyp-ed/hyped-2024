@@ -71,7 +71,7 @@ endif()
 
 if(BUILD_STM32)
   set(CMAKE_EXE_LINKER_FLAGS
-      "${CMAKE_EXE_LINKER_FLAGS} -specs=nosys.specs -T${CMAKE_SOURCE_DIR}/F401RE.ld"
+      "${CMAKE_EXE_LINKER_FLAGS} -specs=nosys.specs -T${CMAKE_SOURCE_DIR}/stm32_linkers/F401RE.ld"
   )
   # set(STM32_FETCH_FAMILIES F4 F7)
 
