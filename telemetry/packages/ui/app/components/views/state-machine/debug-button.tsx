@@ -1,17 +1,7 @@
-import { useState, useEffect } from 'react';
-import { Handle, NodeProps } from 'reactflow';
-import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
+import { useState } from 'react';
+import { getStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
 import { cn } from '@/lib/utils';
 import { styles } from '@/components/shared/pod-state';
-
-const btnStyles = {
-  fontWeight: 'bold',
-  cursor: 'pointer',
-  border: '1px solid white',
-  'border-radius': '10px',
-  padding: '10px',
-  margin: '0 0 20px 20px',
-};
 
 type StateButtonProps = {
   onStateChange: (newState: string) => void;
@@ -19,19 +9,36 @@ type StateButtonProps = {
 
 export const StateButton: React.FC<StateButtonProps> = ({ onStateChange }) => {
 
-  const states = Object.keys(ALL_POD_STATES);
+  const { TEXT, UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } = ALL_POD_STATES;
+  const states = Object.keys(NODE_STATES).concat(SAFE);
+  console.log(NODE_STATES);
+  console.log(states);
   const [state, setState] = useState(states[0]);
 
   const handleClick = (state: string) => {
     const nextState = states[
       (states.indexOf(state) + 1) % states.length
     ];
+    
     setState(nextState);
     onStateChange(nextState);
   };
+
   return (
-    <button style={btnStyles} onClick={() => handleClick(state)}>
-      Next State
-    </button>
+    <div className={cn('flex justify-between px-40')}>
+      <span
+        className = {cn('truncate w-50')}
+      >{state}</span>
+      <button
+        className={cn(
+          // localStyles.btn,
+          'p-3 rounded-md max-w-max flex-grow',
+          styles[getStateType(state)]
+        )}
+        onClick={() => handleClick(state)
+      }>
+        Next State
+      </button>
+    </div>
   )
 };

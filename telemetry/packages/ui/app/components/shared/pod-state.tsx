@@ -23,6 +23,7 @@ export const styles: Record<PodStateCategoryType, string> = {
   ACTIVE: 'bg-green-700 border-2 border-green-900 text-white',
   FAILURE: 'bg-red-700 border-2 border-red-900 text-white',
   PASSIVE: 'bg-gray-600 border-2 border-gray-800 text-white',
+  NEUTRAL: 'bg-gray-600 border-2 border-gray-800 text-white',
   NULL: '',
 };
 
