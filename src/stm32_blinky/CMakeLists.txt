@@ -1,7 +1,7 @@
 set(target stm32-blinky-f4)
 
 file(GLOB code "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
-file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
+file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.h")
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
 add_executable(stm32-blinky-f4 ${code} ${headers})
