@@ -24,6 +24,9 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(project HYPED)
 
 if(BUILD_STM32)
+  set(CMAKE_SYSTEM_NAME Generic)
+  set(CMAKE_SYSTEM_PROCESSOR arm)
+
   set(TOOLCHAIN_INC_PATH "/usr/arm-none-eabi/include")
   set(TOOLCHAIN_LIB_PATH "$/usr/arm-none-eabi/lib")
 
@@ -37,6 +40,8 @@ if(BUILD_STM32)
   set(CMAKE_EXECUTABLE_SUFFIX_C .elf)
   set(CMAKE_EXECUTABLE_SUFFIX_CXX .elf)
   set(CMAKE_EXECUTABLE_SUFFIX_ASM .elf)
+
+  set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
 endif()
 
 project(${project} CXX)
@@ -80,11 +85,6 @@ if(BUILD_STM32)
   # set(STM32_FETCH_CMSIS_VERSIONS v2.6.6 v1.2.6)
 
   # set(STM32_FETCH_HAL_VERSIONS v1.7.12 v1.2.9)
-  set(FAMILY F4)
-  set(FAMILY_L f4)
-  set(CUBE_VERSION v1.26.1)
-  set(CMSIS_VERSION v2.6.6)
-  set(HAL_VERSION v1.7.12)
 
   set(HAL_COMP_LIST
       STM32F4
@@ -134,11 +134,6 @@ if(BUILD_STM32)
   # FetchContent_Declare( STM32-HAL-F7 GIT_REPOSITORY
   # https://github.com/STMicroelectronics/stm32f7xx_hal_driver/ GIT_TAG v1.2.9
   # GIT_PROGRESS TRUE )
-
-  set(STM32_F4_TYPES F401xE)
-  set(STM32_F4_TYPE_MATCH "F401.[ED]")
-  set(STM32_F4_RAM_SIZES 96K)
-  set(STM32_F4_CCRAM_SIZES 0K)
 
   add_library(STM32::F4 INTERFACE IMPORTED)
 
@@ -192,6 +187,12 @@ if(BUILD_STM32)
   find_package(HAL COMPONENTS "${HAL_COMP_LIST}" REQUIRED)
 
   add_library(STM32::NoSys INTERFACE IMPORTED)
+  target_compile_options(
+    STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
+  )
+  target_link_options(
+    STM32::NoSys INTERFACE $<$<C_COMPILER_ID:GNU>:--specs=nosys.specs>
+  )
 endif()
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib)

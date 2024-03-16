@@ -1,4 +1,4 @@
-#include <stm32f4xx_hal.h>
+#include <stm32f4xx_hal.hpp>
 
 // STM32F4-Discovery green led - PD12
 #define LED_PORT GPIOA

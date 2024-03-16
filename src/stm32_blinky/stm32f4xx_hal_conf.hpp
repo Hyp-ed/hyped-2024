@@ -26,6 +26,8 @@
 /* Exported types ------------------------------------------------------------*/
 /* Exported constants --------------------------------------------------------*/
 
+extern "C" {
+
 /* ########################## Module Selection ############################## */
 /**
  * @brief This is the list of modules to be used in the HAL driver
@@ -487,6 +489,7 @@ void assert_failed(uint8_t *file, uint32_t line);
 #else
 #define assert_param(expr) ((void)0U)
 #endif /* USE_FULL_ASSERT */
+}
 
 #endif /* __STM32F4xx_HAL_CONF_H */
 

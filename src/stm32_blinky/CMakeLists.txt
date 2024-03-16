@@ -1,9 +1,10 @@
 set(target stm32-blinky-f4)
 
 file(GLOB code "${CMAKE_CURRENT_SOURCE_DIR}/*.cpp")
+file(GLOB headers "${CMAKE_CURRENT_SOURCE_DIR}/*.hpp")
 set(CMAKE_INCLUDE_CURRENT_DIR TRUE)
 
-add_executable(stm32-blinky-f4 ${code} stm32f4xx_hal_conf.h)
+add_executable(stm32-blinky-f4 ${code} ${headers})
 target_link_libraries(
   stm32-blinky-f4
   HAL::STM32::F4::RCC
