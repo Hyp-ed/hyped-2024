@@ -18,8 +18,7 @@ std::optional<Brakes> Brakes::create(core::ILogger &logger,
 Brakes::Brakes(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
     : gpio_reader_(gpio_reader),
       logger_(logger),
-      on(),
-      off()
+      pin_()
 {
 }
 
@@ -27,12 +26,14 @@ Brakes::~Brakes()
 {
 }
 
-bool Brakes::highLow()
-{
-  auto sig = gpio_reader_->read();
+std::optional<bool> Brakes::isClamped() {
+    const auto optional_reading = gpio_reader_->read();
+    if (!optional_reading) {
+        return std::nullopt;
+    }
+    const auto reading = *optional_reading;
 
-  core::DigitalSignal signal = sig.value();
-  if (signal <= core::DigitalSignal::kHigh) { return true; }
-  return false;
+    if (reading == core::DigitalSignal::kHigh) { return false; }
+    return true;
 }
 }  // namespace hyped::sensors

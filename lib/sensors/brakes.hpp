@@ -16,16 +16,13 @@ class Brakes {
 
   ~Brakes();
 
-  //  bool open();
-  bool highLow();
+  std::optional<bool> isClamped();
 
  private:
   Brakes(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader);
 
  private:
-  std::uint8_t pin_;
-  std::uint8_t on;   // if distance is closer, it is on 0 and 2
-  std::uint8_t off;  // if distance is further, it is off. 2 and 5
+  const std::uint8_t pin_;
   std::shared_ptr<io::IGpioReader> gpio_reader_;
   core::ILogger &logger_;
 };
