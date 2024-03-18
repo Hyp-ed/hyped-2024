@@ -9,17 +9,30 @@ const arrow: EdgeMarkerType = {
 };
 
 const columns = {
-  left: ['idle', 'calibrate', 'precharge', 'ready-lev', 'begin-lev', 'ready-launch'],
+  left: [
+    'idle',
+    'calibrate',
+    'precharge',
+    'ready-lev',
+    'begin-lev',
+    'ready-launch',
+  ],
   center: ['accelerate', 'lim-brake', 'friction-brake'],
-  right: ['stop-lev', 'stopped', 'battery-recharge', 'capacitor-discharge', 'safe']
-}
+  right: [
+    'stop-lev',
+    'stopped',
+    'battery-recharge',
+    'capacitor-discharge',
+    'safe',
+  ],
+};
 
 export const getEdgeType = (source: string): [string, string] => {
   if (columns.left.includes(source)) return ['right', 'left'];
   if (columns.center.includes(source)) return ['left', 'left'];
   if (columns.right.includes(source)) return ['right', 'bottom'];
-  return ['left', 'left']
-}
+  return ['left', 'left'];
+};
 
 export const edges: Edge[] = [
   // Dynamic connection
@@ -172,47 +185,6 @@ export const edges: Edge[] = [
     target: 'capacitor-discharge',
     sourceHandle: 'bottom',
     targetHandle: 'left',
-    type: 'step',
-    markerEnd: arrow,
-  },
-
-  
-  
-  // old
-  {
-    id: 'nominal-braking-stopped',
-    source: 'nominal-braking',
-    target: 'stopped',
-    type: 'step',
-    markerEnd: arrow,
-  },
-  {
-    id: 'nominal-braking-failure-braking',
-    source: 'nominal-braking',
-    target: 'failure-braking',
-    sourceHandle: 'top',
-    type: 'step',
-    markerEnd: arrow,
-  },
-  {
-    id: 'stopped-off',
-    source: 'stopped',
-    target: 'off',
-    type: 'step',
-    markerEnd: arrow,
-  },
-  {
-    id: 'failure-braking-failure-stopped',
-    source: 'failure-braking',
-    target: 'failure-stopped',
-    type: 'step',
-    markerEnd: arrow,
-  },
-  {
-    id: 'failure-stopped-off',
-    source: 'failure-stopped',
-    target: 'off',
-    targetHandle: 'top',
     type: 'step',
     markerEnd: arrow,
   },

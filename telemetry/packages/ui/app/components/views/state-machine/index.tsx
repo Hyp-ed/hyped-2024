@@ -18,13 +18,12 @@ export const StateMachine = () => {
   const [state, setState]: [PodStateType, any] = useState('IDLE');
   const handleStateChange = (newState: string) => {
     setState(newState);
-  }
+  };
 
   return (
     <div className="h-full">
       <PodState podId={id} />
-      <StateButton onStateChange={handleStateChange}/>
-      {/* <StateMachineFlowChart currentState={podState} /> */}
+      <StateButton onStateChange={handleStateChange} />
       <StateMachineFlowChart currentState={state} />
     </div>
   );

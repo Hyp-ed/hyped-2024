@@ -1,6 +1,10 @@
 import ReactFlow, { Background, Position, Edge } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { PodStateType, ALL_POD_STATES, FAILSAFE_STATES } from '@hyped/telemetry-constants';
+import {
+  PodStateType,
+  ALL_POD_STATES,
+  FAILSAFE_STATES,
+} from '@hyped/telemetry-constants';
 import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo, useEffect, useState } from 'react';
 import './styles.css';
@@ -21,7 +25,7 @@ export function StateMachineFlowChart({
       NeutralNode,
     }),
     [],
-  )
+  );
 
   const [failNode, setFailNode]: [Edge, any] = useState(edges[0]);
 
@@ -45,7 +49,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 200,
-          y: 400
+          y: 400,
         },
         type: getNodeType(ALL_POD_STATES.IDLE),
       },
@@ -73,7 +77,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 200,
-          y: 300
+          y: 300,
         },
         type: getNodeType(ALL_POD_STATES.CALIBRATE),
       },
@@ -101,7 +105,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 200,
-          y: 200
+          y: 200,
         },
         type: getNodeType(ALL_POD_STATES.PRECHARGE),
       },
@@ -371,7 +375,7 @@ export function StateMachineFlowChart({
               id: 'top',
             },
           ],
-          active: currentState === ALL_POD_STATES.STOPPED
+          active: currentState === ALL_POD_STATES.STOPPED,
         },
         position: {
           x: 800,
@@ -445,8 +449,8 @@ export function StateMachineFlowChart({
           label: 'Safe',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: Position.Left,
+              id: 'left',
             },
           ],
           targetPositions: [
@@ -463,23 +467,19 @@ export function StateMachineFlowChart({
         },
         type: getNodeType(ALL_POD_STATES.SAFE),
       },
-
     ],
     [currentState, edges],
   );
 
-  
-
   useEffect(() => {
-    const active = nodes.find((n => n.data.active)) as CustomNodeType;
+    const active = nodes.find((n) => n.data.active) as CustomNodeType;
     setFailNode({
       ...edges[0],
       id: `${active.id}-failure-braking`,
       source: active.id,
       sourceHandle: getEdgeType(active.id)[0],
       targetHandle: getEdgeType(active.id)[1],
-    })
-    
+    });
   }, [currentState, edges]);
 
   return (
