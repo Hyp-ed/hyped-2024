@@ -15,6 +15,9 @@
     },
     "lint": {},
     "lint:fix": {},
+    "e2e:test": {
+      "dependsOn": ["^build"]
+    },
     "build": {
       "outputs": ["dist/**"],
       "dependsOn": ["^build"]
