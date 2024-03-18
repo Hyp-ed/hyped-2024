@@ -26,14 +26,13 @@ Brakes::~Brakes()
 {
 }
 
-std::optional<bool> Brakes::isClamped() {
-    const auto optional_reading = gpio_reader_->read();
-    if (!optional_reading) {
-        return std::nullopt;
-    }
-    const auto reading = *optional_reading;
+std::optional<bool> Brakes::isClamped()
+{
+  const auto optional_reading = gpio_reader_->read();
+  if (!optional_reading) { return std::nullopt; }
+  const auto reading = *optional_reading;
 
-    if (reading == core::DigitalSignal::kHigh) { return false; }
-    return true;
+  if (reading == core::DigitalSignal::kHigh) { return false; }
+  return true;
 }
 }  // namespace hyped::sensors
