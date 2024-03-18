@@ -33,15 +33,6 @@ if ! [ -x "$(command -v docker-compose)" ]; then
   exit 1
 fi
 
-# Check if image is built
-image=$( docker images -q $IMAGE_NAME 2> /dev/null )
-if [[ -z ${image} ]]; then
-  echo "[!] Building image"
-  docker build -t $IMAGE_NAME .
-else 
-  echo "[>] Image already built"
-fi
-
 # Default values for options
 rebuild=false
 clean=false
@@ -85,27 +76,54 @@ handle_options() {
 # Main script execution
 handle_options "$@"
 
+# Image building
 if [ "$rebuild" = true ]; then
+  # Explicit Rebuild
   if [ "$cross_compile" = true ]; then
-    echo "Rebuild"
-    # TODO change to correct build command
-    docker buildx build --platform=linux/arm64 -t $CC_IMAGE_NAME .
+    echo "[!] Rebuild cross compile image"
+    docker buildx build -f cc/Dockerfile.crosscompile -t $CC_IMAGE_NAME .
   else
-    echo "Rebuild"
+    echo "[!] Rebuild image"
     docker build -t $IMAGE_NAME .
+  fi
+else
+  # Only build if the image does not exist
+  if [ "$cross_compile" = true ]; then
+    image=$( docker images -q $CC_IMAGE_NAME 2> /dev/null )
+    echo $image
+    if [[ -z ${image} ]]; then
+      echo "[!] Building cross compile image"
+      docker buildx build -f cc/Dockerfile.crosscompile -t $CC_IMAGE_NAME .
+    else 
+      echo "[>] Cross compile image already built"
+    fi
+  else
+    image=$( docker images -q $IMAGE_NAME 2> /dev/null )
+    if [[ -z ${image} ]]; then
+      echo "[!] Building image"
+      docker build -t $IMAGE_NAME .
+    else 
+      echo "[>] Image already built"
+    fi
   fi
 fi
 
-# TODO: check if the cross compile image exists
-
 if [ "$docker_build" = true ]; then
   # Check if the container name already exists
-  build_container=$( docker ps -a -q --filter name=$BUILD_CONTAINER_NAME 2> /dev/null )
+  if [ "$cross_compile" = true ]; then
+    build_container=$( docker ps -a -q --filter name=$CC_CONTAINER_NAME 2> /dev/null )
+  else
+    build_container=$( docker ps -a -q --filter name=$BUILD_CONTAINER_NAME 2> /dev/null )
+  fi
 
   # If the container exists, remove it
   if [[ -n ${build_container} ]]; then
     echo "[!] Found existing container. Removing container"
-    docker rm $BUILD_CONTAINER_NAME
+    if [ "$cross_compile" = true ]; then
+      docker rm $CC_CONTAINER_NAME
+    else
+      docker rm $BUILD_CONTAINER_NAME
+    fi
   fi
 
   if [ "$cross_compile" = true ]; then

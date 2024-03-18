@@ -18,5 +18,5 @@ fi
 
 cd build 
 cmake ..
-make -j
+make
 make test
