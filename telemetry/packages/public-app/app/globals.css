@@ -40,16 +40,6 @@
   gap: 30px;
 }
 
-.v-graph {
-  height: 560px;
-}
-
-.grid-display {
-  display: flex;
-  justify-content: center;
-  align-content: center;
-}
-
 .heading {
   display: flex;
   flex-direction: row;

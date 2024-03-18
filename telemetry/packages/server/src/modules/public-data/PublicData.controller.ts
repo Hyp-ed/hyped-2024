@@ -10,7 +10,7 @@ import {
   LaunchTimeResponse,
   StateResponse,
 } from '@hyped/telemetry-types/dist/server/responses';
-import { POD_IDS } from '@hyped/telemetry-constants';
+import { POD_IDS, PodId } from '@hyped/telemetry-constants';
 
 @Controller('pods/:podId/public-data')
 export class PublicDataController {
@@ -166,7 +166,7 @@ export class PublicDataController {
   }
 
   private validatePodId(podId: string) {
-    if (!(podId in POD_IDS)) {
+    if (!POD_IDS.includes(podId as PodId)) {
       throw new HttpException('Invalid pod ID', 400);
     }
   }

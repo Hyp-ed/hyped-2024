@@ -3,7 +3,6 @@
 import { useState } from 'react';
 import { useQuery } from 'react-query';
 import { LevitationHeightResponse } from '@hyped/telemetry-types';
-
 import {
   Card,
   TabList,
@@ -18,46 +17,11 @@ import {
 } from '@tremor/react';
 import { getLevitationHeight } from '@/helpers';
 
-interface products {
-  title: string;
-  value: number | null;
-  metric: string;
-  location: string;
-}
-
-const products = [
-  {
-    title: 'Levitation: Pod 1',
-    value: 0,
-    metric: 'mm',
-    location: 'A',
-  },
-  {
-    title: 'Levitation: Pod 2',
-    value: 0,
-    metric: 'mm',
-    location: 'A',
-  },
-  {
-    title: 'Levitation: Pod 3',
-    value: 0,
-    metric: 'mm',
-    location: 'A',
-  },
-  {
-    title: 'Levitation: Pod 4',
-    value: 0,
-    metric: 'mm',
-    location: 'B',
-  },
-];
-
 export default function LevitationHeight() {
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const selectedLocation = selectedIndex === 0 ? 'A' : 'B';
   const [show, setShow] = useState(false);
 
-  const { data } = useQuery<LevitationHeightResponse>(
+  const { data, isLoading, error } = useQuery<LevitationHeightResponse>(
     'levitation-height',
     async () => await getLevitationHeight(),
     {
@@ -66,10 +30,6 @@ export default function LevitationHeight() {
   );
 
   if (!data) return 'An error occurred';
-
-  if (Object.keys(data)[0] === 'statusCode') {
-    const error = true;
-  }
 
   return (
     <Card decoration="top" decorationColor="red" className="h-[560px]">
