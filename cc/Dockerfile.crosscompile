@@ -1,11 +1,11 @@
-FROM ubuntu:latest
+FROM arm64v8/ubuntu:latest
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y git clang clang-format libboost-all-dev libeigen3-dev rapidjson-dev build-essential gcc make cmake libssl-dev libncurses5-dev libncursesw5-dev sudo
-    
-# Install Paho C++
+    apt-get install -y git clang libboost-all-dev libeigen3-dev rapidjson-dev build-essential gcc make cmake libssl-dev libncurses5-dev libncursesw5-dev sudo
+
+# Paho
 WORKDIR /home
 RUN git clone --recurse-submodules https://github.com/eclipse/paho.mqtt.cpp.git
 WORKDIR /home/paho.mqtt.cpp
@@ -15,6 +15,7 @@ RUN sudo cmake --build build/ --target install
 RUN sudo ldconfig
 
 WORKDIR /home/hyped_entrypoint
+
 COPY entry.sh ./
 
 ENTRYPOINT [ "/home/hyped_entrypoint/entry.sh" ]

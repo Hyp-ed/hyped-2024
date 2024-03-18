@@ -88,6 +88,7 @@ handle_options "$@"
 if [ "$rebuild" = true ]; then
   if [ "$cross_compile" = true ]; then
     echo "Rebuild"
+    # TODO change to correct build command
     docker buildx build --platform=linux/arm64 -t $CC_IMAGE_NAME .
   else
     echo "Rebuild"
@@ -109,9 +110,9 @@ if [ "$docker_build" = true ]; then
 
   if [ "$cross_compile" = true ]; then
     echo "[!] Cross-compiling for Raspberry Pi"
-    docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
+    docker run -e CLEAN=$clean -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
   else
-    docker run -e CLEAN=$clean -e CROSS_COMPILE=$cross_compile -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
+    docker run -e CLEAN=$clean -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
   fi
 fi
 
