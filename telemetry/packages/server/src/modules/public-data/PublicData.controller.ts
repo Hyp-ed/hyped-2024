@@ -1,7 +1,6 @@
 import { Controller, Get, HttpException, Param, Query } from '@nestjs/common';
 import { PublicDataService } from './PublicData.service';
 import { HistoricalTelemetryDataService } from '@/modules/openmct/data/historical/HistoricalTelemetryData.service';
-import { pods } from '@hyped/telemetry-constants';
 import {
   LevitationHeightResponse,
   RawLevitationHeight,
@@ -11,6 +10,7 @@ import {
   LaunchTimeResponse,
   StateResponse,
 } from '@hyped/telemetry-types/dist/server/responses';
+import { POD_IDS } from '@hyped/telemetry-constants';
 
 @Controller('pods/:podId/public-data')
 export class PublicDataController {
@@ -166,7 +166,7 @@ export class PublicDataController {
   }
 
   private validatePodId(podId: string) {
-    if (pods[podId] === undefined) {
+    if (!(podId in POD_IDS)) {
       throw new HttpException('Invalid pod ID', 400);
     }
   }

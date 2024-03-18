@@ -6,7 +6,7 @@ import {
   ConnectedSocket,
   SubscribeMessage,
   WebSocketGateway,
-  WebSocketServer
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
@@ -28,22 +28,18 @@ export class RealtimeFaultDataGateway {
   ) {}
 
   @SubscribeMessage(socketConstants.EVENTS.SUBSCRIBE_TO_FAULTS)
-  async subscribeToFaults(
-    @ConnectedSocket() client: Socket,
-  ) {
+  async subscribeToFaults(@ConnectedSocket() client: Socket) {
     await client.join(FAULT_ROOM);
   }
 
   @SubscribeMessage(socketConstants.EVENTS.UNSUBSCRIBE_FROM_FAULTS)
-  async unsubscribeFromFaults(
-    @ConnectedSocket() client: Socket,
-  ) {
+  async unsubscribeFromFaults(@ConnectedSocket() client: Socket) {
     await client.leave(FAULT_ROOM);
   }
 
   sendFault(fault: OpenMctFault) {
     this.socket.to(FAULT_ROOM).emit(socketConstants.FAULT_EVENT, {
-      fault
+      fault,
     });
 
     this.logger.debug(

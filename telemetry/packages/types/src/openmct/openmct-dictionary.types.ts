@@ -1,4 +1,4 @@
-import { Limits } from "../pods/pods.types";
+import { Limits } from '../pods/pods.types';
 
 export type OpenMctMeasurement = {
   name: string;

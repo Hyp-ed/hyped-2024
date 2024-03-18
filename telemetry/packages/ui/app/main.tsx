@@ -4,7 +4,7 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import 'victormono';
-import App from './App';
+import { App } from './App';
 import './globals.css';
 import { Providers } from './providers';
 

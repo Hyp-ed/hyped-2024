@@ -40,9 +40,8 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxStateRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxStateRow>(query);
 
       return {
         currentState: data[0]
@@ -60,7 +59,7 @@ export class PublicDataService {
             }
           : null,
       };
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get historical reading for ${podId}'s state`,
         e,
@@ -105,15 +104,14 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxStateRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxStateRow>(query);
       const launchTime = new Date(data[0]['_time']).getTime();
 
       return {
         launchTime,
       };
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get launch time for ${podId}`,
         e,

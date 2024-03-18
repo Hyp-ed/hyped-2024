@@ -29,7 +29,6 @@ fi
 
 # Default values for options
 build=false
-with_mqtt_broker=false
 
 # Function to handle options and arguments
 handle_options() {
@@ -57,7 +56,7 @@ handle_options "$@"
 
 if [ "$build" = true ]; then
     echo "Building docker image..."
-    docker build -t $IMAGE_NAME .
+    docker build -t $IMAGE_NAME . --no-cache
 fi
 
 # Check if the container name already exists
@@ -77,4 +76,6 @@ MSYS_NO_PATHCONV=1 docker run -e PNPM_SCRIPT=build --name $CONTAINER_NAME -v $(p
   -v /usr/src/app/packages/types/node_modules \
   -v /usr/src/app/packages/public-app/node_modules \
   -v /usr/src/app/packages/public-app/.next \
+  -v /usr/src/app/packages/fake/node_modules \
+  -v /usr/src/app/packages/eslint-config/node_modules \
   $IMAGE_NAME

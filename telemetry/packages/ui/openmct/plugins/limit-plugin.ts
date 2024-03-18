@@ -31,7 +31,7 @@ export function LimitPlugin() {
       supportsLimits: function (domainObject: AugmentedDomainObject) {
         return domainObject.limits !== undefined;
       },
-      getLimitEvaluator: function (domainObject: AugmentedDomainObject) {
+      getLimitEvaluator: function () {
         return {
           evaluate: function (
             datum: Datum,
@@ -87,18 +87,20 @@ export function LimitPlugin() {
         return {
           limits: function () {
             return Promise.resolve({
-              ...(limits.warning ? {
-                WARNING: {
-                  low: {
-                    color: 'yellow',
-                    value: limits.warning.low,
-                  },
-                  high: {
-                    color: 'yellow',
-                    value: limits.warning.high,
-                  },
-                }
-              } : {}),
+              ...(limits.warning
+                ? {
+                    WARNING: {
+                      low: {
+                        color: 'yellow',
+                        value: limits.warning.low,
+                      },
+                      high: {
+                        color: 'yellow',
+                        value: limits.warning.high,
+                      },
+                    },
+                  }
+                : {}),
               CRITICAL: {
                 low: {
                   color: 'red',

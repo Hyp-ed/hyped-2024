@@ -43,31 +43,34 @@ export class HistoricalFaultDataService {
 
     const query = `from(bucket: "${INFLUX_FAULTS_BUCKET}")
       |> range(start: -24h)
-      |> filter(fn: (r) => r["podId"] == ${fluxString(podId)})
+      |> filter(fn: (r) => r["podId"] == ${
+        fluxString(podId) as unknown as string
+      })
       ${
         measurementKey
-          ? `|> filter(fn: (r) => r["measurementKey"] == ${fluxString(
-              measurementKey,
-            )})`
+          ? `|> filter(fn: (r) => r["measurementKey"] == ${
+              fluxString(measurementKey) as unknown as string
+            })`
           : ''
       }
       ${
         !getAcknowledged
-          ? fluxExpression(`|> filter(fn: (r) => r["acknowledged"] == "false")`)
+          ? (fluxExpression(
+              `|> filter(fn: (r) => r["acknowledged"] == "false")`,
+            ) as unknown as string)
           : ''
       }
       |> group(columns: ["faultId"])
       |> last()`;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxFaultRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxFaultRow>(query);
       return data.map((row) => ({
         timestamp: new Date(row['_time']).getTime(),
         fault: JSON.parse(row['_value']) as OpenMctFault,
       }));
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get faults for pod ${podId}`,
         e,

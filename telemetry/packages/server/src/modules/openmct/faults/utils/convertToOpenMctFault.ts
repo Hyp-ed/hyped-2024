@@ -2,9 +2,7 @@ import { OpenMctFault } from '@hyped/telemetry-types';
 import { nanoid } from 'nanoid';
 import { Fault } from '../Fault.service';
 
-export function convertToOpenMctFault(
-  fault: Fault
-): OpenMctFault {
+export function convertToOpenMctFault(fault: Fault): OpenMctFault {
   const { measurement, tripReading, level } = fault;
 
   const namespace = `/${tripReading.podId}/${measurement.key}`;

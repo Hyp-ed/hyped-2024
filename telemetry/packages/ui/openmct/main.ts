@@ -67,6 +67,6 @@ function sleep(ms: number) {
 }
 
 // Wait for all plugins to be installed before starting
-sleep(1000).then(() => {
+void sleep(1000).then(() => {
   openmct.start();
 });

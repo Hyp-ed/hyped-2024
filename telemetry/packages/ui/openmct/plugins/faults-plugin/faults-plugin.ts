@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { OpenMCT } from 'openmct/dist/openmct';
 import { HistoricalFaultsProvider } from './historical-faults-provider';
 import { RealtimeFaultsProvider } from './realtime-faults-provider';

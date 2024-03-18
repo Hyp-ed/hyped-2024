@@ -1,5 +1,5 @@
-import { OpenMctObjectTypes } from "@hyped/telemetry-types";
-import { http } from "../../core/http";
+import { OpenMctObjectTypes } from '@hyped/telemetry-types';
+import { http } from '../../core/http';
 
 export function fetchObjectTypes() {
   return http

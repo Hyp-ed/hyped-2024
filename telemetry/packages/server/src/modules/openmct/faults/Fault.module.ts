@@ -8,7 +8,11 @@ import { HistoricalFaultsDataController } from './data/historical/HistoricalFaul
 @Module({
   imports: [InfluxModule],
   controllers: [HistoricalFaultsDataController],
-  providers: [FaultService, HistoricalFaultDataService, RealtimeFaultDataGateway],
+  providers: [
+    FaultService,
+    HistoricalFaultDataService,
+    RealtimeFaultDataGateway,
+  ],
   exports: [FaultService],
 })
 export class FaultModule {}

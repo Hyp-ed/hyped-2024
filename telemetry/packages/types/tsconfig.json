@@ -1,15 +1,8 @@
 {
+  "extends": "@hyped/tsconfig/base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "strict": true,
-    "declaration": true,
-    "declarationMap": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "moduleResolution": "node",
-    "preserveWatchOutput": true,
-    "skipLibCheck": true,
+    "noEmit": false,
   },
   "include": ["src"],
   "exclude": ["node_modules"]
