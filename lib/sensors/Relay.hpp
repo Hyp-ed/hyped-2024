@@ -2,41 +2,6 @@
 
 #include <cstdint>
 #include <memory>
-
-#include <optional>
-#include <core/logger.hpp>
-#include <io/gpio.hpp>
-
-namespace hyped::sensors {
-
-class Relay {
- public:
-        static std::optional <Relay> create(core::ILogger &logger,
-                                             std::shared_ptr <io::IGpio> gpio,
-                                             const std::uint8_t new_pin);
-
-        ~Relay(); 
-
-    private:
-       Relay(core::ILogger &logger, std::shared_ptr <io::IGpioWriter> gpio_writer);
-};
-
-
-   //  bool open();
-     bool Write();  
-
-   private:
-     RelayWriter(core::ILogger &logger_, const int write_file_descriptor_);
-};
-
-}  // namespace hyped::sensors
-
-
-#pragma once
-
-#include <cstdint>
-#include <memory>
-
 #include <optional>
 #include <core/logger.hpp>
 #include <io/gpio.hpp>
@@ -52,41 +17,42 @@ public:
     ~Relay();
 
     core::Result open() {
-        // Implement relay open logic here
-        // For example, set the GPIO pin to HIGH or ON
-        // You can write to the GPIO value file as shown in your original code
-        // ...
+        // Implement relay open logic here eg. set the GPIO pin to HIGH
+        // write to the GPIO value file
+        // replace 'pin' with the actual pin number
 
-        // Return success or error result
-        return core::Result::kSuccess;
+        if (gpio_writer_->set_pin_value(pin, true)) {
+            logger_.INFO("Relay", "Relay opened successfully (Pin: %d)", pin);
+            return core::Result::kSuccess;
+        } else {
+            logger_.ERROR("Relay", "Failed to open relay (Pin: %d)", pin);
+            return core::Result::kFailure;
+        }
     }
 
     core::Result close() {
-        // Implement relay close logic here
-        // For example, set the GPIO pin to LOW or OFF
-        // You can write to the GPIO value file as shown in your original code
-        // ...
+        // Implement relay close logic here eg. set the GPIO pin to LOW
+        // replace 'pin' with the actual pin number
 
-        // Return success or error result
-        return core::Result::kSuccess;
+        if (gpio_writer_->set_pin_value(pin, false)) {
+            logger_.INFO("Relay", "Relay closed successfully (Pin: %d)", pin);
+            return core::Result::kSuccess;
+        } else {
+            logger_.ERROR("Relay", "Failed to close relay (Pin: %d)", pin);
+            return core::Result::kFailure;
+        }
     }
 
 private:
-    Relay(core::ILogger& logger, std::shared_ptr<io::IGpioWriter> gpio_writer);
-};
-
-class RelayWriter {
-public:
-    RelayWriter(core::ILogger& logger_, const int write_file_descriptor_);
-
-    bool Write() {
-        // Assuming gpio_writer_ is an instance of your GPIO writer class
-        core::DigitalSignal result = gpio_writer_->write();
-        return result;  // Return true if successful, false otherwise
+    Relay(core::ILogger& logger, std::shared_ptr<io::IGpioWriter> gpio_writer)
+        : logger_(logger), gpio_writer_(gpio_writer) {
+        // Initialize relay instance here
     }
 
-private:
-    // Add any necessary members for RelayWriter
+
+    core::ILogger& logger_;
+    std::shared_ptr<io::IGpioWriter> gpio_writer_;
+    std::uint8_t pin;  // Replace with actual pin number
 };
 
 }  // namespace hyped::sensors
