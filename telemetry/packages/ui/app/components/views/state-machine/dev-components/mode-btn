@@ -8,6 +8,9 @@ type ModeButtonProps = {
 };
 
 export const ModeButton: React.FC<ModeButtonProps> = ({ onModeChange }) => {
+
+  
+
   const { TEXT, UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } =
     ALL_POD_STATES;
   const states = Object.keys(NODE_STATES).concat(SAFE);
