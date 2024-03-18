@@ -165,9 +165,15 @@ importers:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.3.2)
     devDependencies:
+      '@hyped/eslint-config':
+        specifier: workspace:*
+        version: link:../eslint-config
       '@hyped/telemetry-types':
-        specifier: '*'
+        specifier: workspace:*
         version: link:../types
+      '@hyped/tsconfig':
+        specifier: workspace:*
+        version: link:../tsconfig
       '@types/node':
         specifier: ^20
         version: 20.10.0

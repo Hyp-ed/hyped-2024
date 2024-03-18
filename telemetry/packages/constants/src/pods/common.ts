@@ -66,3 +66,17 @@ export const keyenceCommon = {
   rms_noise: 0,
   sampling_time: 500,
 } as const;
+
+export const levitationHeightCommon = {
+  format: 'float',
+  type: 'levitation',
+  unit: 'mm',
+  limits: {
+    critical: {
+      low: 0,
+      high: 100,
+    },
+  },
+  rms_noise: 0, // placeholder
+  sampling_time: 500, // placeholder
+} as const;
