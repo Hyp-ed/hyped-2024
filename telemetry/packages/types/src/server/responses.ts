@@ -10,7 +10,7 @@ export type LevitationHeight = {
   value: number;
 };
 
-export type LevitationHeightResponse = Record<string, LevitationHeight[]>;
+export type LevitationHeightResponse = Record<string, LevitationHeight>;
 
 export type LaunchTimeResponse = {
   launchTime: number | null;

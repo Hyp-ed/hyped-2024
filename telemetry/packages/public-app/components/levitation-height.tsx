@@ -5,21 +5,18 @@ import { useQuery } from 'react-query';
 import { LevitationHeightResponse } from '@hyped/telemetry-types';
 import {
   Card,
-  TabList,
-  Tab,
   ProgressBar,
   Text,
   Flex,
   Button,
   Metric,
   BadgeDelta,
-  TabGroup,
+  Title,
 } from '@tremor/react';
 import { getLevitationHeight } from '@/helpers';
 
 export default function LevitationHeight() {
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [show, setShow] = useState(false);
+  const [showMore, setShowMore] = useState(false);
 
   const { data, isLoading, error } = useQuery<LevitationHeightResponse>(
     'levitation-height',
@@ -29,127 +26,74 @@ export default function LevitationHeight() {
     },
   );
 
-  if (!data) return 'An error occurred';
+  if (isLoading || !data)
+    return (
+      <Card decoration="top" decorationColor="red">
+        <Metric>Levitation Height</Metric>
+        <Text>Loading...</Text>
+      </Card>
+    );
+  if (error)
+    return (
+      <Card decoration="top" decorationColor="red">
+        <Metric>Levitation Height</Metric>
+        <Text>Error fetching levitation height data</Text>
+      </Card>
+    );
+
+  /**
+   * Checks if the pod is levitated based on the levitation height data.
+   * If any of the levitation height values are greater than 0, the pod is considered levitated.
+   */
+  const isLevitated = data
+    ? Object.keys(data).some((key) => data[key]?.value > 0)
+    : false;
+
+  const keys = Object.keys(data);
+  const numSensors = keys.length;
 
   return (
-    <Card decoration="top" decorationColor="red" className="h-[560px]">
+    <Card decoration="top" decorationColor="red">
       <Flex alignItems="start">
-        <Text>Levitation Height</Text>
-        <BadgeDelta
-          deltaType={
-            data[Object.keys(data)[0]][0]?.value > 0
-              ? 'moderateIncrease'
-              : 'moderateDecrease'
-          }
-        >
-          Elevated
-        </BadgeDelta>
+        <Title>Levitation Height</Title>
+        {data ? (
+          <BadgeDelta
+            deltaType={isLevitated ? 'moderateIncrease' : 'moderateDecrease'}
+          >
+            Elevated
+          </BadgeDelta>
+        ) : null}
       </Flex>
-      <Flex
-        justifyContent="start"
-        alignItems="baseline"
-        className="space-x-3 truncate"
-      >
-        <Metric>Pod Height</Metric>
-        <Text></Text>
-      </Flex>
-      <TabGroup
-        index={selectedIndex}
-        onIndexChange={setSelectedIndex}
-        className="mt-6"
-      >
-        <TabList>
-          <Tab>Pod 1</Tab>
-        </TabList>
-      </TabGroup>
+      <Metric>Pod Height</Metric>
       {data ? (
-        Object.keys(data)
-          .slice(0, Object.keys(data).length - 2)
-          .map((height) => (
-            <div key={height} className="space-y-2 mt-4">
-              <Flex>
-                <Text>{height}</Text>
-                <Text>{`${
-                  data[height][0]?.value ? data[height][0].value : 0
-                } mm`}</Text>
-              </Flex>
-
-              <ProgressBar value={data[height][0]?.value}></ProgressBar>
-            </div>
-          ))
+        keys
+          // unless showMore is true, only show the first 4 (if possible) or half of the data
+          .slice(0, showMore ? numSensors : numSensors > 4 ? 4 : numSensors / 2)
+          .map((levitationHeight) => {
+            const { id, value } = data[levitationHeight];
+            return (
+              <div key={id} className="space-y-2 mt-4">
+                <Flex>
+                  <Text>{id}</Text>
+                  <Text>{`${value} mm`}</Text>
+                </Flex>
+                <ProgressBar value={value} />
+              </div>
+            );
+          })
       ) : (
         <div>no data </div>
       )}
-
-      {show ? (
-        <div>
-          {Object.keys(data)
-            .slice(-2)
-            .map((height) => (
-              <div key={height} className="space-y-2 mt-4">
-                <Flex>
-                  <Text>{height}</Text>
-                  <Text>{`${
-                    data[height][0]?.value ? data[height][0].value : 0
-                  } mm`}</Text>
-                </Flex>
-
-                <ProgressBar value={data[height][0]?.value}></ProgressBar>
-              </div>
-            ))}
-        </div>
-      ) : null}
       <Flex className="mt-6 pt-4 border-t">
         <Button
           size="xs"
           variant="light"
           iconPosition="right"
-          onClick={() => {
-            !show ? setShow(true) : setShow(false);
-          }}
+          onClick={() => setShowMore(!showMore)}
         >
-          View more
+          {showMore ? 'Show Less' : 'Show More'}
         </Button>
       </Flex>
-
-      {show ? null : !(Object.keys(data)[0] === 'statusCode') ? (
-        <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
-          {Object.keys(data).map((height, i) => (
-            <BadgeDelta
-              key={i}
-              deltaType={
-                data[height][0]?.value > 0
-                  ? 'moderateIncrease'
-                  : 'moderateDecrease'
-              }
-            >
-              Sensor {i}:{' '}
-              {data[height][0]?.value > 0 ? 'Elevated' : 'disconnected'}
-            </BadgeDelta>
-          ))}
-        </div>
-      ) : (
-        <div className="grid grid-cols-2 gap-2 p-5 ml-[-14px] levitation-badges">
-          <BadgeDelta key={1} deltaType="moderateDecrease">
-            Disconnected
-          </BadgeDelta>
-          <BadgeDelta key={2} deltaType="moderateDecrease">
-            Disconnected
-          </BadgeDelta>
-          <BadgeDelta key={3} deltaType="moderateDecrease">
-            Disconnected
-          </BadgeDelta>
-          <BadgeDelta key={4} deltaType="moderateDecrease">
-            Disconnected
-          </BadgeDelta>
-          <BadgeDelta key={5} deltaType="moderateDecrease">
-            Disconnected
-          </BadgeDelta>
-          <BadgeDelta key={6} deltaType="moderateDecrease">
-            Disconnected
-          </BadgeDelta>
-        </div>
-      )}
     </Card>
   );
 }

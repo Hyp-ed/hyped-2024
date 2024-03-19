@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, LineChart, Title } from '@tremor/react';
+import { Card, LineChart, Metric, Text, Title } from '@tremor/react';
 import { useQuery } from 'react-query';
 import format from 'date-fns/format';
 import { getDisplacement } from '@/helpers';
@@ -11,7 +11,7 @@ import { HistoricalValueResponse } from '@hyped/telemetry-types';
  * @returns The displacement chart.
  */
 export const DisplacementChart = () => {
-  const { data } = useQuery(
+  const { data, isLoading, error } = useQuery(
     'displacement',
     async () => await getDisplacement(),
     {
@@ -19,13 +19,28 @@ export const DisplacementChart = () => {
     },
   );
 
+  if (isLoading)
+    return (
+      <Card decoration="top" decorationColor="red">
+        <Metric>Displacement</Metric>
+        <Text>Loading...</Text>
+      </Card>
+    );
+  if (error)
+    return (
+      <Card decoration="top" decorationColor="red">
+        <Metric>Displacement</Metric>
+        <Text>Error fetching displacement data</Text>
+      </Card>
+    );
+
   const displacementData = formatData(data);
 
   return (
     <Card decoration="top" decorationColor="red">
-      <Title>Displacement</Title>
+      <Metric>Displacement</Metric>
       <LineChart
-        className="h-[420px] mt-6"
+        className="mt-6"
         data={displacementData}
         index="time"
         categories={['displacement']}

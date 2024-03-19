@@ -12,6 +12,7 @@ services:
       - 3001:3001
     environment:
       - PNPM_SCRIPT
+      - IS_DOCKER=true
     volumes:
       - ./:/usr/src/app
       # Exclude node_modules from being mounted

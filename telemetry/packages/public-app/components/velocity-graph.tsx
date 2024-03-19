@@ -2,7 +2,7 @@
 
 import { getVelocity } from '@/helpers';
 import { HistoricalValueResponse } from '@hyped/telemetry-types';
-import { Card, Title, LineChart } from '@tremor/react';
+import { Card, LineChart, Metric, Text } from '@tremor/react';
 import { format } from 'date-fns';
 import { useQuery } from 'react-query';
 
@@ -11,17 +11,36 @@ import { useQuery } from 'react-query';
  * @returns The velocity chart.
  */
 export const VelocityGraph = () => {
-  const { data } = useQuery('velocity', async () => await getVelocity(), {
-    refetchInterval: 1000,
-  });
+  const { data, isLoading, error } = useQuery(
+    'velocity',
+    async () => await getVelocity(),
+    {
+      refetchInterval: 1000,
+    },
+  );
+
+  if (isLoading)
+    return (
+      <Card decoration="top" decorationColor="red">
+        <Metric>Velocity</Metric>
+        <Text>Loading...</Text>
+      </Card>
+    );
+  if (error)
+    return (
+      <Card decoration="top" decorationColor="red">
+        <Metric>Velocity</Metric>
+        <Text>Error fetching velocity data</Text>
+      </Card>
+    );
 
   const velocityData = formatData(data);
 
   return (
-    <Card className="v-graph" decoration="top" decorationColor="red">
-      <Title className="">Velocity</Title>
+    <Card decoration="top" decorationColor="red">
+      <Metric>Velocity</Metric>
       <LineChart
-        className="h-[420px] mt-6 dark:text-white"
+        className="mt-6"
         data={velocityData}
         index="time"
         categories={['velocity']}

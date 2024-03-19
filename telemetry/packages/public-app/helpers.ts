@@ -14,8 +14,6 @@ const ONE_MINUTE = 60;
 
 /**
  * Gets the last `prev` seconds of displacement data.
- * Should return a promise that resolves to the historical displacement data,
- * or rejects if the request fails.
  * @param prev The number of seconds to get.
  * @returns The historical displacement data.
  */
@@ -26,12 +24,16 @@ export const getDisplacement = async (
   const start = now - prev * 1000;
   const response = await fetch(
     `${SERVER_ENDPOINT}/displacement?start=${start}`,
-  ).then((res) => res.json());
-  if (response.statusCode !== 200)
-    throw new Error('Failed to fetch displacement');
-  return response as Promise<DisplacementResponse>;
+  );
+  if (response.status !== 200) throw new Error('Failed to fetch displacement');
+  return response.json() as Promise<DisplacementResponse>;
 };
 
+/**
+ * Gets the last `prev` seconds of levitation height data.
+ * @param prev The number of seconds to get.
+ * @returns The historical levitation height data.
+ */
 export const getLevitationHeight = async (
   prev: number = ONE_MINUTE,
 ): Promise<LevitationHeightResponse> => {
@@ -39,33 +41,33 @@ export const getLevitationHeight = async (
   const start = now - prev * 1000;
   const response = await fetch(
     `${SERVER_ENDPOINT}/levitation-height?start=${start}`,
-  ).then((res) => res.json());
-  if (response.statusCode !== 200)
+  );
+  if (response.status !== 200)
     throw new Error('Failed to fetch levitation height');
-  return response as Promise<LevitationHeightResponse>;
+  return response.json() as Promise<LevitationHeightResponse>;
 };
 
+/**
+ * Gets the last `prev` seconds of velocity data.
+ * @param prev The number of seconds to get.
+ * @returns The historical velocity data.
+ */
 export const getVelocity = async (
   prev: number = ONE_MINUTE,
 ): Promise<VelocityResponse> => {
   const now = new Date().getTime();
   const start = now - prev * 1000;
-  const response = await fetch(
-    `${SERVER_ENDPOINT}/velocity?start=${start}`,
-  ).then((res) => res.json());
-  if (response.statusCode !== 200) throw new Error('Failed to fetch velocity');
-  return response as Promise<VelocityResponse>;
+  const response = await fetch(`${SERVER_ENDPOINT}/velocity?start=${start}`);
+  if (response.status !== 200) throw new Error('Failed to fetch velocity');
+  return response.json() as Promise<VelocityResponse>;
 };
 
-export const getLaunchTime = async (
-  prev: number = ONE_MINUTE,
-): Promise<LaunchTimeResponse> => {
-  const now = new Date().getTime();
-  const start = now - prev * 1000;
-  const response = await fetch(
-    `${SERVER_ENDPOINT}/launch-time?start=${start}`,
-  ).then((res) => res.json());
-  if (response.statusCode !== 200)
-    throw new Error('Failed to fetch launch time');
+/**
+ * Gets the launch time of the pod (in milliseconds).
+ * @returns The launch time of the pod.
+ */
+export const getLaunchTime = async (): Promise<LaunchTimeResponse> => {
+  const response = await fetch(`${SERVER_ENDPOINT}/launch-time`);
+  if (response.status !== 200) throw new Error('Failed to fetch launch time');
   return response.json() as Promise<LaunchTimeResponse>;
 };

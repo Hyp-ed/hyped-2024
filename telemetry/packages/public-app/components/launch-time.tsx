@@ -1,7 +1,6 @@
 'use client';
 
 import { Card, Metric, Text } from '@tremor/react';
-import { useEffect, useState } from 'react';
 import { BadgeDelta } from '@tremor/react';
 import { useQuery } from 'react-query';
 import { getLaunchTime } from '@/helpers';
@@ -12,26 +11,22 @@ import { getLaunchTime } from '@/helpers';
  */
 export function LaunchTime() {
   const { data } = useQuery('launch-time', async () => await getLaunchTime(), {
-    refetchInterval: 1000,
+    refetchInterval: 900,
   });
 
-  const launchTime = data?.launchTime ?? -1;
-
-  const [time, setTime] = useState(-1);
-
-  useEffect(() => {
-    const d = new Date();
-    const now = d.getTime();
-    setTime(launchTime == -1 ? -1 : (now - launchTime) / 1000);
-  }, [launchTime]);
+  // Calculate the time since launch
+  const launchTime = data?.launchTime || -1;
+  const currentTimeInSeconds = Date.now();
+  const timeSinceLaunch =
+    launchTime > 0 ? (currentTimeInSeconds - launchTime) / 1000 : -1;
 
   return (
-    <Card decoration="top" decorationColor="red">
+    <Card decoration="top" decorationColor="red" className="space-y-2">
       <div>
         <Text>Time since launch</Text>
         <Metric>
-          {time > -1
-            ? `${Math.floor(time / 60)}m ${Math.floor(time % 60)}s`
+          {timeSinceLaunch > -1
+            ? `${Math.floor(timeSinceLaunch / 60)}m ${Math.floor(timeSinceLaunch % 60)}s`
             : 'Not launched yet'}
         </Metric>
       </div>

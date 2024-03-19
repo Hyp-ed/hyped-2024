@@ -1,60 +1,52 @@
 import { Linkedin, Facebook, Instagram, Github, Twitter } from 'lucide-react';
 import Link from 'next/link';
 
+/**
+ * Defines the social media icons and their links.
+ */
 const SOCIAL_ICONS = {
-  Facebook: {
+  facebook: {
     link: 'https://www.facebook.com/hypedinburgh/',
     component: (
-      <Facebook
-        color="#c91c10"
-        className=" dark:text-white hover:scale-110 transition"
-      />
+      <Facebook className="hover:scale-110 transition text-hyped-red" />
     ),
   },
   github: {
     link: 'https://github.com/hyp-ed/hyped-2024',
-    component: (
-      <Github
-        color="#c91c10"
-        className="dark:text-white hover:scale-110 transition"
-      />
-    ),
+    component: <Github className="hover:scale-110 transition text-hyped-red" />,
   },
   instagram: {
     link: 'https://www.instagram.com/hypedinburgh/',
     component: (
-      <Instagram
-        color="#c91c10"
-        className="dark:text-white hover:scale-110 transition"
-      />
+      <Instagram className="hover:scale-110 transition text-hyped-red" />
     ),
   },
   linkedIn: {
     link: 'https://www.linkedin.com/company/hyp-ed/',
     component: (
-      <Linkedin
-        color="#c91c10"
-        className="dark:text-white hover:scale-110 transition"
-      />
+      <Linkedin className="hover:scale-110 transition text-hyped-red" />
     ),
   },
   twitter: {
     link: 'https://twitter.com/hyped_hyperloop',
     component: (
-      <Twitter
-        color="#c91c10"
-        className="dark:text-white hover:scale-110 transition"
-      />
+      <Twitter className="hover:scale-110 transition text-hyped-red" />
     ),
   },
 };
 
+/**
+ * Displays a row of social media icons that link to the respective social media pages.
+ * @returns The social media icons.
+ */
 export const SocialIcons = () => {
+  const socialIcons = Object.values(SOCIAL_ICONS);
+
   return (
-    <div className="flex flex-row pt-3 gap-4">
-      {Object.values(SOCIAL_ICONS).map((urlIcon, index) => (
-        <Link href={urlIcon.link} key={index}>
-          {urlIcon.component}
+    <div className="flex flex-row justify-between w-1/2 sm:max-w-sm">
+      {socialIcons.map(({ link, component }, index) => (
+        <Link href={link} key={index}>
+          {component}
         </Link>
       ))}
     </div>

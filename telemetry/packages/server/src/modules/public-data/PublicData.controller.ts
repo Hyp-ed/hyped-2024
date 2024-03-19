@@ -8,6 +8,7 @@ import {
 import {
   HistoricalValueResponse,
   LaunchTimeResponse,
+  LevitationHeight,
   StateResponse,
 } from '@hyped/telemetry-types/dist/server/responses';
 import { POD_IDS, PodId } from '@hyped/telemetry-constants';
@@ -93,11 +94,9 @@ export class PublicDataController {
     @Query('start') startTimestamp: string,
     @Query('end') endTimestamp?: string,
   ): Promise<LevitationHeightResponse> {
-    if (!startTimestamp) {
-      throw new HttpException("Missing 'start' query parameter", 400);
-    }
     this.validatePodId(podId);
 
+    // TODOLater: this is basically quite bad, but we'll fix it later
     const [
       levitation_height_1,
       levitation_height_2,
@@ -145,24 +144,27 @@ export class PublicDataController {
     ]);
 
     return {
-      levitation_height_1: this.convertValueToInt(levitation_height_1),
-      levitation_height_2: this.convertValueToInt(levitation_height_2),
-      levitation_height_3: this.convertValueToInt(levitation_height_3),
-      levitation_height_4: this.convertValueToInt(levitation_height_4),
+      levitation_height_1: this.convertValueToInt(levitation_height_1[0]),
+      levitation_height_2: this.convertValueToInt(levitation_height_2[0]),
+      levitation_height_3: this.convertValueToInt(levitation_height_3[0]),
+      levitation_height_4: this.convertValueToInt(levitation_height_4[0]),
       levitation_height_lateral_1: this.convertValueToInt(
-        levitation_height_lateral_1,
+        levitation_height_lateral_1[0],
       ),
       levitation_height_lateral_2: this.convertValueToInt(
-        levitation_height_lateral_2,
+        levitation_height_lateral_2[0],
       ),
     } satisfies LevitationHeightResponse;
   }
 
-  private convertValueToInt(levitationHeights: RawLevitationHeight[]) {
-    return levitationHeights.map((reading) => ({
-      ...reading,
-      value: parseInt(reading.value),
-    }));
+  private convertValueToInt(
+    levitationHeights: RawLevitationHeight,
+  ): LevitationHeight {
+    return {
+      id: levitationHeights.id,
+      timestamp: levitationHeights.timestamp,
+      value: parseInt(levitationHeights.value),
+    };
   }
 
   private validatePodId(podId: string) {

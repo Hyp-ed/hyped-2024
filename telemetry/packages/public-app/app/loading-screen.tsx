@@ -21,14 +21,8 @@ export default function LoadingScreen({ status }: { status: Status }) {
   };
 
   return (
-    <div className="fade-in-image bg-black text-white text-lg justify-center content-center items-center flex flex-col h-screen w-screen">
-      <Image
-        alt="hyped logo"
-        src="/hyped.svg"
-        className="pb-10"
-        width={100}
-        height={100}
-      />
+    <div className="fade-in-image bg-black text-white text-lg justify-center content-center items-center flex flex-col h-[90vh] overflow-y-hidden gap-4">
+      <Image alt="hyped logo" src="/hyped.svg" width={100} height={100} />
       <div className="processing">
         <h1>{text[status]}</h1>
       </div>

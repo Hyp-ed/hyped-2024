@@ -23,7 +23,7 @@ export default function Home() {
   }, []);
 
   return (
-    <main className="min-h-screen">
+    <main className="dark:bg-black bg-white px-4 py-12">
       {status !== STATUSES.DONE ? <LoadingScreen status={status} /> : <Cards />}
     </main>
   );
