@@ -2,7 +2,7 @@ import { Card, Title, Text, Grid } from '@tremor/react';
 import { VelocityGraph } from '@/components/velocity-graph';
 import { useState } from 'react';
 import { DisplacementChart } from '@/components/displacement-chart';
-import Image, { getImageProps } from 'next/image';
+import Image from 'next/image';
 import { LaunchTime } from '@/components/launch-time';
 import LevitationHeight from '@/components/levitation-height';
 import { SocialIcons } from '@/components/social-icons';

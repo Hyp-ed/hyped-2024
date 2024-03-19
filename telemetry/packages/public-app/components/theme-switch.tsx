@@ -1,5 +1,4 @@
 import { Switch } from '@tremor/react';
-import { Sun } from 'lucide-react';
 import { useEffect, useState } from 'react';
 
 function ThemeSwitch() {
@@ -17,7 +16,7 @@ function ThemeSwitch() {
     setEnabled(enabled);
   };
 
-  return <Switch checked={enabled} onChange={handleThemeChange}></Switch>;
+  return <Switch checked={enabled} onChange={handleThemeChange} />;
 }
 
 export default ThemeSwitch;

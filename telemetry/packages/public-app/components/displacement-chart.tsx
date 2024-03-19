@@ -1,6 +1,6 @@
 'use client';
 
-import { Card, LineChart, Metric, Text, Title } from '@tremor/react';
+import { Card, LineChart, Metric, Text } from '@tremor/react';
 import { useQuery } from 'react-query';
 import format from 'date-fns/format';
 import { getDisplacement } from '@/helpers';
