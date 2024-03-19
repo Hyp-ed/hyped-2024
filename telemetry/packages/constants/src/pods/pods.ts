@@ -5,6 +5,7 @@ import {
   keyenceCommon,
   pressureCommon,
   thermistorCommon,
+  levitationHeightCommon,
 } from './common';
 
 export const POD_IDS = ['pod_1', 'pod_2024'] as const;
@@ -821,9 +822,44 @@ export const pods: Pods = {
       },
 
       // ************************************ LEVITATION ************************************ //
-      levitation_height: {
-        name: 'Levitation Height',
-        key: 'levitation_height',
+      levitation_height_1: {
+        name: 'Levitation Height 1',
+        key: 'levitation_height_1',
+        ...levitationHeightCommon,
+      },
+      levitation_height_2: {
+        name: 'Levitation Height 2',
+        key: 'levitation_height_2',
+        ...levitationHeightCommon,
+      },
+      levitation_height_3: {
+        name: 'Levitation Height 3',
+        key: 'levitation_height_3',
+        ...levitationHeightCommon,
+      },
+      levitation_height_4: {
+        name: 'Levitation Height 4',
+        key: 'levitation_height_4',
+        ...levitationHeightCommon,
+      },
+      levitation_height_lateral_1: {
+        name: 'Levitation Height Lateral 1',
+        key: 'levitation_height_lateral_1',
+        format: 'float',
+        type: 'levitation',
+        unit: 'mm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+        rms_noise: 2, // from Time-of-Flight datasheet
+        sampling_time: 500,
+      },
+      levitation_height_lateral_2: {
+        name: 'Levitation Height 2',
+        key: 'levitation_height_lateral_2',
         format: 'float',
         type: 'levitation',
         unit: 'mm',

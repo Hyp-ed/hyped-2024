@@ -5,6 +5,7 @@
   "scripts": {
     "dev:test": "node dist/index.js",
     "build": "tsdx build",
+    "build:fake": "tsdx build",
     "lint": "eslint \"src/**/*.ts\" --max-warnings 0 --report-unused-disable-directives",
     "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
