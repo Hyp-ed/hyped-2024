@@ -128,9 +128,6 @@ importers:
       date-fns:
         specifier: ^2.30.0
         version: 2.30.0
-      i:
-        specifier: ^0.3.7
-        version: 0.3.7
       influxdb:
         specifier: ^0.0.1
         version: 0.0.1
@@ -8786,11 +8783,6 @@ packages:
   /humanize-duration@3.28.0:
     resolution: {integrity: sha512-jMAxraOOmHuPbffLVDKkEKi/NeG8dMqP8lGRd6Tbf7JgAeG33jjgPWDbXXU7ypCI0o+oNKJFgbSB9FKVdWNI2A==}
     dev: true
-
-  /i@0.3.7:
-    resolution: {integrity: sha512-FYz4wlXgkQwIPqhzC5TdNMLSE5+GS1IIDJZY/1ZiEPCT2S3COUVZeT5OW4BmW4r5LHLQuOosSwsvnroG9GR59Q==}
-    engines: {node: '>=0.4'}
-    dev: false
 
   /iconv-lite@0.4.24:
     resolution: {integrity: sha512-v3MXnZAcvnywkTUEZomIActle7RXXeedOR31wwl7VlyoXO4Qi9arvSenNQWne1TcRwhCL1HwLI21bEqdpj8/rA==}
