@@ -2,7 +2,7 @@ import { StateMachineFlowChart } from './flow-chart';
 import { PodState } from '@/components/shared/pod-state';
 import { useCurrentPod } from '@/context/pods';
 // Debugging
-import { StateButton } from './debug-button';
+import { StateButton } from './dev-components/debug-btn';
 import { useState } from 'react';
 import { PodStateType } from '@hyped/telemetry-constants';
 
