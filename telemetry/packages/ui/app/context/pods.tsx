@@ -12,6 +12,9 @@ import {
   PodId,
   PodStateType,
   pods,
+  MODES,
+  MODE_ACTIVE_STATES,
+  ModeType
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
 
@@ -44,6 +47,10 @@ const LATENCY_REQUEST_INTERVAL = 100 as const;
  * The default pod ID to use
  */
 export const DEFAULT_POD_ID = POD_IDS[1];
+/**
+ * The default mode to run
+ */
+export const DEFAULT_MODE = MODES.ALL_SYSTEMS_ON;
 
 export type PreviousLatenciesType = {
   index: number;
@@ -66,6 +73,8 @@ type PodsContextType = {
   pods: PodsStateType;
   currentPod: PodId;
   setCurrentPod: (podId: PodId) => void;
+  currentMode: string;
+  setCurrentMode: (modeType: ModeType) => void;
 };
 
 const PodsContext = createContext<PodsContextType | null>(null);
@@ -98,6 +107,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
     createPodsStateFromIds(POD_IDS),
   );
   const [currentPod, setCurrentPod] = useState<PodId>(DEFAULT_POD_ID);
+  const [currentMode, setCurrentMode] = useState<ModeType>(DEFAULT_MODE);
   const [lastLatencyResponse, setLastLatencyResponse] = useState<number>();
 
   const { client, publish, subscribe, unsubscribe, mqttConnectionStatus } =
@@ -270,6 +280,8 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
     pods: podsState,
     currentPod,
     setCurrentPod,
+    currentMode,
+    setCurrentMode
   };
 
   return <PodsContext.Provider value={value}>{children}</PodsContext.Provider>;
@@ -304,8 +316,8 @@ export const usePods = () => {
 };
 
 /**
- * Hook to get the pod info for the currentlt selected pod.
- * @returns The pod info for the current pod
+ * Hook to retrieve selected pod info
+ * @returns Summary info for the current pod
  */
 export const useCurrentPod = () => {
   const context = useContext(PodsContext);
@@ -316,5 +328,20 @@ export const useCurrentPod = () => {
     currentPod: context.currentPod,
     pod: context.pods[context.currentPod],
     setCurrentPod: context.setCurrentPod,
+  };
+};
+
+/**
+ * Hook to retrieve active run mode info
+ * @returns Summary info on the current mode of operation
+ */
+export const useCurrentMode = () => {
+  const context = useContext(PodsContext);
+  if (!context) {
+    throw new Error('useCurrentPod must be used within PodsProvider');
+  }
+  return {
+    currentMode: context.currentMode,
+    setCurrentMode: context.setCurrentMode,
   };
 };
