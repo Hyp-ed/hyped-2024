@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 import { POD_IDS } from '@hyped/telemetry-constants';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useCurrentPod } from '@/context/pods';
+import { useCurrentPod, useCurrentMode } from '@/context/pods';
 import { Latency } from './latency';
 import { PodControls } from './pod-controls';
 import { PodDisconnectError } from '@/components/pod-disconnect-error';
@@ -28,6 +28,7 @@ export const Sidebar = ({
     currentPod,
     pod: { podState, connectionStatus },
   } = useCurrentPod();
+  const { currentMode } = useCurrentMode();
 
   // Display notification when the pod state changes
   useEffect(
@@ -36,6 +37,14 @@ export const Sidebar = ({
       log(`Pod state changed: ${podState}`, currentPod);
     },
     [podState, currentPod],
+  );
+
+  // Notify when run mode is changed
+  useEffect(
+    function notifyModeChange() {
+      log(`Run mode changed to ${currentMode}`);
+    },
+    [currentMode]
   );
 
   return (

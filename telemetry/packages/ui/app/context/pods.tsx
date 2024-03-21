@@ -13,7 +13,6 @@ import {
   PodStateType,
   pods,
   MODES,
-  MODE_ACTIVE_STATES,
   ModeType
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
@@ -50,7 +49,7 @@ export const DEFAULT_POD_ID = POD_IDS[1];
 /**
  * The default mode to run
  */
-export const DEFAULT_MODE = MODES.ALL_SYSTEMS_ON;
+export const DEFAULT_MODE = MODES.ALL_SYSTEMS_ON as ModeType;
 
 export type PreviousLatenciesType = {
   index: number;
@@ -73,7 +72,7 @@ type PodsContextType = {
   pods: PodsStateType;
   currentPod: PodId;
   setCurrentPod: (podId: PodId) => void;
-  currentMode: string;
+  currentMode: ModeType;
   setCurrentMode: (modeType: ModeType) => void;
 };
 

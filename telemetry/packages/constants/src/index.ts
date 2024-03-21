@@ -11,7 +11,7 @@ export {
   getStateType,
 } from './pods/states';
 export type { PodStateType, PodStateCategoryType } from './pods/states';
-export { MODES, MODE_ACTIVE_STATES } from './pods/modes';
+export { MODES, MODE_INACTIVE_STATES } from './pods/modes';
 export type { ModeType } from './pods/modes';
 export { openMctObjectTypes } from './openmct/object-types/object-types';
 

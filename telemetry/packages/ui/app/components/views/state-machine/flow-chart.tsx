@@ -3,7 +3,7 @@ import 'reactflow/dist/style.css';
 import {
   PodStateType,
   ALL_POD_STATES,
-  FAILSAFE_STATES,
+  MODE_INACTIVE_STATES,
 } from '@hyped/telemetry-constants';
 import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo, useEffect, useState } from 'react';
@@ -11,6 +11,8 @@ import './styles.css';
 import { getNodeType } from './utils';
 import { edges, getEdgeType } from './edges';
 import { CustomNodeType } from './types';
+import { useCurrentMode } from '@/context/pods';
+
 
 export function StateMachineFlowChart({
   currentState,
@@ -26,6 +28,8 @@ export function StateMachineFlowChart({
     }),
     [],
   );
+
+  const { currentMode } = useCurrentMode();
 
   const [failNode, setFailNode]: [Edge, any] = useState(edges[0]);
 
@@ -110,7 +114,7 @@ export function StateMachineFlowChart({
         type: getNodeType(ALL_POD_STATES.PRECHARGE),
       },
       {
-        id: 'ready-lev',
+        id: 'ready-for-levitation',
         data: {
           label: 'Ready for Levitation',
           sourcePositions: [
@@ -138,7 +142,7 @@ export function StateMachineFlowChart({
         type: getNodeType(ALL_POD_STATES.READY_FOR_LEVITATION),
       },
       {
-        id: 'begin-lev',
+        id: 'begin-levitation',
         data: {
           label: 'Begin Levitation',
           sourcePositions: [
@@ -166,7 +170,7 @@ export function StateMachineFlowChart({
         type: getNodeType(ALL_POD_STATES.BEGIN_LEVITATION),
       },
       {
-        id: 'ready-launch',
+        id: 'ready-for-launch',
         data: {
           label: 'Ready for Launch',
           sourcePositions: [
@@ -328,7 +332,7 @@ export function StateMachineFlowChart({
       },
 
       {
-        id: 'stop-lev',
+        id: 'stop-levitation',
         data: {
           label: 'Stop Levitation',
           sourcePositions: [
@@ -486,7 +490,11 @@ export function StateMachineFlowChart({
     <div className="h-full flex flex-col justify-center items-center">
       <div className="h-full w-full">
         <ReactFlow
-          nodes={nodes}
+          nodes={
+            nodes.filter(node => !MODE_INACTIVE_STATES[currentMode].includes(
+              node.id.replace(/-/g, '_').toUpperCase() as PodStateType
+              ))
+          }
           edges={[failNode].concat(edges.slice(1))}
           nodeTypes={nodeTypes}
           nodesDraggable={false}

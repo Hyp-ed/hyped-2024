@@ -1,5 +1,3 @@
-import { useState } from 'react';
-import { POD_IDS, PodId, pods } from '@hyped/telemetry-constants';
 import { Label } from '../ui/label';
 import {
   Select,
@@ -9,19 +7,20 @@ import {
   SelectValue,
 } from '../ui/select';
 import { useCurrentMode } from '@/context/pods';
+import { MODES, ModeType } from '@hyped/telemetry-constants';
 
 /**
  * A pod selector component which allows us to select a pod to view/control.
  */
 export const ModeSelector = () => {
-  const { currentMode, setCurrentMode } = useCurrentMode();
+  const { currentMode, setCurrentMode }: { currentMode: ModeType, setCurrentMode: (modeType: ModeType) => void } = useCurrentMode();
 
   return (
     <div className="space-y-2">
       <Label htmlFor="mode-select">Select Mode:</Label>
       <Select
         value={getDisplayText(currentMode)}
-        onValueChange={(v) => setCurrentMode(getModeIdFromDisplayText(v))}
+        onValueChange={ (v: ModeType) => setCurrentMode(v) }
       >
         <SelectTrigger id="mode-select" className="w-full">
           <SelectValue />
@@ -40,7 +39,7 @@ export const ModeSelector = () => {
 const ModeOptions = () => {
   // Get the display text for each pod in the `pods.ts` file
 
-  return Object.values(modeOptions).map((mode) => (
+  return Object.keys(MODES).map((mode) => (
     <SelectItem key={mode} value={mode}>
       {mode}
     </SelectItem>
@@ -50,20 +49,19 @@ const ModeOptions = () => {
 /**
  * Gets the text to display in the mode selector.
  */
-const getDisplayText = (mode: string) => modeOptions[mode];
+const getDisplayText = (mode: ModeType) => MODES[mode];
 
-const getModeIdFromDisplayText = (displayText: string) => {
-  const mode = Object.keys(modeOptions)
-    .find((key) => modeOptions[key] === displayText);
-  return mode as string;
-}
+// const getModeIdFromDisplayText = (displayText: ModeType) => {
+//   return Object.keys(MODES)
+//     .find((key) => MODES[key] === displayText);
+// }
 
-interface Options {
-  [key: string]: string
-}
+// interface Options {
+//   [key: string]: string
+// }
 
-const modeOptions: Options = {
-  ALL: 'All systems on',
-  LEV: 'Levitation only',
-  LIM: 'Propulsion only'
-}
+// const modeOptions: Options = {
+//   ALL: 'All systems on',
+//   LEV: 'Levitation only',
+//   LIM: 'Propulsion only'
+// }
