@@ -90,7 +90,6 @@ else
   # Only build if the image does not exist
   if [ "$cross_compile" = true ]; then
     image=$( docker images -q $CC_IMAGE_NAME 2> /dev/null )
-    echo $image
     if [[ -z ${image} ]]; then
       echo "[!] Building cross compile image"
       docker buildx build -f cc/Dockerfile.crosscompile -t $CC_IMAGE_NAME .
@@ -120,9 +119,9 @@ if [ "$docker_build" = true ]; then
   if [[ -n ${build_container} ]]; then
     echo "[!] Found existing container. Removing container"
     if [ "$cross_compile" = true ]; then
-      docker rm $CC_CONTAINER_NAME
+      docker rm $CC_CONTAINER_NAME > /dev/null
     else
-      docker rm $BUILD_CONTAINER_NAME
+      docker rm $BUILD_CONTAINER_NAME > /dev/null
     fi
   fi
 
