@@ -13,7 +13,7 @@ read_pins = []
 write_pins = []
 
 [io.i2c]
-enabled = false
+enabled = true
 buses = []
 
 [io.pwm]
@@ -31,7 +31,7 @@ buses = []
 
 [sensors]
 [sensors.accelerometer]
-enabled = false
+enabled = true
 bus = 2
 address = 25
 
