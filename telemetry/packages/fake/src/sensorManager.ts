@@ -134,7 +134,7 @@ export class SensorManager {
    * Subscribed clients extract values using payload[measurementKey]
    */
   private publishData(measurement: string, reading: string): void {
-    this.client.publish(`hyped/pod_1/measurement/${measurement}`, reading, {
+    this.client.publish(`hyped/pod_2024/measurement/${measurement}`, reading, {
       qos: 1,
     });
   }

@@ -6,6 +6,7 @@
     "start": "turbo run start",
     "dev": "turbo run dev",
     "dev:test": "turbo run dev:test",
+    "ci": "turbo run build lint",
     "lint": "turbo run lint --parallel",
     "lint:fix": "turbo run lint:fix --parallel",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
