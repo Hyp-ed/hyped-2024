@@ -1,4 +1,4 @@
-import ReactFlow, { Background, Position, Edge } from 'reactflow';
+import ReactFlow, { Background, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
 import {
   PodStateType,
@@ -37,8 +37,6 @@ export function StateMachineFlowChart({
   const [edges, setEdges] = useState(writeEdges(currentMode));
   const [failNode, setFailNode]: [CustomEdgeType, any] = useState(edges[0]);
   
-
-
   const nodes: CustomNodeType[] = useMemo(
     () => [
       {

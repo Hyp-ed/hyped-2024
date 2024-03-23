@@ -18,9 +18,12 @@ type StateButtonProps = {
 };
 
 export const StateButton: React.FC<StateButtonProps> = ({
+  /* eslint-disable react/prop-types */
   onStateChange,
   mode,
+  /* eslint-enable react/prop-types */
 }) => {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { TEXT, UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } =
     ALL_POD_STATES;
   const states: PodStateType[] = [...Object.values(NODE_STATES), SAFE].filter(
@@ -42,6 +45,7 @@ export const StateButton: React.FC<StateButtonProps> = ({
   useEffect(() => {
     setState(states[0]);
     onStateChange(states[0]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   return (

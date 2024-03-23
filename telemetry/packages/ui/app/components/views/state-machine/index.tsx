@@ -1,7 +1,7 @@
 import { StateMachineFlowChart } from './flow-chart';
 import { PodState } from '@/components/shared/pod-state';
-import { useCurrentPod, useCurrentMode } from '@/context/pods';
-// Debugging
+import { useCurrentPod } from '@/context/pods';
+
 import { StateButton } from './dev-components/debug-btn';
 import React, { useState } from 'react';
 import { PodStateType, ModeType } from '@hyped/telemetry-constants';
@@ -11,7 +11,7 @@ import { PodStateType, ModeType } from '@hyped/telemetry-constants';
  */
 export const StateMachine = () => {
   const {
-    pod: { id, podState },
+    pod: { id },
   } = useCurrentPod();
 
   // Debug state change buttom

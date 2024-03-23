@@ -1,4 +1,4 @@
-import { Edge, EdgeMarkerType, MarkerType } from 'reactflow';
+import { EdgeMarkerType, MarkerType } from 'reactflow';
 import {
   MODE_INACTIVE_STATES,
   ModeType,
