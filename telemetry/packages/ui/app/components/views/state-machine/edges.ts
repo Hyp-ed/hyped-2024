@@ -1,7 +1,9 @@
 import { Edge, EdgeMarkerType, MarkerType } from 'reactflow';
+import { MODES, MODE_INACTIVE_STATES, ModeType, PodStateType } from '@hyped/telemetry-constants';
+import { CustomEdgeType } from './types';
 
 // defines the arrow marker for the edges
-const arrow: EdgeMarkerType = {
+export const arrow: EdgeMarkerType = {
   type: MarkerType.Arrow,
   width: 32,
   height: 32,
@@ -13,13 +15,13 @@ const columns = {
     'idle',
     'calibrate',
     'precharge',
-    'ready-lev',
-    'begin-lev',
-    'ready-launch',
+    'ready-for-levitation',
+    'begin-levitation',
+    'ready-for-launch',
   ],
   center: ['accelerate', 'lim-brake', 'friction-brake'],
   right: [
-    'stop-lev',
+    'stop-levitation',
     'stopped',
     'battery-recharge',
     'capacitor-discharge',
@@ -34,24 +36,17 @@ export const getEdgeType = (source: string): [string, string] => {
   return ['left', 'left'];
 };
 
-export const edges: Edge[] = [
-  // Dynamic connection
-  {
-    id: 'precharge-failure-braking',
-    source: 'precharge',
-    target: 'failure-braking',
-    sourceHandle: 'right',
-    targetHandle: 'left',
-    type: 'step',
-    markerEnd: arrow,
-  },
-  // Static connections
+export const edges: CustomEdgeType[] = [
   {
     id: 'idle-calibrate',
     source: 'idle',
     target: 'calibrate',
     sourceHandle: 'top',
-    type: 'step',
+    targetHandle: 'bottom',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
@@ -59,97 +54,146 @@ export const edges: Edge[] = [
     source: 'calibrate',
     target: 'precharge',
     sourceHandle: 'top',
-    type: 'step',
+    targetHandle: 'bottom',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
-    id: 'precharge-ready-lev',
+    id: 'precharge-ready-for-levitation',
     source: 'precharge',
-    target: 'ready-lev',
+    target: 'ready-for-levitation',
     sourceHandle: 'top',
-    type: 'step',
+    targetHandle: 'bottom',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
-    id: 'ready-lev-begin-lev',
-    source: 'ready-lev',
-    target: 'begin-lev',
-    sourceHandle: 'top',
-    type: 'step',
+    // TODO: Add a dynamic connection
+    // Write a function which takes the mode
+    // and returns string for source/target/handle properties
+    
+    /*
+    const getEdgeConnection = (mode: string) => {
+      const alterations = (() => {
+      switch (mode) {
+        case 'LEV...':
+        return {
+          sourceHandle: 'right',
+          target: 'stop-levitation',
+          targetHandle: 'left',
+        };
+        // Add more cases for different modes
+        default:
+        return {};
+      }
+      })();
+
+      return {
+      source: 'ready-for-levitation',
+      target: 'begin-levitation',
+      sourceHandle: 'top',
+      type: 'smoothstep',
+            pathOptions: {
+        borderRadius: 20,
+      },
+      markerEnd: arrow,
+      ...alterations,
+      };
+    };
+    */
+
+    // sourceHandle: right when lev-only
+    id: 'ready-for-levitation-begin-levitation',
+    source: 'ready-for-levitation',
+    target: 'begin-levitation',
+    sourceHandle: 'top-right',
+    targetHandle: 'bottom-left',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
-    id: 'begin-lev-ready-launch',
-    source: 'begin-lev',
-    target: 'ready-launch',
-    sourceHandle: 'top',
-    type: 'step',
+    // target: stop-levitation when lev-only
+    // sourceHandle: right when lev-only
+    // targetHandle: left when lev-only
+    id: 'begin-levitation-ready-for-launch',
+    source: 'begin-levitation',
+    target: 'ready-for-launch',
+    sourceHandle: 'top-right',
+    targetHandle: 'bottom-left',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
-    id: 'ready-launch-accelerate',
-    source: 'ready-launch',
+    id: 'ready-for-launch-accelerate',
+    source: 'ready-for-launch',
     target: 'accelerate',
-    type: 'step',
+    sourceHandle: 'right-top',
+    targetHandle: 'top-top',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
-  //
   {
     id: 'accelerate-lim-brake',
     source: 'accelerate',
     target: 'lim-brake',
-    sourceHandle: 'bottom',
-    type: 'step',
+    sourceHandle: 'bottom-bottom',
+    targetHandle: 'top-top',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
-  // {
-  //   id: 'lim-brake-failure-braking',
-  //   source: 'lim-brake',
-  //   target: 'failure-braking',
-  //   sourceHandle: 'left',
-  //   type: 'step',
-  //   markerEnd: arrow,
-  // },
   {
     id: 'lim-brake-friction-brake',
     source: 'lim-brake',
     target: 'friction-brake',
-    sourceHandle: 'bottom',
-    type: 'step',
+    sourceHandle: 'bottom-bottom',
+    targetHandle: 'top-top',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
-  // {
-  //   id: 'friction-brake-failure-braking',
-  //   source: 'friction-brake',
-  //   target: 'failure-braking',
-  //   sourceHandle: 'left',
-  //   type: 'step',
-  //   markerEnd: arrow,
-  // },
-  // {
-  //   id: 'other-states-failure-braking',
-  //   source: 'other-states',
-  //   target: 'failure-braking',
-  //   targetHandle: 'bottom',
-  //   type: 'step',
-  //   markerEnd: arrow,
-  // },
   {
-    id: 'friction-brake-stop-lev',
+    id: 'friction-brake-stop-levitation',
     source: 'friction-brake',
-    target: 'stop-lev',
+    target: 'stop-levitation',
     sourceHandle: 'right',
-    type: 'step',
+    targetHandle: 'left',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   //
   {
-    id: 'stop-lev-stopped',
-    source: 'stop-lev',
+    id: 'stop-levitation-stopped',
+    source: 'stop-levitation',
     target: 'stopped',
     sourceHandle: 'bottom',
     targetHandle: 'top',
-    type: 'step',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
@@ -158,7 +202,10 @@ export const edges: Edge[] = [
     target: 'battery-recharge',
     sourceHandle: 'bottom',
     targetHandle: 'top',
-    type: 'step',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
@@ -167,7 +214,10 @@ export const edges: Edge[] = [
     target: 'capacitor-discharge',
     sourceHandle: 'bottom',
     targetHandle: 'top',
-    type: 'step',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
@@ -176,16 +226,56 @@ export const edges: Edge[] = [
     target: 'safe',
     sourceHandle: 'bottom',
     targetHandle: 'top',
-    type: 'step',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
   {
     id: 'failure-braking-capacitor-discharge',
     source: 'failure-braking',
     target: 'capacitor-discharge',
-    sourceHandle: 'bottom',
+    sourceHandle: 'right',
     targetHandle: 'left',
-    type: 'step',
+    type: 'smoothstep',
+    pathOptions: {
+      borderRadius: 20,
+    },
     markerEnd: arrow,
   },
 ];
+
+
+export const writeEdges = (mode: ModeType): CustomEdgeType[] => {
+
+  // return edges;
+
+  return edges.filter((edge) => {
+    return !MODE_INACTIVE_STATES[mode].includes(
+      edge.source.replace(/-/g, '_').toUpperCase() as PodStateType)
+  })
+  .map((edge, i, arr) => {
+    if (i < arr.length - 2) {
+      const regex = new RegExp(`${arr[i + 1].source}$`)
+      if ( !regex.test( edge.id ) ) {
+        edge.id = `${edge.source}-${arr[i + 1].source}`;
+        edge.target = arr[i + 1].source;
+      }
+    }
+    return {
+      ...edge,
+      // id: `${edge.source}-${arr[i + 1].source}`,
+      // target: arr[i + 1].source,
+      sourceHandle: edge.sourceHandle.includes('-')
+      ? (mode === 'ALL_SYSTEMS_ON' 
+        ? edge.sourceHandle.split('-')[0] : edge.sourceHandle.split('-')[1])
+      : edge.sourceHandle,
+      targetHandle: edge.targetHandle.includes('-')
+      ? (mode === 'ALL_SYSTEMS_ON' 
+        ? edge.targetHandle.split('-')[0] : edge.targetHandle.split('-')[1])
+      : edge.targetHandle,
+    }
+  })
+
+}

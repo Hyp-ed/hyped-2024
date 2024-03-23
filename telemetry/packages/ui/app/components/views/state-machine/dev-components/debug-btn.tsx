@@ -1,21 +1,26 @@
-import { useState, ComponentType } from 'react';
-import { getStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
+import { useState } from 'react';
+import { getStateType, ALL_POD_STATES, PodStateType, ModeType, MODE_INACTIVE_STATES } from '@hyped/telemetry-constants';
 import { cn } from '@/lib/utils';
 import { styles } from '@/components/shared/pod-state';
 
 type StateButtonProps = {
-  onStateChange: (newState: string) => void;
+  onStateChange: (newState: PodStateType) => void;
+  mode: ModeType;
 };
 
-export const StateButton: React.FC<StateButtonProps> = ({ onStateChange }) => {
+export const StateButton: React.FC<StateButtonProps> = ({
+  onStateChange,
+  mode
+}) => {
   const { TEXT, UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } =
-    ALL_POD_STATES;
-  const states = Object.keys(NODE_STATES).concat(SAFE);
+  ALL_POD_STATES;
+  const states: PodStateType[] = [...Object.values(NODE_STATES), SAFE ].filter((node) => {
+    return !MODE_INACTIVE_STATES[mode].includes(node);
+  });
   const [state, setState] = useState(states[0]);
 
-  const handleClick = (state: string) => {
+  const handleClick = (state: PodStateType) => {
     const nextState = states[(states.indexOf(state) + 1) % states.length];
-
     setState(nextState);
     onStateChange(nextState);
   };
@@ -35,7 +40,3 @@ export const StateButton: React.FC<StateButtonProps> = ({ onStateChange }) => {
     </div>
   );
 };
-
-// StateButton.propTypes = {
-//   onStateChange: PropTypes.func.isRequired
-// }

@@ -9,15 +9,17 @@ import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo, useEffect, useState } from 'react';
 import './styles.css';
 import { getNodeType } from './utils';
-import { edges, getEdgeType } from './edges';
-import { CustomNodeType } from './types';
+import { writeEdges, getEdgeType, arrow } from './edges';
+import { CustomEdgeType, CustomNodeType } from './types';
 import { useCurrentMode } from '@/context/pods';
 
 
 export function StateMachineFlowChart({
   currentState,
+  onModeChange: onModeChange
 }: {
   currentState: PodStateType;
+  onModeChange: any;
 }) {
   const nodeTypes = useMemo(
     () => ({
@@ -30,8 +32,12 @@ export function StateMachineFlowChart({
   );
 
   const { currentMode } = useCurrentMode();
+  
+  const [displayNodes, setDisplayNodes]: [CustomNodeType[], any] = useState([])
+  const [edges, setEdges] = useState(writeEdges(currentMode));
+  const [failNode, setFailNode]: [CustomEdgeType, any] = useState(edges[0]);
+  
 
-  const [failNode, setFailNode]: [Edge, any] = useState(edges[0]);
 
   const nodes: CustomNodeType[] = useMemo(
     () => [
@@ -118,10 +124,13 @@ export function StateMachineFlowChart({
         data: {
           label: 'Ready for Levitation',
           sourcePositions: [
-            {
-              position: Position.Top,
-              id: 'top',
-            },
+            // {
+            //   position: Position.Top,
+            //   id: 'top',
+            // },
+            ...(currentMode == 'ALL_SYSTEMS_ON' 
+              ? [{ position: Position.Top, id: 'top' }] 
+              : []),
             {
               position: Position.Right,
               id: 'right',
@@ -146,26 +155,31 @@ export function StateMachineFlowChart({
         data: {
           label: 'Begin Levitation',
           sourcePositions: [
-            {
-              position: Position.Top,
-              id: 'top',
-            },
+            ...(currentMode == 'ALL_SYSTEMS_ON' 
+              ? [{ position: Position.Top, id: 'top' }] 
+              : []),
             {
               position: Position.Right,
               id: 'right',
             },
+            // ...(currentMode == 'ALL_SYSTEMS_ON' 
+            //   ? [{ position: Position.Top, id: 'top' }] 
+            //   : []),
           ],
           targetPositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
+              position: currentMode == 'LEVITATION_ONLY' ? Position.Left : Position.Bottom,
+              id: currentMode == 'LEVITATION_ONLY' ? 'left' :  'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.BEGIN_LEVITATION,
         },
-        position: {
+        position: currentMode == 'LEVITATION_ONLY' ? {
+          x: 500,
+          y: 100,
+        } : {
           x: 200,
-          y: 0,
+          y: 0, 
         },
         type: getNodeType(ALL_POD_STATES.BEGIN_LEVITATION),
       },
@@ -178,6 +192,9 @@ export function StateMachineFlowChart({
               position: Position.Right,
               id: 'right',
             },
+            ...(currentMode == 'LIM_ONLY' 
+              ? [{ position: Position.Top, id: 'top' }] 
+              : []),
           ],
           targetPositions: [
             {
@@ -187,31 +204,15 @@ export function StateMachineFlowChart({
           ],
           active: currentState === ALL_POD_STATES.READY_FOR_LAUNCH,
         },
-        position: {
+        position: currentMode == 'LIM_ONLY' ? {
           x: 200,
-          y: -100,
+          y: 100,
+        } : {
+          x: 200,
+          y: -100
         },
         type: getNodeType(ALL_POD_STATES.READY_FOR_LAUNCH),
       },
-
-      // {
-      //   id: 'other-states',
-      //   data: {
-      //     label: 'All other States',
-      //     sourcePositions: [
-      //       {
-      //         position: Position.Top,
-      //         id: 'top',
-      //       },
-      //     ],
-      //     active: currentState === ALL_POD_STATES.TEXT,
-      //   },
-      //   position: {
-      //     x: 500,
-      //     y: 400
-      //   },
-      //   type: getNodeType(ALL_POD_STATES.TEXT),
-      // },
 
       {
         id: 'accelerate',
@@ -229,15 +230,25 @@ export function StateMachineFlowChart({
           ],
           targetPositions: [
             {
+              position: Position.Left,
+              id: 'left',
+            },
+            {
               position: Position.Top,
               id: 'top',
             },
+            // ...(currentMode != 'LIM_ONLY' 
+            //   ? [{ position: Position.Top, id: 'top' }] 
+            //   : []),
           ],
           active: currentState === ALL_POD_STATES.ACCELERATE,
         },
-        position: {
+        position: currentMode == 'LIM_ONLY' ? {
           x: 500,
-          y: 0,
+          y: 100,
+        } : {
+          x: 500,
+          y: 0
         },
         type: getNodeType(ALL_POD_STATES.ACCELERATE),
       },
@@ -263,9 +274,12 @@ export function StateMachineFlowChart({
           ],
           active: currentState === ALL_POD_STATES.LIM_BRAKE,
         },
-        position: {
+        position: currentMode == 'LIM_ONLY' ? {
           x: 500,
-          y: 100,
+          y: 200,
+        } : {
+          x: 500,
+          y: 100
         },
         type: getNodeType(ALL_POD_STATES.LIM_BRAKE),
       },
@@ -291,9 +305,12 @@ export function StateMachineFlowChart({
           ],
           active: currentState === ALL_POD_STATES.FRICTION_BRAKE,
         },
-        position: {
+        position: currentMode == 'LIM_ONLY' ? {
           x: 500,
-          y: 200,
+          y: 300,
+        } : {
+          x: 500,
+          y: 200
         },
         type: getNodeType(ALL_POD_STATES.FRICTION_BRAKE),
       },
@@ -324,9 +341,12 @@ export function StateMachineFlowChart({
           ],
           active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
         },
-        position: {
+        position: currentMode != 'LIM_ONLY' ? {
           x: 500,
           y: 300,
+        } : {
+          x: 500,
+          y: 400
         },
         type: getNodeType(ALL_POD_STATES.FAILURE_BRAKING),
       },
@@ -343,7 +363,13 @@ export function StateMachineFlowChart({
             {
               position: Position.Right,
               id: 'right',
-            },
+            }
+            // ...(currentState == ALL_POD_STATES.STOP_LEVITATION
+            //   ? [{
+            //     position: Position.Right,
+            //     id: 'right',
+            //   }]
+            //   : []),
           ],
           targetPositions: [
             {
@@ -355,7 +381,7 @@ export function StateMachineFlowChart({
         },
         position: {
           x: 800,
-          y: 0,
+          y: currentMode == 'LEVITATION_ONLY' ? 100 : 0,
         },
         type: getNodeType(ALL_POD_STATES.STOP_LEVITATION),
       },
@@ -378,12 +404,16 @@ export function StateMachineFlowChart({
               position: Position.Top,
               id: 'top',
             },
+            { // only for lim-only
+              position: Position.Left,
+              id: 'left',
+            },
           ],
           active: currentState === ALL_POD_STATES.STOPPED,
         },
         position: {
           x: 800,
-          y: 100,
+          y: currentMode == 'LEVITATION_ONLY' ? 200 : 100,
         },
         type: getNodeType(ALL_POD_STATES.STOPPED),
       },
@@ -472,30 +502,53 @@ export function StateMachineFlowChart({
         type: getNodeType(ALL_POD_STATES.SAFE),
       },
     ],
-    [currentState, edges],
+    [currentState, currentMode],
   );
+
 
   useEffect(() => {
     const active = nodes.find((n) => n.data.active) as CustomNodeType;
     setFailNode({
-      ...edges[0],
       id: `${active.id}-failure-braking`,
       source: active.id,
+      target: 'failure-braking',
       sourceHandle: getEdgeType(active.id)[0],
       targetHandle: getEdgeType(active.id)[1],
+      type: 'smoothstep',
+      pathOptions: {
+        borderRadius: 20,
+      },
+      markerEnd: arrow,
     });
-  }, [currentState, edges]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentState, currentMode, edges]);
+  
+
+  useEffect(() => {
+    setDisplayNodes(nodes.filter(
+      node => !MODE_INACTIVE_STATES[currentMode].includes(
+        node.id.replace(/-/g, '_').toUpperCase() as PodStateType
+      )));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [currentState, currentMode])
+
+  useEffect(() => {
+    setEdges([...writeEdges(currentMode), failNode]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [displayNodes, currentState, failNode])
+
+  useEffect(() => {
+    onModeChange(currentMode);
+  })
 
   return (
     <div className="h-full flex flex-col justify-center items-center">
       <div className="h-full w-full">
         <ReactFlow
-          nodes={
-            nodes.filter(node => !MODE_INACTIVE_STATES[currentMode].includes(
-              node.id.replace(/-/g, '_').toUpperCase() as PodStateType
-              ))
-          }
-          edges={[failNode].concat(edges.slice(1))}
+          nodes={displayNodes}
+          // nodes={
+          edges={edges}
+          // edges={[failNode].concat( getEdges(currentMode) )}
           nodeTypes={nodeTypes}
           nodesDraggable={false}
           nodesConnectable={false}
