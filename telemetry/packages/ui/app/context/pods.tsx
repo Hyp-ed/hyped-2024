@@ -13,7 +13,7 @@ import {
   PodStateType,
   pods,
   MODES,
-  ModeType
+  ModeType,
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
 
@@ -280,7 +280,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
     currentPod,
     setCurrentPod,
     currentMode,
-    setCurrentMode
+    setCurrentMode,
   };
 
   return <PodsContext.Provider value={value}>{children}</PodsContext.Provider>;

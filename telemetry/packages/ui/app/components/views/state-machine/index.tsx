@@ -13,25 +13,26 @@ export const StateMachine = () => {
   const {
     pod: { id, podState },
   } = useCurrentPod();
-  const { currentMode } = useCurrentMode();
 
-  // Debugging
+  // Debug state change buttom
   const [state, setState] = useState<PodStateType>('IDLE');
   const handleStateChange = (newState: PodStateType) => {
     setState(newState);
   };
 
-  const[mode, setMode] = useState<ModeType>('ALL_SYSTEMS_ON');
+  const [mode, setMode] = useState<ModeType>('ALL_SYSTEMS_ON');
   const handleModeChange = (newMode: ModeType) => {
     setMode(newMode);
-  }
+  };
 
   return (
     <div className="h-full">
-      <h1>{currentMode}</h1>
       <PodState podId={id} />
       <StateButton onStateChange={handleStateChange} mode={mode} />
-      <StateMachineFlowChart onModeChange={handleModeChange} currentState={state} />
+      <StateMachineFlowChart
+        onModeChange={handleModeChange}
+        currentState={state}
+      />
     </div>
   );
 };

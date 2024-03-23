@@ -10,17 +10,18 @@ import { useCurrentMode } from '@/context/pods';
 import { MODES, ModeType } from '@hyped/telemetry-constants';
 
 /**
- * A pod selector component which allows us to select a pod to view/control.
+ * A pod selector component which allows the selection of a mode of operation
+ * for a pod run.
  */
 export const ModeSelector = () => {
-  const { currentMode, setCurrentMode }: { currentMode: ModeType, setCurrentMode: (modeType: ModeType) => void } = useCurrentMode();
+  const { currentMode, setCurrentMode } = useCurrentMode();
 
   return (
     <div className="space-y-2">
       <Label htmlFor="mode-select">Select Mode:</Label>
       <Select
-        value={getDisplayText(currentMode)}
-        onValueChange={ (v: ModeType) => setCurrentMode(v) }
+        value={currentMode}
+        onValueChange={(v: ModeType) => setCurrentMode(v)}
       >
         <SelectTrigger id="mode-select" className="w-full">
           <SelectValue />
@@ -34,34 +35,12 @@ export const ModeSelector = () => {
 };
 
 /**
- * Returns the pod options for the pod selector by getting the display text for each pod in the `pods.ts` file.
+ * Returns a primitive select element with the available pod run mode options.
  */
 const ModeOptions = () => {
-  // Get the display text for each pod in the `pods.ts` file
-
   return Object.keys(MODES).map((mode) => (
     <SelectItem key={mode} value={mode}>
       {mode}
     </SelectItem>
   ));
 };
-
-/**
- * Gets the text to display in the mode selector.
- */
-const getDisplayText = (mode: ModeType) => MODES[mode];
-
-// const getModeIdFromDisplayText = (displayText: ModeType) => {
-//   return Object.keys(MODES)
-//     .find((key) => MODES[key] === displayText);
-// }
-
-// interface Options {
-//   [key: string]: string
-// }
-
-// const modeOptions: Options = {
-//   ALL: 'All systems on',
-//   LEV: 'Levitation only',
-//   LIM: 'Propulsion only'
-// }

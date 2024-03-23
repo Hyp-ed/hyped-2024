@@ -1,5 +1,9 @@
 import { Edge, EdgeMarkerType, MarkerType } from 'reactflow';
-import { MODES, MODE_INACTIVE_STATES, ModeType, PodStateType } from '@hyped/telemetry-constants';
+import {
+  MODE_INACTIVE_STATES,
+  ModeType,
+  PodStateType,
+} from '@hyped/telemetry-constants';
 import { CustomEdgeType } from './types';
 
 // defines the arrow marker for the edges
@@ -8,32 +12,6 @@ export const arrow: EdgeMarkerType = {
   width: 32,
   height: 32,
   strokeWidth: 0.5,
-};
-
-const columns = {
-  left: [
-    'idle',
-    'calibrate',
-    'precharge',
-    'ready-for-levitation',
-    'begin-levitation',
-    'ready-for-launch',
-  ],
-  center: ['accelerate', 'lim-brake', 'friction-brake'],
-  right: [
-    'stop-levitation',
-    'stopped',
-    'battery-recharge',
-    'capacitor-discharge',
-    'safe',
-  ],
-};
-
-export const getEdgeType = (source: string): [string, string] => {
-  if (columns.left.includes(source)) return ['right', 'left'];
-  if (columns.center.includes(source)) return ['left', 'left'];
-  if (columns.right.includes(source)) return ['right', 'bottom'];
-  return ['left', 'left'];
 };
 
 export const edges: CustomEdgeType[] = [
@@ -74,41 +52,6 @@ export const edges: CustomEdgeType[] = [
     markerEnd: arrow,
   },
   {
-    // TODO: Add a dynamic connection
-    // Write a function which takes the mode
-    // and returns string for source/target/handle properties
-    
-    /*
-    const getEdgeConnection = (mode: string) => {
-      const alterations = (() => {
-      switch (mode) {
-        case 'LEV...':
-        return {
-          sourceHandle: 'right',
-          target: 'stop-levitation',
-          targetHandle: 'left',
-        };
-        // Add more cases for different modes
-        default:
-        return {};
-      }
-      })();
-
-      return {
-      source: 'ready-for-levitation',
-      target: 'begin-levitation',
-      sourceHandle: 'top',
-      type: 'smoothstep',
-            pathOptions: {
-        borderRadius: 20,
-      },
-      markerEnd: arrow,
-      ...alterations,
-      };
-    };
-    */
-
-    // sourceHandle: right when lev-only
     id: 'ready-for-levitation-begin-levitation',
     source: 'ready-for-levitation',
     target: 'begin-levitation',
@@ -121,9 +64,6 @@ export const edges: CustomEdgeType[] = [
     markerEnd: arrow,
   },
   {
-    // target: stop-levitation when lev-only
-    // sourceHandle: right when lev-only
-    // targetHandle: left when lev-only
     id: 'begin-levitation-ready-for-launch',
     source: 'begin-levitation',
     target: 'ready-for-launch',
@@ -139,7 +79,7 @@ export const edges: CustomEdgeType[] = [
     id: 'ready-for-launch-accelerate',
     source: 'ready-for-launch',
     target: 'accelerate',
-    sourceHandle: 'right-top',
+    sourceHandle: 'top-top',
     targetHandle: 'top-top',
     type: 'smoothstep',
     pathOptions: {
@@ -246,36 +186,32 @@ export const edges: CustomEdgeType[] = [
   },
 ];
 
-
+// Generates edge definitions for a given mode of operation
 export const writeEdges = (mode: ModeType): CustomEdgeType[] => {
-
-  // return edges;
-
-  return edges.filter((edge) => {
-    return !MODE_INACTIVE_STATES[mode].includes(
-      edge.source.replace(/-/g, '_').toUpperCase() as PodStateType)
-  })
-  .map((edge, i, arr) => {
-    if (i < arr.length - 2) {
-      const regex = new RegExp(`${arr[i + 1].source}$`)
-      if ( !regex.test( edge.id ) ) {
-        edge.id = `${edge.source}-${arr[i + 1].source}`;
-        edge.target = arr[i + 1].source;
+  return edges
+    .filter((edge) => {
+      return !MODE_INACTIVE_STATES[mode].includes(
+        edge.source.replace(/-/g, '_').toUpperCase() as PodStateType,
+      );
+    })
+    .map((edge, i, arr) => {
+      if (i < arr.length - 2) {
+        const regex = new RegExp(`${arr[i + 1].source}$`);
+        if (!regex.test(edge.id)) {
+          edge.id = `${edge.source}-${arr[i + 1].source}`;
+          edge.target = arr[i + 1].source;
+        }
       }
-    }
-    return {
-      ...edge,
-      // id: `${edge.source}-${arr[i + 1].source}`,
-      // target: arr[i + 1].source,
-      sourceHandle: edge.sourceHandle.includes('-')
-      ? (mode === 'ALL_SYSTEMS_ON' 
-        ? edge.sourceHandle.split('-')[0] : edge.sourceHandle.split('-')[1])
-      : edge.sourceHandle,
-      targetHandle: edge.targetHandle.includes('-')
-      ? (mode === 'ALL_SYSTEMS_ON' 
-        ? edge.targetHandle.split('-')[0] : edge.targetHandle.split('-')[1])
-      : edge.targetHandle,
-    }
-  })
-
-}
+      return {
+        ...edge,
+        ...(edge.sourceHandle.includes('-') && mode != 'ALL_SYSTEMS_ON'
+          ? {
+            sourceHandle: edge.sourceHandle.split('-')[1],
+            targetHandle: edge.targetHandle.split('-')[1],
+          } : {
+            sourceHandle: edge.sourceHandle.split('-')[0],
+            targetHandle: edge.targetHandle.split('-')[0],
+          })
+      };
+    });
+};

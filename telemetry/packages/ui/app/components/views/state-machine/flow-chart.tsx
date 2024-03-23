@@ -9,7 +9,7 @@ import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo, useEffect, useState } from 'react';
 import './styles.css';
 import { getNodeType } from './utils';
-import { writeEdges, getEdgeType, arrow } from './edges';
+import { writeEdges, arrow } from './edges';
 import { CustomEdgeType, CustomNodeType } from './types';
 import { useCurrentMode } from '@/context/pods';
 
@@ -47,12 +47,12 @@ export function StateMachineFlowChart({
           label: 'Idle',
           sourcePositions: [
             {
-              position: Position.Top,
-              id: 'top',
-            },
-            {
               position: Position.Right,
               id: 'right',
+            },
+            {
+              position: Position.Top,
+              id: 'top',
             },
           ],
           active: currentState === ALL_POD_STATES.IDLE,
@@ -69,12 +69,12 @@ export function StateMachineFlowChart({
           label: 'Calibrate',
           sourcePositions: [
             {
-              position: Position.Top,
-              id: 'top',
-            },
-            {
               position: Position.Right,
               id: 'right',
+            },
+            {
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
@@ -97,12 +97,12 @@ export function StateMachineFlowChart({
           label: 'Precharge',
           sourcePositions: [
             {
-              position: Position.Top,
-              id: 'top',
-            },
-            {
               position: Position.Right,
               id: 'right',
+            },
+            {
+              position: Position.Top,
+              id: 'top',
             },
           ],
           targetPositions: [
@@ -124,17 +124,13 @@ export function StateMachineFlowChart({
         data: {
           label: 'Ready for Levitation',
           sourcePositions: [
-            // {
-            //   position: Position.Top,
-            //   id: 'top',
-            // },
-            ...(currentMode == 'ALL_SYSTEMS_ON' 
-              ? [{ position: Position.Top, id: 'top' }] 
-              : []),
             {
               position: Position.Right,
               id: 'right',
             },
+            ...(currentMode == 'ALL_SYSTEMS_ON' 
+              ? [{ position: Position.Top, id: 'top' }] 
+              : []),
           ],
           targetPositions: [
             {
@@ -155,21 +151,22 @@ export function StateMachineFlowChart({
         data: {
           label: 'Begin Levitation',
           sourcePositions: [
-            ...(currentMode == 'ALL_SYSTEMS_ON' 
-              ? [{ position: Position.Top, id: 'top' }] 
-              : []),
             {
               position: Position.Right,
               id: 'right',
             },
-            // ...(currentMode == 'ALL_SYSTEMS_ON' 
-            //   ? [{ position: Position.Top, id: 'top' }] 
-            //   : []),
+            ...(currentMode == 'ALL_SYSTEMS_ON' 
+              ? [{ position: Position.Top, id: 'top' }] 
+              : []),
           ],
           targetPositions: [
             {
-              position: currentMode == 'LEVITATION_ONLY' ? Position.Left : Position.Bottom,
-              id: currentMode == 'LEVITATION_ONLY' ? 'left' :  'bottom',
+              position: Position.Bottom,
+              id: 'bottom',
+            },
+            {
+              position: Position.Left,
+              id: 'left',
             },
           ],
           active: currentState === ALL_POD_STATES.BEGIN_LEVITATION,
@@ -237,9 +234,6 @@ export function StateMachineFlowChart({
               position: Position.Top,
               id: 'top',
             },
-            // ...(currentMode != 'LIM_ONLY' 
-            //   ? [{ position: Position.Top, id: 'top' }] 
-            //   : []),
           ],
           active: currentState === ALL_POD_STATES.ACCELERATE,
         },
@@ -289,12 +283,12 @@ export function StateMachineFlowChart({
           label: 'Friction Brake',
           sourcePositions: [
             {
-              position: Position.Right,
-              id: 'right',
-            },
-            {
               position: Position.Left,
               id: 'left',
+            },
+            {
+              position: Position.Right,
+              id: 'right',
             },
           ],
           targetPositions: [
@@ -327,16 +321,12 @@ export function StateMachineFlowChart({
           ],
           targetPositions: [
             {
-              position: Position.Right,
-              id: 'right',
+              position: Position.Bottom,
+              id: 'bottom',
             },
             {
               position: Position.Left,
               id: 'left',
-            },
-            {
-              position: Position.Bottom,
-              id: 'bottom',
             },
           ],
           active: currentState === ALL_POD_STATES.FAILURE_BRAKING,
@@ -357,19 +347,13 @@ export function StateMachineFlowChart({
           label: 'Stop Levitation',
           sourcePositions: [
             {
+              position: Position.Right,
+              id: 'right',
+            },
+            {
               position: Position.Bottom,
               id: 'bottom',
             },
-            {
-              position: Position.Right,
-              id: 'right',
-            }
-            // ...(currentState == ALL_POD_STATES.STOP_LEVITATION
-            //   ? [{
-            //     position: Position.Right,
-            //     id: 'right',
-            //   }]
-            //   : []),
           ],
           targetPositions: [
             {
@@ -391,22 +375,21 @@ export function StateMachineFlowChart({
           label: 'Stopped',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
-            },
-            {
               position: Position.Right,
               id: 'right',
             },
+            {
+              position: Position.Bottom,
+              id: 'bottom',
+            },
           ],
           targetPositions: [
+            ...(currentMode == 'LIM_ONLY' 
+              ? [{ position: Position.Left, id: 'left' }] 
+              : [{ position: Position.Top, id: 'top' }]),
             {
               position: Position.Top,
               id: 'top',
-            },
-            { // only for lim-only
-              position: Position.Left,
-              id: 'left',
             },
           ],
           active: currentState === ALL_POD_STATES.STOPPED,
@@ -423,12 +406,12 @@ export function StateMachineFlowChart({
           label: 'Battery Recharge',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
-            },
-            {
               position: Position.Right,
               id: 'right',
+            },
+            {
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           targetPositions: [
@@ -451,12 +434,12 @@ export function StateMachineFlowChart({
           label: 'Capacitor Discharge',
           sourcePositions: [
             {
-              position: Position.Bottom,
-              id: 'bottom',
-            },
-            {
               position: Position.Right,
               id: 'right',
+            },
+            {
+              position: Position.Bottom,
+              id: 'bottom',
             },
           ],
           targetPositions: [
@@ -505,15 +488,17 @@ export function StateMachineFlowChart({
     [currentState, currentMode],
   );
 
-
+  /**
+   * Push arrow connecting currently active state node to failure node
+   */
   useEffect(() => {
     const active = nodes.find((n) => n.data.active) as CustomNodeType;
     setFailNode({
       id: `${active.id}-failure-braking`,
       source: active.id,
       target: 'failure-braking',
-      sourceHandle: getEdgeType(active.id)[0],
-      targetHandle: getEdgeType(active.id)[1],
+      sourceHandle: active.data.sourcePositions[0].id,
+      targetHandle: active.position.x < 800 ? 'left' : 'bottom',
       type: 'smoothstep',
       pathOptions: {
         borderRadius: 20,
@@ -523,20 +508,28 @@ export function StateMachineFlowChart({
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentState, currentMode, edges]);
   
-
+  /**
+   * Render only active nodes based on current mode
+   */
   useEffect(() => {
     setDisplayNodes(nodes.filter(
       node => !MODE_INACTIVE_STATES[currentMode].includes(
         node.id.replace(/-/g, '_').toUpperCase() as PodStateType
       )));
   // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [currentState, currentMode])
+  }, [currentState, currentMode])
 
+  /**
+   * Reset edge definitions for current mode's state diagram layout
+   */
   useEffect(() => {
     setEdges([...writeEdges(currentMode), failNode]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [displayNodes, currentState, failNode])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [failNode])
 
+  /**
+   * Update mode changes in the parent StateMachine component
+   */
   useEffect(() => {
     onModeChange(currentMode);
   })
@@ -546,9 +539,7 @@ export function StateMachineFlowChart({
       <div className="h-full w-full">
         <ReactFlow
           nodes={displayNodes}
-          // nodes={
           edges={edges}
-          // edges={[failNode].concat( getEdges(currentMode) )}
           nodeTypes={nodeTypes}
           nodesDraggable={false}
           nodesConnectable={false}

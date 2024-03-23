@@ -39,12 +39,12 @@ export const Sidebar = ({
     [podState, currentPod],
   );
 
-  // Notify when run mode is changed
+  // Notify when mode of operation is changed
   useEffect(
     function notifyModeChange() {
       log(`Run mode changed to ${currentMode}`);
     },
-    [currentMode]
+    [currentMode],
   );
 
   return (

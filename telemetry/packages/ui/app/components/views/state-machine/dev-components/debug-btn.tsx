@@ -1,5 +1,14 @@
-import { useState } from 'react';
-import { getStateType, ALL_POD_STATES, PodStateType, ModeType, MODE_INACTIVE_STATES } from '@hyped/telemetry-constants';
+/**
+ * This file is only used for debugging purposes and is not included in the final build.
+ */
+import { useEffect, useState } from 'react';
+import {
+  getStateType,
+  ALL_POD_STATES,
+  PodStateType,
+  ModeType,
+  MODE_INACTIVE_STATES,
+} from '@hyped/telemetry-constants';
 import { cn } from '@/lib/utils';
 import { styles } from '@/components/shared/pod-state';
 
@@ -10,13 +19,15 @@ type StateButtonProps = {
 
 export const StateButton: React.FC<StateButtonProps> = ({
   onStateChange,
-  mode
+  mode,
 }) => {
   const { TEXT, UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } =
-  ALL_POD_STATES;
-  const states: PodStateType[] = [...Object.values(NODE_STATES), SAFE ].filter((node) => {
-    return !MODE_INACTIVE_STATES[mode].includes(node);
-  });
+    ALL_POD_STATES;
+  const states: PodStateType[] = [...Object.values(NODE_STATES), SAFE].filter(
+    (node) => {
+      return !MODE_INACTIVE_STATES[mode].includes(node);
+    },
+  );
   const [state, setState] = useState(states[0]);
 
   const handleClick = (state: PodStateType) => {
@@ -24,6 +35,14 @@ export const StateButton: React.FC<StateButtonProps> = ({
     setState(nextState);
     onStateChange(nextState);
   };
+
+  /**
+   * Reset state progression when mode is changed
+   */
+  useEffect(() => {
+    setState(states[0]);
+    onStateChange(states[0]);
+  }, [mode]);
 
   return (
     <div className={cn('flex justify-between px-40')}>

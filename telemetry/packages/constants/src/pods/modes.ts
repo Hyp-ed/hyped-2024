@@ -1,4 +1,4 @@
-import { ACTIVE_STATES, PodStateType } from "./states";
+import { ACTIVE_STATES, PodStateType } from './states';
 
 export type ModeType = keyof typeof MODES;
 
@@ -6,7 +6,7 @@ export const MODES = {
   ALL_SYSTEMS_ON: 'ALL_SYSTEMS_ON',
   LEVITATION_ONLY: 'LEVITATION_ONLY',
   LIM_ONLY: 'LIM_ONLY',
-}
+};
 
 type ModeStates = Record<ModeType, PodStateType[]>;
 
@@ -24,4 +24,4 @@ export const MODE_INACTIVE_STATES: ModeStates = {
     ACTIVE_STATES.BEGIN_LEVITATION,
     ACTIVE_STATES.STOP_LEVITATION,
   ],
-}
+};

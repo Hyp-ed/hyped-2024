@@ -17,7 +17,12 @@ export type NodeDataType = {
 };
 
 export type CustomNodeType = Omit<Node, 'data'> & {
-  data: NodeDataType;
+  data: NodeDataType & {
+    sourcePositions: {
+      position: Position;
+      id: string;
+    }[];
+  };
 };
 
 export type CustomEdgeType = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
@@ -25,4 +30,4 @@ export type CustomEdgeType = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
   targetHandle: string;
 } & {
   pathOptions?: SmoothStepPathOptions;
-}
+};
