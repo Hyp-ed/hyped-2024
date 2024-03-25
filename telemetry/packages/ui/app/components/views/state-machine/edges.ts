@@ -206,12 +206,13 @@ export const writeEdges = (mode: ModeType): CustomEdgeType[] => {
         ...edge,
         ...(edge.sourceHandle.includes('-') && mode != 'ALL_SYSTEMS_ON'
           ? {
-            sourceHandle: edge.sourceHandle.split('-')[1],
-            targetHandle: edge.targetHandle.split('-')[1],
-          } : {
-            sourceHandle: edge.sourceHandle.split('-')[0],
-            targetHandle: edge.targetHandle.split('-')[0],
-          })
+              sourceHandle: edge.sourceHandle.split('-')[1],
+              targetHandle: edge.targetHandle.split('-')[1],
+            }
+          : {
+              sourceHandle: edge.sourceHandle.split('-')[0],
+              targetHandle: edge.targetHandle.split('-')[0],
+            }),
       };
     });
 };

@@ -45,7 +45,7 @@ export const StateButton: React.FC<StateButtonProps> = ({
   useEffect(() => {
     setState(states[0]);
     onStateChange(states[0]);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mode]);
 
   return (
