@@ -1,4 +1,4 @@
-#include "Relay.hpp"
+#include "relay.hpp"
 
 namespace hyped::sensors {
 
