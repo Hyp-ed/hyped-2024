@@ -5,33 +5,37 @@ namespace hyped::sensors {
 std::optional<Relay> Relay::create(core::ILogger& logger,
                                     std::shared_ptr<io::IGpio> gpio,
                                     const std::uint8_t new_pin) {
-    const auto reader = gpio->getReader(new_pin, io::Edge::kNone);
-    if (!reader) {
-        logger.log(core::LogLevel::kFatal, "Failed to create Relay instance");
-        return std::nullopt;
-    }
-    logger.log(core::LogLevel::kDebug, "Successfully created Relay instance");
-    return Relay(logger, *reader);
+
+   int fd = open("/sys/class/gpio/gpio115/value", O_WRONLY);
+  if (fd == -1) {
+    logger.log(core::LogLevel::kFatal, "Failed to open GPIO file");
+    return std::nullopt;
+  }
+
+  logger.log(core::LogLevel::kDebug, "Relay created successfully");
+
+  return Relay(logger, fd, pin);
 }
 
-    // Convert DigitalSignal to a string
-    const std::uint8_t signal_value = static_cast<std::uint8_t>(state); 
-    char write_buffer[2];
-    snprintf(write_buffer, sizeof(write_buffer), "%d", signal_value);
-    // Write the value to the file
-    const ssize_t write_result = ::write(write_file_descriptor_, write_buffer, sizeof(write_buffer));
-    if (write_result != sizeof(write_buffer)) {
-        logger_.log(core::LogLevel::kFatal, "Failed to write GPIO value");
-        return core::Result Relay::close();
-    }
-    logger_.log(core::LogLevel::kDebug, "Wrote %d to GPIO", signal_value);
-    return core::Result Relay::open() {
-    // set relay to be open by writing the GPIO signal
-};
-
-Relay::~Relay() {
+core::Result Relay::open() {
+  return writeGpio(core::DigitalSignal::kHigh);
 }
 
+core::Result Relay::close() {
+  return writeGpio(core::DigitalSignal::kLow);
+}
 
-}  // namespace hyped::sensors
+Relay::Relay(core::ILogger& logger, int fd, std::uint8_t pin)
+    : logger_(logger), write_file_descriptor_(fd), pin_(pin) {}
 
+core::Result Relay::writeGpio(core::DigitalSignal signal) {
+  int result = write(write_file_descriptor_, signal);
+  if (result == -1) {
+    logger_.log(core::LogLevel::kError, "Failed to write to GPIO");
+    return core::Result::kFailure;
+  }
+
+  return core::Result::kSuccess;
+}
+
+} // namespace hyped::sensors
