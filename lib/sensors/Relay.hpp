@@ -7,7 +7,6 @@
 #include <core/logger.hpp>
 #include <io/gpio.hpp>
 
-
 namespace hyped::sensors {
 
 class Relay {
