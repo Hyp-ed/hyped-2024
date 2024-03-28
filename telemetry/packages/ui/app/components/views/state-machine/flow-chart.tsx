@@ -12,6 +12,7 @@ import { getNodeType } from './utils';
 import { writeEdges, arrow } from './edges';
 import { CustomEdgeType, CustomNodeType } from './types';
 import { useCurrentMode } from '@/context/pods';
+import { config } from '@/config'
 
 export function StateMachineFlowChart({
   currentState,

@@ -3,7 +3,6 @@ import {
   FAILURE_STATES,
   ACTIVE_STATES,
   PASSIVE_STATES,
-  NEUTRAL_STATES,
 } from '@hyped/telemetry-constants';
 
 /**
@@ -15,5 +14,4 @@ export const getNodeType = (state: PodStateType) => {
   if (state in FAILURE_STATES) return 'FailureNode';
   if (state in PASSIVE_STATES) return 'PassiveNode';
   if (state in ACTIVE_STATES) return 'ActiveNode';
-  if (state in NEUTRAL_STATES) return 'NeutralNode';
 };

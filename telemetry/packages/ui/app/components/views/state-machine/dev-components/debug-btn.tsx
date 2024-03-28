@@ -24,7 +24,7 @@ export const StateButton: React.FC<StateButtonProps> = ({
   /* eslint-enable react/prop-types */
 }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { TEXT, UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } =
+  const { UNKNOWN, FAILURE_BRAKING, SAFE, ...NODE_STATES } =
     ALL_POD_STATES;
   const states: PodStateType[] = [...Object.values(NODE_STATES), SAFE].filter(
     (node) => {

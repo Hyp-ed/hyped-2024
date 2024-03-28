@@ -5,6 +5,7 @@ import { useCurrentPod } from '@/context/pods';
 import { StateButton } from './dev-components/debug-btn';
 import React, { useState } from 'react';
 import { PodStateType, ModeType } from '@hyped/telemetry-constants';
+import { config } from '@/config';
 
 /**
  * The state machine view which displays the current state of the pod and the flow chart describing the state machine.
