@@ -26,6 +26,11 @@ export const StateMachine = () => {
     setMode(newMode);
   };
 
+  return <StateMachineFlowChart 
+      onModeChange={handleModeChange}
+      currentState={state}
+    />
+
   return (
     <div className="h-full">
       <PodState podId={id} />
