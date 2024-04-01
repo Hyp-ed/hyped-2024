@@ -3,8 +3,8 @@ import {
   FAILURE_STATES,
   ACTIVE_STATES,
   PASSIVE_STATES,
-  MODE_INACTIVE_STATES,
   ALL_POD_STATES,
+  MODE_EXCLUDED_STATES,
   ModeType,
 } from '@hyped/telemetry-constants';
 
@@ -19,8 +19,11 @@ export const getNodeType = (state: PodStateType) => {
   if (state in ACTIVE_STATES) return 'ActiveNode';
 };
 
-export const getActiveStates = (mode: ModeType) => {
+export const getEnabledStates = (mode: ModeType) => {
   return Object.values(ALL_POD_STATES).filter(
-    (state) => !(state in MODE_INACTIVE_STATES[mode]),
+    (state) => !(state in MODE_EXCLUDED_STATES[mode]),
   );
 };
+
+export const isEnabledState = (mode: ModeType, state: PodStateType) =>
+  !MODE_EXCLUDED_STATES[mode].includes(state);
