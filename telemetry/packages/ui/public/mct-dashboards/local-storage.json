@@ -573,10 +573,7 @@
           "id": "5af6cbe2-18cc-4603-b7d5-e08b1ea1cdf5"
         }
       ],
-      "layoutGrid": [
-        10,
-        10
-      ],
+      "layoutGrid": [10, 10],
       "objectStyles": {
         "1ffbd2d5-a94d-410f-8a0a-e4af1c5710c5": {
           "staticStyle": {
@@ -1361,9 +1358,7 @@
                   "key": "displacement"
                 },
                 "operation": "greaterThan",
-                "input": [
-                  "50"
-                ],
+                "input": ["50"],
                 "metadata": "value"
               }
             ]
@@ -1515,9 +1510,7 @@
                   "key": "brake_clamp_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "0"
-                ],
+                "input": ["0"],
                 "metadata": "value"
               }
             ]
@@ -1538,9 +1531,7 @@
                   "key": "brake_clamp_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "1"
-                ],
+                "input": ["1"],
                 "metadata": "value"
               }
             ]
@@ -1571,97 +1562,6 @@
     "location": null,
     "created": 1689724453415,
     "persisted": 1689760439774
-  },
-  "5baada0d-b9bb-4acc-b1f0-b6aee6a482ea": {
-    "identifier": {
-      "key": "5baada0d-b9bb-4acc-b1f0-b6aee6a482ea",
-      "namespace": ""
-    },
-    "name": "pls bro",
-    "type": "conditionSet",
-    "configuration": {
-      "conditionTestData": [
-        {
-          "telemetry": {
-            "namespace": "hyped.pod_1",
-            "key": "pressure_1"
-          },
-          "metadata": "value",
-          "input": "",
-          "value": "10"
-        }
-      ],
-      "conditionCollection": [
-        {
-          "id": "8fcbe386-a0f8-45ef-815b-9e3421522c76",
-          "configuration": {
-            "name": "red",
-            "output": "red",
-            "trigger": "all",
-            "criteria": [
-              {
-                "id": "567adf65-cbdb-41d1-9224-2dec7e4757b9",
-                "telemetry": {
-                  "namespace": "hyped.pod_1",
-                  "key": "pressure_1"
-                },
-                "operation": "greaterThan",
-                "input": [
-                  "15"
-                ],
-                "metadata": ""
-              }
-            ]
-          },
-          "summary": "Match if all criteria are met:  Pressure 1   > 15 "
-        },
-        {
-          "id": "63a75986-ba4e-4a7a-b05e-faa9f95a1ec7",
-          "configuration": {
-            "name": "orange",
-            "output": "orange",
-            "trigger": "all",
-            "criteria": [
-              {
-                "id": "638c83f3-b2b9-4f67-b17a-2ee7a5a320ed",
-                "telemetry": {
-                  "namespace": "hyped.pod_1",
-                  "key": "pressure_1"
-                },
-                "operation": "greaterThan",
-                "input": [
-                  "10"
-                ],
-                "metadata": "value"
-              }
-            ]
-          },
-          "summary": "Match if all criteria are met:  Pressure 1 Value  > 10 "
-        },
-        {
-          "isDefault": true,
-          "id": "56c556e4-50d2-4b6a-b439-92a49ffb45e3",
-          "configuration": {
-            "name": "Default",
-            "output": "Default",
-            "trigger": "all",
-            "criteria": []
-          },
-          "summary": ""
-        }
-      ]
-    },
-    "composition": [
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_1"
-      }
-    ],
-    "telemetry": {},
-    "modified": 1689760448115,
-    "location": null,
-    "created": 1689725436902,
-    "persisted": 1689760448115
   },
   "ce783d8b-890e-43dd-b918-06bce7ddc515": {
     "identifier": {
@@ -2046,9 +1946,7 @@
                   "key": "battery_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "0"
-                ],
+                "input": ["0"],
                 "metadata": "value"
               }
             ]
@@ -2101,19 +1999,14 @@
                 "id": "a62615cb-b2aa-4c9e-bde1-b83110feafa0",
                 "telemetry": "any",
                 "operation": "isStale",
-                "input": [
-                  "2"
-                ],
+                "input": ["2"],
                 "metadata": "value"
               },
               {
                 "id": "e6fcb258-cb39-4536-a2a8-d5afd37e5e18",
                 "telemetry": "any",
                 "operation": "notBetween",
-                "input": [
-                  "15",
-                  "120"
-                ],
+                "input": ["15", "120"],
                 "metadata": "value"
               }
             ]
@@ -2213,9 +2106,7 @@
                   "key": "motor_controller_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "0"
-                ],
+                "input": ["0"],
                 "metadata": "value"
               }
             ]
@@ -2268,19 +2159,14 @@
                 "id": "55645368-3cfe-4268-b002-205793adc832",
                 "telemetry": "any",
                 "operation": "notBetween",
-                "input": [
-                  "-0.2",
-                  "4.2"
-                ],
+                "input": ["-0.2", "4.2"],
                 "metadata": "value"
               },
               {
                 "id": "dbd135b7-8a67-4ad7-a734-994ed581eec4",
                 "telemetry": "any",
                 "operation": "isStale",
-                "input": [
-                  "2"
-                ],
+                "input": ["2"],
                 "metadata": "value"
               }
             ]
@@ -2340,10 +2226,7 @@
                   "key": "pressure_active_suspension_reservoir"
                 },
                 "operation": "notBetween",
-                "input": [
-                  "3",
-                  "7.4"
-                ],
+                "input": ["3", "7.4"],
                 "metadata": "value"
               },
               {
@@ -2353,9 +2236,7 @@
                   "key": "pressure_active_suspension_reservoir"
                 },
                 "operation": "isStale",
-                "input": [
-                  "2"
-                ],
+                "input": ["2"],
                 "metadata": "value"
               }
             ]
@@ -2376,10 +2257,7 @@
                   "key": "pressure_back_pull"
                 },
                 "operation": "notBetween",
-                "input": [
-                  "-0.2",
-                  "5.5"
-                ],
+                "input": ["-0.2", "5.5"],
                 "metadata": "value"
               },
               {
@@ -2389,9 +2267,7 @@
                   "key": "pressure_back_pull"
                 },
                 "operation": "isStale",
-                "input": [
-                  "2"
-                ],
+                "input": ["2"],
                 "metadata": "value"
               },
               {
@@ -2401,10 +2277,7 @@
                   "key": "pressure_front_pull"
                 },
                 "operation": "notBetween",
-                "input": [
-                  "-0.2",
-                  "5.5"
-                ],
+                "input": ["-0.2", "5.5"],
                 "metadata": "value"
               },
               {
@@ -2414,9 +2287,7 @@
                   "key": "pressure_front_pull"
                 },
                 "operation": "isStale",
-                "input": [
-                  "2"
-                ],
+                "input": ["2"],
                 "metadata": "value"
               }
             ]
@@ -2514,9 +2385,7 @@
                   "key": "high_power_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "0"
-                ],
+                "input": ["0"],
                 "metadata": "value"
               }
             ]
@@ -2569,9 +2438,7 @@
                 "id": "b26fa53b-55ae-4aa9-bbae-302964ab5534",
                 "telemetry": "any",
                 "operation": "enumValueIs",
-                "input": [
-                  "0"
-                ],
+                "input": ["0"],
                 "metadata": "state"
               }
             ]
@@ -2755,84 +2622,6 @@
             }
           ],
           "size": 20
-        },
-        {
-          "id": "677eb55f-6656-4842-ab75-7ea1618df5bd",
-          "frames": [
-            {
-              "id": "d1365e2f-d12c-47eb-b780-74ef4d4b4660",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_1"
-              },
-              "size": 13,
-              "noFrame": false
-            },
-            {
-              "id": "3dc80a15-0d23-475c-ae13-599ac01e3ee3",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_2"
-              },
-              "size": 13,
-              "noFrame": false
-            },
-            {
-              "id": "42fa6097-cd31-404c-af13-944d94e2757f",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_3"
-              },
-              "size": 12,
-              "noFrame": false
-            },
-            {
-              "id": "078c3ca0-f403-4b1b-82d0-36077d06ee06",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_4"
-              },
-              "size": 13,
-              "noFrame": false
-            },
-            {
-              "id": "a67a7e0b-d877-453f-a318-816db00644e6",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_5"
-              },
-              "size": 12,
-              "noFrame": false
-            },
-            {
-              "id": "5c77b34b-3b63-4bc2-adad-1a50b70fd186",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_6"
-              },
-              "size": 11,
-              "noFrame": false
-            },
-            {
-              "id": "e81c8d99-965a-4dcd-9924-561d8332eb58",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_7"
-              },
-              "size": 13,
-              "noFrame": false
-            },
-            {
-              "id": "f04f0ff7-a66d-4fdf-9807-27fdf92a8112",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_8"
-              },
-              "size": 13,
-              "noFrame": false
-            }
-          ],
-          "size": 19
         },
         {
           "id": "5b38e846-eb83-4eff-84fd-40366b243e7c",
@@ -3025,38 +2814,6 @@
       {
         "namespace": "hyped.pod_1",
         "key": "acceleration"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_1"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_2"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_3"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_4"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_5"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_6"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_7"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_8"
       },
       {
         "namespace": "hyped.pod_1",
@@ -3262,90 +3019,6 @@
     "configuration": {
       "containers": [
         {
-          "id": "80177b62-900c-495a-810b-2ef26bc67b85",
-          "frames": [
-            {
-              "id": "1421eb81-ca85-4435-bba1-f816fbf83407",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_1"
-              },
-              "size": 26,
-              "noFrame": false
-            },
-            {
-              "id": "60047ddb-7909-4c7a-abe4-9942ec9f6bbe",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_2"
-              },
-              "size": 25,
-              "noFrame": false
-            },
-            {
-              "id": "3e359063-9f7d-40e1-be13-fdf2b6ca00b0",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_3"
-              },
-              "size": 24,
-              "noFrame": false
-            },
-            {
-              "id": "c20d54f6-61e4-40c3-8538-3d8fa77814be",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_4"
-              },
-              "size": 25,
-              "noFrame": false
-            }
-          ],
-          "size": 34
-        },
-        {
-          "id": "4fe0149c-7a35-41f7-9c4f-f4aaafeaa804",
-          "frames": [
-            {
-              "id": "f3e04179-8111-450f-9f6c-ce60b7c4b23e",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_5"
-              },
-              "size": 26,
-              "noFrame": false
-            },
-            {
-              "id": "09ce4a62-357d-4428-bdd4-e70364cbdf19",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_6"
-              },
-              "size": 25,
-              "noFrame": false
-            },
-            {
-              "id": "7cd1c54e-62ae-4eb6-93e4-051e8d419d16",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_7"
-              },
-              "size": 24,
-              "noFrame": false
-            },
-            {
-              "id": "6342d29e-2486-4d2c-b2d2-c4581bdfca52",
-              "domainObjectIdentifier": {
-                "namespace": "hyped.pod_1",
-                "key": "pressure_8"
-              },
-              "size": 25,
-              "noFrame": false
-            }
-          ],
-          "size": 33
-        },
-        {
           "id": "d430e88d-f612-4938-a269-14a40eac412f",
           "frames": [
             {
@@ -3373,38 +3046,6 @@
       "rowsLayout": false
     },
     "composition": [
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_1"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_2"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_3"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_4"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_5"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_6"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_7"
-      },
-      {
-        "namespace": "hyped.pod_1",
-        "key": "pressure_8"
-      },
       {
         "namespace": "hyped.pod_1",
         "key": "brake_clamp_status"
@@ -3883,9 +3524,7 @@
                   "key": "high_power_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "1"
-                ],
+                "input": ["1"],
                 "metadata": "value"
               }
             ]
@@ -3906,9 +3545,7 @@
                   "key": "high_power_status"
                 },
                 "operation": "enumValueIs",
-                "input": [
-                  "0"
-                ],
+                "input": ["0"],
                 "metadata": "value"
               }
             ]

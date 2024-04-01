@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:test": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "lint": "eslint --ext .ts,.tsx . --max-warnings 0 --report-unused-disable-directives",
@@ -35,7 +36,7 @@
     "ky": "^0.33.2",
     "lucide-react": "^0.331.0",
     "mqtt": "4.1.0",
-    "openmct": "git+https://github.com/nasa/openmct.git#v2.2.5",
+    "openmct": "3.2.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
@@ -63,7 +64,7 @@
     "tailwind-scrollbar": "^3.0.5",
     "tailwindcss": "^3.2.4",
     "typescript": "^5.3.3",
-    "vite": "^4.0.0",
+    "vite": "^4.5.2",
     "vite-plugin-static-copy": "^0.13.0",
     "vite-tsconfig-paths": "^4.2.0"
   }

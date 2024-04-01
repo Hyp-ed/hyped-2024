@@ -1,3 +1,4 @@
+// common properties shared by all response variables
 export type BaseMeasurement = {
   name: string;
   key: string;
@@ -5,6 +6,8 @@ export type BaseMeasurement = {
   type: string;
 };
 
+// range limits not to be exceeded
+// some give warnings when reaching range limits
 export type Limits = {
   warning?: {
     low: number;
@@ -33,8 +36,10 @@ export type EnumMeasurement = BaseMeasurement & {
   }[];
 };
 
+// export type Measurement as union
 export type Measurement = RangeMeasurement | EnumMeasurement;
 
+// create Pod type
 export type Pod = {
   name: string;
   id: string;
