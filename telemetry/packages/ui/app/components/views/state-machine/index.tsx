@@ -502,6 +502,7 @@ export function StateMachine() {
    */
   useEffect(() => {
     const active = nodes.find((n) => n.data.active) as CustomNodeType;
+    // handles UNKNOWN state, which does not have a node
     if (!active) return;
     setFailNode({
       id: `${active.id}-failure-braking`,
@@ -539,7 +540,7 @@ export function StateMachine() {
   useEffect(() => {
     setEdges([...writeEdges(currentMode), failNode]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [failNode]);
+  }, [failNode, currentMode]);
 
   return (
     <div className="h-full flex flex-col justify-center items-center">
