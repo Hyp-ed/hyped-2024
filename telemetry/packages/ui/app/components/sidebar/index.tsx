@@ -4,14 +4,13 @@ import { cn } from '@/lib/utils';
 import { POD_IDS } from '@hyped/telemetry-constants';
 import { useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { useCurrentPod, useCurrentMode } from '@/context/pods';
+import { useCurrentPod } from '@/context/pods';
 import { Latency } from './latency';
 import { PodControls } from './pod-controls';
 import { PodDisconnectError } from '@/components/pod-disconnect-error';
 import { PodConnectionStatus } from './pod-connection-status';
 import { Logo } from '@/components/shared/logo';
 import { PodSelector } from './pod-selector';
-import { ModeSelector } from './mode-selector';
 import { config } from '@/config';
 
 /**
@@ -29,7 +28,6 @@ export const Sidebar = ({
     currentPod,
     pod: { podState, connectionStatus },
   } = useCurrentPod();
-  const { currentMode } = useCurrentMode();
 
   // Display notification when the pod state changes
   useEffect(
@@ -40,19 +38,11 @@ export const Sidebar = ({
     [podState, currentPod],
   );
 
-  // Notify when mode of operation is changed
-  useEffect(
-    function notifyModeChange() {
-      log(`Run mode changed to ${currentMode}`);
-    },
-    [currentMode],
-  );
-
   return (
     <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col justify-between bg-hyped-background select-none text-gray-100">
       <div className="flex flex-col gap-12 h-full">
         <PodSelector />
-        {config.EXTENDED_DEBUGGING_TOOLS && <ModeSelector />}
+        {/* {config.EXTENDED_DEBUGGING_TOOLS && <ModeSelector />} */}
         {/* <ModeSelector /> */}
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">

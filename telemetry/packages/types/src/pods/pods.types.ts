@@ -39,4 +39,6 @@ export type Pod = {
   name: string;
   id: string;
   measurements: Record<string, Measurement>;
+  // Not ideal given this is defined in the constants package but will do until TOML is done
+  operationMode: 'ALL_SYSTEMS_ON' | 'LEVITATION_ONLY' | 'LIM_ONLY';
 };

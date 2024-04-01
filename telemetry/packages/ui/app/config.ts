@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // Here we validate the environment variables and cast them to the correct types using zod
 
+import { MODES } from '@hyped/telemetry-constants';
 import { z } from 'zod';
 
 const booleanFromString = z
@@ -20,7 +21,6 @@ const envSchema = z.object({
   ),
   VITE_DISCONNECTED_MESSAGE_DISABLED: booleanFromString.optional(),
   VITE_EXTENDED_DEBUGGING_TOOLS: booleanFromString.optional(),
-  VITE_OPERATION_MODE: z.string(),
 });
 
 const result = envSchema.safeParse({
@@ -30,7 +30,6 @@ const result = envSchema.safeParse({
   VITE_DISCONNECTED_MESSAGE_DISABLED: import.meta.env
     .VITE_DISCONNECTED_MESSAGE_DISABLED,
   VITE_EXTENDED_DEBUGGING_TOOLS: import.meta.env.VITE_EXTENDED_DEBUGGING_TOOLS,
-  VITE_OPERATION_MODE: import.meta.env.VITE_OPERATION_MODE,
 });
 
 if (!result.success) {

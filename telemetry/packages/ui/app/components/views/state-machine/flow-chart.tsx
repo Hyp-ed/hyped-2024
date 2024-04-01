@@ -11,16 +11,9 @@ import './styles.css';
 import { getNodeType } from './utils';
 import { writeEdges, arrow } from './edges';
 import { CustomEdgeType, CustomNodeType } from './types';
-import { useCurrentMode } from '@/context/pods';
-import { config } from '@/config'
+import { useCurrentPod } from '@/context/pods';
 
-export function StateMachineFlowChart({
-  currentState,
-  onModeChange: onModeChange,
-}: {
-  currentState: PodStateType;
-  onModeChange: any;
-}) {
+export function StateMachineFlowChart() {
   const nodeTypes = useMemo(
     () => ({
       FailureNode,
@@ -31,7 +24,9 @@ export function StateMachineFlowChart({
     [],
   );
 
-  const { currentMode } = useCurrentMode();
+  const {
+    pod: { podState: currentState, operationMode: currentMode },
+  } = useCurrentPod();
 
   const [displayNodes, setDisplayNodes]: [CustomNodeType[], any] = useState([]);
   const [edges, setEdges] = useState(writeEdges(currentMode));
@@ -511,6 +506,7 @@ export function StateMachineFlowChart({
    */
   useEffect(() => {
     const active = nodes.find((n) => n.data.active) as CustomNodeType;
+    if (!active) return;
     setFailNode({
       id: `${active.id}-failure-braking`,
       source: active.id,
@@ -548,13 +544,6 @@ export function StateMachineFlowChart({
     setEdges([...writeEdges(currentMode), failNode]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [failNode]);
-
-  /**
-   * Update mode changes in the parent StateMachine component
-   */
-  useEffect(() => {
-    onModeChange(currentMode);
-  });
 
   return (
     <div className="h-full flex flex-col justify-center items-center">
