@@ -10,7 +10,7 @@ export type ModeType = keyof typeof MODES;
 
 type ModeStates = Record<ModeType, PodStateType[]>;
 
-export const MODE_INACTIVE_STATES: ModeStates = {
+export const MODE_EXCLUDED_STATES: ModeStates = {
   ALL_SYSTEMS_ON: [],
   LEVITATION_ONLY: [
     ACTIVE_STATES.READY_FOR_LAUNCH,

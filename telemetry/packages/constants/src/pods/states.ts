@@ -53,6 +53,3 @@ export const getStateType = (
   if (NULL_STATES[state as keyof typeof NULL_STATES]) return 'NULL';
   throw new Error(`Unknown state: ${state}`);
 };
-
-const stateList = ((states: { [key in PodStateType]?: string }) =>
-  Object.keys(states))(ACTIVE_STATES);

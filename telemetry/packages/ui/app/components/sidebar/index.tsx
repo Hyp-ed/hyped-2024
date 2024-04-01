@@ -11,7 +11,6 @@ import { PodDisconnectError } from '@/components/pod-disconnect-error';
 import { PodConnectionStatus } from './pod-connection-status';
 import { Logo } from '@/components/shared/logo';
 import { PodSelector } from './pod-selector';
-import { config } from '@/config';
 
 /**
  * The custom sidebar for the GUI which allows us to select a pod, control it, view its connection status, and change the view.

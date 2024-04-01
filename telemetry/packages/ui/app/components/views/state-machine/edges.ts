@@ -1,10 +1,8 @@
 import { EdgeMarkerType, MarkerType } from 'reactflow';
-import {
-  MODE_INACTIVE_STATES,
-  ModeType,
-  PodStateType,
-} from '@hyped/telemetry-constants';
+import { ModeType, PodStateType } from '@hyped/telemetry-constants';
 import { CustomEdgeType } from './types';
+import { isEnabledState } from './utils';
+import { MODES } from '@hyped/telemetry-constants';
 
 // defines the arrow marker for the edges
 export const arrow: EdgeMarkerType = {
@@ -189,11 +187,12 @@ export const edges: CustomEdgeType[] = [
 // Generates edge definitions for a given mode of operation
 export const writeEdges = (mode: ModeType): CustomEdgeType[] => {
   return edges
-    .filter((edge) => {
-      return !MODE_INACTIVE_STATES[mode].includes(
+    .filter((edge) =>
+      isEnabledState(
+        mode,
         edge.source.replace(/-/g, '_').toUpperCase() as PodStateType,
-      );
-    })
+      ),
+    )
     .map((edge, i, arr) => {
       if (i < arr.length - 2) {
         const regex = new RegExp(`${arr[i + 1].source}$`);
@@ -204,7 +203,7 @@ export const writeEdges = (mode: ModeType): CustomEdgeType[] => {
       }
       return {
         ...edge,
-        ...(edge.sourceHandle.includes('-') && mode != 'ALL_SYSTEMS_ON'
+        ...(edge.sourceHandle.includes('-') && mode != MODES.ALL_SYSTEMS_ON
           ? {
               sourceHandle: edge.sourceHandle.split('-')[1],
               targetHandle: edge.targetHandle.split('-')[1],

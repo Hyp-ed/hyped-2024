@@ -10,7 +10,6 @@ export class DictionaryService {
     POD_IDS.forEach((podId) => {
       dictionary[podId] = this.getPod(podId);
     });
-
     return dictionary;
   }
 

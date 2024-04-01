@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 // Here we validate the environment variables and cast them to the correct types using zod
 
-import { MODES } from '@hyped/telemetry-constants';
 import { z } from 'zod';
 
 const booleanFromString = z

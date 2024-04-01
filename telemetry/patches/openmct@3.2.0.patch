@@ -1,8 +1,8 @@
 diff --git a/dist/openmct.d.ts b/dist/openmct.d.ts
-index ce404b2dd2881abdbeb3ef6e5cbaa877c3f124d7..ef1ba3e7ceb42f8a5b57eeb2b512556dbb5bbb60 100644
+index 10970357e59ea7dd55d44ca2456bdc64c066b401..39365d0b6930b7eed835665c2e2b1a430faf008b 100644
 --- a/dist/openmct.d.ts
 +++ b/dist/openmct.d.ts
-@@ -34,14 +34,17 @@ type OpenMCT = {
+@@ -35,14 +35,17 @@ type OpenMCT = {
      getAssetPath: {
          (): string;
      };
@@ -23,10 +23,10 @@ index ce404b2dd2881abdbeb3ef6e5cbaa877c3f124d7..ef1ba3e7ceb42f8a5b57eeb2b512556d
  };
  type BuildInfo = {
 diff --git a/dist/src/api/time/TimeContext.d.ts b/dist/src/api/time/TimeContext.d.ts
-index b87f3254b37d51cd1ce6ef3e13210a1f00d96e83..e56366e686f551ca497ec1032c7e2eb08cb69ca8 100644
+index b61930ae139005422268c412a3ac1f440768c1a2..94f08914c082def0459f9ab105bd103d2a4cc0fb 100644
 --- a/dist/src/api/time/TimeContext.d.ts
 +++ b/dist/src/api/time/TimeContext.d.ts
-@@ -43,7 +43,7 @@ declare class TimeContext {
+@@ -30,7 +30,7 @@ declare class TimeContext {
       * @memberof module:openmct.TimeAPI#
       * @method timeSystem
       */
