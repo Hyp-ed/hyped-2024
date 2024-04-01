@@ -19,6 +19,8 @@ export const getNodeType = (state: PodStateType) => {
   if (state in ACTIVE_STATES) return 'ActiveNode';
 };
 
-export const getActiveStates = ((mode: ModeType) => {
-  return Object.values(ALL_POD_STATES).filter(state => !(state in MODE_INACTIVE_STATES[mode]));
-});
+export const getActiveStates = (mode: ModeType) => {
+  return Object.values(ALL_POD_STATES).filter(
+    (state) => !(state in MODE_INACTIVE_STATES[mode]),
+  );
+};
