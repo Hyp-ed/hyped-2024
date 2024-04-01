@@ -539,7 +539,6 @@ export function StateMachine() {
    */
   useEffect(() => {
     setEdges([...writeEdges(currentMode), failNode]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [failNode, currentMode]);
 
   return (
