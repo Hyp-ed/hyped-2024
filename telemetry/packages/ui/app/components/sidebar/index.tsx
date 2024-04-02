@@ -41,6 +41,8 @@ export const Sidebar = ({
     <main className="col-span-1 h-[100vh] border-l-[0px] border-l-openmct-light-gray px-4 py-8 flex flex-col justify-between bg-hyped-background select-none text-gray-100">
       <div className="flex flex-col gap-12 h-full">
         <PodSelector />
+        {/* {config.EXTENDED_DEBUGGING_TOOLS && <ModeSelector />} */}
+        {/* <ModeSelector /> */}
         {/* Status, Latency, State, Title */}
         <div className="flex flex-col gap-2">
           <p className="font-bold text-xl">Connection to pod</p>
