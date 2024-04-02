@@ -70,3 +70,13 @@ jobs:
             echo "[ERROR] found header without #pragma once"
             exit 1
           fi
+  crlf:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run check for CRLF line endings
+        run: |
+          if git ls-files --eol | grep crlf; then
+            echo "[ERROR] found CRLF line endings"
+            exit 1
+          fi
