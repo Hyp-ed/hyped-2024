@@ -2,7 +2,7 @@
 
 namespace hyped::sensors {
 
-constexpr std::uint8_t kAdcMuxAddress = 0x1D;
+constexpr std::uint8_t kAdcMuxAddress  = 0x1D;
 constexpr std::uint8_t kAdcMuxChannel1 = 0x20;
 constexpr std::uint8_t kAdcMuxChannel2 = 0x21;
 constexpr std::uint8_t kAdcMuxChannel3 = 0x22;
