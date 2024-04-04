@@ -1,6 +1,6 @@
 import { log } from '@/lib/logger';
 import { PodId } from '@hyped/telemetry-constants';
-import { createContext, useContext, useEffect, useState } from 'react';
+import { createContext, useContext, useState } from 'react';
 
 export const ERROR_IDS = {
   POD_DISCONNECT: 'POD_DISCONNECT',
@@ -40,11 +40,6 @@ interface ErrorProviderProps {
  */
 export const ErrorProvider = ({ children }: ErrorProviderProps) => {
   const [errors, setErrors] = useState<ErrorMessage[]>([]);
-
-  useEffect(() => {
-    // Log the errors whenever they change
-    console.log('Errors:', errors);
-  }, [errors]);
 
   const raiseError = (
     id: ErrorIds,
