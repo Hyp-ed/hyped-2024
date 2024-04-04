@@ -12,6 +12,7 @@ import {
   PodId,
   PodStateType,
   pods,
+  ModeType,
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
 import { useErrors } from './errors';
@@ -55,6 +56,7 @@ type PodsStateType = {
   [podId: string]: {
     id: PodId;
     name: string;
+    operationMode: ModeType;
     connectionStatus: PodConnectionStatusType;
     previousLatencies?: PreviousLatenciesType;
     latency?: number;
@@ -82,6 +84,7 @@ function createPodsStateFromIds(podIds: typeof POD_IDS): PodsStateType {
     podsContext[podId] = {
       id: podId,
       name: pods[podId].name,
+      operationMode: pods[podId].operationMode,
       connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
       podState: ALL_POD_STATES.UNKNOWN,
     };
@@ -315,8 +318,8 @@ export const usePods = () => {
 };
 
 /**
- * Hook to get the pod info for the currentlt selected pod.
- * @returns The pod info for the current pod
+ * Hook to retrieve selected pod info
+ * @returns Summary info for the current pod
  */
 export const useCurrentPod = () => {
   const context = useContext(PodsContext);

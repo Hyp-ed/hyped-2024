@@ -6,13 +6,26 @@
       "persistent": true
     },
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
-    "lint": {},
-    "lint:fix": {},
+    "dev:test": {
+      "dependsOn": ["^build", "build:fake"],
+      "cache": false,
+      "persistent": true
+    },
+    "lint": {
+      "dependsOn": ["^build"]
+    },
+    "lint:fix": {
+      "dependsOn": ["^build"]
+    },
     "build": {
       "outputs": ["dist/**"],
+      "dependsOn": ["^build"]
+    },
+    "build:fake": {
       "dependsOn": ["^build"]
     }
   }

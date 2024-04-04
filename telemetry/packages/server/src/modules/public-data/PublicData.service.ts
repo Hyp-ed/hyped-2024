@@ -5,6 +5,10 @@ import { flux } from '@influxdata/influxdb-client';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { ACTIVE_STATES } from '@hyped/telemetry-constants';
 import { InfluxRow } from '@/modules/common/types/InfluxRow';
+import {
+  LaunchTimeResponse,
+  StateResponse,
+} from '@hyped/telemetry-types/dist/server/responses';
 
 interface InfluxStateRow extends InfluxRow {
   stateType: string;
@@ -23,7 +27,7 @@ export class PublicDataService {
    * @param podId The pod's ID.
    * @returns The current state and the previous state of the pod.
    */
-  public async getState(podId: string) {
+  public async getState(podId: string): Promise<StateResponse> {
     // Get the last state reading from InfluxDB (measurement name should be 'state')
     const query = flux`
       from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
@@ -71,7 +75,7 @@ export class PublicDataService {
    * @param podId The pod's ID.
    * @returns The launch time of the pod.
    */
-  public async getLaunchTime(podId: string) {
+  public async getLaunchTime(podId: string): Promise<LaunchTimeResponse> {
     const currentState = await this.getState(podId);
 
     // If the pod is not in an active state or stopped, launch time isn't defined
