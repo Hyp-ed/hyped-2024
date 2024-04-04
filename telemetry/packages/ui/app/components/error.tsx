@@ -10,6 +10,9 @@ import { useErrors } from '@/context/errors';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useState } from 'react';
 import { DialogHeader } from './ui/dialog';
+import { Button } from './ui/button';
+import { CONTROLS, sendControlMessage } from '@/lib/controls';
+import { useCurrentPod } from '@/context/pods';
 
 /**
  * Dialog to display error messages from the error context.
@@ -17,6 +20,8 @@ import { DialogHeader } from './ui/dialog';
 export const Error = () => {
   const { errors } = useErrors();
   const [index, setIndex] = useState(0);
+
+  const { currentPod } = useCurrentPod();
 
   const open = errors.length > 0;
 
@@ -58,15 +63,29 @@ export const Error = () => {
                   <ChevronRight />
                 </button>
               </div>
-              {/* Acknowledge button */}
-              <AlertDialogAction
-                onClick={() => {
-                  errors[index].acknowledge();
-                  setIndex((i) => (i > 0 ? i - 1 : 0));
-                }}
-              >
-                Acknowledge
-              </AlertDialogAction>
+              <div className="flex gap-2">
+                {/* Emergency Stop Button */}
+                <Button
+                  className="bg-black border-2 border-red-600 hover:border-red-700 hover:bg-red-700"
+                  onClick={() =>
+                    void sendControlMessage(
+                      errors[index].podId || currentPod,
+                      CONTROLS.STOP,
+                    )
+                  }
+                >
+                  Emergency Stop ({errors[index].podId || currentPod})
+                </Button>
+                {/* Acknowledge button */}
+                <AlertDialogAction
+                  onClick={() => {
+                    errors[index].acknowledge();
+                    setIndex((i) => (i > 0 ? i - 1 : 0));
+                  }}
+                >
+                  Acknowledge
+                </AlertDialogAction>
+              </div>
             </div>
           </AlertDialogFooter>
         )}
