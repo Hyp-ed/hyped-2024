@@ -31,6 +31,7 @@ export type Log = {
 type LiveLogsContext = {
   isConnected: boolean;
   logs: Log[];
+  clearAll: () => void;
 };
 
 const LiveLogsContext = createContext<LiveLogsContext | null>(null);
@@ -75,11 +76,19 @@ export const LiveLogsProvider = ({
     };
   }, [logs.length]);
 
+  /**
+   * Clears all logs.
+   */
+  function clearAll() {
+    setLogs([]);
+  }
+
   return (
     <LiveLogsContext.Provider
       value={{
         isConnected,
         logs,
+        clearAll,
       }}
     >
       {children}
