@@ -10,7 +10,7 @@ import { PodControls } from './pod-controls';
 import { PodConnectionStatus } from './pod-connection-status';
 import { Logo } from '@/components/shared/logo';
 import { PodSelector } from './pod-selector';
-import { useErrors } from '@/context/errors';
+import { ERROR_IDS, useErrors } from '@/context/errors';
 
 /**
  * The custom sidebar for the GUI which allows us to select a pod, control it, view its connection status, and change the view.
@@ -45,7 +45,11 @@ export const Sidebar = ({
         <PodSelector />
         <button
           onClick={() => {
-            raiseError('Test error', 'This is a test error message');
+            raiseError(
+              ERROR_IDS.TEST,
+              'Test error',
+              'This is a test error message',
+            );
           }}
         >
           trigger error

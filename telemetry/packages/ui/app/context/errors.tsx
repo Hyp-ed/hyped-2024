@@ -1,16 +1,31 @@
 import { log } from '@/lib/logger';
-import { createContext, useContext, useState } from 'react';
+import { PodId } from '@hyped/telemetry-constants';
+import { createContext, useContext, useEffect, useState } from 'react';
+
+export const ERROR_IDS = {
+  POD_DISCONNECT: 'POD_DISCONNECT',
+  TEST: 'TEST',
+};
+
+type ErrorIds = (typeof ERROR_IDS)[keyof typeof ERROR_IDS];
 
 type ErrorMessage = {
+  id: ErrorIds;
   title: string;
   message: string;
+  podId?: PodId;
   timestamp: number;
   acknowledge: () => void;
 };
 
 type ErrorContextType = {
   errors: ErrorMessage[];
-  raiseError: (title: string, message: string) => void;
+  raiseError: (
+    id: ErrorIds,
+    title: string,
+    message: string,
+    podId?: PodId,
+  ) => void;
 };
 
 const ErrorContext = createContext<ErrorContextType | null>(null);
@@ -26,15 +41,28 @@ interface ErrorProviderProps {
 export const ErrorProvider = ({ children }: ErrorProviderProps) => {
   const [errors, setErrors] = useState<ErrorMessage[]>([]);
 
-  const raiseError = (title: string, message: string) => {
+  useEffect(() => {
+    // Log the errors whenever they change
+    console.log('Errors:', errors);
+  }, [errors]);
+
+  const raiseError = (
+    id: ErrorIds,
+    title: string,
+    message: string,
+    podId?: PodId,
+  ) => {
     const error: ErrorMessage = {
+      id,
       title,
       message,
+      podId,
       timestamp: Date.now(),
       acknowledge: () => {
-        // Remove the error from the list of errors
-        setErrors((errors) => errors.filter((e) => title !== e.title));
-        // Log the acknowledgement
+        // Remove the error from the list of errors (by id and podId)
+        setErrors((errors) =>
+          errors.filter((e) => !(id == e.id && podId == e.podId)),
+        );
         log(`Acknowledged error dialog for: ${title}`);
       },
     };
@@ -45,7 +73,10 @@ export const ErrorProvider = ({ children }: ErrorProviderProps) => {
     setErrors((errors) =>
       [...errors, error]
         // remove duplicates
-        .filter((e, i, a) => a.findIndex((ee) => ee.title === e.title) === i)
+        .filter(
+          (e, i, a) =>
+            a.findIndex((ee) => ee.id === e.id && ee.podId === e.podId) === i,
+        )
         // sort by most recent
         .sort((a, b) => b.timestamp - a.timestamp),
     );
