@@ -35,7 +35,6 @@ export const Error = () => {
           </>
         )}
 
-        {/* Acknowledge button */}
         {errors[index] && (
           <AlertDialogFooter>
             <div className="flex w-full items-center justify-between text-sm">
@@ -59,10 +58,11 @@ export const Error = () => {
                   <ChevronRight />
                 </button>
               </div>
+              {/* Acknowledge button */}
               <AlertDialogAction
                 onClick={() => {
                   errors[index].acknowledge();
-                  setIndex((i) => Math.min(i, errors.length - 2));
+                  setIndex((i) => (i > 0 ? i - 1 : 0));
                 }}
               >
                 Acknowledge

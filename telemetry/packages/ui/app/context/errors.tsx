@@ -1,3 +1,4 @@
+import { log } from '@/lib/logger';
 import { createContext, useContext, useState } from 'react';
 
 type ErrorMessage = {
@@ -31,11 +32,14 @@ export const ErrorProvider = ({ children }: ErrorProviderProps) => {
       message,
       timestamp: Date.now(),
       acknowledge: () => {
+        // Remove the error from the list of errors
         setErrors((errors) => errors.filter((e) => title !== e.title));
+        // Log the acknowledgement
+        log(`Acknowledged error dialog for: ${title}`);
       },
     };
 
-    // TODO: log the error
+    log(`Critical error occurred. ${title}: ${message}`);
 
     // Add the error to the list of errors, sorted by timestamp
     setErrors((errors) =>
