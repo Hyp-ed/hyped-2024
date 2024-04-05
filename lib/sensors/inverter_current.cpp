@@ -1,5 +1,6 @@
-#include <inverter_current.hpp>
 #include "adc_mux.hpp"
+
+#include <inverter_current.hpp>
 
 namespace hyped::sensors {
 
