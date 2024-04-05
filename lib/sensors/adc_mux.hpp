@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 namespace hyped::sensors {
 
 constexpr std::uint8_t kAdcMuxAddress  = 0x1D;
