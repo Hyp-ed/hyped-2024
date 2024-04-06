@@ -6,7 +6,7 @@ namespace hyped::sensors {
 
 InverterCurrent::InverterCurrent(core::ILogger &logger,
                                  std::shared_ptr<io::II2c> i2c,
-                                 const std::uint8_t adc_mux_channel)
+                                 const AdcMuxChannel adc_mux_channel)
     : logger_(logger),
       i2c_(i2c),
       adc_mux_channel_(adc_mux_channel)
