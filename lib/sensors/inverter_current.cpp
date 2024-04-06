@@ -19,7 +19,8 @@ InverterCurrent::~InverterCurrent()
 
 std::optional<core::Float> InverterCurrent::readCurrent()
 {
-  const auto inverter_current = i2c_->readByte(kAdcMuxAddress, adc_mux_channel_);
+  const auto inverter_current
+    = i2c_->readByte(kAdcMuxAddress, static_cast<std::uint8_t>(adc_mux_channel_));
   if (!inverter_current) {
     logger_.log(core::LogLevel::kFatal, "Failed to read inverter current");
     return std::nullopt;

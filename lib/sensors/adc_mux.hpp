@@ -6,7 +6,7 @@ namespace hyped::sensors {
 
 constexpr std::uint8_t kAdcMuxAddress = 0x1D;
 
-enum class AdcMuxChannel {
+enum class AdcMuxChannel : std::uint8_t {
   kAdcMuxChannel1 = 0x20,
   kAdcMuxChannel2 = 0x21,
   kAdcMuxChannel3 = 0x22,

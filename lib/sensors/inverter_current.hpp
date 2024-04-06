@@ -1,5 +1,7 @@
 #pragma once
 
+#include "adc_mux.hpp"
+
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -14,7 +16,7 @@ class InverterCurrent {
  public:
   InverterCurrent(core::ILogger &logger,
                   std::shared_ptr<io::II2c> i2c,
-                  const std::uint8_t adc_mux_channel);
+                  const AdcMuxChannel adc_mux_channel);
 
   ~InverterCurrent();
 
@@ -23,7 +25,7 @@ class InverterCurrent {
  private:
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
-  const std::uint8_t adc_mux_channel_;
+  const AdcMuxChannel adc_mux_channel_;
 };
 
 }  // namespace hyped::sensors
