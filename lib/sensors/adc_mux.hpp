@@ -13,7 +13,7 @@ enum class AdcMuxChannel {
   kAdcMuxChannel4 = 0x23,
   kAdcMuxChannel5 = 0x24,
   kAdcMuxChannel6 = 0x25,
-  kAdcMuxChannel7 = 0x26
+  kAdcMuxChannel7 = 0x26,
   kAdcMuxChannel0 = 0x27,
 };
 
