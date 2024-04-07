@@ -8,6 +8,7 @@
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/uart_commands.hpp"
+#include "commands/inverter_current_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>
@@ -73,6 +74,14 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result = UartCommands::addCommands(logger, repl, config["io"]["uart"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding UART commands");
+      return std::nullopt;
+    }
+  }
+  if (config["sensors"]["inverter_current"]["enabled"].value_or(false)) {
+    const auto result
+      = InverterCurrentCommands::addCommands(logger, repl, config["sensors"]["inverter_current"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding inverter current commands");
       return std::nullopt;
     }
   }
