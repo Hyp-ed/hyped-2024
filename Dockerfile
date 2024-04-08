@@ -15,7 +15,6 @@ RUN sudo cmake --build build/ --target install
 RUN sudo ldconfig
 
 WORKDIR /home/hyped_entrypoint
-
 COPY entry.sh ./
 
 ENTRYPOINT [ "/home/hyped_entrypoint/entry.sh" ]
