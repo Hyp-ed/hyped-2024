@@ -18,7 +18,7 @@ class KalmanFilter {
                const ErrorCovarianceMatrix &initial_error_covariance,
                const StateTransitionMatrix &transition_matrix,
                const ControlMatrix &control_matrix,
-               const StateTransitionCovarianceMatrix &transition_covariance,
+               const StateTransitionCovarianceMatrix &process_noise_covariance,
                const MeasurementMatrix &measurement_matrix,
                const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance);
 
@@ -33,7 +33,7 @@ class KalmanFilter {
   ErrorCovarianceMatrix error_covariance_;
   StateTransitionMatrix transition_matrix;
   ControlMatrix control_matrix;
-  StateTransitionCovarianceMatrix transition_covariance;
+  StateTransitionCovarianceMatrix process_noise_covariance;
   MeasurementMatrix measurement_matrix;
   MeasurementNoiseCovarianceMatrix measurement_noise_covariance;
 };
