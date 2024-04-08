@@ -5,10 +5,10 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/inverter_current_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/uart_commands.hpp"
-#include "commands/inverter_current_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
 #include <io/hardware_can.hpp>
