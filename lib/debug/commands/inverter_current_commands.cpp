@@ -31,8 +31,7 @@ core::Result InverterCurrentCommands::addCommands(core::ILogger &logger,
   const auto i2c = std::move(*optional_i2c);
 
   // Create the sensor instance
-  const auto sensor
-    = std::make_unique<InverterCurrentSensor>(&logger, i2c, adc_mux_channel);
+  const auto sensor = std::make_unique<InverterCurrentSensor>(&logger, i2c, adc_mux_channel);
 
   // Create the read command
   const auto read_command_name        = "read";
@@ -45,6 +44,9 @@ core::Result InverterCurrentCommands::addCommands(core::ILogger &logger,
     }
     logger.log(core::LogLevel::kDebug, "Inverter current: %d", *current);
   };
+  auto read_command
+    = std::make_unique<Command>(read_command_name, read_command_description, read_command_handler);
+  repl->addCommand(std::move(read_command));
 }
 
 }  // namespace hyped::debug

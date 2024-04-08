@@ -3,10 +3,10 @@
 
 #include <memory>
 
-#include <sensors/inverter_current.hpp>
 #include <core/logger.hpp>
 #include <core/types.hpp>
 #include <debug/repl.hpp>
+#include <sensors/inverter_current.hpp>
 
 namespace hyped::debug {
 
