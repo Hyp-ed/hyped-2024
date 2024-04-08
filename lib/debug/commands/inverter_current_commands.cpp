@@ -31,7 +31,8 @@ core::Result InverterCurrentCommands::addCommands(core::ILogger &logger,
   const auto i2c = std::move(*optional_i2c);
 
   // Create the sensor instance
-  const auto sensor = std::make_shared<sensors::InverterCurrent>(logger, i2c, static_cast<sensors::AdcMuxChannel>(adc_mux_channel));
+  const auto sensor = std::make_shared<sensors::InverterCurrent>(
+    logger, i2c, static_cast<sensors::AdcMuxChannel>(adc_mux_channel));
 
   // Create the read command
   const auto read_command_name        = "read";
