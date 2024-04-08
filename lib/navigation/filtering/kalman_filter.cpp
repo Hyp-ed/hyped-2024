@@ -24,8 +24,7 @@ KalmanFilter::KalmanFilter(const StateVector &initial_state,
 
 void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInput &control_input)
 {
-
-  //Set correct measurement matrix
+  // Set correct measurement matrix
 
   if (measurement(0) == 0.0) {
     measurement_matrix = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
