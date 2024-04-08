@@ -12,7 +12,9 @@ const ControlMatrix kControlMatrix
 const ErrorCovarianceMatrix kErrorCovarianceMatrix
   = (ErrorCovarianceMatrix() << 1, 0, 0, 1).finished();
 
-  
+const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
+  = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0.01).finished();
+
 
 //asumming stripe counter is accurate
 
@@ -22,8 +24,8 @@ const ErrorCovarianceMatrix kErrorCovarianceMatrix
 // variance = 0.1^2 = 0.01 m/s^2
 
 
-const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
-  = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0).finished();
+//const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
+//  = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0).finished();
 
 // Assuming frequency of 6400hz for IMU at 120 mu g / sqrt(Hz)
 // standard deviation = 120 * sqrt(6400) = 9600 mu g = 0.0096 g
@@ -31,16 +33,14 @@ const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
 // variance =  0.094176^2 = 0.0089 m/s^2
 
 
-const StateTransitionCovarianceMatrix process_noise_covariance
-  = (StateTransitionCovarianceMatrix() << 0.25 * std::pow(kDeltaT,4) , 0.5 * std::pow(kDeltaT,3),
-                                         0.5 * std::pow(kDeltaT,3), std::pow(kDeltaT,2)).finished() * 0.0089;
-
+//const StateTransitionCovarianceMatrix process_noise_covariance
+//  = (StateTransitionCovarianceMatrix() << 0.25 * std::pow(kDeltaT,4) , 0.5 * std::pow(kDeltaT,3),
+//                                         0.5 * std::pow(kDeltaT,3), std::pow(kDeltaT,2)).finished() * 0.0089;
 
 // Changing matrices
 StateVector initial_state = (StateVector::Zero());
 
-
-StateTransitionCovarianceMatrix initial_error_covariance = (StateTransitionCovarianceMatrix() << 1, 0, 0, 1).finished();
+StateTransitionCovarianceMatrix initial_covariance = (StateTransitionCovarianceMatrix::Zero());
 
 ControlInput control_input_vector = ControlInput::Zero();
 

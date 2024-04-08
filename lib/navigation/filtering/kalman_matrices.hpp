@@ -21,12 +21,11 @@ extern const StateTransitionMatrix kStateTransitionMatrix;
 using ControlMatrix = Eigen::Matrix<core::Float, state_dimension, control_dimension>;
 extern const ControlMatrix kControlMatrix;
 
+// TODOLater: tune this
 using ErrorCovarianceMatrix = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
 extern const ErrorCovarianceMatrix kErrorCovarianceMatrix;
 
-using StateTransitionCovarianceMatrix
-  = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
-extern StateTransitionCovarianceMatrix process_noise_covariance;
+// TODOLater: tune this
 using MeasurementNoiseCovarianceMatrix
   = Eigen::Matrix<core::Float, measurement_dimension, measurement_dimension>;
 extern const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix;
@@ -34,7 +33,9 @@ extern const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix;
 // Changing matrices
 using StateVector = Eigen::Matrix<core::Float, state_dimension, 1>;
 extern StateVector initial_state;
-
+using StateTransitionCovarianceMatrix
+  = Eigen::Matrix<core::Float, state_dimension, state_dimension>;
+extern StateTransitionCovarianceMatrix initial_covariance;
 
 using ControlInput = Eigen::Matrix<core::Float, control_dimension, 1>;
 extern ControlInput control_input_vector;

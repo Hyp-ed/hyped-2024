@@ -41,11 +41,8 @@ TEST(KalmanFilter, cartRunSimulation)
   navigation::ControlMatrix control_matrix;
   control_matrix << 0.5, 1;
 
-  navigation::StateTransitionCovarianceMatrix process_noise_covariance
-    = navigation::process_noise_covariance;
-
-  // navigation::StateTransitionCovarianceMatrix process_noise_covariance;
-  // process_noise_covariance << 0.25 * 3, 0.5 * 3, 0.5 * 3, 1 * 3;
+  navigation::StateTransitionCovarianceMatrix process_noise_covariance;
+  process_noise_covariance << 0.25 * 3, 0.5 * 3, 0.5 * 3, 1 * 3;
 
   navigation::MeasurementMatrix measurement_matrix;
   measurement_matrix << 1, 0, 0, 1;

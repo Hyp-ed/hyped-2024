@@ -6,16 +6,17 @@ KalmanFilter::KalmanFilter(const StateVector &initial_state,
                            const ErrorCovarianceMatrix &initial_error_covariance,
                            const StateTransitionMatrix &transition_matrix,
                            const ControlMatrix &control_matrix,
-                           const StateTransitionCovarianceMatrix &process_noise_covariance,
+                           const StateTransitionCovarianceMatrix &transition_covariance,
                            const MeasurementMatrix &measurement_matrix,
                            const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance)
     : state_estimate_(initial_state),
       error_covariance_(initial_error_covariance),
       transition_matrix(transition_matrix),
       control_matrix(control_matrix),
-      process_noise_covariance(process_noise_covariance),
+      transition_covariance(transition_covariance),
       measurement_matrix(measurement_matrix),
       measurement_noise_covariance(measurement_noise_covariance)
+
 {
   static_assert(state_dimension > 0);
   static_assert(measurement_dimension > 0);
@@ -40,7 +41,7 @@ void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInp
   // P_k = F*P_k-1*F^T + Q
 
   error_covariance_
-    = transition_matrix * error_covariance_ * transition_matrix.transpose() + process_noise_covariance;
+    = transition_matrix * error_covariance_ * transition_matrix.transpose() + transition_covariance;
 
   // Update
 
