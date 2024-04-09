@@ -13,8 +13,8 @@ namespace hyped::debug {
 class AccelerometerCommands {
  public:
   static core::Result addCommands(core::ILogger &logger,
-                                  			 std::shared_ptr<Repl> repl,
-                                  			 toml::v3::node_view<toml::v3::node> config);
+                                  std::shared_ptr<Repl> repl,
+                                  toml::v3::node_view<toml::v3::node> config);
 };
 
 }  // namespace hyped::debug

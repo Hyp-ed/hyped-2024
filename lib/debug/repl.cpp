@@ -1,6 +1,7 @@
 #include "repl.hpp"
 #include "repl_logger.hpp"
 
+#include "commands/accelerometer_commands.hpp"
 #include "commands/adc_commands.hpp"
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
@@ -26,6 +27,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
   } catch (const toml::parse_error &e) {
     logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
     return std::nullopt;
+  }
+  if (config["sensors"]["accelerometer"]["enabled"].value_or(false)) {
+    const auto result = AccelerometerCommands::addCommands(logger, repl, config["senors"]["accelerometer"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding Accelerometer commands");
+      return std::nullopt;
+    }
   }
   if (config["io"]["adc"]) {
     const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
