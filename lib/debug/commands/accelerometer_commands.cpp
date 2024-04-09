@@ -25,20 +25,24 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
 
   // instance of sensor
   const auto accelerometer_sensor           = std::make_shared<sensors::Accelerometer>(logger, i2c);
-  const auto accelerometer_read             = "read";
+  const auto accelerometer_read_name        = "accelerometer read";
   const auto accelerometer_read_description = "Read accelerometer";
   const auto accelerometer_read_handler     = [&logger, accelerometer_sensor]() {
-    const auto value_ready  = accelerometer_sensor->isValueReady();  // method already returns state
+    const auto value_ready  = accelerometer_sensor->isValueReady();
+	if (!value_ready) {
+		logger.log(core::LogLevel::kFatal, "Value is not ready");
+		return;
+	}
     const auto acceleration = accelerometer_sensor->read();
     if (!acceleration) {
       logger.log(core::LogLevel::kFatal, "Failed to read acceleration");
       return;
     }
-    logger.log(core::LogLevel::kDebug, "Acceleration: %d", *acceleration);
+    logger.log(core::LogLevel::kDebug, "Acceleration: %s", acceleration);
   };
   auto read_command = std::make_unique<Command>(
-    accelerometer_read, accelerometer_read_description, accelerometer_read_handler);
-  repl->addCommand(std::move(accelerometer_read));
+    accelerometer_read_name, accelerometer_read_description, accelerometer_read_handler);
+  repl->addCommand(std::move(read_command)); 
   return core::Result::kSuccess;
 }
 }  // namespace hyped::debug
