@@ -11,16 +11,19 @@
 
 namespace hyped::sensors {
 
-// Two possible addresses for the temperature sensor
-constexpr std::uint8_t kDefaultTemperatureAddress     = 0x38;
-constexpr std::uint8_t kAlternativeTemperatureAddress = 0x3F;
+enum class temperatureAddress {
+  k7F = 0x7F,
+  k38 = 0x38,
+  k3C = 0x3C,
+  k3E = 0x3E
+};
 
 class Temperature : public II2cMuxSensor<std::int16_t> {
  public:
   static std::optional<Temperature> create(core::ILogger &logger,
                                            std::shared_ptr<io::II2c> i2c,
                                            const std::uint8_t channel,
-                                           const std::uint8_t device_address);
+                                           const temperatureAddress device_address);
 
   ~Temperature();
 

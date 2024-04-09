@@ -5,14 +5,10 @@ namespace hyped::sensors {
 std::optional<Temperature> Temperature::create(core::ILogger &logger,
                                                std::shared_ptr<io::II2c> i2c,
                                                const std::uint8_t channel,
-                                               const std::uint8_t device_address)
+                                               const temperatureAddress device_address)
 {
-  if (device_address != kDefaultTemperatureAddress
-      && device_address != kAlternativeTemperatureAddress) {
-    logger.log(core::LogLevel::kFatal, "Invalid device address for temperature sensor");
-    return std::nullopt;
-  }
-  const auto write_result = i2c->writeByteToRegister(device_address, kCtrl, kConfigurationSetting);
+  const auto device_address_int = static_cast<std::uint8_t>(device_address);
+  const auto write_result = i2c->writeByteToRegister(device_address_int, kCtrl, kConfigurationSetting);
   if (write_result == core::Result::kFailure) {
     logger.log(
       core::LogLevel::kFatal, "Failed to configure temperature sensor at channel %d", channel);
@@ -20,7 +16,7 @@ std::optional<Temperature> Temperature::create(core::ILogger &logger,
   }
   logger.log(
     core::LogLevel::kDebug, "Successful to configure temperature sensor at channel %d", channel);
-  return Temperature(logger, i2c, channel, device_address);
+  return Temperature(logger, i2c, channel, device_address_int);
 }
 
 Temperature::Temperature(core::ILogger &logger,
