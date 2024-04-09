@@ -8,7 +8,8 @@ std::optional<Temperature> Temperature::create(core::ILogger &logger,
                                                const temperatureAddress device_address)
 {
   const auto device_address_int = static_cast<std::uint8_t>(device_address);
-  const auto write_result = i2c->writeByteToRegister(device_address_int, kCtrl, kConfigurationSetting);
+  const auto write_result
+    = i2c->writeByteToRegister(device_address_int, kCtrl, kConfigurationSetting);
   if (write_result == core::Result::kFailure) {
     logger.log(
       core::LogLevel::kFatal, "Failed to configure temperature sensor at channel %d", channel);

@@ -11,12 +11,7 @@
 
 namespace hyped::sensors {
 
-enum class temperatureAddress {
-  k7F = 0x7F,
-  k38 = 0x38,
-  k3C = 0x3C,
-  k3E = 0x3E
-};
+enum class temperatureAddress { k7F = 0x7F, k38 = 0x38, k3C = 0x3C, k3E = 0x3E };
 
 class Temperature : public II2cMuxSensor<std::int16_t> {
  public:
