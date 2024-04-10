@@ -33,11 +33,11 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
 
   // create sensor
   const auto optional_accelerometer_sensor = sensors::Accelerometer::create(
-    logger, i2c, 2, sensors::kDefaultAccelerometerAddress);
+    logger, i2c, 2, static_cast<sensors::accelerometerAddress>(address));
   if (!optional_accelerometer_sensor) {
     logger.log(core::LogLevel::kFatal, "Failed to create accelerometer sensor");
     return core::Result::kFailure;
-
+  }
   auto accelerometer_sensor     	  = std::move(*optional_accelerometer_sensor);
   const auto read_command_name        = "accelerometer read";
   const auto read_command_description = "Read from the accelerometer";
@@ -59,5 +59,5 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
   repl->addCommand(std::move(read_command)); 
   return core::Result::kSuccess;
   }
-}
+
 }  // namespace hyped::debug
