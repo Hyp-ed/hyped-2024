@@ -17,15 +17,17 @@ namespace hyped::sensors {
 
 constexpr std::string_view kAxisLabels[3] = {"x-axis", "y-axis", "z-axis"};
 
-constexpr std::uint8_t kDefaultAccelerometerAddress     = 0x1D;
-constexpr std::uint8_t kAlternativeAccelerometerAddress = 0x1E;
+enum class accelerometerAddress {k1D = 0x1D, k1E = 0x1E};
+// constexpr std::uint8_t kDefaultAccelerometerAddress     = 0x1D;
+// constexpr std::uint8_t kAlternativeAccelerometerAddress = 0x1E;
 
 class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
  public:
   static std::optional<Accelerometer> create(core::ILogger &logger,
                                              std::shared_ptr<io::II2c> i2c,
                                              const std::uint8_t channel,
-                                             const std::uint8_t device_address);
+                                             const accelerometerAddress device_address);
+                                            //  const std::uint8_t device_address);
   ~Accelerometer();
 
   /*
