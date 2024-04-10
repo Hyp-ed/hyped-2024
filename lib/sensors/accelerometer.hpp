@@ -25,7 +25,7 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
                                              std::shared_ptr<io::II2c> i2c,
                                              const std::uint8_t channel,
                                              const accelerometerAddress device_address);
-  //  const std::uint8_t device_address);
+
   ~Accelerometer();
 
   /*
