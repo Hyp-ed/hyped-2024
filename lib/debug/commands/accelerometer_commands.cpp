@@ -23,12 +23,26 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
   };
   const auto i2c = std::move(*optional_i2c);
 
-  // instance of sensor
-  const auto accelerometer_sensor           = std::make_shared<sensors::Accelerometer>(logger, i2c);
-  const auto accelerometer_read_name        = "accelerometer read";
-  const auto accelerometer_read_description = "Read accelerometer";
-  const auto accelerometer_read_handler     = [&logger, accelerometer_sensor]() {
-    const auto value_ready  = accelerometer_sensor->isValueReady();
+  // get address
+  const auto optional_address = config["address"].value<std::uint8_t>();
+  if (!optional_address) {
+    logger.log(core::LogLevel::kFatal, "Invalid address");
+    return core::Result::kFailure;
+  }
+  const auto address = std::move(*optional_address);
+
+  // create sensor
+  const auto optional_accelerometer_sensor = sensors::Accelerometer::create(
+    logger, i2c, 2, sensors::kDefaultAccelerometerAddress);
+  if (!optional_accelerometer_sensor) {
+    logger.log(core::LogLevel::kFatal, "Failed to create accelerometer sensor");
+    return core::Result::kFailure;
+
+  auto accelerometer_sensor     	  = std::move(*optional_accelerometer_sensor);
+  const auto read_command_name        = "accelerometer read";
+  const auto read_command_description = "Read from the accelerometer";
+  const auto read_command_handler     = [&logger, accelerometer_sensor]() {
+    const auto value_ready  = accelerometer_sensor.isValueReady();
 	if (!value_ready) {
 		logger.log(core::LogLevel::kFatal, "Value is not ready");
 		return;
@@ -38,11 +52,12 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
       logger.log(core::LogLevel::kFatal, "Failed to read acceleration");
       return;
     }
-    logger.log(core::LogLevel::kDebug, "Acceleration: %s", acceleration);
+    logger.log(core::LogLevel::kDebug, "Acceleration: %s m/s", acceleration);
   };
   auto read_command = std::make_unique<Command>(
-    accelerometer_read_name, accelerometer_read_description, accelerometer_read_handler);
+    read_command_name, read_command_description, read_command_handler);
   repl->addCommand(std::move(read_command)); 
   return core::Result::kSuccess;
+  }
 }
 }  // namespace hyped::debug

@@ -33,7 +33,7 @@ buses = []
 [sensors.accelerometer]
 enabled = false
 bus = 2
-address = 25
+address = 29
 
 [sensors.temperature]
 enabled = false

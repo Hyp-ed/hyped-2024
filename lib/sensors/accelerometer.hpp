@@ -17,9 +17,8 @@ namespace hyped::sensors {
 
 constexpr std::string_view kAxisLabels[3] = {"x-axis", "y-axis", "z-axis"};
 
-// possible addresses for the accelerometer (from the datasheet)
-constexpr std::uint8_t kDefaultAccelerometerAddress     = 0x19;
-constexpr std::uint8_t kAlternativeAccelerometerAddress = 0x18;
+constexpr std::uint8_t kDefaultAccelerometerAddress     = 0x1D;
+constexpr std::uint8_t kAlternativeAccelerometerAddress = 0x1E;
 
 class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
  public:
