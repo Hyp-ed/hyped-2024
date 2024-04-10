@@ -38,26 +38,26 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Failed to create accelerometer sensor");
     return core::Result::kFailure;
   }
-  auto accelerometer_sensor     	  = std::move(*optional_accelerometer_sensor);
+  auto accelerometer_sensor           = std::move(*optional_accelerometer_sensor);
   const auto read_command_name        = "accelerometer read";
   const auto read_command_description = "Read from the accelerometer";
   const auto read_command_handler     = [&logger, accelerometer_sensor]() {
-    const auto value_ready  = accelerometer_sensor.isValueReady();
-	if (!value_ready) {
-		logger.log(core::LogLevel::kFatal, "Value is not ready");
-		return;
-	}
-    const auto acceleration = accelerometer_sensor->read();
+    const auto value_ready = accelerometer_sensor.isValueReady();
+    if (!value_ready) {
+      logger.log(core::LogLevel::kFatal, "Value is not ready");
+      return;
+    }
+    const auto acceleration = accelerometer_sensor.read();
     if (!acceleration) {
       logger.log(core::LogLevel::kFatal, "Failed to read acceleration");
       return;
     }
     logger.log(core::LogLevel::kDebug, "Acceleration: %s m/s", acceleration);
   };
-  auto read_command = std::make_unique<Command>(
-    read_command_name, read_command_description, read_command_handler);
-  repl->addCommand(std::move(read_command)); 
+  auto read_command
+    = std::make_unique<Command>(read_command_name, read_command_description, read_command_handler);
+  repl->addCommand(std::move(read_command));
   return core::Result::kSuccess;
-  }
+}
 
 }  // namespace hyped::debug
