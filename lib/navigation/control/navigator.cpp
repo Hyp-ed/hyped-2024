@@ -14,7 +14,7 @@ Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
       previous_accelerometer_data_(0.0),
       previous_optical_reading_(0.0),
       previous_keyence_reading_(0.0),
-      kalman_filter_(initial_state, 
+      kalman_filter_(initial_state,
                      initial_covariance,
                      kStateTransitionMatrix,
                      kControlMatrix,
