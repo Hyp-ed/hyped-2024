@@ -3,6 +3,42 @@
 namespace hyped::navigation {
 // TODOLater: check we stop once near calculated safe stopping distance
 
+// MQTT Node
+
+class NavigatorMqttNode {
+ public:
+  NavigatorMqttNode(std::shared_ptr<core::IMqtt> mqtt) : mqtt_(std::move(mqtt))
+
+  {
+    mqtt_->subscribe(core::MqttTopic::accelerometerData);
+    mqtt_->subscribe(core::MqttTopic::keyenceData);
+    mqtt_->subscribe(core::MqttTopic::opticalData);
+  }
+
+  // TODO: UNDERSTAND!!!!!!!
+
+  void update()
+
+  {
+    const auto message1 = mqtt_->getMessages(core::MqttTopic::accelerometerData);
+    const auto message2 = mqtt_->getMessages(core::MqttTopic::keyenceData);
+    const auto message3 = mqtt_->getMessages(core::MqttTopic::opticalData);
+
+    // TODO: Do properly, currently checking if empty
+
+    if (!message1 || !message2 || !message3) { return; }
+
+    // TODO: Very temporary
+
+    double accelerometer_data = std::stod(message1.value().at(0));
+    double keyence_data       = std::stod(message2.value().at(0));
+    double optical_data       = std::stod(message3.value().at(0));
+
+    double average = (accelerometer_data + keyence_data + optical_data) / 3;
+  }
+}
+}
+
 Navigator::Navigator(core::ILogger &logger, const core::ITimeSource &time)
     : logger_(logger),
       time_(time),
