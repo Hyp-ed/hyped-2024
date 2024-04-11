@@ -26,7 +26,7 @@ int main(int argc, char **argv)
     std::cerr << "Failed to get hostname" << std::endl;
     return 1;
   }
-  const std::string hostname = *optional_hostname;
+  const std::string hostname  = *optional_hostname;
   const auto optional_host_ip = host.getIp();
   if (!optional_host_ip) {
     std::cerr << "Failed to get IP" << std::endl;
