@@ -6,6 +6,8 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
+#include <core/wall_clock.hpp>
+
 namespace hyped::state_machine {
 
 StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt,
@@ -75,6 +77,42 @@ void StateMachine::run()
     publishCurrentState();
   }
   publishCurrentState();
+}
+
+core::Result StateMachine::startNode(toml::v3::node_view<const toml::v3::node> config,
+                                     const std::string &mqtt_ip,
+                                     const uint32_t mqtt_port)
+{
+  hyped::core::WallClock wall_clock;
+  hyped::core::Logger logger("STATE_MACHINE", hyped::core::LogLevel::kDebug, wall_clock);
+  const auto optional_mqtt = hyped::core::Mqtt::create(logger, "state_machine", mqtt_ip, mqtt_port);
+  if (!optional_mqtt) {
+    logger.log(hyped::core::LogLevel::kFatal, "Failed to create MQTT client");
+    return core::Result::kFailure;
+  }
+  auto mqtt = *optional_mqtt;
+  const auto optional_transition_list
+    = config["state_machine"]["transition_table"].value<std::string>();
+  if (!optional_transition_list) {
+    logger.log(hyped::core::LogLevel::kFatal, "Failed to get transition list from config");
+    return core::Result::kFailure;
+  }
+  const std::string transition_list = *optional_transition_list;
+  if (transition_list == "full_run") {
+    const hyped::state_machine::TransitionTable transition_table
+      = hyped::state_machine::transition_to_state_dynamic;
+    hyped::state_machine::StateMachine state_machine(mqtt, transition_table);
+    state_machine.run();
+  } else if (transition_list == "static_run") {
+    const hyped::state_machine::TransitionTable transition_table
+      = hyped::state_machine::transition_to_state_static;
+    hyped::state_machine::StateMachine state_machine(mqtt, transition_table);
+    state_machine.run();
+  } else {
+    logger.log(hyped::core::LogLevel::kFatal, "Unknown transition list: %s", transition_list);
+    return core::Result::kFailure;
+  }
+  return core::Result::kSuccess;
 }
 
 }  // namespace hyped::state_machine

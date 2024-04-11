@@ -11,6 +11,7 @@
 #include <boost/unordered_map.hpp>
 #include <core/mqtt.hpp>
 #include <core/types.hpp>
+#include <toml++/toml.hpp>
 
 namespace hyped::state_machine {
 
@@ -20,6 +21,9 @@ class StateMachine {
   void run();
   State getCurrentState();
   core::Result handleTransition(const State &state);
+  static core::Result startNode(toml::v3::node_view<const toml::v3::node> config,
+                                const std::string &mqtt_ip,
+                                const uint32_t mqtt_port);
 
  private:
   void publishCurrentState();

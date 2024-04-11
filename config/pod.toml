@@ -12,7 +12,7 @@ port = 4556
 nodes = ["state_machine", "mqtt_broker"]
 
 [state_machine]
-state_machine = "full_run"
+transition_table = "full_run"
 
 [some_sensors]
 [some_sensors.accelerometer]
