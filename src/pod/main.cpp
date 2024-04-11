@@ -58,12 +58,12 @@ int main(int argc, char **argv)
     return 1;
   }
   const std::string mqtt_ip     = *optional_mqtt_ip;
-  const auto optional_mqtt_port = config["mqtt"]["port"].value<uint32_t>();
+  const auto optional_mqtt_port = config["mqtt"]["port"].value<std::uint32_t>();
   if (!optional_mqtt_port) {
     std::cerr << "Failed to get MQTT port from config file" << std::endl;
     return 1;
   }
-  const uint32_t mqtt_port = *optional_mqtt_port;
+  const auto mqtt_port = *optional_mqtt_port;
   for (const auto &node : nodes) {
     const auto result = fork();
     if (result == -1) {
