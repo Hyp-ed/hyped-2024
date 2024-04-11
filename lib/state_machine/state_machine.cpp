@@ -81,7 +81,7 @@ void StateMachine::run()
 
 core::Result StateMachine::startNode(toml::v3::node_view<const toml::v3::node> config,
                                      const std::string &mqtt_ip,
-                                     const uint32_t mqtt_port)
+                                     const std::uint32_t mqtt_port)
 {
   core::WallClock wall_clock;
   core::Logger logger("STATE_MACHINE", core::LogLevel::kDebug, wall_clock);

@@ -23,7 +23,7 @@ class StateMachine {
   core::Result handleTransition(const State &state);
   static core::Result startNode(toml::v3::node_view<const toml::v3::node> config,
                                 const std::string &mqtt_ip,
-                                const uint32_t mqtt_port);
+                                const std::uint32_t mqtt_port);
 
  private:
   void publishCurrentState();
