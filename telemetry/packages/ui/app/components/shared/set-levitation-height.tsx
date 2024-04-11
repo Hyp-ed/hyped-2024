@@ -12,7 +12,7 @@ import { Button } from '@/components/ui/button';
 export const SetLevitationHeight = ({ podId }: { podId: string }) => {
   const [height, setHeight] = useState<number | null>(null);
 
-  const setLevigationHeight = async () => {
+  const setLevitationHeight = async () => {
     // Don't do anything if the height is invalid
     if (!height || height < 0) return;
     log(`Setting the levitation height of ${podId} to ${height}mm`);
@@ -27,14 +27,16 @@ export const SetLevitationHeight = ({ podId }: { podId: string }) => {
       <p className="text-sm">Set levitation height (mm):</p>
       <div className="flex gap-2">
         <Input
+          data-testid="height-input"
           type="number"
           min={0}
           value={height ?? ''}
           onChange={(e) => setHeight(Number(e.target.value))}
         />
         <Button
+          data-testid="set-height-button"
           className="bg-white hover:bg-gray-200 text-black"
-          onClick={void setLevigationHeight}
+          onClick={void setLevitationHeight}
         >
           Set
         </Button>
