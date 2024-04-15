@@ -16,6 +16,7 @@ COPY packages/public-app/package.json ./packages/public-app/
 COPY packages/fake/package.json ./packages/fake/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
 COPY packages/tsconfig/package.json ./packages/tsconfig/
+COPY packages/e2e-tests/package.json ./packages/e2e-tests/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
