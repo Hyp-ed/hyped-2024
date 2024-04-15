@@ -64,6 +64,8 @@ int main(int argc, char **argv)
     return 1;
   }
   const auto mqtt_port = *optional_mqtt_port;
+
+  // spin up the nodes
   for (const auto &node : nodes) {
     const auto result = fork();
     if (result == -1) {

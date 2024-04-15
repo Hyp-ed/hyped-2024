@@ -12,6 +12,8 @@ port = 4556
 nodes = ["state_machine", "mqtt_broker"]
 
 [state_machine]
+# Possible transition tables are "full_run",
+# "no_levitation", "levitation_only"
 transition_table = "full_run"
 
 [some_sensors]
