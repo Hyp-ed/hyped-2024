@@ -15,6 +15,7 @@ import {
   ModeType,
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
+import { ERROR_IDS, useErrors } from './errors';
 
 /**
  * The maximum latency before a pod is considered disconnected, in milliseconds
@@ -106,6 +107,8 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
   const { client, publish, subscribe, unsubscribe, mqttConnectionStatus } =
     useMQTT();
 
+  const { raiseError } = useErrors();
+
   useEffect(
     /**
      * When the MQTT connection status changes, check if we need to set the pod connection statuses to disconnected.
@@ -118,12 +121,18 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
           for (const podId of POD_IDS) {
             newPodsState[podId].connectionStatus =
               POD_CONNECTION_STATUS.DISCONNECTED;
+            raiseError(
+              ERROR_IDS.POD_DISCONNECT,
+              `Pod ${podId} disconnected!`,
+              `Lost connection to ${podId} because the connection to the MQTT broker has been lost.`,
+              podId,
+            );
           }
           return newPodsState;
         });
       }
     },
-    [mqttConnectionStatus],
+    [mqttConnectionStatus, raiseError],
   );
 
   useEffect(
@@ -171,12 +180,18 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
                 connectionEstablished: undefined,
               },
             }));
+            raiseError(
+              ERROR_IDS.POD_DISCONNECT,
+              `Pod ${podId} disconnected!`,
+              `Lost connection to ${podId} because the latency between the base station and the pod is too high.`,
+              podId,
+            );
           }
         });
       }, POD_MAX_LATENCY);
       return () => clearInterval(interval);
     },
-    [lastLatencyResponse],
+    [lastLatencyResponse, raiseError],
   );
 
   useEffect(
