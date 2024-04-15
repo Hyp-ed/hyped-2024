@@ -15,6 +15,11 @@
       "cache": false,
       "persistent": true
     },
+    "e2e:test": {
+      "dependsOn": ["^build", "build:fake"],
+      "cache": false,
+      "persistent": true
+    },
     "lint": {
       "dependsOn": ["^build"]
     },
