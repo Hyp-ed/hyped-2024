@@ -16,7 +16,7 @@ std::optional<Temperature> Temperature::create(core::ILogger &logger,
     return std::nullopt;
   }
   logger.log(
-    core::LogLevel::kDebug, "Successful to configure temperature sensor at channel %d", channel);
+    core::LogLevel::kDebug, "Successfully configured temperature sensor at channel %d", channel);
   return Temperature(logger, i2c, channel, device_address_int);
 }
 
