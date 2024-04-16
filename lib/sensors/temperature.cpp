@@ -78,7 +78,7 @@ std::optional<std::int16_t> Temperature::read()
       core::LogLevel::kFatal, "Failed to read low byte for temperature at channel %d", channel_);
     return std::nullopt;
   }
-  const std::int16_t temperature = ((*temperature_high_byte << 8) | *temperature_low_byte);
+  const std::int16_t temperature = (*temperature_high_byte << 8) | *temperature_low_byte;
   logger_.log(
     core::LogLevel::kDebug, "Successfully read from temperature sensor at channel %d", channel_);
   // Scaling temperature as per the datasheet
