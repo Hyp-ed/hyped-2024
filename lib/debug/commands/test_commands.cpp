@@ -8,7 +8,7 @@ core::Result TestCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
   const auto test_command_description = "echoes the arguments back to the user";
   const auto test_command_usage       = "echo <args-to-print...>";
   const auto test_command_handler     = [&logger](std::vector<std::string> args) {
-    for (size_t i = 0; i < args.size(); i++) {
+    for (std::size_t i = 0; i < args.size(); i++) {
       logger.log(core::LogLevel::kInfo, "arg %i = %s", i, args[i].c_str());
     }
   };
