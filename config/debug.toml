@@ -44,6 +44,11 @@ address = 56
 enabled = false
 bus = "can1"
 
+[sensors.inverter_temperature]
+enabled = false
+bus = 2
+adc_mux_channel = 0
+
 [motors]
 enabled = false
 bus = "can1"

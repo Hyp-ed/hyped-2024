@@ -5,6 +5,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/inverter_temperature_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/uart_commands.hpp"
@@ -73,6 +74,14 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result = UartCommands::addCommands(logger, repl, config["io"]["uart"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding UART commands");
+      return std::nullopt;
+    }
+  }
+  if (config["sensors"]["inverter_temperature"]["enabled"].value_or(false)) {
+    const auto result = InverterTemperatureCommands::addCommands(
+      logger, repl, config["sensors"]["inverter_temperature"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding inverter temperature commands");
       return std::nullopt;
     }
   }
