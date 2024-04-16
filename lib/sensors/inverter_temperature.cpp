@@ -5,8 +5,8 @@
 namespace hyped::sensors {
 
 InverterTemperature::InverterTemperature(core::ILogger &logger,
-                                 std::shared_ptr<io::II2c> i2c,
-                                 const AdcMuxChannel adc_mux_channel)
+                                         std::shared_ptr<io::II2c> i2c,
+                                         const AdcMuxChannel adc_mux_channel)
     : logger_(logger),
       i2c_(i2c),
       adc_mux_channel_(adc_mux_channel)
@@ -25,7 +25,7 @@ std::optional<core::Float> InverterTemperature::readTemperature()
     logger_.log(core::LogLevel::kFatal, "Failed to read inverter temperature");
     return std::nullopt;
   }
-  return 0; // something
+  return 0;  // something
 }
 
 }  // namespace hyped::sensors

@@ -15,8 +15,8 @@ namespace hyped::sensors {
 class InverterTemperature {
  public:
   InverterTemperature(core::ILogger &logger,
-                  std::shared_ptr<io::II2c> i2c,
-                  const AdcMuxChannel adc_mux_channel);
+                      std::shared_ptr<io::II2c> i2c,
+                      const AdcMuxChannel adc_mux_channel);
 
   ~InverterTemperature();
 
