@@ -4,15 +4,16 @@
   "description": "End-to-end tests for HYPED Telemetry",
   "main": "index.js",
   "scripts": {
-    "e2e:test": "playwright test"
+    "e2e:test": "pnpm dlx playwright test"
   },
   "dependencies": {
+    "@hyped/telemetry-server": "workspace:*",
     "@hyped/telemetry-ui": "workspace:*",
-    "@hyped/telemetry-server": "workspace:*"
+    "mqtt": "^5.5.0"
   },
   "devDependencies": {
+    "@hyped/tsconfig": "workspace:*",
     "@playwright/test": "^1.42.1",
-    "@types/node": "^20.11.28",
-    "@hyped/tsconfig": "workspace:*"
+    "@types/node": "^20.11.28"
   }
 }
