@@ -201,7 +201,7 @@ void Repl::printHelp()
 {
   for (auto &command : commands_) {
     logger_.log(core::LogLevel::kDebug,
-                "%s: %s\n Usage: %s\n",
+                "%s: %s, usage: '%s'",
                 command->getName().c_str(),
                 command->getDescription().c_str(),
                 command->getUsage().c_str());
