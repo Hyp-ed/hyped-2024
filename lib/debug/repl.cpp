@@ -28,7 +28,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
     return std::nullopt;
   }
-  if (config["io"]["adc"]) {
+  if (config["io"]["adc"]["enabled"].value_or(false)) {
     const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
@@ -124,11 +124,11 @@ void Repl::run()
       if (alias != aliases_.end()) { input = alias->second; }
       for (auto &command : commands_) {
         if (input.find(command->getName()) == 0) {
-          // TODOLater: eww
           std::vector<std::string> args;
-          std::stringstream ss(input.substr(command->getName().size() + 1));
+          std::stringstream ss(input.substr(command->getName().size()));
           std::string arg;
           while (getline(ss, arg, ' ')) {
+            if (arg.size() == 0) { continue; }
             args.push_back(arg);
           }
           command->execute(args);
@@ -210,7 +210,6 @@ void Repl::printHelp()
 
 void Repl::addHelpCommand()
 {
-  // TODO: this shouldn't segfault
   addCommand(std::make_unique<Command>(
     "help", "Print this help message", "help", [this](std::vector<std::string> args) {
       printHelp();
@@ -220,7 +219,6 @@ void Repl::addHelpCommand()
 
 void Repl::addQuitCommand()
 {
-  // TODO: neither should this
   addCommand(std::make_unique<Command>(
     "quit", "Quit the program", "quit", [this](std::vector<std::string> args) {
       terminal_.quit();
