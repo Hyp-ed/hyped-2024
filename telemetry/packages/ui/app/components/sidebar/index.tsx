@@ -10,7 +10,6 @@ import { PodControls } from './pod-controls';
 import { PodConnectionStatus } from './pod-connection-status';
 import { Logo } from '@/components/shared/logo';
 import { PodSelector } from './pod-selector';
-import { ERROR_IDS, useErrors } from '@/context/errors';
 
 /**
  * The custom sidebar for the GUI which allows us to select a pod, control it, view its connection status, and change the view.
@@ -27,8 +26,6 @@ export const Sidebar = ({
     currentPod,
     pod: { podState },
   } = useCurrentPod();
-
-  const { raiseError } = useErrors();
 
   // Display notification when the pod state changes
   useEffect(
