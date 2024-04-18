@@ -132,14 +132,53 @@ core::Result Navigator::accelerometerUpdate(
   return core::Result::kSuccess;
 }
 
-//TODO: main run loop
+core::KeyenceData parseKeyenceData(const std::shared_ptr<rapidjson::Document>& payload);
+core::OpticalData parseOpticalData(const std::shared_ptr<rapidjson::Document>& payload);
+std::array<core::RawAccelerationData, core::kNumAccelerometers> parseAccelerometerData(const std::shared_ptr<rapidjson::Document>& payload);
+
+// TODO: main run loop
 
 void Navigator::run()
 {
-  //while (getCurrentState() != State::kShutdown) {
-  
+  while (true) {
+    const auto keyenceMessage       = mqtt_->getMessage();
+    const auto opticalMessage       = mqtt_->getMessage();
+    const auto accelerometerMessage = mqtt_->getMessage();
+
+    core::KeyenceData keyence_data;
+    core::OpticalData optical_data;
+    std::array<core::RawAccelerationData, core::kNumAccelerometers> accelerometer_data;
+
+    if (!keyenceMessage || !opticalMessage || !accelerometerMessage) {
+      logger_.log(core::LogLevel::kFatal, "Failed to get MQTT message");
+      break;
+    }
+
+    core::KeyenceData keyence_data = parseKeyenceData(keyenceMessage->payload);
+    core::OpticalData optical_data = parseOpticalData(opticalMessage->payload);
+    std::array<core::RawAccelerationData, core::kNumAccelerometers> accelerometer_data
+      = parseAccelerometerData(accelerometerMessage->payload);
+
+    // update sensor readings
+    if (keyenceUpdate(keyence_data) == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update Keyence data");
+      break;
+    }
+    if (opticalUpdate(optical_data) == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update optical data");
+      break;
+    }
+    if (accelerometerUpdate(accelerometer_data) == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update accelerometer data");
+      break;
+    }
+
+    auto trajectory = currentTrajectory();
+    if (!trajectory) {
+      logger_.log(core::LogLevel::kFatal, "Failed to calculate current trajectory");
+      break;
+    }
   }
-  
 }
 
 }  // namespace hyped::navigation
