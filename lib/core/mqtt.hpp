@@ -11,6 +11,9 @@
 #include <mqtt/client.h>
 #include <rapidjson/document.h>
 
+#include <rfl.hpp>
+#include <rfl/json.hpp>
+
 namespace hyped::core {
 
 // all messages with a higher priority are processed before any lower priority message is processed

@@ -38,6 +38,14 @@ FetchContent_MakeAvailable(tomlplusplus)
 if(NOT tomlplusplus_POPULATED)
   FetchContent_Populate(tomlplusplus)
 endif()
+FetchContent_Declare(
+  reflect GIT_REPOSITORY https://github.com/getml/reflect-cpp
+  GIT_TAG v0.8.0
+)
+FetchContent_MakeAvailable(reflect)
+if(NOT reflect_POPULATED)
+  FetchContent_Populate(reflect)
+endif()
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)
