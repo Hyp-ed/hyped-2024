@@ -50,8 +50,7 @@ core::Result I2cCommands::addCommands(core::ILogger &logger,
         logger.log(core::LogLevel::kFatal, "Error getting I2C bus");
         return;
       };
-      const auto i2c = std::move(*optional_i2c);
-      // TODO stop using std::stoul
+      const auto i2c                      = std::move(*optional_i2c);
       const std::uint8_t device_address   = std::stoul(args[1], nullptr, 16);
       const std::uint8_t register_address = std::stoul(args[2], nullptr, 16);
       const std::uint32_t data            = std::stoul(args[3], nullptr, 16);
