@@ -173,6 +173,9 @@ std::vector<std::string> Repl::autoComplete(const std::string &partial)
   for (auto &command : commands_) {
     if (command->getName().find(partial) == 0) { matches.push_back(command->getName()); }
   }
+  for (auto &[alias, command] : aliases_) {
+    if (alias.find(partial) == 0) { matches.push_back(alias); }
+  }
   return matches;
 }
 
