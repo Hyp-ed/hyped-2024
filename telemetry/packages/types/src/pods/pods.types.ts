@@ -19,6 +19,7 @@ export type Limits = {
   };
 };
 
+// For numerical sensor readings described by operational range sampling parameters
 export type RangeMeasurement = BaseMeasurement & {
   format: 'float' | 'integer';
   limits: Limits;
