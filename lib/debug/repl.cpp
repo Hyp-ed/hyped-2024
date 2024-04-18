@@ -5,6 +5,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/low_power_bms_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/uart_commands.hpp"
@@ -52,6 +53,14 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result = I2cCommands::addCommands(logger, repl, config["io"]["i2c"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding I2C commands");
+      return std::nullopt;
+    }
+  }
+  if (config["sensors"]["low_power_bms"]["enabled"].value_or(false)) {
+    const auto result
+      = LowPowerBMSCommands::addCommands(logger, repl, config["sensors"]["low_power_bms"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding Low Power BMS commands");
       return std::nullopt;
     }
   }
