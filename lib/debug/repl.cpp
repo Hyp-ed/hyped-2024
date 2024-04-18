@@ -7,7 +7,6 @@
 #include "commands/i2c_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
-#include "commands/test_commands.hpp"
 #include "commands/uart_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
@@ -89,7 +88,6 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result               = repl->addAlias(alias_alias, alias_command);
     if (result == core::Result::kFailure) { return std::nullopt; }
   }
-  TestCommands::addCommands(logger, repl);
   return repl;
 }
 
