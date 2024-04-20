@@ -55,6 +55,9 @@ importers:
 
   packages/e2e-tests:
     dependencies:
+      '@hyped/telemetry-constants':
+        specifier: workspace:*
+        version: link:../constants
       '@hyped/telemetry-server':
         specifier: workspace:*
         version: link:../server
@@ -14005,6 +14008,7 @@ packages:
       vue-tweet-embed: 2.4.0(vue@2.7.14)
       vue-twentytwenty: 0.6.2
     dev: false
+    bundledDependencies: false
 
   /victory-vendor@36.6.11:
     resolution: {integrity: sha512-nT8kCiJp8dQh8g991J/R5w5eE2KnO8EAIP0xocWlh9l2okngMWglOPoMZzJvek8Q1KUc4XE/mJxTZnvOB1sTYg==}
