@@ -121,11 +121,14 @@ void Repl::run()
       const auto alias = aliases_.find(input);
       if (alias != aliases_.end()) { input = alias->second; }
       for (auto &command : commands_) {
+        // Match on first command that is a prefix of the input
         if (input.find(command->getName()) == 0) {
           std::vector<std::string> args;
+          // Get argument string and remove command from it
           std::stringstream ss(input.substr(command->getName().size()));
           std::string arg;
           while (getline(ss, arg, ' ')) {
+            // Discard whitespace
             if (arg.size() == 0) { continue; }
             args.push_back(arg);
           }
