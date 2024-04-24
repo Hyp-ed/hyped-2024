@@ -73,7 +73,6 @@ class TimeOfFlight {
   static constexpr std::uint8_t kModeSingleShot = 0b01;
   static constexpr std::uint8_t kModeContinuous = 0b11;
 
-  // TODOLater - std::uint8_t or std::uint16_t for all regs?
   static constexpr std::uint8_t kSystemFreshOutOfReset  = 0x016;
   static constexpr std::uint8_t kSystemModeGpioOne      = 0x011;
   static constexpr std::uint16_t kReadoutSamplingPeriod = 0x010a;

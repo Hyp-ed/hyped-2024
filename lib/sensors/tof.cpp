@@ -1,4 +1,4 @@
-#include "time_of_flight.hpp"
+#include "tof.hpp"
 
 namespace hyped::sensors {
 std::optional<TimeOfFlight> TimeOfFlight::create(core::ILogger &logger,
@@ -48,40 +48,32 @@ core::Result TimeOfFlight::initialise()
     // i2c_->writeByteToRegister(device_address_, 0x0207, 0x01);
     // i2c_->writeByteToRegister(device_address_, 0x0208, 0x01);
 
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[0], 0x00);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[1], 0xfd);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[2], 0x01);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[3], 0x03);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[4], 0x02);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[5], 0x01);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[6], 0x03);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[7], 0x02);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[8], 0x05);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[9], 0xce);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[10], 0x03);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[11], 0xf8);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[12], 0x00);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[13], 0x3c);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[14], 0x00);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[15], 0x3c);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[16], 0x09);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[17], 0x09);
-    // i2c_->writeByteToRegister(device_address_, 0x0198, 0x01);
-    // i2c_->writeByteToRegister(device_address_, 0x01b0, 0x17);
-    // i2c_->writeByteToRegister(device_address_, 0x01ad, 0x00);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[18], 0x05);
-    // i2c_->writeByteToRegister(device_address_, 0x0100, 0x05);
-    // i2c_->writeByteToRegister(device_address_, 0x0199, 0x05);
-    // i2c_->writeByteToRegister(device_address_, 0x01a6, 0x1b);
-    // i2c_->writeByteToRegister(device_address_, 0x01ac, 0x3e);
-    // i2c_->writeByteToRegister(device_address_, 0x01a7, 0x1f);
-    i2c_->writeByteToRegister(device_address_, array_return_addresses[19], 0x00);
-
+    constexpr std::uint8_t data[] = {0xfd,
+                                     0x01,
+                                     0x03,
+                                     0x02,
+                                     0x01,
+                                     0x03,
+                                     0x02,
+                                     0x05,
+                                     0xce,
+                                     0x03,
+                                     0xf8,
+                                     0x00,
+                                     0x3c,
+                                     0x00,
+                                     0x3c,
+                                     0x09,
+                                     0x09,
+                                     0x05,
+                                     0x00};
+    for (int i = 0; i < 20; i++) {
+      i2c_->writeByteToRegister(device_address_, array_return_addresses[1], data[i]);
+    }
     i2c_->writeByteToRegister(device_address_, kSystemFreshOutOfReset, 0);
 
     // Recommended : Public registers
     i2c_->writeByteToRegister(device_address_, kSystemModeGpioOne, 0x10);
-    // i2c_->writeByteToRegister(device_address_, kReadoutSamplingPeriod, 0x30);
     i2c_->writeByteToRegister(device_address_, kSysAlsAnalogueGain, 0x46);
     i2c_->writeByteToRegister(device_address_, kSysRangeVhvRepeatRate, 0xff);
     i2c_->writeByteToRegister(device_address_, kSysAlsIntegrationPeriod, 0x63);
@@ -128,7 +120,7 @@ core::Result TimeOfFlight::checkSensorMode(std::uint8_t mode_value)
 std::optional<std::uint8_t> TimeOfFlight::getRange()
 {
   // Check the status
-  auto status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
+  const auto status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
   if (!status) {
     logger_.log(core::LogLevel::kFatal, "Failed to get time of flight interrupt status");
     return std::nullopt;
@@ -136,13 +128,20 @@ std::optional<std::uint8_t> TimeOfFlight::getRange()
   auto range_status = *status & 0b111;
 
   // Wait for new measurement ready status
+  uint8_t timeout = 0;
   while (range_status != 0x04) {
-    status = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
-    if (!status) {
+    const auto statuss = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
+    if (!statuss) {
       logger_.log(core::LogLevel::kFatal, "Failed to get time of flight interrupt status");
       return std::nullopt;
     }
-    range_status = *status & 0b111;
+    range_status = *statuss & 0b111;
+    timeout++;
+    if (timeout > 1000000) {
+      logger_.log(core::LogLevel::kFatal,
+                  "Failed to get time of flight interrupt status - timeout");
+      return std::nullopt;
+    }
   }
 
   const auto range = i2c_->readByte(device_address_, kResultRangeVal);
