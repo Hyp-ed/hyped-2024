@@ -28,49 +28,49 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     return std::nullopt;
   }
   if (config["io"]["adc"]["enabled"].value_or(false)) {
-    const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
+    const auto result = AdcCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
       return std::nullopt;
     }
   }
   if (config["io"]["can"]["enabled"].value_or(false)) {
-    const auto result = CanCommands::addCommands(logger, repl, config["io"]["can"]);
+    const auto result = CanCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding CAN commands");
       return std::nullopt;
     }
   }
   if (config["io"]["gpio"]["enabled"].value_or(false)) {
-    const auto result = GpioCommands::addCommands(logger, repl, config["io"]["gpio"]);
+    const auto result = GpioCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding GPIO commands");
       return std::nullopt;
     }
   }
   if (config["io"]["i2c"]["enabled"].value_or(false)) {
-    const auto result = I2cCommands::addCommands(logger, repl, config["io"]["i2c"]);
+    const auto result = I2cCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding I2C commands");
       return std::nullopt;
     }
   }
   if (config["io"]["pwm"]["enabled"].value_or(false)) {
-    const auto result = PwmCommands::addCommands(logger, repl, config["io"]["pwm"]);
+    const auto result = PwmCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding PWM commands");
       return std::nullopt;
     }
   }
   if (config["io"]["spi"]["enabled"].value_or(false)) {
-    const auto result = SpiCommands::addCommands(logger, repl, config["io"]["spi"]);
+    const auto result = SpiCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding SPI commands");
       return std::nullopt;
     }
   }
   if (config["io"]["uart"]["enabled"].value_or(false)) {
-    const auto result = UartCommands::addCommands(logger, repl, config["io"]["uart"]);
+    const auto result = UartCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding UART commands");
       return std::nullopt;

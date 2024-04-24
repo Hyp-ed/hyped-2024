@@ -2,9 +2,7 @@
 
 namespace hyped::debug {
 
-core::Result I2cCommands::addCommands(core::ILogger &logger,
-                                      std::shared_ptr<Repl> repl,
-                                      toml::v3::node_view<toml::v3::node> config)
+core::Result I2cCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
 {
   {
     const auto read_command_name        = "i2c read";

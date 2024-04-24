@@ -2,9 +2,7 @@
 
 namespace hyped::debug {
 
-core::Result UartCommands::addCommands(core::ILogger &logger,
-                                       std::shared_ptr<Repl> repl,
-                                       toml::v3::node_view<toml::v3::node> config)
+core::Result UartCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
 {
   {
     const auto uart_read_command_name        = "uart read";

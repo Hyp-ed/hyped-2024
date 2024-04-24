@@ -2,9 +2,7 @@
 
 namespace hyped::debug {
 
-core::Result CanCommands::addCommands(core::ILogger &logger,
-                                      std::shared_ptr<Repl> repl,
-                                      toml::v3::node_view<toml::v3::node> config)
+core::Result CanCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
 {
   const auto write_command_name        = "can write";
   const auto write_command_description = "Write to a CAN bus";

@@ -2,9 +2,7 @@
 
 namespace hyped::debug {
 
-core::Result AdcCommands::addCommands(core::ILogger &logger,
-                                      std::shared_ptr<Repl> repl,
-                                      toml::v3::node_view<toml::v3::node> config)
+core::Result AdcCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
 {
   const auto adc_read_command_name        = "adc read";
   const auto adc_read_command_description = "Read from ADC pin";

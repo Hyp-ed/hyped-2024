@@ -2,9 +2,7 @@
 
 namespace hyped::debug {
 
-core::Result GpioCommands::addCommands(core::ILogger &logger,
-                                       std::shared_ptr<Repl> repl,
-                                       toml::v3::node_view<toml::v3::node> config)
+core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
 {
   {
     const auto gpio_read_command_name        = "gpio read";
@@ -56,8 +54,19 @@ core::Result GpioCommands::addCommands(core::ILogger &logger,
         return;
       }
       const auto gpio_writer = std::move(*optional_gpio_writer);
-      core::DigitalSignal signal
-        = args[1] == "1" ? core::DigitalSignal::kHigh : core::DigitalSignal::kLow;
+      const auto value       = std::stoi(args[1]);
+      core::DigitalSignal signal;
+      switch (value) {
+        case 0:
+          signal = core::DigitalSignal::kLow;
+          break;
+        case 1:
+          signal = core::DigitalSignal::kHigh;
+          break;
+        default:
+          logger.log(core::LogLevel::kFatal, "Invalid GPIO value: %d, must be 0 or 1", value);
+          return;
+      }
       const auto result = gpio_writer->write(signal);
       if (result == core::Result::kFailure) {
         logger.log(core::LogLevel::kFatal, "Failed to write to GPIO pin %d", pin);

@@ -12,6 +12,12 @@ namespace hyped::debug {
 
 class Command {
  public:
+  /**
+   * @param name Name used to invoke the command in the REPL
+   * @param description Description of what the command does
+   * @param usage How to use the command
+   * @param handler Function to execute when the command is invoked
+   */
   Command(const std::string &name,
           const std::string &description,
           const std::string &usage,
