@@ -127,9 +127,9 @@ if [ "$docker_build" = true ]; then
 
   if [ "$cross_compile" = true ]; then
     echo "[!] Cross-compiling for Raspberry Pi"
-    docker run -e CLEAN=$clean -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
+    docker run --ip 192.168.1.0 --hostname raspberry --expose 4556 -e CLEAN=$clean -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
   else
-    docker run -e CLEAN=$clean -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
+    docker run --ip 192.168.1.0 --hostname raspberry --expose 4556 -e CLEAN=$clean -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
   fi
 fi
 
@@ -142,6 +142,6 @@ if [ "$docker_dev" = true ]; then
     docker start -i $DEV_CONTAINER_NAME
   else
     echo "[!] No existing container found. Creating new container"
-    docker run -it -v $(pwd):/home/hyped --name $DEV_CONTAINER_NAME -w /home/hyped/ --entrypoint /bin/bash $IMAGE_NAME 
+    docker run -it --ip 192.168.1.0 --hostname raspberry --expose 4556 -v $(pwd):/home/hyped --name $DEV_CONTAINER_NAME -w /home/hyped/ --entrypoint /bin/bash $IMAGE_NAME 
   fi
 fi
