@@ -6,6 +6,7 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
+#include <core/mqtt_message.hpp>
 #include <core/wall_clock.hpp>
 
 namespace hyped::state_machine {
@@ -46,26 +47,22 @@ core::Result StateMachine::handleTransition(const State &state)
 
 void StateMachine::update()
 {
-  const auto nextMessage = mqtt_->getMessage();
-  if (!nextMessage) { return; }
+  const auto next_message = mqtt_->getMessage();
+  if (!next_message) { return; }
 
-  const auto payload       = nextMessage->payload;
-  const auto message_state = string_to_state_.find((*payload)["transition"].GetString());
-
-  if (message_state != string_to_state_.end()) { handleTransition(message_state->second); }
+  const auto optional_payload = next_message->state_message;
+  if (!optional_payload) { return; }
+  const auto message_state = (*optional_payload).state;
+  handleTransition(message_state);
 }
 
 void StateMachine::publishCurrentState()
 {
-  const auto state_string = stateToString(getCurrentState());
-  const auto topic        = core::MqttTopic::kTest;
-  auto message_payload    = std::make_shared<rapidjson::Document>();
-  message_payload->SetObject();
-  rapidjson::Value state_value(state_string.c_str(), message_payload->GetAllocator());
-  message_payload->AddMember("transition", state_value, message_payload->GetAllocator());
+  const auto state = getCurrentState();
+  const auto topic = core::MqttTopic::kTest;
   const core::MqttMessage::Header header{.timestamp = 0,
                                          .priority  = core::MqttMessagePriority::kNormal};
-  const core::MqttMessage message{topic, header, message_payload};
+  const core::MqttMessage message(topic, header, core::StateMessage{.state = state});
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 

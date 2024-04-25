@@ -1,54 +1,15 @@
 #pragma once
 
 #include "logger.hpp"
+#include "mqtt_message.hpp"
 #include "mqtt_topics.hpp"
 #include "types.hpp"
 
 #include <optional>
-#include <queue>
-#include <vector>
 
 #include <mqtt/client.h>
-#include <rapidjson/document.h>
-
-#include <rfl.hpp>
-#include <rfl/json.hpp>
 
 namespace hyped::core {
-
-// all messages with a higher priority are processed before any lower priority message is processed
-enum MqttMessagePriority {
-  kCritical = 0,
-  kNormal   = 1,
-  kLow      = 2,
-};
-
-enum MqttMessageQos {
-  kAtMostOnce  = 0,
-  kAtLeastOnce = 1,
-  kExactlyOnce = 2,
-};
-
-struct MqttMessage {
-  MqttTopic topic;
-  struct Header {
-    std::uint64_t timestamp;
-    MqttMessagePriority priority;
-  };
-  Header header;
-  std::shared_ptr<rapidjson::Document> payload;
-  bool operator<(const MqttMessage &other) const
-  {
-    if (header.priority == other.header.priority) {
-      return header.timestamp > other.header.timestamp;
-    }
-    return header.priority < other.header.priority;
-  }
-  MqttMessage(MqttTopic topic, const Header &header, std::shared_ptr<rapidjson::Document> payload)
-      : topic(topic),
-        header(header),
-        payload(std::move(payload)){};
-};
 
 class IMqtt {
  public:

@@ -39,12 +39,21 @@ if(NOT tomlplusplus_POPULATED)
   FetchContent_Populate(tomlplusplus)
 endif()
 FetchContent_Declare(
-  reflect GIT_REPOSITORY https://github.com/getml/reflect-cpp
-  GIT_TAG v0.8.0
+  yyjson GIT_REPOSITORY https://github.com/ibireme/yyjson.git GIT_TAG master
+)
+FetchContent_GetProperties(yyjson)
+if(NOT yyjson_POPULATED)
+  FetchContent_Populate(yyjson)
+  add_subdirectory(${yyjson_SOURCE_DIR} ${yyjson_BINARY_DIR} EXCLUDE_FROM_ALL)
+endif()
+FetchContent_Declare(
+  reflect GIT_REPOSITORY https://github.com/tomlonergan03/reflect-cpp.git
+  GIT_TAG main
 )
 FetchContent_MakeAvailable(reflect)
 if(NOT reflect_POPULATED)
   FetchContent_Populate(reflect)
+  add_subdirectory(${reflectcpp_SOURCE_DIR} ${reflectcpp_BINARY_DIR})
 endif()
 
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib)

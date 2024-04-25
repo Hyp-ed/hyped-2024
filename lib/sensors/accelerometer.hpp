@@ -12,6 +12,7 @@
 #include <core/types.hpp>
 #include <core/wall_clock.hpp>
 #include <io/i2c.hpp>
+#include <state_machine/state.hpp>
 
 namespace hyped::sensors {
 

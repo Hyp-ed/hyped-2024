@@ -1,8 +1,8 @@
 #include "mqtt.hpp"
+#include "mqtt_message.hpp"
 
-#include <rapidjson/writer.h>
-
-#include "rapidjson/stringbuffer.h"
+#include <rfl.hpp>
+#include <rfl/json.hpp>
 
 namespace hyped::core {
 
@@ -33,7 +33,6 @@ Mqtt::Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client, mqtt::callback
       cb(std::move(cb))
 {
 }
-
 Mqtt::~Mqtt()
 {
   client_->disconnect();
@@ -102,25 +101,13 @@ std::optional<MqttMessage> Mqtt::getMessage()
 
 mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
 {
-  rapidjson::Document payload;
-  payload.SetObject();
-  rapidjson::Document header;
-  header.SetObject();
-  header.AddMember("priority", message.header.priority, header.GetAllocator());
-  header.AddMember("timestamp", message.header.timestamp, header.GetAllocator());
-  payload.AddMember("header", header, payload.GetAllocator());
-  rapidjson::Document payload_json;
-  payload_json.CopyFrom(*message.payload, payload_json.GetAllocator());
-  payload.AddMember("payload", payload_json, payload.GetAllocator());
-  rapidjson::StringBuffer buffer;
-  auto writer = rapidjson::Writer<rapidjson::StringBuffer>(buffer);
-  payload.Accept(writer);
   const auto topic_string = mqtt_topic_to_string.find(message.topic);
   if (topic_string == mqtt_topic_to_string.end()) {
     logger_.log(core::LogLevel::kFatal, "Attempted to publish to nonexistent MQTT topic");
     return nullptr;
   }
-  return mqtt::make_message(topic_string->second, buffer.GetString());
+  std::string message_json = rfl::json::write(message);
+  return mqtt::make_message(topic_string->second, message_json);
 }
 
 std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt::message> message)
@@ -132,37 +119,6 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
       core::LogLevel::kFatal, "Received message on nonexistent MQTT topic: %s", topic.c_str());
     return std::nullopt;
   }
-  const auto message_contents = message->get_payload().c_str();
-  rapidjson::Document message_contents_json;
-  message_contents_json.Parse(message_contents);
-  if (message_contents_json.HasParseError()) {
-    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: parse error");
-    return std::nullopt;
-  }
-  if (!message_contents_json.HasMember("header")) {
-    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing header");
-    return std::nullopt;
-  }
-  const auto header = message_contents_json["header"].GetObject();  // error here
-  if (!header.HasMember("timestamp")) {
-    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing timestamp");
-  }
-  if (!header.HasMember("priority")) {
-    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing priority");
-  }
-  const auto timestamp = header["timestamp"].GetUint64();
-  const auto priority  = header["priority"].GetUint();
-  if (!message_contents_json.HasMember("payload")) {
-    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing payload");
-  }
-  if (priority > static_cast<std::uint8_t>(MqttMessagePriority::kLow)) {
-    logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: invalid priority");
-    return std::nullopt;
-  }
-  MqttMessagePriority mqtt_priority = static_cast<MqttMessagePriority>(priority);
-  std::shared_ptr mqtt_payload      = std::make_shared<rapidjson::Document>();
-  mqtt_payload->CopyFrom(message_contents_json["payload"], mqtt_payload->GetAllocator());
-  MqttMessage::Header mqtt_header{timestamp, mqtt_priority};
   return MqttMessage{mqtt_topic->second, mqtt_header, mqtt_payload};
 }
 
