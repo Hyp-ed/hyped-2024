@@ -2,12 +2,16 @@ import { OpenMctFault } from '@hyped/telemetry-types';
 import { nanoid } from 'nanoid';
 import { Fault } from '../Fault.service';
 
-export function convertToOpenMctFault(
-  fault: Fault
-): OpenMctFault {
+/**
+ * Converts a fault to an Open MCT fault object.
+ * @param fault The fault to convert
+ * @returns The Open MCT fault object
+ */
+export function convertToOpenMctFault(fault: Fault): OpenMctFault {
   const { measurement, tripReading, level } = fault;
 
   const namespace = `/${tripReading.podId}/${measurement.key}`;
+
   return {
     type: 'global-alarm-status',
     fault: {

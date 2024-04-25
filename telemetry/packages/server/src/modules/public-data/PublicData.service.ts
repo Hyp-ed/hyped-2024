@@ -5,6 +5,10 @@ import { flux } from '@influxdata/influxdb-client';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { ACTIVE_STATES } from '@hyped/telemetry-constants';
 import { InfluxRow } from '@/modules/common/types/InfluxRow';
+import {
+  LaunchTimeResponse,
+  StateResponse,
+} from '@hyped/telemetry-types/dist/server/responses';
 
 interface InfluxStateRow extends InfluxRow {
   stateType: string;
@@ -23,7 +27,7 @@ export class PublicDataService {
    * @param podId The pod's ID.
    * @returns The current state and the previous state of the pod.
    */
-  public async getState(podId: string) {
+  public async getState(podId: string): Promise<StateResponse> {
     // Get the last state reading from InfluxDB (measurement name should be 'state')
     const query = flux`
       from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
@@ -36,9 +40,8 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxStateRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxStateRow>(query);
 
       return {
         currentState: data[0]
@@ -56,7 +59,7 @@ export class PublicDataService {
             }
           : null,
       };
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get historical reading for ${podId}'s state`,
         e,
@@ -72,7 +75,7 @@ export class PublicDataService {
    * @param podId The pod's ID.
    * @returns The launch time of the pod.
    */
-  public async getLaunchTime(podId: string) {
+  public async getLaunchTime(podId: string): Promise<LaunchTimeResponse> {
     const currentState = await this.getState(podId);
 
     // If the pod is not in an active state or stopped, launch time isn't defined
@@ -101,15 +104,14 @@ export class PublicDataService {
     `;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxStateRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxStateRow>(query);
       const launchTime = new Date(data[0]['_time']).getTime();
 
       return {
         launchTime,
       };
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get launch time for ${podId}`,
         e,

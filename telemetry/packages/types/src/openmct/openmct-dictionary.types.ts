@@ -1,5 +1,8 @@
-import { Limits } from "../pods/pods.types";
+import { Limits } from '../pods/pods.types';
 
+/**
+ * Type of an Open MCT measurement.
+ */
 export type OpenMctMeasurement = {
   name: string;
   key: string;
@@ -27,10 +30,16 @@ export type OpenMctMeasurement = {
   }[];
 };
 
+/**
+ * Type of an Open MCT pod.
+ */
 export type OpenMctPod = {
   id: string;
   name: string;
   measurements: OpenMctMeasurement[];
 };
 
+/**
+ * Type of an Open MCT dictionary.
+ */
 export type OpenMctDictionary = Record<string, OpenMctPod>;

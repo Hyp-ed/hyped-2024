@@ -6,17 +6,23 @@ import { RealtimeTelemetryPlugin } from './plugins/realtime-telemetry-plugin';
 import { LimitPlugin } from './plugins/limit-plugin';
 import { ConductorPlugin } from './plugins/conductor';
 import { FaultsPlugin } from './plugins/faults-plugin/faults-plugin';
-
-const TEN_SECONDS = 10 * 1000;
+import { SERVER_ENDPOINT } from './core/config';
 
 openmct.setAssetPath('/openmct-lib');
 
 // Local storage of dashbaords
 openmct.install(openmct.plugins.LocalStorage());
+// https://github.com/nasa/openmct/tree/master/src/plugins/staticRootPlugin
+openmct.install(
+  openmct.plugins.StaticRootPlugin({
+    namespace: 'dashboards',
+    exportUrl: 'data/dashboards.json',
+  }),
+);
 
 // Time
 openmct.install(openmct.plugins.UTCTimeSystem());
-openmct.time.clock('local', { start: -TEN_SECONDS, end: 0 });
+openmct.install(ConductorPlugin());
 
 // Theme
 openmct.install(openmct.plugins['Espresso']());
@@ -42,7 +48,6 @@ openmct.install(openmct.plugins.Timer());
 openmct.install(openmct.plugins.Timelist());
 openmct.install(openmct.plugins.BarChart());
 openmct.install(openmct.plugins.ScatterPlot());
-openmct.install(ConductorPlugin());
 
 // Data
 openmct.install(DictionaryPlugin());
@@ -53,20 +58,22 @@ openmct.install(RealtimeTelemetryPlugin());
 openmct.install(LimitPlugin());
 openmct.install(FaultsPlugin());
 
-// Dashboards
-// https://github.com/nasa/openmct/tree/master/src/plugins/staticRootPlugin
+// Server connection indicator
 openmct.install(
-  openmct.plugins.StaticRootPlugin({
-    namespace: 'dashboards',
-    exportUrl: 'data/dashboards.json',
+  openmct.plugins.URLIndicator({
+    url: SERVER_ENDPOINT + '/ping',
+    iconClass: 'icon-check',
+    interval: 1000,
+    label: 'Telemetry Server',
   }),
 );
 
+// TODOLater: extract to utils
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
-// Wait for all plugins to be installed before starting
-sleep(1000).then(() => {
+// Wait for all plugins to be installed before starting (this is actually needed)
+void sleep(1000).then(() => {
   openmct.start();
 });

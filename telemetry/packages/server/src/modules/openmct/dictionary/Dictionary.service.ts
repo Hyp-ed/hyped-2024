@@ -1,4 +1,4 @@
-import { POD_IDS, pods } from '@hyped/telemetry-constants';
+import { POD_IDS, PodId, pods } from '@hyped/telemetry-constants';
 import { OpenMctDictionary, OpenMctPod } from '@hyped/telemetry-types';
 import { Injectable } from '@nestjs/common';
 import { mapMeasurementToOpenMct } from './utils/mapMeasurementToOpenMct';
@@ -10,7 +10,6 @@ export class DictionaryService {
     POD_IDS.forEach((podId) => {
       dictionary[podId] = this.getPod(podId);
     });
-
     return dictionary;
   }
 
@@ -19,10 +18,8 @@ export class DictionaryService {
   }
 
   getPod(podId: string): OpenMctPod {
-    const pod = pods[podId as keyof typeof pods];
-    if (!pod) {
-      throw new Error(`Pod ${podId} not found`);
-    }
+    this.validatePodId(podId);
+    const pod = pods[podId];
 
     const measurements = Object.values(pod.measurements).map((measurement) =>
       mapMeasurementToOpenMct(measurement),
@@ -36,10 +33,8 @@ export class DictionaryService {
   }
 
   getMeasurement(podId: string, measurementKey: string) {
-    const pod = pods[podId as keyof typeof pods];
-    if (!pod) {
-      throw new Error(`Pod ${podId} not found`);
-    }
+    this.validatePodId(podId);
+    const pod = pods[podId];
 
     const measurement = pod.measurements[measurementKey];
     if (!measurement) {
@@ -47,5 +42,11 @@ export class DictionaryService {
     }
 
     return mapMeasurementToOpenMct(measurement);
+  }
+
+  private validatePodId(podId: string): asserts podId is PodId {
+    if (!POD_IDS.includes(podId as PodId)) {
+      throw new Error(`Pod ${podId} not found`);
+    }
   }
 }

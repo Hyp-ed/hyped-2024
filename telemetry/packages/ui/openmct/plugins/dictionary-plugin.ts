@@ -5,70 +5,91 @@ import { ObjectIdentitifer } from '../types/ObjectIdentifier';
 import { fetchObjectTypes } from './data/object-types-data';
 import { fetchMeasurement, fetchPod, fetchPodIds } from './data/pods-data';
 import { convertNamespaceToPodId } from './utils/convertNamespaceToPodId';
+import CompositionProvider from 'openmct/dist/src/api/composition/CompositionProvider';
 
+/**
+ * Creates a folder for a pod.
+ * @see https://github.com/nasa/openmct/blob/master/API.md#object-providers
+ */
 const podObjectProvider = {
-  get: (identifier: ObjectIdentitifer) => {
-    return fetchPod(identifier.key).then((pod) => {
-      return {
-        identifier,
-        name: pod.name,
-        type: 'folder',
-        location: 'ROOT',
-      };
-    });
+  get: async (identifier: ObjectIdentitifer) => {
+    const pod = await fetchPod(identifier.key);
+    return {
+      identifier,
+      name: pod.name,
+      type: 'folder',
+      location: 'ROOT',
+    };
   },
 };
 
+/**
+ * Create the measurements for a pod.
+ */
 const measurementsObjectProvider = {
-  get: (identifier: ObjectIdentitifer) => {
+  get: async (identifier: ObjectIdentitifer) => {
     const podId = convertNamespaceToPodId(identifier.namespace);
-    return fetchMeasurement(podId, identifier.key).then((measurement) => {
-      if (!measurement) {
-        throw new Error('Measurement not found');
-      }
-
-      const telemetryValue = measurement.values.find(m => m?.key === 'value');
-      if (!telemetryValue) {
-        throw new Error('Measurement does not have a telemetry source value');
-      }
-
-      return {
-        identifier,
-        podId,
-        name: measurement.name,
-        type: `hyped.${measurement.type}`,
-        telemetry: {
-          values: measurement.values,
-        },
-        location: `hyped.taxonomy:${podId}`,
-        limits: telemetryValue.limits,
-      };
-    });
+    const measurement = await fetchMeasurement(podId, identifier.key);
+    if (!measurement) {
+      throw new Error('Measurement not found');
+    }
+    const telemetryValue = measurement.values.find((m) => m?.key === 'value');
+    if (!telemetryValue) {
+      throw new Error('Measurement does not have a telemetry source value');
+    }
+    return {
+      identifier,
+      podId,
+      name: measurement.name,
+      type: `hyped.${measurement.type}`,
+      telemetry: {
+        values: measurement.values,
+      },
+      location: `hyped.taxonomy:${podId}`,
+      limits: telemetryValue.limits,
+    };
   },
 };
 
+/**
+ * This composition provider defines the list of objects (measurements) that are
+ * contained within a folder (pod).
+ * @see https://github.com/nasa/openmct/blob/master/API.md#composition-providers
+ */
 const compositionProvider = {
+  /**
+   * This function is called when Open MCT needs to know if this provider
+   * applies to a particular domain object.
+   * @param domainObject The domain object to check.
+   * @returns `true` if the provider is in the root namespace and the object is a folder, `false` otherwise.
+   */
   appliesTo: (domainObject: DomainObject) => {
     return (
       domainObject.identifier.namespace === 'hyped.taxonomy' &&
       domainObject.type === 'folder'
     );
   },
-  load: (domainObject: DomainObject) => {
+  /**
+   * Loads the composition for a domain object.
+   * @param domainObject The domain object to load the composition for.
+   * @returns The list of objects that are contained within the domain object.
+   */
+  load: async (domainObject: DomainObject) => {
     const podId = domainObject.identifier.key;
-    return fetchPod(podId).then((pod) =>
-      pod.measurements.map((measurement: OpenMctMeasurement) => {
-        return {
-          namespace: `hyped.${podId}`,
-          key: measurement.key,
-        };
-      }),
-    );
+    const pod = await fetchPod(podId);
+    return pod.measurements.map((measurement: OpenMctMeasurement) => ({
+      namespace: `hyped.${podId}`,
+      key: measurement.key,
+    }));
   },
 };
 
+/**
+ * This plugin is responsible for creating the dictionary of pods and measurements.
+ * @returns
+ */
 export function DictionaryPlugin() {
-  return function install(openmct: OpenMCT) {
+  return async function install(openmct: OpenMCT) {
     fetchPodIds()
       .then(({ ids }) => {
         ids.forEach((podId) => {
@@ -87,20 +108,22 @@ export function DictionaryPlugin() {
 
         openmct.objects.addProvider(`hyped.taxonomy`, podObjectProvider);
       })
-      .catch((err) => {
-        console.error(err);
+      .catch(() => {
         throw new Error('Failed to load dictionary');
       });
 
-    fetchObjectTypes().then((objectTypes) => {
+    await fetchObjectTypes().then((objectTypes) => {
       objectTypes.forEach((objectType) => {
         openmct.types.addType(`hyped.${objectType.id}`, {
           name: objectType.name,
           cssClass: objectType.icon,
+          ...(objectType.description && {
+            description: objectType.description,
+          }),
         });
       });
     });
 
-    openmct.composition.addProvider(compositionProvider as any);
+    openmct.composition.addProvider(compositionProvider as CompositionProvider);
   };
 }

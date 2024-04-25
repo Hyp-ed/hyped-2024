@@ -1,15 +1,30 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { HistoricalFaultDataService } from './HistoricalFaultData.service';
+import { OpenMctHistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 
 @Controller('openmct/faults/historical')
 export class HistoricalFaultsDataController {
   constructor(private historicalDataService: HistoricalFaultDataService) {}
+
+  @Get()
+  async getAllFaults(): Promise<OpenMctHistoricalFaults> {
+    const faults = await this.historicalDataService.getHistoricalFaults({});
+    return faults.map((fault) => ({
+      timestamp: fault.timestamp,
+      fault: fault.openMctFault,
+    }));
+  }
+
   @Get('pods/:podId')
-  getFaults(
+  async getFaultsForPod(
     @Param('podId') podId: string,
-  ) {
-    return this.historicalDataService.getHistoricalFaults({
+  ): Promise<OpenMctHistoricalFaults> {
+    const faults = await this.historicalDataService.getHistoricalFaults({
       podId,
-   } );
+    });
+    return faults.map((fault) => ({
+      timestamp: fault.timestamp,
+      fault: fault.openMctFault,
+    }));
   }
 }

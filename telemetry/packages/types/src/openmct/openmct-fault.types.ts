@@ -21,4 +21,17 @@ export type OpenMctFault = {
       monitoringResult: string;
     };
   };
-}
+};
+
+export type HistoricalFaults = {
+  faultId: string;
+  timestamp: number;
+  openMctFault: OpenMctFault;
+  podId: string;
+  measurementKey: string;
+}[];
+
+export type OpenMctHistoricalFaults = {
+  timestamp: number;
+  fault: OpenMctFault;
+}[];

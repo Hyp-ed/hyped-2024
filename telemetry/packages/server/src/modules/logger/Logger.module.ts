@@ -9,9 +9,14 @@ const LOGGING_DIRECTORY = '../../logs';
 
 const unhandledErrorFormat = format((info) => {
   if (info[Symbol.for('level')] === 'error' && info['error']) {
+    const error = info['error'] as {
+      name: string;
+      message: string;
+      stack: string;
+    };
     return {
-      context: info['error']['name'],
-      message: `${info['error']['message']}`,
+      context: error.name,
+      message: error.message,
       // stack: info['error']['stack'], - not using this for now
       level: 'error',
       [Symbol.for('level')]: 'error',

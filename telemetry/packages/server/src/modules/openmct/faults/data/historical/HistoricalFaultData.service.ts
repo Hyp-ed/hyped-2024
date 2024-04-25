@@ -3,26 +3,24 @@ import { InfluxRow } from '@/modules/common/types/InfluxRow';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { OpenMctFault } from '@hyped/telemetry-types';
-import { fluxExpression, fluxString } from '@influxdata/influxdb-client';
-import { Injectable, LoggerService } from '@nestjs/common';
+import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
+import { fluxString } from '@influxdata/influxdb-client';
+import { HttpException, Injectable, LoggerService } from '@nestjs/common';
 
 interface InfluxFaultRow extends InfluxRow {
-  fault: string;
+  faultId: string;
+  measurementKey: string;
+  /**
+   * This is the result of JSON.stringify on an OpenMctFault
+   */
+  openMctFault: string;
 }
 
 type GetHistoricalFaultsInput = {
-  podId: string;
+  podId?: string;
   measurementKey?: string;
+  faultId?: string;
 };
-
-type GetHistoricalFaultsOptions = {
-  includeAcknowledged?: boolean;
-};
-
-export type GetHistoricalFaultsReturn = {
-  timestamp: number;
-  fault: OpenMctFault;
-}[];
 
 @Injectable()
 export class HistoricalFaultDataService {
@@ -34,45 +32,44 @@ export class HistoricalFaultDataService {
 
   public async getHistoricalFaults(
     props: GetHistoricalFaultsInput,
-    options: GetHistoricalFaultsOptions = {
-      includeAcknowledged: true,
-    },
-  ) {
-    const { podId, measurementKey } = props;
-    const { includeAcknowledged: getAcknowledged } = options;
+  ): Promise<HistoricalFaults> {
+    const { podId, measurementKey, faultId } = props;
 
     const query = `from(bucket: "${INFLUX_FAULTS_BUCKET}")
       |> range(start: -24h)
-      |> filter(fn: (r) => r["podId"] == ${fluxString(podId)})
+      ${podId ? `|> filter(fn: (r) => r["podId"] == ${fluxString(podId) as unknown as string})` : ''}
       ${
         measurementKey
-          ? `|> filter(fn: (r) => r["measurementKey"] == ${fluxString(
-              measurementKey,
-            )})`
+          ? `|> filter(fn: (r) => r["measurementKey"] == ${
+              fluxString(measurementKey) as unknown as string
+            })`
           : ''
       }
       ${
-        !getAcknowledged
-          ? fluxExpression(`|> filter(fn: (r) => r["acknowledged"] == "false")`)
+        faultId
+          ? `|> filter(fn: (r) => r["faultId"] == ${fluxString(faultId) as unknown as string})`
           : ''
       }
       |> group(columns: ["faultId"])
       |> last()`;
 
     try {
-      const data = await this.influxService.query.collectRows<InfluxFaultRow>(
-        query,
-      );
+      const data =
+        await this.influxService.query.collectRows<InfluxFaultRow>(query);
       return data.map((row) => ({
+        faultId: row['faultId'],
         timestamp: new Date(row['_time']).getTime(),
-        fault: JSON.parse(row['_value']) as OpenMctFault,
+        openMctFault: JSON.parse(row['_value']) as OpenMctFault,
+        podId: row['podId'],
+        measurementKey: row['measurementKey'],
       }));
-    } catch (e) {
+    } catch (e: unknown) {
       this.logger.error(
         `Failed to get faults for pod ${podId}`,
         e,
         HistoricalFaultDataService.name,
       );
+      throw new HttpException("Couldn't get historical faults", 500);
     }
   }
 }
