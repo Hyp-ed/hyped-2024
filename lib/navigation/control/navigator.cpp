@@ -130,6 +130,32 @@ core::Result Navigator::accelerometerUpdate(
   return core::Result::kSuccess;
 }
 
+void Navigator::publishCurrentTrajectory()
+{
+  const auto topic = core::MqttTopic::kTest;
+  auto message_payload = std::make_shared<rapidjson::Document>();
+  message_payload->SetObject();
+
+  auto trajectory = currentTrajectory();
+    if (!trajectory) {
+      logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory");
+      //TODO: DO SOMETHING!!
+    }
+
+  rapidjson::Value displacement(trajectory->displacement);
+  rapidjson::Value velocity(trajectory->velocity);
+  message_payload->AddMember("displacement", displacement, message_payload->GetAllocator());
+  message_payload->AddMember("velocity", velocity, message_payload->GetAllocator());
+
+  const core::MqttMessage::Header header{.timestamp = 0,
+                                         .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage message{topic, header, message_payload};
+  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+
+}
+    
+
+
 // TODO: main run loop
 
 void Navigator::run()
@@ -144,7 +170,7 @@ void Navigator::run()
 
     auto keyence_data = mqtt_ ->getMessage(core::MqttTopic::kKeyenceData);
     auto optical_data = mqtt_ ->getMessage(core::MqttTopic::kOpticalData);
-    auto accelerometer_data = mqtt_ ->getMessage(core::MqttTopic::kAccelerometerData);
+    auto accelerometer_data = mqtt ->getMessage(core::MqttTopic::kAccelerometerData);
 
 
     if (keyenceUpdate(*keyence_data) == core::Result::kFailure ||
@@ -154,11 +180,7 @@ void Navigator::run()
       break;
     }
 
-    auto trajectory = currentTrajectory();
-    if (!trajectory) {
-      logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory");
-      break;
-    }
+    publishCurrentTrajectory();
 
     logger_.log(core::LogLevel::kInfo, "Current trajectory: displacement = %f, velocity = %f",
                 trajectory->displacement, trajectory->velocity);

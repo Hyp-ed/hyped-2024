@@ -45,6 +45,11 @@ class Navigator : public INavigator {
   core::Result accelerometerUpdate(
     const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
 
+  /**
+   * @brief Publishes the current trajectory to the MQTT broker
+   */
+  void publishCurrentTrajectory();
+
  private:
   core::ILogger &logger_;
   const core::ITimeSource &time_;
