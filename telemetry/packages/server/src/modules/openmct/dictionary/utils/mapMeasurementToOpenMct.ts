@@ -10,7 +10,7 @@ export function mapMeasurementToOpenMct(
     values: [
       {
         key: 'value',
-        name: 'Value',
+        name: measurement.name,
         unit: measurement.unit,
         format: measurement.format,
         ...('limits' in measurement && {

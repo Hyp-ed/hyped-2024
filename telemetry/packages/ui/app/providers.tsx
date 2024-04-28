@@ -6,6 +6,7 @@ import { QoS } from './types/mqtt';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 const queryClient = new QueryClient();
+import { ErrorProvider } from './context/errors';
 
 /**
  * Provider for all the contexts.
@@ -13,10 +14,12 @@ const queryClient = new QueryClient();
  */
 export const Providers = ({ children }: { children: React.ReactNode }) => (
   <QueryClientProvider client={queryClient}>
-    <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
-      <PodsProvider>
-        <LiveLogsProvider>{children}</LiveLogsProvider>
-      </PodsProvider>
-    </MQTTProvider>
+    <ErrorProvider>
+      <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
+        <PodsProvider>
+          <LiveLogsProvider>{children}</LiveLogsProvider>
+        </PodsProvider>
+      </MQTTProvider>
+    </ErrorProvider>
   </QueryClientProvider>
 );

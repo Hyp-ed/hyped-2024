@@ -1,4 +1,4 @@
-import { Node, Position } from 'reactflow';
+import { Node, Position, Edge, SmoothStepPathOptions } from 'reactflow';
 
 /**
  * Data passed to custom nodes
@@ -17,5 +17,17 @@ export type NodeDataType = {
 };
 
 export type CustomNodeType = Omit<Node, 'data'> & {
-  data: NodeDataType;
+  data: NodeDataType & {
+    sourcePositions: {
+      position: Position;
+      id: string;
+    }[];
+  };
+};
+
+export type CustomEdgeType = Omit<Edge, 'sourceHandle' | 'targetHandle'> & {
+  sourceHandle: string;
+  targetHandle: string;
+} & {
+  pathOptions?: SmoothStepPathOptions;
 };

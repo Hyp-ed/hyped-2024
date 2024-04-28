@@ -7,20 +7,8 @@ defaults:
     working-directory: telemetry
 
 jobs:
-  telemetry-build:
-    name: Telemetry Build
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-
-      - name: Docker
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build
-        run: ./build.sh
-
-  telemetry-lint:
-    name: Telemetry Lint
+  telemetry:
+    name: Telemetry Build and Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -29,7 +17,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Lint
-        run: ./telemetry.sh lint
+        run: ./telemetry.sh ci
 
   telemetry-formatting:
     name: Telemetry Formatting

@@ -27,50 +27,50 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
     return std::nullopt;
   }
-  if (config["io"]["adc"]) {
-    const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
+  if (config["io"]["adc"]["enabled"].value_or(false)) {
+    const auto result = AdcCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
       return std::nullopt;
     }
   }
   if (config["io"]["can"]["enabled"].value_or(false)) {
-    const auto result = CanCommands::addCommands(logger, repl, config["io"]["can"]);
+    const auto result = CanCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding CAN commands");
       return std::nullopt;
     }
   }
   if (config["io"]["gpio"]["enabled"].value_or(false)) {
-    const auto result = GpioCommands::addCommands(logger, repl, config["io"]["gpio"]);
+    const auto result = GpioCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding GPIO commands");
       return std::nullopt;
     }
   }
   if (config["io"]["i2c"]["enabled"].value_or(false)) {
-    const auto result = I2cCommands::addCommands(logger, repl, config["io"]["i2c"]);
+    const auto result = I2cCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding I2C commands");
       return std::nullopt;
     }
   }
   if (config["io"]["pwm"]["enabled"].value_or(false)) {
-    const auto result = PwmCommands::addCommands(logger, repl, config["io"]["pwm"]);
+    const auto result = PwmCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding PWM commands");
       return std::nullopt;
     }
   }
   if (config["io"]["spi"]["enabled"].value_or(false)) {
-    const auto result = SpiCommands::addCommands(logger, repl, config["io"]["spi"]);
+    const auto result = SpiCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding SPI commands");
       return std::nullopt;
     }
   }
   if (config["io"]["uart"]["enabled"].value_or(false)) {
-    const auto result = UartCommands::addCommands(logger, repl, config["io"]["uart"]);
+    const auto result = UartCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding UART commands");
       return std::nullopt;
@@ -121,8 +121,18 @@ void Repl::run()
       const auto alias = aliases_.find(input);
       if (alias != aliases_.end()) { input = alias->second; }
       for (auto &command : commands_) {
-        if (command->getName() == input) {
-          command->execute();
+        // Match on first command that is a prefix of the input
+        if (input.find(command->getName()) == 0) {
+          std::vector<std::string> args;
+          // Get argument string and remove command from it
+          std::stringstream ss(input.substr(command->getName().size()));
+          std::string arg;
+          while (getline(ss, arg, ' ')) {
+            // Discard whitespace
+            if (arg.size() == 0) { continue; }
+            args.push_back(arg);
+          }
+          command->execute(args);
           break;
         }
       }
@@ -164,6 +174,9 @@ std::vector<std::string> Repl::autoComplete(const std::string &partial)
   for (auto &command : commands_) {
     if (command->getName().find(partial) == 0) { matches.push_back(command->getName()); }
   }
+  for (auto &[alias, command] : aliases_) {
+    if (alias.find(partial) == 0) { matches.push_back(alias); }
+  }
   return matches;
 }
 
@@ -192,26 +205,29 @@ void Repl::printHelp()
 {
   for (auto &command : commands_) {
     logger_.log(core::LogLevel::kDebug,
-                "%s: %s",
+                "%s: %s, usage: '%s'",
                 command->getName().c_str(),
-                command->getDescription().c_str());
+                command->getDescription().c_str(),
+                command->getUsage().c_str());
   }
 }
 
 void Repl::addHelpCommand()
 {
-  addCommand(std::make_unique<Command>("help", "Print this help message", [this]() {
-    printHelp();
-    return core::Result::kSuccess;
-  }));
+  addCommand(std::make_unique<Command>(
+    "help", "Print this help message", "help", [this](std::vector<std::string> args) {
+      printHelp();
+      return;
+    }));
 }
 
 void Repl::addQuitCommand()
 {
-  addCommand(std::make_unique<Command>("quit", "Quit the program", [this]() {
-    terminal_.quit();
-    exit(0);
-  }));
+  addCommand(std::make_unique<Command>(
+    "quit", "Quit the program", "quit", [this](std::vector<std::string> args) {
+      terminal_.quit();
+      exit(0);
+    }));
 }
 
 std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t bus)
