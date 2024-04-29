@@ -22,7 +22,6 @@ import { Button } from '../../ui/button';
 import { columns } from './columns';
 import { cn } from '@/lib/utils';
 import { PiInfo } from '@hyped/telemetry-types';
-import { useCurrentPod } from '@/context/pods';
 import { SelectBranch } from './select-branch';
 
 const getPis = async (

@@ -25,10 +25,7 @@ export const SelectBranch = ({
 }: {
   setCompareBranch: (branch: string) => void;
 }) => {
-  const { data, isLoading, isRefetching, refetch } = useQuery(
-    ['branches'],
-    () => getAllBranches(),
-  );
+  const { data, isLoading } = useQuery(['branches'], () => getAllBranches());
 
   const localBranches = data
     ? data.filter((branch) => !branch.startsWith('origin/'))

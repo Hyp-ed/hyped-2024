@@ -6,10 +6,19 @@ import {
   PiInfo,
   VersionStatus,
   Hashes,
+  PiId,
 } from '@hyped/telemetry-types';
 import { validatePodId } from '../common/utils/validatePodId';
 import net from 'net';
 import isReachable from 'is-reachable';
+import fs from 'node:fs';
+import { exec, execSync } from 'child_process';
+import Client from 'node-scp';
+
+const LOCAL_STORE = 'tmp/binaries';
+const TEMP_DIR = 'tmp/build';
+const PI_BINARY_DESTINATION = '/home/hyped/hyped';
+const PI_CONFIG_DESTINATION = '/home/hyped/config/pod.toml';
 
 @Injectable()
 export class PiManagementService {
@@ -174,6 +183,12 @@ export class PiManagementService {
     };
   }
 
+  /**
+   * Gets the status of a Pi. (Online/Offline)
+   * @param podId The pod ID of the Pi
+   * @param piId The Pi ID
+   * @returns The status of the Pi
+   */
   private async getPiStatus(
     podId: PodId,
     piId: string,
@@ -188,81 +203,246 @@ export class PiManagementService {
     return online ? 'online' : 'offline';
   }
 
+  /**
+   * Gets the status of the binary version on the Pi.
+   * @param reportedBinaryHash The hash of the binary reported by the Pi
+   * @param compareBranch The branch to compare the binary hash to
+   * @returns The status of the binary version (Up-to-date/Out-of-date/Unknown)
+   */
   private async getBinaryVersionStatus(
-    binaryHash: string,
+    reportedBinaryHash: string,
     compareBranch: string,
   ): Promise<VersionStatus> {
     // Get the correct hashes. If the hashes are the same, then the Pi is up-to-date.
     const upToDateBinaryHash = await this.getUpToDateBinaryHash(compareBranch);
-    const upToDate = binaryHash === upToDateBinaryHash;
+    const upToDate = reportedBinaryHash === upToDateBinaryHash;
     return upToDate ? 'up-to-date' : 'out-of-date';
   }
 
+  /**
+   * Gets the status of the config version on the Pi.
+   * @param reportedConfigHash The hash of the config reported by the Pi
+   * @param compareBranch The branch to compare the config hash to
+   * @returns The status of the config version (Up-to-date/Out-of-date/Unknown)
+   */
   private async getConfigVersionStatus(
-    configHash: string,
+    reportedConfigHash: string,
     compareBranch: string,
   ): Promise<VersionStatus> {
     // Get the correct hashes. If the hashes are the same, then the Pi is up-to-date.
     const upToDateConfigHash = await this.getUpToDateConfigHash(compareBranch);
-    const upToDate = configHash === upToDateConfigHash;
+    const upToDate = reportedConfigHash === upToDateConfigHash;
     return upToDate ? 'up-to-date' : 'out-of-date';
   }
 
-  public async getUpToDateBinaryHash(compareBranch: string = 'master') {
-    // TODO: Pull the latest commit from the given branch, build the binary using Docker, and get the hash of the binary
-    await this.simulateDelay();
-
-    return compareBranch;
+  /**
+   * Gets the hash of the binary on the given branch by building it locally.
+   * @param branch The branch to compare the binary hash to
+   * @returns The hash of the binary
+   */
+  public async getUpToDateBinaryHash(
+    branch: string = 'master',
+  ): Promise<string> {
+    this.logger.log(
+      `Getting the up-to-date hash of the binary on branch "${branch}"...`,
+    );
+    return this.buildBinary(branch);
   }
 
+  /**
+   * Gets the hash of the config file on the given branch.
+   * @param compareBranch The branch to compare the config hash to
+   * @returns The hash of the config file
+   */
   public async getUpToDateConfigHash(compareBranch: string = 'master') {
-    // TODO: Pull the latest commit from the given branch and hash the config file
-    await this.simulateDelay();
-
-    return compareBranch;
+    this.logger.verbose(
+      `Checking out branch "${compareBranch}" to get the config hash...`,
+    );
+    await this.checkoutBranch(compareBranch);
+    this.logger.verbose('Computing the hash of the config file...');
+    return execSync('md5sum config/pod.toml').toString().split(' ')[0];
   }
 
   /**
    * Updates Pi with latest binary.
    * Builds/compiles code using Docker and uses SCP to transfer it to the Pi.
+   * @param podId Pod ID of Pi
+   * @param piId Pi ID to update
+   * @param branch Branch to update the Pi to
+   * @returns `true` if the Pi was updated successfully, `false` otherwise
    */
   public async updatePiBinary(
-    podId: string,
-    piId: string,
-    compareBranch: string,
-  ) {
+    podId: PodId,
+    piId: PiId,
+    branch: string,
+  ): Promise<boolean> {
     this.logger.log(
-      `Updating pi ${piId} binary in pod ${podId} to the version on branch "${compareBranch}"`,
+      `Updating pi ${piId} binary in pod ${podId} to the version on branch "${branch}"`,
     );
 
-    // TODO: `scp` the new binary to the Pi OR Tom will implement this in the daemon
-    await this.simulateDelay();
+    this.logger.verbose(
+      'Checking if the binary has already been built locally...',
+    );
+
+    const commitHash = await this.getLatestBranchCommitHash(branch);
+
+    // Check if we have already built this version of the branch locally
+    const binaryPath = `${LOCAL_STORE}/${commitHash}`;
+
+    // If we haven't built this branch yet, build it
+    if (!fs.existsSync(binaryPath)) {
+      await this.buildBinary(branch);
+    }
+
+    try {
+      await this.sendFile(podId, piId, binaryPath, PI_BINARY_DESTINATION);
+    } catch (e) {
+      this.logger.error('Error updating Pi binary');
+      return false;
+    }
 
     return true;
+  }
+
+  /**
+   * Sends a file to a Pi using SCP.
+   * @param podId The pod ID of the Pi
+   * @param piId The Pi ID
+   * @param filePath The path of the file to send
+   * @param destination The destination path on the Pi
+   * @throws If the file could not be sent
+   */
+  public async sendFile(
+    podId: PodId,
+    piId: PiId,
+    filePath: string,
+    destination: string,
+  ) {
+    this.logger.log(
+      `Transferring file ${filePath} to ${destination} on pi ${piId} in pod ${podId}`,
+    );
+
+    const client = await Client({
+      host: pods[podId].pis[piId].ip,
+      port: 22,
+      username: 'hyped',
+      password: 'edinburgh',
+    });
+    await client.uploadFile(filePath, destination);
+    client.close();
+  }
+
+  /**
+   * Builds the binary for the given branch using Docker.
+   * @param branch Branch to build the binary for
+   * @param localStore Local store for the binaries
+   * @returns The hash of the built binary
+   */
+  public async buildBinary(branch: string): Promise<string> {
+    this.logger.verbose(`Building binary for branch "${branch}"...`);
+
+    // Checkout the branch
+    await this.checkoutBranch(branch);
+
+    try {
+      // Build the cross-compile Docker image
+      execSync(
+        'docker buildx build -f cc/Dockerfile.crosscompile -t hyped_cc .',
+        {
+          cwd: TEMP_DIR,
+        },
+      );
+      // Build the binary
+      execSync(
+        'docker run -e CLEAN=$clean -e DIR=/home/hyped --name hyped_cc -v $(pwd):/home/hyped hyped_cc bash',
+        { cwd: TEMP_DIR },
+      );
+      // Compute the hash of the binary
+      const hash = execSync('md5sum build/hyped').toString().split(' ')[0];
+      // Get the git commit hash
+      const commitHash = await this.getLatestBranchCommitHash(branch);
+      // Copy the resulting binary to the local store
+      execSync(`cp ${TEMP_DIR}/build/hyped ${LOCAL_STORE}/${commitHash}`);
+      return hash;
+    } catch (e) {
+      this.logger.error('Error building binary');
+      throw e;
+    }
+  }
+
+  /**
+   * Gets the latest commit hash of a branch. Used to check whether we need to rebuild from scratch.
+   * @param branch The branch to get the latest commit hash of
+   * @returns The latest commit hash of the branch
+   */
+  public async getLatestBranchCommitHash(branch: string) {
+    this.logger.verbose(
+      `Getting the latest commit hash of branch "${branch}"...`,
+    );
+    // Make sure we have a clean version of the branch
+    await this.checkoutBranch(branch);
+    return new Promise<string>((resolve, reject) => {
+      exec(
+        'git log -n 1 --pretty=format:"%H"',
+        { cwd: TEMP_DIR },
+        (err, stdout) => {
+          if (err) {
+            reject(err);
+          } else {
+            resolve(stdout.trim());
+          }
+        },
+      );
+    });
+  }
+
+  /**
+   * Checks out the given branch in a temporary directory.
+   * @param branch The branch to checkout
+   * @param tempDir The temporary directory to checkout the branch in
+   */
+  public async checkoutBranch(branch: string) {
+    this.logger.verbose(`Checking out branch "${branch}"...`);
+
+    // Remove the temporary directory if it already exists
+    if (fs.existsSync(TEMP_DIR)) {
+      fs.rmdirSync(TEMP_DIR, { recursive: true });
+    }
+
+    // Create the temporary directory
+    fs.mkdirSync(TEMP_DIR, { recursive: true });
+
+    // Checkout the branch
+    return new Promise<void>((resolve, reject) => {
+      exec(`git checkout ${branch}`, { cwd: TEMP_DIR }, (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
   }
 
   /**
    * Updates Pi with latest config.
    * Uses SCP to transfer it to the Pi.
    */
-  public async updatePiConfig(
-    podId: string,
-    piId: string,
-    compareBranch: string,
-  ) {
+  public async updatePiConfig(podId: PodId, piId: PiId, compareBranch: string) {
     this.logger.log(
       `Updating pi ${piId} config in pod ${podId} to the version on branch "${compareBranch}"`,
     );
-
-    // TODO: `scp` the new config to the Pi OR Tom will implement this in the daemon
-    await this.simulateDelay();
-
-    return true;
-  }
-
-  private async simulateDelay() {
-    return new Promise((resolve) => {
-      setTimeout(resolve, 2000);
-    });
+    try {
+      await this.checkoutBranch(compareBranch);
+      await this.sendFile(
+        podId,
+        piId,
+        'config/pod.toml',
+        PI_CONFIG_DESTINATION,
+      );
+    } catch (e) {
+      this.logger.error('Error updating Pi config');
+      throw e;
+    }
   }
 }
