@@ -1,0 +1,4 @@
+Checks: "clang-analyzer-*, clang-diagnostic-*, google-*, modernize-*, performance-*, readability-*, -modernize-use-trailing-return-type"
+WarningsAsErrors: "clang-analyzer-*, clang-diagnostic-*, google-*, modernize-*, performance-*, readability-*"
+UseColor: true
+
