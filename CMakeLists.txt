@@ -4,12 +4,6 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_program(IWYU_PATH NAMES include-what-you-use iwyu)
-if(NOT IWYU_PATH)
-  message(FATAL_ERROR "Could not find the program include-what-you-use")
-endif()
-set(CMAKE_CXX_INCLUDE_WHAT_YOU_USE ${IWYU_PATH})
-
 find_program(CLANG_TIDY_PATH clang-tidy)
 if(NOT CLANG_TIDY_PATH)
   message(FATAL_ERROR "Could not find the program clang-tidy")
