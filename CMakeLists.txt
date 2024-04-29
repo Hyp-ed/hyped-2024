@@ -16,7 +16,6 @@ if(NOT CLANG_TIDY_PATH)
 endif()
 set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_PATH}; --quiet)
 
-
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic ")
 set(CMAKE_CXX_LINKER_FLAGS
     "${CMAKE_CXX_LINKER_FLAGS} -stdlib=libc++ -std=c++20"
@@ -54,4 +53,3 @@ endif()
 add_subdirectory(${CMAKE_SOURCE_DIR}/lib)
 add_subdirectory(${CMAKE_SOURCE_DIR}/src)
 add_subdirectory(${CMAKE_SOURCE_DIR}/test)
-
