@@ -85,7 +85,7 @@ function createPodsStateFromIds(podIds: typeof POD_IDS): PodsStateType {
       id: podId,
       name: pods[podId].name,
       operationMode: pods[podId].operationMode,
-      connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
+      connectionStatus: POD_CONNECTION_STATUS.CONNECTED,
       podState: ALL_POD_STATES.UNKNOWN,
     };
   }
@@ -114,19 +114,24 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
      * When the MQTT connection status changes, check if we need to set the pod connection statuses to disconnected.
      */
     function checkMqttConnectionStatus() {
-      // If we don't have an MQTT connection, set all pod connection statuses to disconnected
+      // If the MQTT connection status has changed to disconnected, set all pod connection statuses to disconnected
       if (mqttConnectionStatus !== MQTT_CONNECTION_STATUS.CONNECTED) {
         setPodsState((prevState) => {
           const newPodsState = { ...prevState };
           for (const podId of POD_IDS) {
-            newPodsState[podId].connectionStatus =
-              POD_CONNECTION_STATUS.DISCONNECTED;
-            raiseError(
-              ERROR_IDS.POD_DISCONNECT,
-              `Pod ${podId} disconnected!`,
-              `Lost connection to ${podId} because the connection to the MQTT broker has been lost.`,
-              podId,
-            );
+            if (
+              newPodsState[podId].connectionStatus !==
+              POD_CONNECTION_STATUS.DISCONNECTED
+            ) {
+              newPodsState[podId].connectionStatus =
+                POD_CONNECTION_STATUS.DISCONNECTED;
+              raiseError(
+                ERROR_IDS.POD_DISCONNECT,
+                `Pod ${podId} disconnected!`,
+                `Lost connection to ${podId} because the connection to the MQTT broker has been lost.`,
+                podId,
+              );
+            }
           }
           return newPodsState;
         });
