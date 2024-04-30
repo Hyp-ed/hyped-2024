@@ -16,6 +16,7 @@ import {
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
 import { ERROR_IDS, useErrors } from './errors';
+import { FAILURE_STATES } from '@hyped/telemetry-constants';
 
 /**
  * The maximum latency before a pod is considered disconnected, in milliseconds
@@ -205,11 +206,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
      */
     function subscribeToMqttAndLatency() {
       if (!client) return;
-      const processMessage = (
-        podId: string,
-        topic: string,
-        message: Buffer,
-      ) => {
+      const processMessage = (podId: PodId, topic: string, message: Buffer) => {
         if (topic === getTopic('state', podId)) {
           const newPodState = message.toString();
           const allowedStates = Object.values(ALL_POD_STATES);
@@ -221,6 +218,15 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
                 podState: newPodState as PodStateType,
               },
             }));
+          }
+          // raise an error if we are in a failure state
+          if (Object.keys(FAILURE_STATES).includes(newPodState)) {
+            raiseError(
+              ERROR_IDS.POD_FAILURE_STATE,
+              `Pod ${podId} in failure state!`,
+              `Pod ${podId} is in a failure state.`,
+              podId,
+            );
           }
         } else if (topic === getTopic('latency/response', podId)) {
           // calculate the latency

@@ -5,6 +5,7 @@ import { createContext, useContext, useState } from 'react';
 
 export const ERROR_IDS = {
   POD_DISCONNECT: 'POD_DISCONNECT',
+  POD_FAILURE_STATE: 'POD_FAILURE_STATE',
   TEST: 'TEST',
 };
 
