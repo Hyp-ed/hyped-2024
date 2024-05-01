@@ -85,7 +85,7 @@ core::Result Pwm::setMode(const Mode mode)
     return core::Result::kFailure;
   }
   const std::uint8_t mode_value = static_cast<std::uint8_t>(mode);
-  char write_buffer[2];
+  char write_buffer[4];
   snprintf(write_buffer, sizeof(write_buffer), "%d", mode_value);
   const ssize_t num_bytes_written = write(enable_file_, write_buffer, sizeof(write_buffer));
   if (num_bytes_written != sizeof(write_buffer)) {
