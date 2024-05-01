@@ -1,5 +1,7 @@
 #include "repl.hpp"
 
+#include <optional>
+
 #include "commands/adc_commands.hpp"
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
@@ -101,7 +103,6 @@ Repl::Repl(core::ILogger &logger, Terminal &terminal)
   addQuitCommand();
 }
 
-// NOLINTBEGIN(readability-function-cognitive-complexity) TODO refactor this
 void Repl::run()
 {
   int i = 0;
@@ -113,26 +114,7 @@ void Repl::run()
     if (key == debug::KeyPress::kASCII) {
       input += letter;
     } else if (key == debug::KeyPress::kEnter) {
-      terminal_.cr();
-      history_.push_back(input);
-      const auto alias = aliases_.find(input);
-      if (alias != aliases_.end()) { input = alias->second; }
-      for (auto &command : commands_) {
-        // Match on first command that is a prefix of the input
-        if (input.starts_with(command->getName())) {
-          std::vector<std::string> args;
-          // Get argument string and remove command from it
-          std::stringstream ss(input.substr(command->getName().size()));
-          std::string arg;
-          while (getline(ss, arg, ' ')) {
-            // Discard whitespace
-            if (arg.empty()) { continue; }
-            args.push_back(arg);
-          }
-          command->execute(args);
-          break;
-        }
-      }
+      handleCommand(input);
       input = "";
       i     = 0;
     } else if (key == debug::KeyPress::kUp) {
@@ -148,23 +130,53 @@ void Repl::run()
     } else if (key == debug::KeyPress::kBackspace) {
       if (input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
-      std::vector<std::string> matches = autoComplete(input);
-      if (matches.size() == 1) {
-        input = matches[0];
-      } else if (matches.size() > 1) {
-        terminal_.cr();
-        for (auto &match : matches) {
-          terminal_.printf("%s\n", match.c_str());
-        }
-        terminal_.refresh_line(input, ">> ");
-      }
+      const auto result = findMatch(input);
+      if (result == std::nullopt) { continue; }
+      input = *result;
     } else if (key == debug::KeyPress::kEscape) {
       input = "";
       terminal_.cr();
     }
   }
 }
-// NOLINTEND(readability-function-cognitive-complexity)
+
+void Repl::handleCommand(std::string &input)
+{
+  terminal_.cr();
+  history_.push_back(input);
+  const auto alias = aliases_.find(input);
+  if (alias != aliases_.end()) { input = alias->second; }
+  for (auto &command : commands_) {
+    // Match on first command that is a prefix of the input
+    if (input.starts_with(command->getName())) {
+      std::vector<std::string> args;
+      // Get argument string and remove command from it
+      std::stringstream ss(input.substr(command->getName().size()));
+      std::string arg;
+      while (getline(ss, arg, ' ')) {
+        // Discard whitespace
+        if (arg.empty()) { continue; }
+        args.push_back(arg);
+      }
+      command->execute(args);
+      break;
+    }
+  }
+}
+
+std::optional<std::string> Repl::findMatch(std::string &input)
+{
+  std::vector<std::string> matches = autoComplete(input);
+  if (matches.size() == 1) { return matches[0]; }
+  if (matches.size() > 1) {
+    terminal_.cr();
+    for (auto &match : matches) {
+      terminal_.printf("%s\n", match.c_str());
+    }
+    terminal_.refresh_line(input, ">> ");
+  }
+  return std::nullopt;
+}
 
 std::vector<std::string> Repl::autoComplete(const std::string &partial)
 {

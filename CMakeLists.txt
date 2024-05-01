@@ -6,7 +6,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(LINT "Run clang-tidy as part of the build process" OFF)
 
-if (LINT)
+if(LINT)
   find_program(CLANG_TIDY_PATH clang-tidy)
   if(NOT CLANG_TIDY_PATH)
     message(FATAL_ERROR "Could not find the program clang-tidy")

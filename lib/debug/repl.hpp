@@ -33,6 +33,7 @@ class Repl {
   void run();
   std::vector<std::string> autoComplete(const std::string &partial);
   void handleCommand(std::string &input);
+  std::optional<std::string> findMatch(std::string &input);
 
   void addCommand(std::unique_ptr<Command> command);
   void printHelp();
