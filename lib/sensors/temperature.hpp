@@ -22,8 +22,6 @@ class Temperature : public II2cMuxSensor<std::int16_t> {
                                            const std::uint8_t channel,
                                            const std::uint8_t device_address);
 
-  ~Temperature() override = default;
-
   /*
    * @brief Checks if the temperature sensor is ready to be read
    * @return kSuccess if the sensor is ready to be read,

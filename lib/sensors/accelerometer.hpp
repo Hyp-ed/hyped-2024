@@ -27,7 +27,6 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
                                              const std::shared_ptr<io::II2c> &i2c,
                                              const std::uint8_t channel,
                                              const std::uint8_t device_address);
-  ~Accelerometer() override = default;
 
   /*
    * @brief Checks if the accelerometer is ready to be read

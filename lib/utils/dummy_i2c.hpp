@@ -13,8 +13,6 @@ namespace hyped::utils {
  */
 class DummyI2c : public io::II2c {
  public:
-  DummyI2c() = default;
-
   std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
                                        const std::uint8_t register_address) override;
   core::Result writeByteToRegister(const std::uint8_t device_address,

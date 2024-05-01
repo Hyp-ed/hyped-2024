@@ -11,9 +11,6 @@ namespace hyped::utils {
  */
 class DummySpi : public io::ISpi {
  public:
-  DummySpi()  = default;
-  ~DummySpi() = default;
-
   core::Result read(const std::uint8_t addr,
                     const std::uint8_t *rx,
                     const std::uint16_t len) override;

@@ -12,9 +12,6 @@ namespace hyped::utils {
  */
 class DummyUart : public io::IUart {
  public:
-  DummyUart()  = default;
-  ~DummyUart() = default;
-
   core::Result sendBytes(const char *tx, const std::uint8_t length) override;
   core::Result readBytes(unsigned char *rx, const std::uint8_t length) override;
 };

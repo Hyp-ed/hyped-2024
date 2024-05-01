@@ -14,8 +14,6 @@ class Keyence {
                                        const std::shared_ptr<io::IGpio> &gpio,
                                        const std::uint8_t new_pin);
 
-  ~Keyence() = default;
-
   std::uint8_t getStripeCount() const;
 
   void updateStripeCount();

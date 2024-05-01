@@ -23,7 +23,6 @@ class LowPowerCurrent {
   static std::optional<LowPowerCurrent> create(core::ILogger &logger,
                                                std::shared_ptr<io::II2c> i2c,
                                                const std::uint8_t device_address);
-  ~LowPowerCurrent() = default;
 
   std::optional<core::Float> readCurrent();
 

@@ -6,9 +6,6 @@ namespace hyped::utils {
 
 class DummyAdc : public io::IAdc {
  public:
-  DummyAdc()  = default;
-  ~DummyAdc() = default;
-
   std::optional<core::Float> readValue() override;
 };
 

@@ -10,8 +10,6 @@ namespace hyped::core {
  */
 class WallClock : public ITimeSource {
  public:
-  WallClock() = default;
-
   TimePoint now() const override;
 };
 
