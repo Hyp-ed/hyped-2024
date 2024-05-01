@@ -31,7 +31,7 @@ std::optional<core::AccelerometerData> AccelerometerPreprocessor::processData(
   SensorChecks sensorcheck = checkReliable();
 
   if (sensorcheck == SensorChecks::kUnacceptable) { return std::nullopt; }
-  return clean_accelerometer_data;
+  return *clean_accelerometer_data;
 }
 
 std::optional<core::AccelerometerData> AccelerometerPreprocessor::handleOutliers(

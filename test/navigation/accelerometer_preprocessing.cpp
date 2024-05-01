@@ -13,6 +13,7 @@ bool checkArrayEquality(const core::AccelerometerData &data_a,
 {
   if (data_a.size() != data_b.size()) { return false; }
   for (std::size_t i = 0; i < data_a.size(); ++i) {
+    std::cout << data_a.at(i) << " " << data_b.at(i) << std::endl;
     if (!(std::abs(data_a.at(i) - data_b.at(i)) < epsilon)) { return false; }
   }
   return true;

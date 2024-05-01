@@ -119,7 +119,7 @@ void Repl::run()
       if (alias != aliases_.end()) { input = alias->second; }
       for (auto &command : commands_) {
         // Match on first command that is a prefix of the input
-        if (input.find(command->getName()) == 0) {
+        if (input.starts_with(command->getName())) {
           std::vector<std::string> args;
           // Get argument string and remove command from it
           std::stringstream ss(input.substr(command->getName().size()));
@@ -170,10 +170,10 @@ std::vector<std::string> Repl::autoComplete(const std::string &partial)
 {
   std::vector<std::string> matches;
   for (auto &command : commands_) {
-    if (command->getName().find(partial) == 0) { matches.push_back(command->getName()); }
+    if (command->getName().starts_with(partial)) { matches.push_back(command->getName()); }
   }
   for (auto &[alias, command] : aliases_) {
-    if (alias.find(partial) == 0) { matches.push_back(alias); }
+    if (alias.starts_with(partial)) { matches.push_back(alias); }
   }
   return matches;
 }
