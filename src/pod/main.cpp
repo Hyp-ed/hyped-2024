@@ -20,7 +20,6 @@ int main(int argc, char **argv)
   const std::string config_file = argv[1];
 
   // get the hostname and IP
-  const hyped::core::HostInformation host;
   const auto optional_hostname = hyped::core::HostInformation::getName();
   if (!optional_hostname) {
     std::cerr << "Failed to get hostname\n";
