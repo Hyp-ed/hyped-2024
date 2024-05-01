@@ -40,7 +40,7 @@ struct TemperatureData {
 
 class Bms : public io::ICanProcessor {
  public:
-  static std::shared_ptr<Bms> create(core::ILogger &logger, std::shared_ptr<io::ICan> can);
+  static std::shared_ptr<Bms> create(core::ILogger &logger, const std::shared_ptr<io::ICan> &can);
   Bms(core::ILogger &logger, std::shared_ptr<io::ICan> can);
   core::Result processMessage(const io::CanFrame &message) override;
   BatteryData getBatteryData();

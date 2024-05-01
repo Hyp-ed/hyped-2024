@@ -1,5 +1,7 @@
 #include "preprocess_accelerometer.hpp"
 
+#include <optional>
+
 namespace hyped::navigation {
 
 AccelerometerPreprocessor::AccelerometerPreprocessor(core::ILogger &logger,
@@ -24,14 +26,15 @@ std::optional<core::AccelerometerData> AccelerometerPreprocessor::processData(
     }
     accelerometer_data.at(i) = std::sqrt(magnitude);
   }
-  const core::AccelerometerData clean_accelerometer_data = handleOutliers(accelerometer_data);
-  SensorChecks sensorcheck                               = checkReliable();
+  const auto clean_accelerometer_data = handleOutliers(accelerometer_data);
+  if (clean_accelerometer_data == std::nullopt) { return std::nullopt; }
+  SensorChecks sensorcheck = checkReliable();
 
   if (sensorcheck == SensorChecks::kUnacceptable) { return std::nullopt; }
   return clean_accelerometer_data;
 }
 
-core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
+std::optional<core::AccelerometerData> AccelerometerPreprocessor::handleOutliers(
   core::AccelerometerData accelerometer_data)
 {
   Quartiles quartiles;
@@ -49,6 +52,7 @@ core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
     quartiles = getQuartiles(filtered_data);
   } else {
     logger_.log(core::LogLevel::kFatal, "Maximum number of unreliable accelerometers exceeded");
+    return std::nullopt;
   }
   // TODOLater : maybe make a nice data structure
   const core::Float iqr = quartiles.q3 - quartiles.q1;

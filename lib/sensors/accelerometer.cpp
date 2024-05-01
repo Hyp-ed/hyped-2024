@@ -38,7 +38,9 @@ Accelerometer::Accelerometer(core::ILogger &logger,
     : logger_(logger),
       i2c_(i2c),
       channel_(channel),
-      device_address_(device_address)
+      device_address_(device_address),
+      low_byte_address_(kXOutLow),
+      high_byte_address_(kXOutHigh)
 {
 }
 

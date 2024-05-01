@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <cstring>
+
 namespace hyped::io {
 
 std::optional<std::shared_ptr<Uart>> Uart::create(core::ILogger &logger,
@@ -48,7 +50,7 @@ core::Result Uart::configureFileForOperation(core::ILogger &logger,
 {
   struct termios tty;
   // resetting termios to remove any unintended configuration settings
-  bzero(&tty, sizeof(tty));
+  memset(&tty, 0, sizeof(tty));
   // exact setting descriptions available here
   // https://www.mkssoftware.com/docs/man5/struct_termios.5.asp
   tty.c_cflag                    = baud_mask | bits_per_byte_mask | CLOCAL | CREAD;

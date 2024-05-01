@@ -49,7 +49,7 @@ TEST(DummyGpio, printToStdout)
   // dummy GPIO that prints to stdout whenever the interface is accessed
   utils::DummyGpio dummy_gpio(
     [](const std::uint8_t pin) {
-      std::cout << "read from " << static_cast<int>(pin) << std::endl;
+      std::cout << "read from " << static_cast<int>(pin) << "\n";
       return core::DigitalSignal::kHigh;
     },
     [](const std::uint8_t pin, const core::DigitalSignal state) {
@@ -61,7 +61,7 @@ TEST(DummyGpio, printToStdout)
         case core::DigitalSignal::kHigh:
           std::cout << "high";
       }
-      std::cout << " to " << static_cast<int>(pin) << std::endl;
+      std::cout << " to " << static_cast<int>(pin) << "\n";
       return hyped::core::Result::kSuccess;
     });
   testRead(dummy_gpio, 4, hyped::io::Edge::kNone, "read from 4\n");

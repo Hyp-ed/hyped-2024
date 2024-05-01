@@ -3,7 +3,7 @@
 #include <utility>
 
 namespace hyped::sensors {
-std::shared_ptr<Bms> Bms::create(core::ILogger &logger, std::shared_ptr<io::ICan> can)
+std::shared_ptr<Bms> Bms::create(core::ILogger &logger, const std::shared_ptr<io::ICan> &can)
 {
   std::shared_ptr<Bms> bms = std::make_shared<Bms>(logger, can);
   can->addProcessor(kBatteryDataId, bms);

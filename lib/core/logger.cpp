@@ -52,7 +52,7 @@ void Logger::log(const LogLevel level, const char *format, ...)
         printHead(file, "FATAL");
         break;
       default:
-        break;
+        return;
     }
     va_list args;
     va_start(args, format);
