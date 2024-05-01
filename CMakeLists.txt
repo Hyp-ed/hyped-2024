@@ -4,11 +4,15 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_program(CLANG_TIDY_PATH clang-tidy)
-if(NOT CLANG_TIDY_PATH)
-  message(FATAL_ERROR "Could not find the program clang-tidy")
+option(LINT "Run clang-tidy as part of the build process" OFF)
+
+if (LINT)
+  find_program(CLANG_TIDY_PATH clang-tidy)
+  if(NOT CLANG_TIDY_PATH)
+    message(FATAL_ERROR "Could not find the program clang-tidy")
+  endif()
+  set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_PATH}; --quiet)
 endif()
-set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_PATH}; --quiet)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic ")
 set(CMAKE_CXX_LINKER_FLAGS

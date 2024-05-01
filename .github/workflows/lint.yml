@@ -3,6 +3,19 @@ name: Linter
 on: push
 
 jobs:
+  clang-tidy:
+    runs-on: [ubuntu-latest]
+    
+    steps:
+      - uses: actions/checkout@v2
+
+      # Setup Docker Buildx
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Run build
+        run: ./docker.sh -r -c -b -l
+
   clang-format:
     runs-on: ubuntu-latest
     steps:
