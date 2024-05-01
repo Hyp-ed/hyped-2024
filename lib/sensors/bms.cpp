@@ -1,5 +1,7 @@
 #include "bms.hpp"
 
+#include <utility>
+
 namespace hyped::sensors {
 std::shared_ptr<Bms> Bms::create(core::ILogger &logger, std::shared_ptr<io::ICan> can)
 {
@@ -12,7 +14,7 @@ std::shared_ptr<Bms> Bms::create(core::ILogger &logger, std::shared_ptr<io::ICan
 
 Bms::Bms(core::ILogger &logger, std::shared_ptr<io::ICan> can)
     : logger_(logger),
-      can_(can),
+      can_(std::move(can)),
       battery_data_(),
       cell_data_(),
       temperature_data_()
@@ -82,8 +84,8 @@ void Bms::updateTemperatureData(const io::CanFrame &message)
   temperature_data_.minimum_cell_temperature        = message.data[1];
   temperature_data_.maximum_cell_temperature_number = message.data[2];
   temperature_data_.minimum_cell_temperature_number = message.data[3];
-  temperature_data_.cooling_                        = message.data[4];
-  temperature_data_.heating_                        = message.data[5];
+  temperature_data_.cooling_                        = (message.data[4] != 0U);
+  temperature_data_.heating_                        = (message.data[5] != 0U);
   logger_.log(core::LogLevel::kInfo,
               "Maximum cell temperature: %dC, minimum cell temperature: %dC, "
               "maximum cell temperature number: %d, minimum cell temperature number: %d, "
@@ -92,8 +94,8 @@ void Bms::updateTemperatureData(const io::CanFrame &message)
               temperature_data_.minimum_cell_temperature,
               temperature_data_.maximum_cell_temperature_number,
               temperature_data_.minimum_cell_temperature_number,
-              temperature_data_.cooling_,
-              temperature_data_.heating_);
+              static_cast<int>(temperature_data_.cooling_),
+              static_cast<int>(temperature_data_.heating_));
 }
 
 BatteryData Bms::getBatteryData()

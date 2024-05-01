@@ -3,7 +3,7 @@
 namespace hyped::sensors {
 
 std::optional<Accelerometer> Accelerometer::create(core::ILogger &logger,
-                                                   std::shared_ptr<io::II2c> i2c,
+                                                   const std::shared_ptr<io::II2c> &i2c,
                                                    const std::uint8_t channel,
                                                    const std::uint8_t device_address)
 {
@@ -32,17 +32,13 @@ std::optional<Accelerometer> Accelerometer::create(core::ILogger &logger,
 }
 
 Accelerometer::Accelerometer(core::ILogger &logger,
-                             std::shared_ptr<io::II2c> i2c,
+                             const std::shared_ptr<io::II2c> &i2c,
                              const std::uint8_t channel,
                              const std::uint8_t device_address)
     : logger_(logger),
       i2c_(i2c),
       channel_(channel),
       device_address_(device_address)
-{
-}
-
-Accelerometer::~Accelerometer()
 {
 }
 

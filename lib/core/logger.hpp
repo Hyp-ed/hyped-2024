@@ -3,8 +3,6 @@
 #include "time.hpp"
 
 #include <cstdarg>
-#include <iostream>
-#include <optional>
 
 #define logNTimes(logger, n, level, ...)                                                           \
   do {                                                                                             \
@@ -45,7 +43,7 @@ class Logger : public ILogger {
  public:
   Logger(const char *const label, const LogLevel level, const core::ITimeSource &timer);
 
-  void log(const LogLevel level, const char *format, ...);
+  void log(const LogLevel level, const char *format, ...) override;
 
  private:
   void printHead(FILE *file, const char *title);

@@ -2,8 +2,6 @@
 
 #include "gpio.hpp"
 
-#include <errno.h>
-
 #include <cstdint>
 #include <optional>
 #include <string>
@@ -14,12 +12,12 @@ namespace hyped::io {
 
 class HardwareGpioReader : public IGpioReader {
  public:
-  HardwareGpioReader(core::ILogger &logger, const int read_file_descritor);
+  HardwareGpioReader(core::ILogger &logger, const int read_file_descriptor);
   ~HardwareGpioReader();
   /**
    * @brief Read a high or low from the GPIO pin.
    */
-  virtual std::optional<core::DigitalSignal> read();
+  std::optional<core::DigitalSignal> read() override;
 
  private:
   core::ILogger &logger_;
@@ -35,7 +33,7 @@ class HardwareGpioWriter : public IGpioWriter {
    * @brief Writes a high or low to the GPIO pin.
    * @param state The digital signal to write to the pin.
    */
-  virtual core::Result write(const core::DigitalSignal state);
+  core::Result write(const core::DigitalSignal state) override;
 
  private:
   core::ILogger &logger_;
@@ -49,7 +47,7 @@ class HardwareGpioWriter : public IGpioWriter {
  */
 class HardwareGpio {
  public:
-  HardwareGpio(core::ILogger &logger);
+  explicit HardwareGpio(core::ILogger &logger);
 
   virtual std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin,
                                                                 const Edge edge);
@@ -78,8 +76,8 @@ class HardwareGpio {
   int getFileDescriptor(const std::uint8_t pin, const Direction direction);
 
   // Helper functions to get the string representation of the edge and direction.
-  static const std::string getEdgeString(const Edge edge);
-  static const std::string getDirectionString(const Direction direction);
+  static std::string getEdgeString(const Edge edge);
+  static std::string getDirectionString(const Direction direction);
 
   core::ILogger &logger_;
 };

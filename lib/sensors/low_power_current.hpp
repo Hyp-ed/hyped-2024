@@ -23,7 +23,7 @@ class LowPowerCurrent {
   static std::optional<LowPowerCurrent> create(core::ILogger &logger,
                                                std::shared_ptr<io::II2c> i2c,
                                                const std::uint8_t device_address);
-  ~LowPowerCurrent();
+  ~LowPowerCurrent() = default;
 
   std::optional<core::Float> readCurrent();
 
@@ -32,7 +32,6 @@ class LowPowerCurrent {
                   std::shared_ptr<io::II2c> i2c,
                   const std::uint8_t device_address);
 
- private:
   // Registers with reference to the INA219 driver code
   static const std::uint8_t kLowPowerCurrentRegister = 0x04;
 

@@ -2,8 +2,6 @@
 
 #include "time.hpp"
 
-#include <cstdint>
-
 namespace hyped::core {
 
 /**
@@ -12,8 +10,9 @@ namespace hyped::core {
  */
 class WallClock : public ITimeSource {
  public:
-  WallClock();
-  virtual TimePoint now() const;
+  WallClock() = default;
+
+  TimePoint now() const override;
 };
 
 }  // namespace hyped::core

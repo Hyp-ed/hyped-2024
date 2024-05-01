@@ -15,6 +15,7 @@ namespace hyped::sensors {
  * digital signal over I2c
  */
 class I2cConverter {
+#include "i2c_converter.hpp"
  public:
   static std::optional<I2cConverter> create(core::ILogger &logger);
   ~I2cConverter();

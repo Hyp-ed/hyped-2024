@@ -24,7 +24,7 @@ std::optional<std::shared_ptr<Mqtt>> Mqtt::create(ILogger &logger,
     return std::nullopt;
   }
   logger.log(core::LogLevel::kInfo, "Successfully created MQTT client and connected to broker");
-  return std::make_shared<Mqtt>(logger, std::move(mqtt_client), std::move(cb));
+  return std::make_shared<Mqtt>(logger, std::move(mqtt_client), cb);
 }
 
 Mqtt::Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client, mqtt::callback_ptr cb)
@@ -56,8 +56,8 @@ core::Result Mqtt::subscribe(const core::MqttTopic topic)
     logger_.log(core::LogLevel::kFatal, "Attempted to subscribe to nonexistent MQTT topic");
     return core::Result::kFailure;
   }
-  const auto result       = client_->subscribe(topic_string->second);
-  const auto reason_codes = result.get_reason_codes();
+  const auto result        = client_->subscribe(topic_string->second);
+  const auto &reason_codes = result.get_reason_codes();
   for (mqtt::ReasonCode code : reason_codes) {
     if (code != mqtt::ReasonCode::SUCCESS && code != mqtt::ReasonCode::GRANTED_QOS_0
         && code != mqtt::ReasonCode::GRANTED_QOS_1 && code != mqtt::ReasonCode::GRANTED_QOS_2) {
@@ -95,7 +95,7 @@ core::Result Mqtt::consume()
 std::optional<MqttMessage> Mqtt::getMessage()
 {
   if (incoming_message_queue_.empty()) { return std::nullopt; }
-  const auto message = incoming_message_queue_.top();
+  auto message = incoming_message_queue_.top();
   incoming_message_queue_.pop();
   return message;
 }
@@ -123,7 +123,7 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
   return mqtt::make_message(topic_string->second, buffer.GetString());
 }
 
-std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt::message> message)
+std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt::message> &message)
 {
   const auto topic      = message->get_topic();
   const auto mqtt_topic = mqtt_string_to_topic.find(topic);
@@ -132,7 +132,7 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
       core::LogLevel::kFatal, "Received message on nonexistent MQTT topic: %s", topic.c_str());
     return std::nullopt;
   }
-  const auto message_contents = message->get_payload().c_str();
+  const auto *const message_contents = message->get_payload().c_str();
   rapidjson::Document message_contents_json;
   message_contents_json.Parse(message_contents);
   if (message_contents_json.HasParseError()) {
@@ -159,8 +159,8 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
     logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: invalid priority");
     return std::nullopt;
   }
-  MqttMessagePriority mqtt_priority = static_cast<MqttMessagePriority>(priority);
-  std::shared_ptr mqtt_payload      = std::make_shared<rapidjson::Document>();
+  auto mqtt_priority           = static_cast<MqttMessagePriority>(priority);
+  std::shared_ptr mqtt_payload = std::make_shared<rapidjson::Document>();
   mqtt_payload->CopyFrom(message_contents_json["payload"], mqtt_payload->GetAllocator());
   MqttMessage::Header mqtt_header{timestamp, mqtt_priority};
   return MqttMessage{mqtt_topic->second, mqtt_header, mqtt_payload};

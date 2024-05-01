@@ -42,7 +42,7 @@ class Bms : public io::ICanProcessor {
  public:
   static std::shared_ptr<Bms> create(core::ILogger &logger, std::shared_ptr<io::ICan> can);
   Bms(core::ILogger &logger, std::shared_ptr<io::ICan> can);
-  core::Result processMessage(const io::CanFrame &message);
+  core::Result processMessage(const io::CanFrame &message) override;
   BatteryData getBatteryData();
   CellData getCellData();
   TemperatureData getTemperatureData();
@@ -52,7 +52,6 @@ class Bms : public io::ICanProcessor {
   void updateCellData(const io::CanFrame &message);
   void updateTemperatureData(const io::CanFrame &message);
 
- private:
   static constexpr std::uint32_t kBatteryDataId     = 0x186040F3;
   static constexpr std::uint32_t kCellDataId        = 0x186140F3;
   static constexpr std::uint32_t kTemperatureDataId = 0x186240F3;

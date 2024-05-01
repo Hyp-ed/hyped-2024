@@ -1,8 +1,8 @@
 #pragma once
 
 #include <functional>
-#include <optional>
 #include <string>
+#include <utility>
 
 #include <rapidjson/document.h>
 
@@ -18,13 +18,13 @@ class Command {
    * @param usage How to use the command
    * @param handler Function to execute when the command is invoked
    */
-  Command(const std::string &name,
-          const std::string &description,
-          const std::string &usage,
-          const std::function<void(std::vector<std::string>)> handler)
-      : name_(name),
-        description_(description),
-        usage_(usage),
+  Command(std::string name,
+          std::string description,
+          std::string usage,
+          const std::function<void(std::vector<std::string>)> &handler)
+      : name_(std::move(name)),
+        description_(std::move(description)),
+        usage_(std::move(usage)),
         handler_(handler)
   {
   }

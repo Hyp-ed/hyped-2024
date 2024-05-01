@@ -7,7 +7,7 @@ namespace hyped::test {
 
 void testStdoutLog(const core::LogLevel level,
                    const utils::ManualTime &manual_time,
-                   const std::string expected_output)
+                   const std::string &expected_output)
 {
   setenv("TZ", "UTC", 1);
   tzset();
@@ -19,7 +19,7 @@ void testStdoutLog(const core::LogLevel level,
 
 void testStderrLog(const core::LogLevel level,
                    const utils::ManualTime &manual_time,
-                   const std::string expected_output)
+                   const std::string &expected_output)
 {
   setenv("TZ", "UTC", 1);
   tzset();

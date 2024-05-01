@@ -2,18 +2,18 @@
 
 namespace hyped::debug {
 
-core::Result CanCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
+core::Result CanCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
-  const auto write_command_name        = "can write";
-  const auto write_command_description = "Write to a CAN bus";
-  const auto write_command_usage       = "can write <bus> <CAN ID> <CAN data>";
-  const auto write_command_handler     = [&logger, repl](std::vector<std::string> args) {
+  const auto *const write_command_name        = "can write";
+  const auto *const write_command_description = "Write to a CAN bus";
+  const auto *const write_command_usage       = "can write <bus> <CAN ID> <CAN data>";
+  const auto write_command_handler            = [&logger, repl](std::vector<std::string> args) {
     if (args.size() != 3) {
       logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
       return;
     }
-    const auto bus          = args[0];
-    const auto optional_can = repl->getCan(bus);
+    const auto bus    = args[0];
+    auto optional_can = repl->getCan(bus);
     if (!optional_can) {
       logger.log(core::LogLevel::kFatal, "Error getting CAN bus");
       return;

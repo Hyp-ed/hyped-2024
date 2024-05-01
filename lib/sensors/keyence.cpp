@@ -1,9 +1,11 @@
 #include "keyence.hpp"
 
+#include <utility>
+
 namespace hyped::sensors {
 
 std::optional<Keyence> Keyence::create(core::ILogger &logger,
-                                       std::shared_ptr<io::IGpio> gpio,
+                                       const std::shared_ptr<io::IGpio> &gpio,
                                        const std::uint8_t new_pin)
 {
   const auto reader = gpio->getReader(new_pin, io::Edge::kNone);
@@ -16,16 +18,12 @@ std::optional<Keyence> Keyence::create(core::ILogger &logger,
 }
 
 Keyence::Keyence(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
-    : gpio_reader_(gpio_reader),
+    : gpio_reader_(std::move(gpio_reader)),
       logger_(logger)
 {
 }
 
-Keyence::~Keyence()
-{
-}
-
-std::uint8_t Keyence::getStripeCount()
+std::uint8_t Keyence::getStripeCount() const
 {
   return stripe_count_;
 }

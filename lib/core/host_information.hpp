@@ -6,9 +6,9 @@
 namespace hyped::core {
 class HostInformation {
  public:
-  HostInformation();
-  std::optional<std::string> getName() const;
-  std::optional<std::string> getIp() const;
+  HostInformation() = default;
+  static std::optional<std::string> getName();
+  static std::optional<std::string> getIp();
 };
 
 }  // namespace hyped::core

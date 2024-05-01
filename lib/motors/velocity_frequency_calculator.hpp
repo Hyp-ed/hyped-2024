@@ -2,7 +2,6 @@
 
 #include "frequency_calculator.hpp"
 
-#include <chrono>
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -23,7 +22,7 @@ class VelocityFrequencyCalculator : public IFrequencyCalculator {
    *
    * @return core::Float equal to the passed in frequency
    */
-  std::uint32_t calculateFrequency(core::Float velocity);
+  std::uint32_t calculateFrequency(core::Float velocity) override;
 
  private:
   core::ILogger &logger_;

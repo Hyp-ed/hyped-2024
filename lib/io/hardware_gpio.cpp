@@ -5,8 +5,8 @@
 
 namespace hyped::io {
 
-HardwareGpioReader::HardwareGpioReader(core::ILogger &log, const int read_file_descriptor)
-    : logger_(log),
+HardwareGpioReader::HardwareGpioReader(core::ILogger &logger, const int read_file_descriptor)
+    : logger_(logger),
       read_file_descriptor_(read_file_descriptor)
 {
 }
@@ -19,7 +19,7 @@ HardwareGpioReader::~HardwareGpioReader()
 std::optional<core::DigitalSignal> HardwareGpioReader::read()
 {
   // Read the value from the file
-  char read_buffer[2];
+  char read_buffer[2];  // NOLINT
   const off_t offset = lseek(read_file_descriptor_, 0, SEEK_SET);
   if (offset != 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to reset file offset");
@@ -32,14 +32,10 @@ std::optional<core::DigitalSignal> HardwareGpioReader::read()
   }
   // Convert the read value to a DigitalSignal
   const int value = std::atoi(read_buffer);
-  if (value == 0) {
-    return core::DigitalSignal::kLow;
-  } else if (value == 1) {
-    return core::DigitalSignal::kHigh;
-  } else {
-    logger_.log(core::LogLevel::kFatal, "Invalid GPIO value read");
-    return std::nullopt;
-  }
+  if (value == 0) { return core::DigitalSignal::kLow; }
+  if (value == 1) { return core::DigitalSignal::kHigh; }
+  logger_.log(core::LogLevel::kFatal, "Invalid GPIO value read");
+  return std::nullopt;
 }
 
 HardwareGpioWriter::HardwareGpioWriter(core::ILogger &log, const int write_file_descriptor)
@@ -56,8 +52,8 @@ HardwareGpioWriter::~HardwareGpioWriter()
 core::Result HardwareGpioWriter::write(const core::DigitalSignal state)
 {
   // Convert DigitalSignal to a string
-  const std::uint8_t signal_value = static_cast<std::uint8_t>(state);
-  char write_buffer[2];
+  const auto signal_value = static_cast<std::uint8_t>(state);
+  char write_buffer[2];  // NOLINT
   snprintf(write_buffer, sizeof(write_buffer), "%d", signal_value);
   // Write the value to the file
   const ssize_t write_result = ::write(write_file_descriptor_, write_buffer, sizeof(write_buffer));
@@ -112,7 +108,7 @@ core::Result HardwareGpio::exportPin(const std::uint8_t pin)
     logger_.log(core::LogLevel::kFatal, "Failed to open GPIO export file");
     return core::Result::kFailure;
   }
-  char write_buffer[4];
+  char write_buffer[4];  // NOLINT
   snprintf(write_buffer, sizeof(write_buffer), "%d", pin);
   const ssize_t write_result = write(export_file_descriptor, write_buffer, sizeof(write_buffer));
   close(export_file_descriptor);
@@ -129,7 +125,7 @@ core::Result HardwareGpio::initialisePin(const std::uint8_t pin,
                                          const Direction direction)
 {
   // First check if the pin is already exported, and export it if not
-  char file_path_buffer[50];
+  char file_path_buffer[50];  // NOLINT
   snprintf(file_path_buffer, sizeof(file_path_buffer), "/sys/class/gpio/gpio%d", pin);
   const int access_result = access(file_path_buffer, F_OK);  // Check if the file exists
   if (access_result < 0) {
@@ -181,7 +177,7 @@ core::Result HardwareGpio::initialisePin(const std::uint8_t pin,
 int HardwareGpio::getFileDescriptor(const std::uint8_t pin, const Direction direction)
 {
   // Set up the file path
-  char value_file_path[64];
+  char value_file_path[64];  // NOLINT
   snprintf(value_file_path, sizeof(value_file_path), "/sys/class/gpio/gpio%d/value", pin);
   // Set up the file descriptor
   int file_descriptor;
@@ -198,7 +194,7 @@ int HardwareGpio::getFileDescriptor(const std::uint8_t pin, const Direction dire
   return file_descriptor;
 }
 
-const std::string HardwareGpio::getEdgeString(const Edge edge)
+std::string HardwareGpio::getEdgeString(const Edge edge)
 {
   switch (edge) {
     case Edge::kNone:
@@ -214,7 +210,7 @@ const std::string HardwareGpio::getEdgeString(const Edge edge)
   }
 }
 
-const std::string HardwareGpio::getDirectionString(const Direction direction)
+std::string HardwareGpio::getDirectionString(const Direction direction)
 {
   switch (direction) {
     case Direction::kIn:

@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <gtest/gtest.h>
 
 #include <core/logger.hpp>
@@ -20,7 +18,7 @@ bool checkArrayEquality(const core::AccelerometerData &data_a,
   return true;
 }
 
-TEST(Accelerometer, equal_data)
+TEST(Accelerometer, equalData)
 {
   utils::ManualTime manual_time;
   core::Logger logger("test", core::LogLevel::kFatal, manual_time);
@@ -31,7 +29,7 @@ TEST(Accelerometer, equal_data)
   ASSERT_TRUE(checkArrayEquality(*final_data, answer));
 }
 
-TEST(Accelerometer, not_equal_data)
+TEST(Accelerometer, notEqualData)
 {
   utils::ManualTime manual_time;
   core::Logger logger("test", core::LogLevel::kFatal, manual_time);
@@ -42,7 +40,7 @@ TEST(Accelerometer, not_equal_data)
   ASSERT_TRUE(checkArrayEquality(*final_data, answer));
 }
 
-TEST(Accelerometer, one_unreliable_sensor)
+TEST(Accelerometer, oneUnreliableSensor)
 {
   utils::ManualTime manual_time;
   core::Logger logger("test", core::LogLevel::kFatal, manual_time);
