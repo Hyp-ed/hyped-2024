@@ -17,7 +17,8 @@ std::optional<Keyence> Keyence::create(core::ILogger &logger,
 
 Keyence::Keyence(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
     : gpio_reader_(gpio_reader),
-      logger_(logger)
+      logger_(logger),
+      stripe_count_(0)
 {
 }
 
