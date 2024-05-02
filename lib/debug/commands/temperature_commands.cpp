@@ -35,16 +35,18 @@ core::Result TemperatureCommands::addCommands(core::ILogger &logger,
   auto temperature_sensor             = std::move(*optional_temperature_sensor);
   const auto read_command_name        = "temperature read";
   const auto read_command_description = "Read from the temperature sensor";
-  const auto read_command_handler     = [&logger, &temperature_sensor]() {
-    const auto value = temperature_sensor.read();
-    if (!value) {
-      logger.log(core::LogLevel::kFatal, "Failed to read from temperature sensor");
-      return;
-    }
-    logger.log(core::LogLevel::kDebug, "Read temperature: %d °C", *value);
-  };
-  auto read_command
-    = std::make_unique<Command>(read_command_name, read_command_description, read_command_handler);
+  const auto read_command_usage       = "temperature read";
+  const auto read_command_handler
+    = [&logger, &temperature_sensor](const std::vector<std::string> &) {
+        const auto value = temperature_sensor.read();
+        if (!value) {
+          logger.log(core::LogLevel::kFatal, "Failed to read from temperature sensor");
+          return;
+        }
+        logger.log(core::LogLevel::kDebug, "Read temperature: %d °C", *value);
+      };
+  auto read_command = std::make_unique<Command>(
+    read_command_name, read_command_description, read_command_usage, read_command_handler);
   repl->addCommand(std::move(read_command));
   return core::Result::kSuccess;
 }
