@@ -2,10 +2,6 @@
 
 namespace hyped::utils {
 
-DummyI2cSensor::DummyI2cSensor()
-{
-}
-
 core::Result DummyI2cSensor::configure()
 {
   return core::Result::kSuccess;

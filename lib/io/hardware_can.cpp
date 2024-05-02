@@ -1,9 +1,8 @@
 #include "hardware_can.hpp"
 
-#include <errno.h>
-#include <stdio.h>
 #include <unistd.h>
 
+#include <cerrno>
 #include <cstring>
 
 #include <net/if.h>
@@ -21,7 +20,7 @@ std::optional<std::shared_ptr<HardwareCan>> HardwareCan::create(
     return std::nullopt;
   }
   const int interface_index = if_nametoindex(can_network_interface.c_str());
-  if (!interface_index) {
+  if (interface_index == 0) {
     logger.log(core::LogLevel::kFatal,
                "Unable to find CAN network interface '%s'",
                can_network_interface.c_str());
@@ -40,10 +39,7 @@ std::optional<std::shared_ptr<HardwareCan>> HardwareCan::create(
   return std::make_shared<HardwareCan>(logger, socket_id);
 }
 
-HardwareCan::HardwareCan(core::ILogger &logger, const int socket)
-    : logger_(logger),
-      processors_(),
-      socket_(socket)
+HardwareCan::HardwareCan(core::ILogger &logger, const int socket) : logger_(logger), socket_(socket)
 {
 }
 
@@ -52,13 +48,13 @@ HardwareCan::~HardwareCan()
   close(socket_);
 }
 
-core::Result HardwareCan::send(const io::CanFrame &data)
+core::Result HardwareCan::send(const io::CanFrame &message)
 {
   if (socket_ < 0) {
     logger_.log(core::LogLevel::kFatal, "Trying to send CAN data but no CAN socket found");
     return core::Result::kFailure;
   }
-  const int num_bytes_written = write(socket_, &data, sizeof(CanFrame));
+  const int num_bytes_written = write(socket_, &message, sizeof(CanFrame));
   if (num_bytes_written != sizeof(CanFrame)) {
     logger_.log(
       core::LogLevel::kFatal, "Failed to send CAN data because: %s", std::strerror(errno));
@@ -67,15 +63,15 @@ core::Result HardwareCan::send(const io::CanFrame &data)
   // TODOLater make logger_ more elegant
   logger_.log(core::LogLevel::kDebug,
               "CAN message sent, ID: %X, DATA: %X %X %X %X %X %X %X %X",
-              static_cast<int>(data.can_id),
-              static_cast<int>(data.data[0]),
-              static_cast<int>(data.data[1]),
-              static_cast<int>(data.data[2]),
-              static_cast<int>(data.data[3]),
-              static_cast<int>(data.data[4]),
-              static_cast<int>(data.data[5]),
-              static_cast<int>(data.data[6]),
-              static_cast<int>(data.data[7]));
+              static_cast<int>(message.can_id),
+              static_cast<int>(message.data[0]),
+              static_cast<int>(message.data[1]),
+              static_cast<int>(message.data[2]),
+              static_cast<int>(message.data[3]),
+              static_cast<int>(message.data[4]),
+              static_cast<int>(message.data[5]),
+              static_cast<int>(message.data[6]),
+              static_cast<int>(message.data[7]));
   return core::Result::kSuccess;
 }
 

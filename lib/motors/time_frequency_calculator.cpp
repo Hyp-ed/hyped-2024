@@ -1,7 +1,6 @@
 #include "time_frequency_calculator.hpp"
 
 #include <fstream>
-#include <iostream>
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
@@ -20,7 +19,7 @@ std::optional<std::shared_ptr<TimeFrequencyCalculator>> TimeFrequencyCalculator:
   rapidjson::IStreamWrapper input_stream_wrapper(input_stream);
   rapidjson::Document document;
   rapidjson::ParseResult result = document.ParseStream(input_stream_wrapper);
-  if (!result) {
+  if (result == nullptr) {
     logger.log(core::LogLevel::kFatal,
                "Error parsing JSON: %s",
                rapidjson::GetParseError_En(document.GetParseError()));

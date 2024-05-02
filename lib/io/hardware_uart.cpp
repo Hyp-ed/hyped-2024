@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <cstring>
+
 namespace hyped::io {
 
 std::optional<std::shared_ptr<Uart>> Uart::create(core::ILogger &logger,
@@ -10,7 +12,7 @@ std::optional<std::shared_ptr<Uart>> Uart::create(core::ILogger &logger,
                                                   const UartBaudRate baud_rate,
                                                   const UartBitsPerByte bits_per_byte)
 {
-  char path[15];  // up to "/dev/ttyO5"
+  char path[15];  // NOLINT up to "/dev/ttyO5"
   snprintf(path, sizeof(path), "/dev/ttyO%d", static_cast<std::uint8_t>(bus));
   const int file_descriptor = open(path, O_RDWR | O_NOCTTY | O_NONBLOCK);
   if (file_descriptor < 0) {
@@ -18,14 +20,14 @@ std::optional<std::shared_ptr<Uart>> Uart::create(core::ILogger &logger,
                "Failed to open UART file descriptor, could not create UART instance");
     return std::nullopt;
   }
-  const std::uint32_t baud_mask = static_cast<std::uint32_t>(baud_rate);
-  if (!baud_mask) {
+  const auto baud_mask = static_cast<std::uint32_t>(baud_rate);
+  if (baud_mask == 0U) {
     logger.log(core::LogLevel::kFatal,
                "Failed to set invalid baudrate, could not create UART instance");
     return std::nullopt;
   }
-  const std::uint32_t bits_per_byte_mask = static_cast<std::uint32_t>(bits_per_byte);
-  if (!bits_per_byte_mask) {
+  const std::uint32_t bits_per_byte_mask = static_cast<std::uint32_t>(bits_per_byte);  // NOLINT
+  if (bits_per_byte_mask == 0U) {
     logger.log(core::LogLevel::kFatal,
                "Failed to set invalid number of bits per byte, could not create UART instance");
     return std::nullopt;
@@ -48,7 +50,7 @@ core::Result Uart::configureFileForOperation(core::ILogger &logger,
 {
   struct termios tty;
   // resetting termios to remove any unintended configuration settings
-  bzero(&tty, sizeof(tty));
+  memset(&tty, 0, sizeof(tty));
   // exact setting descriptions available here
   // https://www.mkssoftware.com/docs/man5/struct_termios.5.asp
   tty.c_cflag                    = baud_mask | bits_per_byte_mask | CLOCAL | CREAD;

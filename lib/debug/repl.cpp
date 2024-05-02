@@ -1,5 +1,6 @@
 #include "repl.hpp"
-#include "repl_logger.hpp"
+
+#include <optional>
 
 #include "commands/adc_commands.hpp"
 #include "commands/can_commands.hpp"
@@ -15,6 +16,7 @@
 
 namespace hyped::debug {
 
+// NOLINTBEGIN(readability-function-cognitive-complexity)
 std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
                                                   Terminal &terminal,
                                                   const std::string &filename)
@@ -76,7 +78,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       return std::nullopt;
     }
   }
-  const auto aliases = config["aliases"].as_table();
+  auto *const aliases = config["aliases"].as_table();
   for (auto [alias, command] : *aliases) {
     const std::string alias_alias     = static_cast<std::string>(alias.str());
     const auto optional_alias_command = command.value<std::string>();
@@ -84,21 +86,17 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       logger.log(core::LogLevel::kFatal, "Error parsing alias command: %s", alias_alias.c_str());
       return std::nullopt;
     }
-    const std::string alias_command = *optional_alias_command;
-    const auto result               = repl->addAlias(alias_alias, alias_command);
+    const std::string &alias_command = *optional_alias_command;
+    const auto result                = repl->addAlias(alias_alias, alias_command);
     if (result == core::Result::kFailure) { return std::nullopt; }
   }
   return repl;
 }
+// NOLINTEND(readability-function-cognitive-complexity)
 
 Repl::Repl(core::ILogger &logger, Terminal &terminal)
     : logger_(logger),
       terminal_(terminal),
-      i2c_(),
-      spi_(),
-      pwm_(),
-      adc_(),
-      uart_(),
       gpio_(std::make_shared<io::HardwareGpio>(logger))
 {
   addHelpCommand();
@@ -107,8 +105,8 @@ Repl::Repl(core::ILogger &logger, Terminal &terminal)
 
 void Repl::run()
 {
-  int i             = 0;
-  std::string input = "";
+  int i = 0;
+  std::string input;
 
   while (true) {
     terminal_.refresh_line(input, ">> ");
@@ -116,26 +114,7 @@ void Repl::run()
     if (key == debug::KeyPress::kASCII) {
       input += letter;
     } else if (key == debug::KeyPress::kEnter) {
-      terminal_.cr();
-      history_.push_back(input);
-      const auto alias = aliases_.find(input);
-      if (alias != aliases_.end()) { input = alias->second; }
-      for (auto &command : commands_) {
-        // Match on first command that is a prefix of the input
-        if (input.find(command->getName()) == 0) {
-          std::vector<std::string> args;
-          // Get argument string and remove command from it
-          std::stringstream ss(input.substr(command->getName().size()));
-          std::string arg;
-          while (getline(ss, arg, ' ')) {
-            // Discard whitespace
-            if (arg.size() == 0) { continue; }
-            args.push_back(arg);
-          }
-          command->execute(args);
-          break;
-        }
-      }
+      handleCommand(input);
       input = "";
       i     = 0;
     } else if (key == debug::KeyPress::kUp) {
@@ -149,18 +128,11 @@ void Repl::run()
         input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
-      if (input.size() > 0) { input.pop_back(); }
+      if (input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
-      std::vector<std::string> matches = autoComplete(input);
-      if (matches.size() == 1) {
-        input = matches[0];
-      } else if (matches.size() > 1) {
-        terminal_.cr();
-        for (auto &match : matches) {
-          terminal_.printf("%s\n", match.c_str());
-        }
-        terminal_.refresh_line(input, ">> ");
-      }
+      const auto result = findMatch(input);
+      if (result == std::nullopt) { continue; }
+      input = *result;
     } else if (key == debug::KeyPress::kEscape) {
       input = "";
       terminal_.cr();
@@ -168,14 +140,52 @@ void Repl::run()
   }
 }
 
+void Repl::handleCommand(std::string &input)
+{
+  terminal_.cr();
+  history_.push_back(input);
+  const auto alias = aliases_.find(input);
+  if (alias != aliases_.end()) { input = alias->second; }
+  for (auto &command : commands_) {
+    // Match on first command that is a prefix of the input
+    if (input.starts_with(command->getName())) {
+      std::vector<std::string> args;
+      // Get argument string and remove command from it
+      std::stringstream ss(input.substr(command->getName().size()));
+      std::string arg;
+      while (getline(ss, arg, ' ')) {
+        // Discard whitespace
+        if (arg.empty()) { continue; }
+        args.push_back(arg);
+      }
+      command->execute(args);
+      break;
+    }
+  }
+}
+
+std::optional<std::string> Repl::findMatch(std::string &input)
+{
+  std::vector<std::string> matches = autoComplete(input);
+  if (matches.size() == 1) { return matches[0]; }
+  if (matches.size() > 1) {
+    terminal_.cr();
+    for (auto &match : matches) {
+      terminal_.printf("%s\n", match.c_str());
+    }
+    terminal_.refresh_line(input, ">> ");
+  }
+  return std::nullopt;
+}
+
 std::vector<std::string> Repl::autoComplete(const std::string &partial)
 {
   std::vector<std::string> matches;
   for (auto &command : commands_) {
-    if (command->getName().find(partial) == 0) { matches.push_back(command->getName()); }
+    if (command->getName().starts_with(partial)) { matches.push_back(command->getName()); }
   }
   for (auto &[alias, command] : aliases_) {
-    if (alias.find(partial) == 0) { matches.push_back(alias); }
+    if (alias.starts_with(partial)) { matches.push_back(alias); }
   }
   return matches;
 }
@@ -215,7 +225,7 @@ void Repl::printHelp()
 void Repl::addHelpCommand()
 {
   addCommand(std::make_unique<Command>(
-    "help", "Print this help message", "help", [this](std::vector<std::string> args) {
+    "help", "Print this help message", "help", [this](const std::vector<std::string> &args) {
       printHelp();
       return;
     }));
@@ -224,19 +234,19 @@ void Repl::addHelpCommand()
 void Repl::addQuitCommand()
 {
   addCommand(std::make_unique<Command>(
-    "quit", "Quit the program", "quit", [this](std::vector<std::string> args) {
+    "quit", "Quit the program", "quit", [this](const std::vector<std::string> &args) {
       terminal_.quit();
       exit(0);
     }));
 }
 
-std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t bus)
+std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t pin)
 {
-  const auto adc = adc_.find(bus);
+  const auto adc = adc_.find(pin);
   if (adc == adc_.end()) {
-    const auto new_adc = io::HardwareAdc::create(logger_, bus);
+    const auto new_adc = io::HardwareAdc::create(logger_, pin);
     if (!new_adc) { return std::nullopt; }
-    adc_.emplace(bus, *new_adc);
+    adc_.emplace(pin, *new_adc);
     return *new_adc;
   }
   return adc->second;

@@ -6,7 +6,7 @@ Timer::Timer(const ITimeSource &time) : time_(time)
 {
 }
 
-Duration Timer::measureExecutionTime(const std::function<void(void)> task)
+Duration Timer::measureExecutionTime(const std::function<void(void)> &task)
 {
   const auto before = time_.now();
   task();

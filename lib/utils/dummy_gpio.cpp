@@ -1,10 +1,12 @@
 #include "dummy_gpio.hpp"
 
+#include <utility>
+
 namespace hyped::utils {
 
 DummyGpioReader::DummyGpioReader(const std::uint8_t pin, DummyGpioReader::ReadHandler read_handler)
     : pin_(pin),
-      read_handler_(read_handler)
+      read_handler_(std::move(read_handler))
 {
 }
 
@@ -16,7 +18,7 @@ std::optional<core::DigitalSignal> DummyGpioReader::read()
 DummyGpioWriter::DummyGpioWriter(const std::uint8_t pin,
                                  DummyGpioWriter::WriteHandler write_handler)
     : pin_(pin),
-      write_handler_(write_handler)
+      write_handler_(std::move(write_handler))
 {
 }
 
@@ -27,8 +29,8 @@ core::Result DummyGpioWriter::write(const core::DigitalSignal state)
 
 DummyGpio::DummyGpio(DummyGpioReader::ReadHandler read_handler,
                      DummyGpioWriter::WriteHandler write_handler)
-    : read_handler_(read_handler),
-      write_handler_(write_handler)
+    : read_handler_(std::move(read_handler)),
+      write_handler_(std::move(write_handler))
 {
 }
 

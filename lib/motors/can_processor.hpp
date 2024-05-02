@@ -17,7 +17,7 @@ constexpr std::uint32_t kNmtId  = 0x700;
 class CanProcessor : public io::ICanProcessor {
  public:
   CanProcessor(core::Logger &logger, std::shared_ptr<Controller> controller);
-  core::Result processMessage(const io::CanFrame &frame);
+  core::Result processMessage(const io::CanFrame &frame) override;
 
  private:
   core::Logger &logger_;
