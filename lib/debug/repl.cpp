@@ -30,7 +30,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
   }
   if (config["sensors"]["accelerometer"]["enabled"].value_or(false)) {
     const auto result
-      = AccelerometerCommands::addCommands(logger, repl, config["senors"]["accelerometer"]);
+      = AccelerometerCommands::addCommands(logger, repl, config["sensors"]["accelerometer"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding Accelerometer commands");
       return std::nullopt;
