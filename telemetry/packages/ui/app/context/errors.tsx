@@ -1,9 +1,11 @@
+import { config } from '@/config';
 import { log } from '@/lib/logger';
 import { PodId } from '@hyped/telemetry-constants';
 import { createContext, useContext, useState } from 'react';
 
 export const ERROR_IDS = {
   POD_DISCONNECT: 'POD_DISCONNECT',
+  POD_FAILURE_STATE: 'POD_FAILURE_STATE',
   TEST: 'TEST',
 };
 
@@ -47,6 +49,14 @@ export const ErrorProvider = ({ children }: ErrorProviderProps) => {
     message: string,
     podId?: PodId,
   ) => {
+    // If the error is a pod disconnect error and the config is set to disable it, don't raise the error
+    if (
+      config.DISABLE_POD_DISCONNECTED_ERROR &&
+      id === ERROR_IDS.POD_DISCONNECT
+    ) {
+      return;
+    }
+
     const error: ErrorMessage = {
       id,
       title,
