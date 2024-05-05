@@ -15,18 +15,17 @@
 
 namespace hyped::sensors {
 
-constexpr std::string_view kAxisLabels[3] = {"x-axis", "y-axis", "z-axis"};
+constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-axis"};
 
 enum class accelerometerAddress { k1D = 0x1D, k1E = 0x1E };
 
 class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
  public:
   static std::optional<Accelerometer> create(core::ILogger &logger,
-                                             std::shared_ptr<io::II2c> i2c,
+                                             std::shared_ptr<io::II2c> &i2c,
                                              const std::uint8_t channel,
                                              const accelerometerAddress device_address);
 
-  ~Accelerometer();
 
   /*
    * @brief Checks if the accelerometer is ready to be read
@@ -36,13 +35,13 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
    */
   std::optional<core::Result> isValueReady();
 
-  std::optional<core::RawAccelerationData> read();
+  std::optional<core::RawAccelerationData> read() override;
 
-  std::uint8_t getChannel() const;
+  std::uint8_t getChannel() const override;
 
  private:
   Accelerometer(core::ILogger &logger,
-                std::shared_ptr<io::II2c> i2c,
+                std::shared_ptr<io::II2c> &i2c,
                 const std::uint8_t channel,
                 const std::uint8_t device_address);
   std::optional<std::int16_t> getRawAcceleration(const core::Axis axis);
