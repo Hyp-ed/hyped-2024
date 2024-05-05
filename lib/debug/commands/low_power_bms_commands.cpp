@@ -41,7 +41,8 @@ core::Result LowPowerBMSCommands::addCommands(core::ILogger &logger,
   auto low_power_bms_sensor           = std::move(*optional_low_power_bms_sensor);
   const auto read_command_name        = "low power bms read";
   const auto read_command_description = "Read from the low power bms";
-  const auto read_command_handler     = [&logger, &low_power_bms_sensor]() {
+  const auto read_command_usage       = "low power bms read";
+  const auto read_command_handler     = [&logger, &low_power_bms_sensor](const std::vector<std::string> &) {
     // const std::array<std::uint8_t, sensors::kNumCells> cell_data[] =
     // low_power_bms_sensor.getCellData();
     const auto cell_data = low_power_bms_sensor.getCellData();
@@ -64,7 +65,8 @@ core::Result LowPowerBMSCommands::addCommands(core::ILogger &logger,
     logger.log(core::LogLevel::kDebug, "Undervoltage: %s", undervoltage ? "true" : "false");
   };
   auto read_command
-    = std::make_unique<Command>(read_command_name, read_command_description, read_command_handler);
+    = std::make_unique<Command>(
+      read_command_name, read_command_description, read_command_usage, read_command_handler);
   repl->addCommand(std::move(read_command));
   return core::Result::kSuccess;
 };
