@@ -23,7 +23,7 @@ class HardwareAdc : public IAdc {
   HardwareAdc(core::ILogger &logger, const int file_descriptor);
   ~HardwareAdc();
 
-  virtual std::optional<core::Float> readValue();
+  std::optional<core::Float> readValue() override;
 
  private:
   /**
@@ -32,12 +32,10 @@ class HardwareAdc : public IAdc {
    */
   std::optional<core::Float> resetAndRead4(const int file_descriptor);
 
- private:
   core::ILogger &logger_;
   std::uint8_t pin_;
   const int file_descriptor_;
 
- private:
   static constexpr std::uint16_t kMaxAdcRawValue = 4096;
   static constexpr core::Float kMaxAdcVoltage    = 1.8;
 };

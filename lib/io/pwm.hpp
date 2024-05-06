@@ -89,7 +89,6 @@ class Pwm {
    */
   static std::string getPwmFolderName(const PwmModule pwm_module);
 
- private:
   core::ILogger &logger_;
   core::Float current_duty_cycle_;
   std::uint32_t current_time_active_;  // ns

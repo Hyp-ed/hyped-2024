@@ -91,7 +91,7 @@ TEST(KalmanFilter, cartRunSimulation)
 
   state_estimate = kalman_filter.getStateEstimate();
 
-  std::cout << "State estimate: " << state_estimate << std::endl;
+  std::cout << "State estimate: " << state_estimate << "\n";
 
   for (int i = 0; i < 20; i++) {
     measurement << dist_measurements[i], vel_measurements[i];
@@ -108,14 +108,14 @@ TEST(KalmanFilter, cartRunSimulation)
     vel_error_sum += vel_error * vel_error;
   }
 
-  std::cout << "State estimate: " << state_estimate << std::endl;
+  std::cout << "State estimate: " << state_estimate << "\n";
 
   // Calculate RMSE
 
   const double dist_rmse = std::sqrt(dist_error_sum / 20);
   const double vel_rmse  = std::sqrt(vel_error_sum / 20);
 
-  std::cout << "Distance RMSE: " << dist_rmse << std::endl;
-  std::cout << "Velocity RMSE: " << vel_rmse << std::endl;
+  std::cout << "Distance RMSE: " << dist_rmse << "\n";
+  std::cout << "Velocity RMSE: " << vel_rmse << "\n";
 }
 }  // namespace hyped::test

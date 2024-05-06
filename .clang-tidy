@@ -1,0 +1,4 @@
+Checks: "clang-analyzer-*, clang-diagnostic-*, google-*, modernize-*, performance-*, readability-*, -modernize-use-trailing-return-type, -readability-magic-numbers, -google-readability-todo, -readability-avoid-const-params-in-decls, -readability-identifier-length, -modernize-use-nodiscard, -modernize-use-std-numbers"
+WarningsAsErrors: "clang-analyzer-*, clang-diagnostic-*, google-*, modernize-*, performance-*, readability-*"
+UseColor: true
+
