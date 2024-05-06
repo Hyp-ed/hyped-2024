@@ -2,10 +2,6 @@
 
 namespace hyped::core {
 
-WallClock::WallClock()
-{
-}
-
 TimePoint WallClock::now() const
 {
   return std::chrono::system_clock::now();

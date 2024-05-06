@@ -69,12 +69,12 @@ class HardwareSpi : public ISpi {
   HardwareSpi(core::ILogger &logger, const int file_descriptor);
   ~HardwareSpi();
 
-  virtual core::Result read(const std::uint8_t register_address,
-                            const std::uint8_t *rx,
-                            const std::uint16_t len);
-  virtual core::Result write(const std::uint8_t register_address,
-                             const std::uint8_t *tx,
-                             const std::uint16_t len);
+  core::Result read(const std::uint8_t register_address,
+                    const std::uint8_t *rx,
+                    const std::uint16_t len) override;
+  core::Result write(const std::uint8_t register_address,
+                     const std::uint8_t *tx,
+                     const std::uint16_t len) override;
 
  private:
   /**
@@ -90,7 +90,6 @@ class HardwareSpi : public ISpi {
    */
   static std::uint32_t getClockValue(const SpiClock clock);
 
- private:
   core::ILogger &logger_;
   const int file_descriptor_;
 };

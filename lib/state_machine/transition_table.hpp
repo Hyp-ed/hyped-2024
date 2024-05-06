@@ -2,14 +2,10 @@
 
 #include "types.hpp"
 
-#include <optional>
-#include <queue>
-#include <unordered_map>
-
 #include <boost/unordered_map.hpp>
 
 namespace hyped::state_machine {
-typedef boost::unordered_map<SourceAndTarget, State, source_and_target_hash> TransitionTable;
+using TransitionTable = boost::unordered_map<SourceAndTarget, State, source_and_target_hash>;
 
 const TransitionTable transition_to_state_dynamic
   = {{{State::kIdle, State::kCalibrate}, State::kCalibrate},
@@ -37,7 +33,8 @@ const TransitionTable transition_to_state_dynamic
      {{State::kBatteryRecharge, State::kFailure}, State::kFailure},
      {{State::kFailureBrake, State::kCapacitorDischarge}, State::kCapacitorDischarge},
      {{State::kFailure, State::kCapacitorDischarge}, State::kCapacitorDischarge},
-     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe}};
+     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe},
+     {{State::kSafe, State::kShutdown}, State::kShutdown}};
 
 const TransitionTable transition_to_state_static
   = {{{State::kIdle, State::kCalibrate}, State::kCalibrate},
@@ -60,5 +57,6 @@ const TransitionTable transition_to_state_static
      {{State::kStopped, State::kFailure}, State::kFailure},
      {{State::kFailureBrake, State::kCapacitorDischarge}, State::kCapacitorDischarge},
      {{State::kFailure, State::kCapacitorDischarge}, State::kCapacitorDischarge},
-     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe}};
+     {{State::kCapacitorDischarge, State::kSafe}, State::kSafe},
+     {{State::kSafe, State::kShutdown}, State::kShutdown}};
 }  // namespace hyped::state_machine

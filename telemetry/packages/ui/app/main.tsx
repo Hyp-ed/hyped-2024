@@ -4,9 +4,10 @@ import * as React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Toaster } from 'react-hot-toast';
 import 'victormono';
-import App from './App';
+import { App } from './App';
 import './globals.css';
 import { Providers } from './providers';
+import { Error } from './components/error';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
@@ -19,6 +20,7 @@ ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
           className: 'bg-gray-100 text-gray-900 shadow-xl',
         }}
       />
+      <Error />
     </Providers>
   </React.StrictMode>,
 );

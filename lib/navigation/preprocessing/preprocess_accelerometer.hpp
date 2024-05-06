@@ -47,7 +47,7 @@ class AccelerometerPreprocessor {
    * @param accelerometer_data
    * @return filtered accelerometer data
    */
-  core::AccelerometerData handleOutliers(core::AccelerometerData accelerometer_data);
+  std::optional<core::AccelerometerData> handleOutliers(core::AccelerometerData accelerometer_data);
 
   /**
    * @brief check the reliability of all accelerometer's

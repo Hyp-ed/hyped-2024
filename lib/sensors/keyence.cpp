@@ -1,12 +1,14 @@
 #include "keyence.hpp"
 
+#include <utility>
+
 namespace hyped::sensors {
 
 std::optional<Keyence> Keyence::create(core::ILogger &logger,
-                                       std::shared_ptr<io::IGpio> gpio,
-                                       const std::uint8_t new_pin)
+                                       const std::shared_ptr<io::IGpio> &gpio,
+                                       const std::uint8_t pin)
 {
-  const auto reader = gpio->getReader(new_pin, io::Edge::kNone);
+  const auto reader = gpio->getReader(pin, io::Edge::kNone);
   if (!reader) {
     logger.log(core::LogLevel::kFatal, "Failed to create Keyence instance");
     return std::nullopt;
@@ -16,16 +18,13 @@ std::optional<Keyence> Keyence::create(core::ILogger &logger,
 }
 
 Keyence::Keyence(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
-    : gpio_reader_(gpio_reader),
-      logger_(logger)
+    : gpio_reader_(std::move(gpio_reader)),
+      logger_(logger),
+      stripe_count_(0)
 {
 }
 
-Keyence::~Keyence()
-{
-}
-
-std::uint8_t Keyence::getStripeCount()
+std::uint8_t Keyence::getStripeCount() const
 {
   return stripe_count_;
 }

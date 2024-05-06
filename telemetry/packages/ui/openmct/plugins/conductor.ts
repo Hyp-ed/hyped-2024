@@ -9,6 +9,11 @@ const ONE_HOUR = THIRTY_MINUTES * 2;
 const TWO_HOURS = ONE_HOUR * 2;
 const ONE_DAY = ONE_HOUR * 24;
 
+/**
+ * The Conductor plugin for Open MCT.
+ * @see https://github.com/nasa/openmct/blob/master/API.md#the-time-conductor
+ * @returns The conductor plugin function.
+ */
 export function ConductorPlugin() {
   return function install(openmct: OpenMCT) {
     openmct.install(
@@ -19,8 +24,8 @@ export function ConductorPlugin() {
             timeSystem: 'utc',
             clock: 'local',
             clockOffsets: {
-              start: -THIRTY_SECONDS,
-              end: THIRTY_SECONDS,
+              start: -FIVE_MINUTES,
+              end: ONE_MINUTE,
             },
             presets: [
               {

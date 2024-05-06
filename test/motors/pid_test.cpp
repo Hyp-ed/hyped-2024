@@ -4,7 +4,7 @@
 
 namespace hyped::motors {
 
-TEST(motors, pid_correct_values)
+TEST(motors, pidCorrectValues)
 {
   PidController pidcontroller(2, 2, 2, 2, -19802, 5, -19404, 5, 1);
 

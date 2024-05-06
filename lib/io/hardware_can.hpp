@@ -34,7 +34,7 @@ class HardwareCan : public ICan {
    * @note To send an extended CAN message, set the EFF flag in the can_id field by ORing it with
    * CAN_EFF_FLAG
    */
-  core::Result send(const CanFrame &message);
+  core::Result send(const CanFrame &message) override;
 
   /**
    * @brief Attempt to receive a CAN message
@@ -46,14 +46,14 @@ class HardwareCan : public ICan {
    * @note If the message is an extended CAN message, the EFF flag will be set in the can_id field
    * and thus the actual ID will be frame.can_id - 0x80000000
    */
-  core::Result receive();
+  core::Result receive() override;
 
   /**
    * @brief Registers a processor to be called when a message with the given ID is received
    * @param id The ID of the message to be processed
    * @param processor The processor to be called when a message with the given ID is received
    */
-  void addProcessor(const std::uint32_t id, std::shared_ptr<ICanProcessor> processor);
+  void addProcessor(const std::uint32_t id, std::shared_ptr<ICanProcessor> processor) override;
 
  private:
   core::ILogger &logger_;

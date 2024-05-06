@@ -4,6 +4,7 @@ import { MeasurementService } from '@/modules/measurement/Measurement.service';
 import { currentTime } from '@influxdata/influxdb-client';
 import { StateService } from '@/modules/state/State.service';
 import { MqttIngestionError } from './errors/MqttIngestionError';
+import { POD_IDS, PodId, PodStateType } from '@hyped/telemetry-constants';
 
 @Injectable()
 export class MqttIngestionService {
@@ -15,7 +16,7 @@ export class MqttIngestionService {
   @Subscribe('hyped/+/measurement/+')
   async getMeasurementReading(
     @Params() rawParams: string[],
-    @Payload() rawValue: any,
+    @Payload() rawValue: number, // TODOLater: check that this is correct
   ) {
     const timestamp = currentTime.nanos();
     const podId = rawParams[0];
@@ -23,6 +24,7 @@ export class MqttIngestionService {
     const value = rawValue;
 
     this.validateMqttMessage({ podId, measurementKey, value });
+    this.validatePodId(podId);
 
     await this.measurementService.addMeasurementReading({
       podId,
@@ -33,17 +35,18 @@ export class MqttIngestionService {
   }
 
   @Subscribe('hyped/+/state')
-  async getStateReading(
+  getStateReading(
     @Params() rawParams: string[],
-    @Payload() rawValue: any,
+    @Payload() rawValue: PodStateType,
   ) {
     const timestamp = currentTime.nanos();
     const podId = rawParams[0];
     const value = rawValue;
 
     this.validateMqttMessage({ podId, measurementKey: 'state', value });
+    this.validatePodId(podId);
 
-    await this.stateService.addStateReading({
+    this.stateService.addStateReading({
       podId,
       value,
       timestamp,
@@ -61,6 +64,12 @@ export class MqttIngestionService {
   }) {
     if (!podId || !measurementKey || value === undefined) {
       throw new MqttIngestionError('Invalid MQTT message');
+    }
+  }
+
+  private validatePodId(podId: string): asserts podId is PodId {
+    if (!POD_IDS.includes(podId as PodId)) {
+      throw new MqttIngestionError('Invalid pod ID');
     }
   }
 }

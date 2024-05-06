@@ -15,7 +15,7 @@ class KeyencePreprocessor {
    *
    * @param log_: Navigation logger
    */
-  KeyencePreprocessor(core::ILogger &log_);
+  explicit KeyencePreprocessor(core::ILogger &logger);
 
   /**
    * @brief Checks that keyences have not disagreed twice in a row.

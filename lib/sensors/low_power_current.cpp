@@ -1,3 +1,5 @@
+#include <utility>
+
 #include <low_power_current.hpp>
 
 namespace hyped::sensors {
@@ -7,19 +9,15 @@ std::optional<LowPowerCurrent> LowPowerCurrent::create(core::ILogger &logger,
                                                        std::shared_ptr<io::II2c> i2c,
                                                        const std::uint8_t device_address)
 {
-  return LowPowerCurrent(logger, i2c, device_address);
+  return LowPowerCurrent(logger, std::move(i2c), device_address);
 }
 
 LowPowerCurrent::LowPowerCurrent(core::ILogger &logger,
                                  std::shared_ptr<io::II2c> i2c,
                                  const std::uint8_t device_address)
     : logger_(logger),
-      i2c_(i2c),
+      i2c_(std::move(i2c)),
       device_address_(device_address)
-{
-}
-
-LowPowerCurrent::~LowPowerCurrent()
 {
 }
 
