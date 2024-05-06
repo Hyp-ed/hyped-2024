@@ -19,15 +19,15 @@ export type Limits = {
   };
 };
 
-// for the variables within ranges e.g. temperature
+// For numerical sensor readings described by operational range sampling parameters
 export type RangeMeasurement = BaseMeasurement & {
   format: 'float' | 'integer';
   limits: Limits;
-  rms_noise: number; // RMS value from relevant datasheet
-  sampling_time: number; // sensor timestep configuration (inverse of clock frequency)
+  rms_noise: number;
+  sampling_time: number;
 };
 
-// for rest of the variables that have N states enumerated by a number (0 or 1 generally) and descriptive string
+// For discrete status measurements with enumerated states
 export type EnumMeasurement = BaseMeasurement & {
   format: 'enum';
   enumerations: {
@@ -44,4 +44,6 @@ export type Pod = {
   name: string;
   id: string;
   measurements: Record<string, Measurement>;
+  // Not ideal given this is defined in the constants package but will do until TOML is done
+  operationMode: 'ALL_SYSTEMS_ON' | 'LEVITATION_ONLY' | 'LIM_ONLY';
 };

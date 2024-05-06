@@ -16,6 +16,7 @@ export const pods: Pods = {
   pod_1: {
     id: 'pod_1',
     name: 'Pod Ness',
+    operationMode: 'ALL_SYSTEMS_ON',
     measurements: {
       // ************************************ ACCELEROMETERS ************************************ //
       accelerometer_1: {
@@ -431,6 +432,7 @@ export const pods: Pods = {
   pod_2024: {
     id: 'pod_2024',
     name: 'Poddington',
+    operationMode: 'LEVITATION_ONLY',
     measurements: {
       // ************************************ ACCELEROMETERS ************************************ //
       accelerometer_1: {
