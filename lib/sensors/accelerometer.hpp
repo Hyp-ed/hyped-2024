@@ -16,13 +16,14 @@
 namespace hyped::sensors {
 
 constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-axis"};
+constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-axis"};
 
 enum class accelerometerAddress { k1D = 0x1D, k1E = 0x1E };
 
 class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
  public:
   static std::optional<Accelerometer> create(core::ILogger &logger,
-                                             std::shared_ptr<io::II2c> &i2c,
+                                             const std::shared_ptr<io::II2c> &i2c,
                                              const std::uint8_t channel,
                                              const accelerometerAddress device_address);
 
@@ -41,14 +42,13 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
 
  private:
   Accelerometer(core::ILogger &logger,
-                std::shared_ptr<io::II2c> &i2c,
+                const std::shared_ptr<io::II2c> &i2c,
                 const std::uint8_t channel,
                 const std::uint8_t device_address);
   std::optional<std::int16_t> getRawAcceleration(const core::Axis axis);
-  std::int32_t getAccelerationFromRawValue(const std::int16_t rawAcceleration);
+  static std::int32_t getAccelerationFromRawValue(const std::int16_t rawAcceleration);
   void setRegisterAddressFromAxis(const core::Axis axis);
 
- private:
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
   const std::uint8_t channel_;
@@ -56,7 +56,6 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
   std::uint8_t high_byte_address_;
   const std::uint8_t device_address_;
 
- private:
   // Register addresses/values taken from the datasheet
   static constexpr std::uint8_t kCtrl1Address = 0x20;
   // Sampling rate of 200 Hz

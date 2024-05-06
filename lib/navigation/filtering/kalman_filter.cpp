@@ -2,20 +2,21 @@
 
 namespace hyped::navigation {
 
-KalmanFilter::KalmanFilter(const StateVector &initial_state,
-                           const ErrorCovarianceMatrix &initial_error_covariance,
-                           const StateTransitionMatrix &transition_matrix,
-                           const ControlMatrix &control_matrix,
-                           const StateTransitionCovarianceMatrix &transition_covariance,
-                           const MeasurementMatrix &measurement_matrix,
-                           const MeasurementNoiseCovarianceMatrix &measurement_noise_covariance)
-    : state_estimate_(initial_state),
-      error_covariance_(initial_error_covariance),
-      transition_matrix(transition_matrix),
-      control_matrix(control_matrix),
-      transition_covariance(transition_covariance),
-      measurement_matrix(measurement_matrix),
-      measurement_noise_covariance(measurement_noise_covariance)
+KalmanFilter::KalmanFilter(StateVector initial_state,
+                           ErrorCovarianceMatrix initial_error_covariance,
+                           StateTransitionMatrix transition_matrix,
+                           ControlMatrix control_matrix,
+                           StateTransitionCovarianceMatrix transition_covariance,
+                           MeasurementMatrix measurement_matrix,
+                           MeasurementNoiseCovarianceMatrix measurement_noise_covariance)
+    : state_estimate_(std::move(initial_state)),
+      error_covariance_(std::move(initial_error_covariance)),
+      transition_matrix(std::move(transition_matrix)),
+      control_matrix(std::move(control_matrix)),
+      transition_covariance(std::move(transition_covariance)),
+      measurement_matrix(std::move(measurement_matrix)),
+      measurement_noise_covariance(std::move(measurement_noise_covariance))
+
 {
   static_assert(state_dimension > 0);
   static_assert(measurement_dimension > 0);
@@ -23,6 +24,14 @@ KalmanFilter::KalmanFilter(const StateVector &initial_state,
 
 void KalmanFilter::filter(const MeasurementVector &measurement, const ControlInput &control_input)
 {
+  // Set correct measurement matrix
+
+  if (measurement.isZero()) {
+    measurement_matrix = ((MeasurementMatrix() << 0, 0, 0, kDeltaT).finished());
+  } else {
+    measurement_matrix = ((MeasurementMatrix() << 1, 0, 0, 1).finished());
+  }
+
   // Predict
   // x_k = Fx_k-1 + Bu_k
 

@@ -4,10 +4,8 @@
 #include "time.hpp"
 #include "types.hpp"
 
-#include <cstdint>
 #include <functional>
 #include <queue>
-#include <unordered_map>
 
 namespace hyped::core {
 
@@ -40,7 +38,7 @@ class Scheduler {
  private:
   core::ILogger &logger_;
   core::ITimeSource &time_;
-  std::priority_queue<Task, std::vector<Task>, std::greater<Task>> task_queue_;
+  std::priority_queue<Task, std::vector<Task>, std::greater<>> task_queue_;
 };
 
 }  // namespace hyped::core

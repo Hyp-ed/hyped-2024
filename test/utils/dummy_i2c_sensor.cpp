@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <gtest/gtest.h>
 
 #include <utils/dummy_i2c_sensor.hpp>

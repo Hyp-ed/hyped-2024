@@ -1,11 +1,13 @@
 #include "can_processor.hpp"
 #include "controller.hpp"
 
+#include <utility>
+
 namespace hyped::motors {
 
 CanProcessor::CanProcessor(core::Logger &logger, std::shared_ptr<Controller> controller)
     : logger_(logger),
-      controller_(controller)
+      controller_(std::move(controller))
 {
 }
 

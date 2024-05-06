@@ -72,11 +72,18 @@ const LaunchButton = ({ podId }: { podId: string }) => {
   );
 };
 
-const EmergencyStopButton = ({ podId }: { podId: string }) => (
+export const EmergencyStopButton = ({
+  podId,
+  className,
+}: {
+  podId: string;
+  className?: string;
+}) => (
   <Button
     className={cn(
       'px-2 py-6 rounded-md shadow-lg transition text-white font-bold flex gap-2',
       'bg-red-700 hover:bg-red-800',
+      className,
     )}
     onClick={() => void sendControlMessage(podId, CONTROLS.STOP)}
   >

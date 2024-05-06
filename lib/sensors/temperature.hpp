@@ -18,11 +18,9 @@ constexpr std::uint8_t kAlternativeTemperatureAddress = 0x3F;
 class Temperature : public II2cMuxSensor<std::int16_t> {
  public:
   static std::optional<Temperature> create(core::ILogger &logger,
-                                           std::shared_ptr<io::II2c> i2c,
+                                           const std::shared_ptr<io::II2c> &i2c,
                                            const std::uint8_t channel,
                                            const std::uint8_t device_address);
-
-  ~Temperature();
 
   /*
    * @brief Checks if the temperature sensor is ready to be read
@@ -35,9 +33,9 @@ class Temperature : public II2cMuxSensor<std::int16_t> {
   /**
    * @brief Reads the temperature from the sensor
    */
-  std::optional<std::int16_t> read();
+  std::optional<std::int16_t> read() override;
 
-  std::uint8_t getChannel() const;
+  std::uint8_t getChannel() const override;
 
  private:
   Temperature(core::ILogger &logger,
@@ -45,13 +43,11 @@ class Temperature : public II2cMuxSensor<std::int16_t> {
               const std::uint8_t channel,
               const std::uint8_t device_address);
 
- private:
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
   const std::uint8_t channel_;
   const std::uint8_t device_address_;
 
- private:
   // Register addresses/values taken from the datasheet
   static constexpr std::uint8_t kCtrl                = 0x04;
   static constexpr std::uint8_t kDataTemperatureHigh = 0x07;

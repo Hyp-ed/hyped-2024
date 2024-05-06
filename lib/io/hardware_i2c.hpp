@@ -25,21 +25,20 @@ class HardwareI2c : public II2c {
   ~HardwareI2c();
 
   std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
-                                       const std::uint8_t register_address);
+                                       const std::uint8_t register_address) override;
   core::Result writeByteToRegister(const std::uint8_t device_address,
                                    const std::uint8_t register_address,
-                                   const std::uint8_t data);
+                                   const std::uint8_t data) override;
   core::Result writeByteToRegister(const std::uint8_t device_address,
                                    const std::uint16_t register_address,
-                                   const std::uint8_t data);
-  core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data);
+                                   const std::uint8_t data) override;
+  core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data) override;
 
  private:
   void setSensorAddress(const std::uint8_t device_address);
   core::Result writeBytesToDevice(const std::uint8_t device_address,
                                   const std::vector<std::uint8_t> &bytes);
 
- private:
   core::ILogger &logger_;
   std::uint8_t sensor_address_;
   const int file_descriptor_;

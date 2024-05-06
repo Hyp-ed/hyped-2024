@@ -1,9 +1,5 @@
 #pragma once
 
-#include <array>
-#include <cstdint>
-#include <optional>
-
 #include <Eigen/Dense>
 #include <core/types.hpp>
 

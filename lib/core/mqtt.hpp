@@ -6,7 +6,6 @@
 
 #include <optional>
 #include <queue>
-#include <vector>
 
 #include <mqtt/client.h>
 #include <rapidjson/document.h>
@@ -87,10 +86,10 @@ class Mqtt : public IMqtt {
                                                      const std::uint16_t port);
   Mqtt(ILogger &logger, std::unique_ptr<mqtt::client> client, mqtt::callback_ptr cb);
   ~Mqtt();
-  void publish(const MqttMessage &message, const MqttMessageQos qos);
-  core::Result subscribe(const core::MqttTopic topic);
-  core::Result consume();
-  std::optional<MqttMessage> getMessage();
+  void publish(const MqttMessage &message, const MqttMessageQos qos) override;
+  core::Result subscribe(const core::MqttTopic topic) override;
+  core::Result consume() override;
+  std::optional<MqttMessage> getMessage() override;
   static constexpr std::uint8_t kKeepAliveInterval = 1;
 
  private:
@@ -107,7 +106,7 @@ class Mqtt : public IMqtt {
    * @param message
    * @return MqttMessage if message contains valid header, nullopt otherwise
    */
-  std::optional<MqttMessage> messagePtrToMessage(std::shared_ptr<const mqtt::message> message);
+  std::optional<MqttMessage> messagePtrToMessage(std::shared_ptr<const mqtt::message> &message);
 
   ILogger &logger_;
   std::unique_ptr<mqtt::client> client_;
@@ -119,7 +118,7 @@ class Mqtt : public IMqtt {
 
 class MqttCallback : public virtual mqtt::callback {
  public:
-  MqttCallback(ILogger &logger);
+  explicit MqttCallback(ILogger &logger);
   void connection_lost(const std::string &cause) override;
 
  private:

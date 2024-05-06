@@ -1,33 +1,24 @@
 [io]
 [io.adc]
 enabled = false
-pins = []
 
 [io.can]
 enabled = false
-buses = ["can1"]
 
 [io.gpio]
 enabled = false
-read_pins = []
-write_pins = []
 
 [io.i2c]
 enabled = false
-buses = []
 
 [io.pwm]
 enabled = false
-modules = []
-period = []
 
 [io.spi]
 enabled = false
-buses = []
 
 [io.uart]
 enabled = false
-buses = []
 
 [sensors]
 [sensors.accelerometer]

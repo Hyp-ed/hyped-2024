@@ -11,13 +11,13 @@ constexpr std::uint32_t kOneSecond = 1'000'000'000;
 
 class Timer {
  public:
-  Timer(const ITimeSource &time);
+  explicit Timer(const ITimeSource &time);
 
-  Duration measureExecutionTime(const std::function<void(void)> task);
+  Duration measureExecutionTime(const std::function<void(void)> &task);
 
-  Duration elapsed(const TimePoint current_timepoint, const TimePoint previous_timepoint);
+  static Duration elapsed(const TimePoint current_timepoint, const TimePoint previous_timepoint);
 
-  Float elapsedTimeInSeconds(const Duration time_elapsed);
+  static Float elapsedTimeInSeconds(const Duration time_elapsed);
 
  private:
   const ITimeSource &time_;

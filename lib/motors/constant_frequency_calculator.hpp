@@ -11,14 +11,14 @@ namespace hyped::motors {
 
 class ConstantFrequencyCalculator : public IFrequencyCalculator {
  public:
-  ConstantFrequencyCalculator(core::ILogger &logger);
+  explicit ConstantFrequencyCalculator(core::ILogger &logger);
   /**
    * @brief Returns the passed in velocity as the frequency
    *
    * @param velocity not used, required by interface
    * @return frequency_
    */
-  std::uint32_t calculateFrequency(core::Float velocity);
+  std::uint32_t calculateFrequency(core::Float velocity) override;
 
   /**
    * @brief Sets the frequency to be returned by calculateFrequency

@@ -2,14 +2,6 @@
 
 namespace hyped::utils {
 
-MockMqtt::MockMqtt()
-{
-}
-
-MockMqtt::~MockMqtt()
-{
-}
-
 void MockMqtt::publish(const core::MqttMessage &message, const core::MqttMessageQos qos)
 {
 }

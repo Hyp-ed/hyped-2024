@@ -9,7 +9,7 @@
 
 namespace hyped::test {
 
-void testTransition(std::shared_ptr<state_machine::StateMachine> stm,
+void testTransition(const std::shared_ptr<state_machine::StateMachine> &stm,
                     state_machine::State transition_state,
                     state_machine::State expected_state)
 {

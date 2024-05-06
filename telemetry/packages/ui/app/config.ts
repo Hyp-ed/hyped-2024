@@ -18,7 +18,7 @@ const envSchema = z.object({
       message: 'QoS must be 0, 1, or 2',
     },
   ),
-  VITE_DISCONNECTED_MESSAGE_DISABLED: booleanFromString.optional(),
+  VITE_DISABLE_POD_DISCONNECTED_ERROR: booleanFromString.optional(),
   VITE_EXTENDED_DEBUGGING_TOOLS: booleanFromString.optional(),
 });
 
@@ -26,8 +26,8 @@ const result = envSchema.safeParse({
   VITE_SERVER_ENDPOINT: import.meta.env.VITE_SERVER_ENDPOINT,
   VITE_MQTT_BROKER: import.meta.env.VITE_MQTT_BROKER,
   VITE_MQTT_QOS: import.meta.env.VITE_MQTT_QOS,
-  VITE_DISCONNECTED_MESSAGE_DISABLED: import.meta.env
-    .VITE_DISCONNECTED_MESSAGE_DISABLED,
+  VITE_DISABLE_POD_DISCONNECTED_ERROR: import.meta.env
+    .VITE_DISABLE_POD_DISCONNECTED_ERROR,
   VITE_EXTENDED_DEBUGGING_TOOLS: import.meta.env.VITE_EXTENDED_DEBUGGING_TOOLS,
 });
 

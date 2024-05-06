@@ -20,6 +20,7 @@ usage() {
  echo " -r,  --rebuild           Rebuild the docker image before running the container"
  echo " -c,  --clean             Makes a clean build directory"
  echo " -cc, --cross-compile     Cross-compile for Raspberry Pi"
+ echo " -l,  --lint              Run clang-tidy when building"
 }
 
 # From Kshitij
@@ -39,6 +40,7 @@ clean=false
 cross_compile=false
 docker_build=false
 docker_dev=false
+lint=false
 
 # Function to handle options and arguments
 handle_options() {
@@ -62,6 +64,9 @@ handle_options() {
         ;;
       -cc | --cross-compile)
         cross_compile=true
+        ;;
+      -l | --lint)
+        lint=true
         ;;
       *)
         echo "Invalid option: $1" >&2
@@ -129,7 +134,7 @@ if [ "$docker_build" = true ]; then
     echo "[!] Cross-compiling for Raspberry Pi"
     docker run -e CLEAN=$clean -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
   else
-    docker run -e CLEAN=$clean -e DIR=/home/hyped --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
+    docker run -e CLEAN=$clean -e DIR=/home/hyped -e LINT=$lint --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
   fi
 fi
 
