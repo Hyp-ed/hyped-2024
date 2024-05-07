@@ -1,5 +1,4 @@
 #pragma once
-#include "command.hpp"
 
 #include <memory>
 
@@ -13,7 +12,7 @@ namespace hyped::debug {
 class AccelerometerCommands {
  public:
   static core::Result addCommands(core::ILogger &logger,
-                                  std::shared_ptr<Repl> repl,
+                                  const std::shared_ptr<Repl> &repl,
                                   toml::v3::node_view<toml::v3::node> config);
 };
 
