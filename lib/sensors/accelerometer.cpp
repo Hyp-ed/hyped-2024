@@ -41,9 +41,6 @@ Accelerometer::Accelerometer(core::ILogger &logger,
       device_address_(device_address),
       low_byte_address_(kXOutLow),
       high_byte_address_(kXOutHigh)
-      device_address_(device_address),
-      low_byte_address_(kXOutLow),
-      high_byte_address_(kXOutHigh)
 
 {
 }

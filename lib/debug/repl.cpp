@@ -39,7 +39,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     }
   }
   if (config["io"]["adc"]) {
-    const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
+    const auto result = AdcCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
       return std::nullopt;

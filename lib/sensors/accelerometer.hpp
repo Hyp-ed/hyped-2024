@@ -16,7 +16,6 @@
 namespace hyped::sensors {
 
 constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-axis"};
-constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-axis"};
 
 enum class accelerometerAddress { k1D = 0x1D, k1E = 0x1E };
 
@@ -26,7 +25,6 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
                                              const std::shared_ptr<io::II2c> &i2c,
                                              const std::uint8_t channel,
                                              const accelerometerAddress device_address);
-
 
   /*
    * @brief Checks if the accelerometer is ready to be read

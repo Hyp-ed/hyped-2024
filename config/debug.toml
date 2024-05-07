@@ -25,6 +25,7 @@ enabled = false
 enabled = false
 bus = 2
 address = 29
+mux_channel = 0
 
 [sensors.temperature]
 enabled = false
