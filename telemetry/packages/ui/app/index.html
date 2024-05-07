@@ -1,43 +1,12 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HYPED23 | Telemetry</title>
+    <title>HYPED24 | Telemetry</title>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="./main.tsx"></script>
-    <!-- TODOLater: is the below needed? -->
-    <script>
-      function emergencyStop() {
-        console.log('Emergency stop');
-        // send post request
-        fetch('http://localhost:3000/pods/pod_1/controls/stop', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({}),
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            console.log('Success:', data);
-          })
-          .catch((error) => {
-            console.error('Error:', error);
-          });
-      }
-      document.onkeypress = function (e) {
-        if (e.key === 'q') emergencyStop();
-      };
-      // Capture keypresses inside openmct iframe
-      const openmct = document.getElementById('openmct');
-      openmct.onload = function () {
-        openmct.contentDocument.onkeypress = function (e) {
-          if (e.key === 'q') emergencyStop();
-        };
-      };
-    </script>
   </body>
 </html>

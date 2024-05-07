@@ -11,7 +11,7 @@ void test_set_time(utils::ManualTime &manual_time, const std::time_t time)
   ASSERT_EQ(manual_time.now(), time_point);
 }
 
-TEST(ManualTime, set_time)
+TEST(ManualTime, setTime)
 {
   utils::ManualTime manual_time;
   test_set_time(manual_time, 0);

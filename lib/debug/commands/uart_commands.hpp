@@ -1,5 +1,4 @@
 #pragma once
-#include "command.hpp"
 
 #include <memory>
 
@@ -11,9 +10,14 @@ namespace hyped::debug {
 
 class UartCommands {
  public:
-  static core::Result addCommands(core::ILogger &logger,
-                                  std::shared_ptr<Repl> repl,
-                                  toml::v3::node_view<toml::v3::node> config);
+  /**
+   * @brief Add commands to the REPL for reading from and writing to UART buses
+   *
+   * @param logger
+   * @param repl
+   * @return core::Result kSuccess if commands were added successfully, kFailure otherwise
+   */
+  static core::Result addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl);
 };
 
 }  // namespace hyped::debug

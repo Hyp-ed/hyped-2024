@@ -1,17 +1,14 @@
-name: Telemetry Build
+name: Telemetry
 
-on:
-  push:
-    paths:
-      - 'telemetry/**'
-      - '.github/workflows/telemetry.yml'
+on: push
 
 defaults:
   run:
     working-directory: telemetry
 
 jobs:
-  telemetry-build:
+  telemetry:
+    name: Telemetry build and lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -19,5 +16,19 @@ jobs:
       - name: Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Build
-        run: ./build.sh
+      - name: Lint
+        run: ./telemetry.sh ci
+
+  telemetry-formatting:
+    name: Telemetry formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install pnpm and Prettier
+        run: |
+          npm install -g pnpm
+          npm install -g prettier@3.2.4
+
+      - name: Check Formatting
+        run: pnpm run format:check

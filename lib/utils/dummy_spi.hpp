@@ -11,15 +11,12 @@ namespace hyped::utils {
  */
 class DummySpi : public io::ISpi {
  public:
-  DummySpi()  = default;
-  ~DummySpi() = default;
-
-  virtual core::Result read(const std::uint8_t addr,
-                            const std::uint8_t *rx,
-                            const std::uint16_t len);
-  virtual core::Result write(const std::uint8_t addr,
-                             const std::uint8_t *tx,
-                             const std::uint16_t len);
+  core::Result read(const std::uint8_t addr,
+                    const std::uint8_t *rx,
+                    const std::uint16_t len) override;
+  core::Result write(const std::uint8_t addr,
+                     const std::uint8_t *tx,
+                     const std::uint16_t len) override;
 };
 
 }  // namespace hyped::utils
