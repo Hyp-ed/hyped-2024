@@ -20,9 +20,6 @@ class Temperature : public II2cMuxSensor<std::int16_t> {
     const std::shared_ptr<io::II2c> &i2c,
     const std::uint8_t channel,
     const temperatureAddress device_address);
-  static std::optional<Temperature> create(core::ILogger &logger,
-                                           const std::uint8_t channel,
-                                           const std::uint8_t device_address);
 
   Temperature(core::ILogger &logger,
               std::shared_ptr<io::II2c> i2c,
