@@ -1,11 +1,13 @@
 #include "accelerometer.hpp"
 
+#include <memory>
+
 namespace hyped::sensors {
 
-std::optional<Accelerometer> Accelerometer::create(core::ILogger &logger,
-                                                   const std::shared_ptr<io::II2c> &i2c,
-                                                   const std::uint8_t channel,
-                                                   const accelerometerAddress device_address)
+std::optional<std::shared_ptr<Accelerometer>> Accelerometer::create(
+  core::ILogger &logger,
+  const std::shared_ptr<io::II2c> &i2c,
+  const accelerometerAddress device_address)
 {
   const auto device_address_int = static_cast<std::uint8_t>(device_address);
 
@@ -28,16 +30,14 @@ std::optional<Accelerometer> Accelerometer::create(core::ILogger &logger,
   const auto ctrl6_result
     = i2c->writeByteToRegister(device_address_int, kCtrl6Address, kCtrl6Value);
   if (ctrl6_result == core::Result::kFailure) { return std::nullopt; };
-  return Accelerometer(logger, i2c, channel, device_address_int);
+  return std::make_shared<Accelerometer>(logger, i2c, device_address_int);
 }
 
 Accelerometer::Accelerometer(core::ILogger &logger,
                              const std::shared_ptr<io::II2c> &i2c,
-                             const std::uint8_t channel,
                              const std::uint8_t device_address)
     : logger_(logger),
       i2c_(i2c),
-      channel_(channel),
       device_address_(device_address),
       low_byte_address_(kXOutLow),
       high_byte_address_(kXOutHigh)
@@ -79,11 +79,6 @@ std::optional<core::RawAccelerationData> Accelerometer::read()
     std::in_place, x_acceleration, y_acceleration, z_acceleration, time.now(), true};
   logger_.log(core::LogLevel::kDebug, "Successfully read accelerometer data");
   return acceleration_three_axis;
-}
-
-std::uint8_t Accelerometer::getChannel() const
-{
-  return channel_;
 }
 
 std::optional<std::int16_t> Accelerometer::getRawAcceleration(const core::Axis axis)

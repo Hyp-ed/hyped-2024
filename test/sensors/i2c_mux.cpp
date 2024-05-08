@@ -5,7 +5,6 @@
 #include <core/logger.hpp>
 #include <sensors/i2c_mux.hpp>
 #include <utils/dummy_i2c.hpp>
-#include <utils/dummy_i2c_sensor.hpp>
 #include <utils/dummy_logger.hpp>
 
 namespace hyped::test {

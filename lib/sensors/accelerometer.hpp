@@ -1,7 +1,5 @@
 #pragma once
 
-#include "i2c_sensors.hpp"
-
 #include <unistd.h>
 
 #include <cstdint>
@@ -19,12 +17,16 @@ constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-
 
 enum class accelerometerAddress { k1D = 0x1D, k1E = 0x1E };
 
-class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
+class Accelerometer {
  public:
-  static std::optional<Accelerometer> create(core::ILogger &logger,
-                                             const std::shared_ptr<io::II2c> &i2c,
-                                             const std::uint8_t channel,
-                                             const accelerometerAddress device_address);
+  static std::optional<std::shared_ptr<Accelerometer>> create(
+    core::ILogger &logger,
+    const std::shared_ptr<io::II2c> &i2c,
+    const accelerometerAddress device_address);
+
+  Accelerometer(core::ILogger &logger,
+                const std::shared_ptr<io::II2c> &i2c,
+                const std::uint8_t device_address);
 
   /*
    * @brief Checks if the accelerometer is ready to be read
@@ -34,22 +36,15 @@ class Accelerometer : public II2cMuxSensor<core::RawAccelerationData> {
    */
   std::optional<core::Result> isValueReady();
 
-  std::optional<core::RawAccelerationData> read() override;
-
-  std::uint8_t getChannel() const override;
+  std::optional<core::RawAccelerationData> read();
 
  private:
-  Accelerometer(core::ILogger &logger,
-                const std::shared_ptr<io::II2c> &i2c,
-                const std::uint8_t channel,
-                const std::uint8_t device_address);
   std::optional<std::int16_t> getRawAcceleration(const core::Axis axis);
   static std::int32_t getAccelerationFromRawValue(const std::int16_t rawAcceleration);
   void setRegisterAddressFromAxis(const core::Axis axis);
 
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
-  const std::uint8_t channel_;
   std::uint8_t low_byte_address_;
   std::uint8_t high_byte_address_;
   const std::uint8_t device_address_;

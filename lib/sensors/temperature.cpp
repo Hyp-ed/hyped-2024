@@ -86,9 +86,4 @@ std::optional<std::int16_t> Temperature::read()
   return static_cast<std::int16_t>(temperature * kTemperatureScaleFactor);
 }
 
-std::uint8_t Temperature::getChannel() const
-{
-  return channel_;
-}
-
 }  // namespace hyped::sensors

@@ -50,7 +50,7 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
 
   // create sensor
   const auto optional_accelerometer_sensor = sensors::Accelerometer::create(
-    logger, i2c_mux, 2, static_cast<sensors::accelerometerAddress>(address));
+    logger, i2c_mux, static_cast<sensors::accelerometerAddress>(address));
   if (!optional_accelerometer_sensor) {
     logger.log(core::LogLevel::kFatal, "Failed to create accelerometer sensor");
     return core::Result::kFailure;
@@ -61,12 +61,12 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
   const auto *const read_command_usage       = "accelerometer read";
   const auto read_command_handler
     = [&logger, &accelerometer_sensor](const std::vector<std::string> &) {
-        const auto value_ready = accelerometer_sensor.isValueReady();
+        const auto value_ready = accelerometer_sensor->isValueReady();
         if (!value_ready) {
           logger.log(core::LogLevel::kFatal, "Value is not ready");
           return;
         }
-        const auto acceleration = accelerometer_sensor.read();
+        const auto acceleration = accelerometer_sensor->read();
         if (!acceleration) {
           logger.log(core::LogLevel::kFatal, "Failed to read acceleration");
           return;
