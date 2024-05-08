@@ -2,10 +2,11 @@
 
 namespace hyped::sensors {
 
-std::optional<Temperature> Temperature::create(core::ILogger &logger,
-                                               std::shared_ptr<io::II2c> i2c,
-                                               const std::uint8_t channel,
-                                               const temperatureAddress device_address)
+std::optional<std::shared_ptr<Temperature>> Temperature::create(
+  core::ILogger &logger,
+  std::shared_ptr<io::II2c> i2c,
+  const std::uint8_t channel,
+  const temperatureAddress device_address)
 {
   const auto device_address_int = static_cast<std::uint8_t>(device_address);
   const auto write_result
@@ -17,7 +18,7 @@ std::optional<Temperature> Temperature::create(core::ILogger &logger,
   }
   logger.log(
     core::LogLevel::kDebug, "Successfully configured temperature sensor at channel %d", channel);
-  return Temperature(logger, i2c, channel, device_address_int);
+  return std::make_shared<Temperature>(logger, i2c, channel, device_address_int);
 }
 
 Temperature::Temperature(core::ILogger &logger,

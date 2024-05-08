@@ -37,8 +37,8 @@ core::Result TemperatureCommands::addCommands(core::ILogger &logger,
   const auto read_command_description = "Read from the temperature sensor";
   const auto read_command_usage       = "temperature read";
   const auto read_command_handler
-    = [&logger, &temperature_sensor](const std::vector<std::string> &) {
-        const auto value = temperature_sensor.read();
+    = [&logger, temperature_sensor](const std::vector<std::string> &) {
+        const auto value = temperature_sensor->read();
         if (!value) {
           logger.log(core::LogLevel::kFatal, "Failed to read from temperature sensor");
           return;
