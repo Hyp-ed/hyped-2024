@@ -2,20 +2,20 @@
 
 namespace hyped::debug {
 
-core::Result PwmCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
+core::Result PwmCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
   {
-    const auto pwm_run_command_name        = "pwm run";
-    const auto pwm_run_command_description = "Run a PWM module";
-    const auto pwm_run_command_usage       = "pwm run <module> <period> <duty_cycle>";
-    const auto pwm_run_command_handler     = [&logger, repl](std::vector<std::string> args) {
+    const auto *const pwm_run_command_name        = "pwm run";
+    const auto *const pwm_run_command_description = "Run a PWM module";
+    const auto *const pwm_run_command_usage       = "pwm run <module> <period> <duty_cycle>";
+    const auto pwm_run_command_handler            = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 3) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
       }
-      const auto module       = static_cast<io::PwmModule>(std::stoi(args[0]));
-      const auto period       = std::stoi(args[1]);
-      const auto optional_pwm = repl->getPwm(module, period, io::Polarity::kActiveHigh);
+      const auto module = static_cast<io::PwmModule>(std::stoi(args[0]));
+      const auto period = std::stoi(args[1]);
+      auto optional_pwm = repl->getPwm(module, period, io::Polarity::kActiveHigh);
       if (!optional_pwm) {
         logger.log(core::LogLevel::kFatal, "Failed to get PWM module");
         return;
@@ -40,16 +40,16 @@ core::Result PwmCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
     repl->addCommand(std::move(pwm_run_command));
   }
   {
-    const auto pwm_stop_command_name        = "pwm stop";
-    const auto pwm_stop_command_description = "Stop a PWM module";
-    const auto pwm_stop_command_usage       = "pwm stop <module>";
-    const auto pwm_stop_command_handler     = [&logger, repl](std::vector<std::string> args) {
+    const auto *const pwm_stop_command_name        = "pwm stop";
+    const auto *const pwm_stop_command_description = "Stop a PWM module";
+    const auto *const pwm_stop_command_usage       = "pwm stop <module>";
+    const auto pwm_stop_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 1) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
       }
-      const auto module       = static_cast<io::PwmModule>(std::stoi(args[0]));
-      const auto optional_pwm = repl->getPwm(module, 0, io::Polarity::kActiveHigh);
+      const auto module = static_cast<io::PwmModule>(std::stoi(args[0]));
+      auto optional_pwm = repl->getPwm(module, 0, io::Polarity::kActiveHigh);
       if (!optional_pwm) {
         logger.log(core::LogLevel::kFatal, "Failed to get PWM module");
         return;

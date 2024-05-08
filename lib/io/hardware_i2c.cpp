@@ -21,7 +21,7 @@ std::optional<std::shared_ptr<HardwareI2c>> HardwareI2c::create(core::ILogger &l
     logger.log(core::LogLevel::kFatal, "Failed to create HardwareI2c object: invalid bus");
     return std::nullopt;
   }
-  char path[13];  // up to "/dev/i2c-2"
+  char path[13];  // NOLINT up to "/dev/i2c-2"
   snprintf(path, sizeof(path), "/dev/i2c-%d", bus);
   const int file_descriptor = open(path, O_RDWR, 0);
   if (file_descriptor < 0) {
@@ -48,9 +48,9 @@ std::optional<std::uint8_t> HardwareI2c::readByte(const std::uint8_t device_addr
 {
   if (sensor_address_ != device_address) { setSensorAddress(device_address); }
   // Contains data which we will read
-  std::uint8_t read_buffer[1];
+  std::uint8_t read_buffer[1];  // NOLINT
   // Contains data which we need to write
-  const std::uint8_t write_buffer[1] = {register_address};
+  const std::uint8_t write_buffer[1] = {register_address};  // NOLINT
   // Writing the register address so we switch to it
   const int num_bytes_written = write(file_descriptor_, write_buffer, 1);
   if (num_bytes_written != 1) {
@@ -79,7 +79,7 @@ core::Result HardwareI2c::writeByteToRegister(const std::uint8_t device_address,
                                               const std::uint8_t data)
 {
   const std::uint8_t register_address_hi = register_address >> 8;
-  const std::uint8_t register_address_lo = static_cast<std::uint8_t>(register_address);
+  const auto register_address_lo         = static_cast<std::uint8_t>(register_address);
   const std::vector<std::uint8_t> bytes  = {register_address_hi, register_address_lo, data};
   return writeBytesToDevice(device_address, bytes);
 }
@@ -103,7 +103,7 @@ core::Result HardwareI2c::writeBytesToDevice(const std::uint8_t device_address,
 core::Result HardwareI2c::writeByte(const std::uint8_t device_address, const std::uint8_t data)
 {
   if (sensor_address_ != device_address) { setSensorAddress(device_address); }
-  const std::uint8_t write_buffer[1] = {data};
+  const std::uint8_t write_buffer[1] = {data};  // NOLINT
   const ssize_t num_bytes_written    = write(file_descriptor_, write_buffer, 1);
   if (num_bytes_written != 1) {
     logger_.log(core::LogLevel::kFatal, "Failed to write to i2c device");

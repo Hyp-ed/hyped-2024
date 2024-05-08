@@ -1,5 +1,4 @@
 #pragma once
-#include "command.hpp"
 
 #include <memory>
 
@@ -18,7 +17,7 @@ class I2cCommands {
    * @param repl
    * @return core::Result
    */
-  static core::Result addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl);
+  static core::Result addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl);
 };
 
 }  // namespace hyped::debug

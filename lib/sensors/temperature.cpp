@@ -1,10 +1,12 @@
 #include "temperature.hpp"
 
+#include <utility>
+
 namespace hyped::sensors {
 
 std::optional<std::shared_ptr<Temperature>> Temperature::create(
   core::ILogger &logger,
-  std::shared_ptr<io::II2c> i2c,
+  const std::shared_ptr<io::II2c> &i2c,
   const std::uint8_t channel,
   const temperatureAddress device_address)
 {
@@ -26,13 +28,9 @@ Temperature::Temperature(core::ILogger &logger,
                          const std::uint8_t channel,
                          const std::uint8_t device_address)
     : logger_(logger),
-      i2c_(i2c),
+      i2c_(std::move(i2c)),
       channel_(channel),
       device_address_(device_address)
-{
-}
-
-Temperature::~Temperature()
 {
 }
 

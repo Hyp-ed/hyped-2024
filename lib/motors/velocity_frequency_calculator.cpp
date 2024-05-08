@@ -1,7 +1,6 @@
 #include "velocity_frequency_calculator.hpp"
 
 #include <fstream>
-#include <sstream>
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
@@ -19,7 +18,7 @@ std::optional<std::shared_ptr<VelocityFrequencyCalculator>> VelocityFrequencyCal
   rapidjson::IStreamWrapper input_stream_wrapper(input_stream);
   rapidjson::Document document;
   const rapidjson::ParseResult result = document.ParseStream(input_stream_wrapper);
-  if (!result) {
+  if (result == nullptr) {
     logger.log(core::LogLevel::kFatal,
                "Error parsing JSON: %s",
                rapidjson::GetParseError_En(document.GetParseError()));
@@ -40,7 +39,7 @@ std::optional<std::shared_ptr<VelocityFrequencyCalculator>> VelocityFrequencyCal
   for (std::size_t i = 0; i < coefficients.Size(); i++) {
     coefficients_array[i] = coefficients[i].GetFloat();
   }
-  return std::optional<std::shared_ptr<VelocityFrequencyCalculator>>();
+  return std::make_shared<VelocityFrequencyCalculator>(logger, coefficients_array);
 }
 
 VelocityFrequencyCalculator::VelocityFrequencyCalculator(core::ILogger &logger,

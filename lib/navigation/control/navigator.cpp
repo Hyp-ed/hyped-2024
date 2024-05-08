@@ -1,7 +1,5 @@
 #include "navigator.hpp"
 
-#include <cstdint>
-
 namespace hyped::navigation {
 // TODOLater: check we stop once near calculated safe stopping distance
 

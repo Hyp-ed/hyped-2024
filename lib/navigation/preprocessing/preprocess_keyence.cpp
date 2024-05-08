@@ -1,7 +1,5 @@
 #include "preprocess_keyence.hpp"
 
-#include <cstdint>
-
 namespace hyped::navigation {
 
 KeyencePreprocessor::KeyencePreprocessor(core::ILogger &logger)
