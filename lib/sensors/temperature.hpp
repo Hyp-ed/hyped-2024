@@ -1,7 +1,5 @@
 #pragma once
 
-#include "i2c_sensors.hpp"
-
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -15,7 +13,7 @@ namespace hyped::sensors {
 constexpr std::uint8_t kDefaultTemperatureAddress     = 0x38;
 constexpr std::uint8_t kAlternativeTemperatureAddress = 0x3F;
 
-class Temperature : public II2cMuxSensor<std::int16_t> {
+class Temperature {
  public:
   static std::optional<Temperature> create(core::ILogger &logger,
                                            const std::shared_ptr<io::II2c> &i2c,
@@ -33,9 +31,7 @@ class Temperature : public II2cMuxSensor<std::int16_t> {
   /**
    * @brief Reads the temperature from the sensor
    */
-  std::optional<std::int16_t> read() override;
-
-  std::uint8_t getChannel() const override;
+  std::optional<std::int16_t> read();
 
  private:
   Temperature(core::ILogger &logger,
