@@ -1,5 +1,7 @@
 #include "dummy_i2c.hpp"
 
+#include <utility>
+
 namespace hyped::utils {
 
 std::optional<std::uint8_t> DummyI2c::readByte(const std::uint8_t device_address,
@@ -35,12 +37,12 @@ core::Result DummyI2c::writeByte(const std::uint8_t device_address, const std::u
 
 void DummyI2c::setWriteByteResults(std::vector<core::Result> results)
 {
-  write_byte_results_ = results;
+  write_byte_results_ = std::move(results);
 }
 
 void DummyI2c::setReadByteResults(std::vector<std::optional<std::uint8_t>> results)
 {
-  read_byte_results_ = results;
+  read_byte_results_ = std::move(results);
 }
 
 }  // namespace hyped::utils
