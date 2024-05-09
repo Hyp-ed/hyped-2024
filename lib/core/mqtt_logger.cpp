@@ -11,7 +11,7 @@ MqttLogger::MqttLogger(const char *const label,
                        std::shared_ptr<IMqtt> mqtt)
     : label_(label),
       level_(level),
-      time_source_(time_source_),
+      time_source_(timer),
       logger_(logger),
       mqtt_(mqtt)
 {
