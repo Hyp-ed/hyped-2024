@@ -1,5 +1,7 @@
 #pragma once
 
+#include "dummy_adc.hpp"
+
 #include <io/i2c.hpp>
 
 namespace hyped::utils {
@@ -13,8 +15,6 @@ namespace hyped::utils {
  */
 class DummyI2c : public io::II2c {
  public:
-  DummyI2c();
-
   virtual std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
                                                const std::uint8_t register_address);
   virtual core::Result writeByteToRegister(const std::uint8_t device_address,

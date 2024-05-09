@@ -17,12 +17,16 @@ TEST(MqttLogger, sendMqttMessage)
   mqtt_logger.log(core::LogLevel::kDebug, "test");
   const auto sent_messages = mqtt->getSentMessages();
   ASSERT_EQ(sent_messages.size(), 1);
-  ASSERT_EQ(sent_messages.at(0).topic, core::MqttTopic::kTest);
-  ASSERT_EQ(sent_messages.at(0).header.priority, core::MqttMessagePriority::kCritical);
-  ASSERT_EQ(sent_messages.at(0).header.timestamp, 0);
-  ASSERT_EQ(sent_messages.at(0).payload->GetObject().MemberCount(), 1);
-  ASSERT_TRUE(sent_messages.at(0).payload->GetObject().HasMember("log"));
-  ASSERT_EQ(sent_messages.at(0).payload->GetObject().FindMember("log")->value.GetString(), "test");
+  const auto &message = sent_messages.at(0);
+  ASSERT_EQ(message.topic, core::MqttTopic::kTest);
+  ASSERT_EQ(message.header.priority, core::MqttMessagePriority::kCritical);
+  ASSERT_EQ(message.header.timestamp, 0);
+  const auto &payload = message.payload->GetObject();
+  ASSERT_EQ(payload.MemberCount(), 1);
+  ASSERT_TRUE(payload.HasMember("log"));
+  const auto &log = payload.FindMember("log")->value;
+  ASSERT_TRUE(log.IsString());
+  ASSERT_STREQ(log.GetString(), "test");
 }
 
 TEST(MqttLogger, sendFormattedMessage)
@@ -34,13 +38,16 @@ TEST(MqttLogger, sendFormattedMessage)
   mqtt_logger.log(core::LogLevel::kDebug, "test %d", 42);
   const auto sent_messages = mqtt->getSentMessages();
   ASSERT_EQ(sent_messages.size(), 1);
-  ASSERT_EQ(sent_messages.at(0).topic, core::MqttTopic::kTest);
-  ASSERT_EQ(sent_messages.at(0).header.priority, core::MqttMessagePriority::kCritical);
-  ASSERT_EQ(sent_messages.at(0).header.timestamp, 0);
-  ASSERT_EQ(sent_messages.at(0).payload->GetObject().MemberCount(), 1);
-  ASSERT_TRUE(sent_messages.at(0).payload->GetObject().HasMember("log"));
-  ASSERT_EQ(sent_messages.at(0).payload->GetObject().FindMember("log")->value.GetString(),
-            "test 42");
+  const auto &message = sent_messages.at(0);
+  ASSERT_EQ(message.topic, core::MqttTopic::kTest);
+  ASSERT_EQ(message.header.priority, core::MqttMessagePriority::kCritical);
+  ASSERT_EQ(message.header.timestamp, 0);
+  const auto &payload = message.payload->GetObject();
+  ASSERT_EQ(payload.MemberCount(), 1);
+  ASSERT_TRUE(payload.HasMember("log"));
+  const auto &log = payload.FindMember("log")->value;
+  ASSERT_TRUE(log.IsString());
+  ASSERT_STREQ(log.GetString(), "test 42");
 }
 
 }  // namespace hyped::test

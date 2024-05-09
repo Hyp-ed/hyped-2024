@@ -7,7 +7,6 @@ namespace hyped::utils {
 class DummyMqtt : public core::IMqtt {
  public:
   DummyMqtt();
-  ~DummyMqtt();
   void publish(const core::MqttMessage &message, const core::MqttMessageQos qos) override;
   core::Result subscribe(const core::MqttTopic topic) override;
   core::Result consume() override;

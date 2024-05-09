@@ -8,6 +8,7 @@ DummyMqtt::DummyMqtt() : messages_to_receive_(), messages_sent_()
 
 void DummyMqtt::publish(const core::MqttMessage &message, const core::MqttMessageQos qos)
 {
+  messages_sent_.push_back(message);
 }
 
 core::Result DummyMqtt::subscribe(const core::MqttTopic topic)
