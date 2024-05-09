@@ -4,6 +4,16 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+option(LINT "Run clang-tidy as part of the build process" OFF)
+
+if(LINT)
+  find_program(CLANG_TIDY_PATH clang-tidy)
+  if(NOT CLANG_TIDY_PATH)
+    message(FATAL_ERROR "Could not find the program clang-tidy")
+  endif()
+  set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY_PATH}; --quiet)
+endif()
+
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -Wpedantic ")
 set(CMAKE_CXX_LINKER_FLAGS
     "${CMAKE_CXX_LINKER_FLAGS} -stdlib=libc++ -std=c++20"
@@ -13,7 +23,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(project HYPED)
 project(${project} CXX)
 enable_testing()
-
 find_package(Eigen3 REQUIRED NO_MODULE)
 include_directories(${EIGEN3_INCLUDE_DIR})
 find_package(Curses REQUIRED)

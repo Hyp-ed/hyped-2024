@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <memory>
 #include <optional>
+#include <utility>
 
 #include <core/logger.hpp>
 #include <core/types.hpp>
@@ -51,7 +52,7 @@ I2cMux<T, N>::I2cMux(core::ILogger &logger,
                      const std::uint8_t mux_address,
                      std::array<std::unique_ptr<II2cMuxSensor<T>>, N> &sensors)
     : logger_(logger),
-      i2c_(i2c),
+      i2c_(std::move(i2c)),
       mux_address_(mux_address),
       sensors_(std::move(sensors)),
       max_num_unusable_sensors_(static_cast<std::uint8_t>(kFailureThreshold * N))
@@ -60,9 +61,7 @@ I2cMux<T, N>::I2cMux(core::ILogger &logger,
 }
 
 template<typename T, std::uint8_t N>
-I2cMux<T, N>::~I2cMux()
-{
-}
+I2cMux<T, N>::~I2cMux() = default;
 
 template<typename T, std::uint8_t N>
 std::optional<std::array<T, N>> I2cMux<T, N>::readAllChannels()

@@ -29,7 +29,7 @@ std::optional<std::shared_ptr<HardwareSpi>> HardwareSpi::create(core::ILogger &l
     return std::nullopt;
   }
   // Set word size
-  const std::uint8_t bits_per_word = static_cast<std::uint8_t>(word_size);
+  const auto bits_per_word = static_cast<std::uint8_t>(word_size);
   const int word_size_write_result
     = ioctl(file_descriptor, SPI_IOC_WR_BITS_PER_WORD, &bits_per_word);
   if (word_size_write_result < 0) {
@@ -37,14 +37,14 @@ std::optional<std::shared_ptr<HardwareSpi>> HardwareSpi::create(core::ILogger &l
     return std::nullopt;
   }
   // Set SPI mode
-  const std::uint8_t selected_mode = static_cast<std::uint8_t>(mode);
-  const int mode_write_result      = ioctl(file_descriptor, SPI_IOC_WR_MODE, &selected_mode);
+  const auto selected_mode    = static_cast<std::uint8_t>(mode);
+  const int mode_write_result = ioctl(file_descriptor, SPI_IOC_WR_MODE, &selected_mode);
   if (mode_write_result < 0) {
     logger.log(core::LogLevel::kFatal, "Failed to set SPI mode");
     return std::nullopt;
   }
   // Set bit order
-  const std::uint8_t order     = static_cast<std::uint8_t>(bit_order);
+  const auto order             = static_cast<std::uint8_t>(bit_order);
   const int order_write_result = ioctl(file_descriptor, SPI_IOC_WR_LSB_FIRST, &order);
   if (order_write_result < 0) {
     logger.log(core::LogLevel::kFatal, "Failed to set bit order");
@@ -69,7 +69,7 @@ core::Result HardwareSpi::read(const std::uint8_t register_address,
                                const std::uint8_t *rx,
                                const std::uint16_t len)
 {
-  spi_ioc_transfer message[2] = {};
+  spi_ioc_transfer message[2] = {};  // NOLINT
   // send address
   message[0].tx_buf = reinterpret_cast<std::uint64_t>(&register_address);
   message[0].rx_buf = 0;
@@ -91,7 +91,7 @@ core::Result HardwareSpi::write(const std::uint8_t register_address,
                                 const std::uint8_t *tx,
                                 const std::uint16_t len)
 {
-  spi_ioc_transfer message[2] = {};
+  spi_ioc_transfer message[2] = {};  // NOLINT
   // send address
   message[0].tx_buf = reinterpret_cast<std::uint64_t>(&register_address);
   message[0].rx_buf = 0;
@@ -111,19 +111,12 @@ core::Result HardwareSpi::write(const std::uint8_t register_address,
 
 const char *HardwareSpi::getSpiBusAddress(const SpiBus bus)
 {
-  if (bus == SpiBus::kSpi0) {
-    return "/dev/spidev0.0";
-  } else if (bus == SpiBus::kSpi1) {
-    return "/dev/spidev0.1";
-  } else if (bus == SpiBus::kSpi2) {
-    return "/dev/spidev0.2";
-  } else if (bus == SpiBus::kSpi3) {
-    return "/dev/spidev0.3";
-  } else if (bus == SpiBus::kSpi4) {
-    return "/dev/spidev0.4";
-  } else {
-    return "/dev/spidev0.5";
-  }
+  if (bus == SpiBus::kSpi0) { return "/dev/spidev0.0"; }
+  if (bus == SpiBus::kSpi1) { return "/dev/spidev0.1"; }
+  if (bus == SpiBus::kSpi2) { return "/dev/spidev0.2"; }
+  if (bus == SpiBus::kSpi3) { return "/dev/spidev0.3"; }
+  if (bus == SpiBus::kSpi4) { return "/dev/spidev0.4"; }
+  return "/dev/spidev0.5";
 }
 
 std::uint32_t HardwareSpi::getClockValue(SpiClock clock)

@@ -2,19 +2,19 @@
 
 namespace hyped::debug {
 
-core::Result I2cCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
+core::Result I2cCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
   {
-    const auto read_command_name        = "i2c read";
-    const auto read_command_description = "Read from an I2C bus";
-    const auto read_command_usage       = "i2c read <bus> <device_address> <register_address>";
-    const auto read_command_handler     = [&logger, repl](std::vector<std::string> args) {
+    const auto *const read_command_name        = "i2c read";
+    const auto *const read_command_description = "Read from an I2C bus";
+    const auto *const read_command_usage = "i2c read <bus> <device_address> <register_address>";
+    const auto read_command_handler      = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 3) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
       }
-      const auto bus          = std::stoi(args[0]);
-      const auto optional_i2c = repl->getI2c(bus);
+      const auto bus    = std::stoi(args[0]);
+      auto optional_i2c = repl->getI2c(bus);
       if (!optional_i2c) {
         logger.log(core::LogLevel::kFatal, "Error getting I2C bus");
         return;
@@ -34,16 +34,17 @@ core::Result I2cCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
     repl->addCommand(std::move(read_command));
   }
   {
-    const auto write_command_name        = "i2c write";
-    const auto write_command_description = "Write to an I2C bus";
-    const auto write_command_usage   = "i2c write <bus> <device_address> <register_address> <data>";
-    const auto write_command_handler = [&logger, repl](const std::vector<std::string> args) {
+    const auto *const write_command_name        = "i2c write";
+    const auto *const write_command_description = "Write to an I2C bus";
+    const auto *const write_command_usage
+      = "i2c write <bus> <device_address> <register_address> <data>";
+    const auto write_command_handler = [&logger, repl](const std::vector<std::string> &args) {
       if (args.size() != 4) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
       }
-      const auto bus          = std::stoi(args[0]);
-      const auto optional_i2c = repl->getI2c(bus);
+      const auto bus    = std::stoi(args[0]);
+      auto optional_i2c = repl->getI2c(bus);
       if (!optional_i2c) {
         logger.log(core::LogLevel::kFatal, "Error getting I2C bus");
         return;

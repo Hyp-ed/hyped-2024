@@ -8,10 +8,10 @@ class DummyMqtt : public core::IMqtt {
  public:
   DummyMqtt();
   ~DummyMqtt();
-  void publish(const core::MqttMessage &message, const core::MqttMessageQos qos);
-  core::Result subscribe(const core::MqttTopic topic);
-  core::Result consume();
-  std::optional<core::MqttMessage> getMessage();
+  void publish(const core::MqttMessage &message, const core::MqttMessageQos qos) override;
+  core::Result subscribe(const core::MqttTopic topic) override;
+  core::Result consume() override;
+  std::optional<core::MqttMessage> getMessage() override;
 
   std::vector<core::MqttMessage> getSentMessages();
   void addMessageToReceive(const core::MqttMessage &message);

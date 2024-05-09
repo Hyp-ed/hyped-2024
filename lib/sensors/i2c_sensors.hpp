@@ -18,7 +18,6 @@ class II2cMuxSensor {
    */
   virtual std::optional<T> read()         = 0;
   virtual std::uint8_t getChannel() const = 0;
-  virtual ~II2cMuxSensor() {}
 };
 
 }  // namespace hyped::sensors

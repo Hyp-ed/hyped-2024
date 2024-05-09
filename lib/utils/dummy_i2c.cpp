@@ -2,10 +2,6 @@
 
 namespace hyped::utils {
 
-DummyI2c::DummyI2c()
-{
-}
-
 std::optional<std::uint8_t> DummyI2c::readByte(const std::uint8_t device_address,
                                                const std::uint8_t register_address)
 {

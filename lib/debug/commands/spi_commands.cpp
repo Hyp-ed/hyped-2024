@@ -2,12 +2,12 @@
 
 namespace hyped::debug {
 
-core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
+core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
   {
-    const auto spi_read_byte_command_name        = "spi read byte";
-    const auto spi_read_byte_command_description = "Read a byte from an SPI bus";
-    const auto spi_read_byte_command_usage
+    const auto *const spi_read_byte_command_name        = "spi read byte";
+    const auto *const spi_read_byte_command_description = "Read a byte from an SPI bus";
+    const auto *const spi_read_byte_command_usage
       = "spi read byte <bus> <mode> <word_size> <bit_order> <clock> <register_address>";
     const auto spi_read_byte_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 6) {
@@ -20,7 +20,7 @@ core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
       const auto bit_order = static_cast<io::SpiBitOrder>(std::stoi(args[3]));
       const auto clock     = static_cast<io::SpiClock>(std::stoi(args[4]));
 
-      const auto optional_spi = repl->getSpi(bus, mode, word_size, bit_order, clock);
+      auto optional_spi = repl->getSpi(bus, mode, word_size, bit_order, clock);
 
       if (!optional_spi) {
         logger.log(core::LogLevel::kFatal, "Failed to get SPI instance on bus %d", bus);
@@ -44,9 +44,9 @@ core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
     repl->addCommand(std::move(spi_read_byte_command));
   }
   {
-    const auto spi_write_byte_command_name        = "spi write byte";
-    const auto spi_write_byte_command_description = "Write a byte to an SPI bus";
-    const auto spi_write_byte_command_usage
+    const auto *const spi_write_byte_command_name        = "spi write byte";
+    const auto *const spi_write_byte_command_description = "Write a byte to an SPI bus";
+    const auto *const spi_write_byte_command_usage
       = "spi write byte <bus> <mode> <word_size> <bit_order> <clock> <register_address> <data>";
     const auto spi_write_byte_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 7) {
@@ -59,7 +59,7 @@ core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
       const auto bit_order = static_cast<io::SpiBitOrder>(std::stoi(args[3]));
       const auto clock     = static_cast<io::SpiClock>(std::stoi(args[4]));
 
-      const auto optional_spi = repl->getSpi(bus, mode, word_size, bit_order, clock);
+      auto optional_spi = repl->getSpi(bus, mode, word_size, bit_order, clock);
       if (!optional_spi) {
         logger.log(core::LogLevel::kFatal, "Failed to get SPI instance on bus %d", bus);
         return;
@@ -69,8 +69,8 @@ core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
       std::uint16_t register_address = std::stoi(args[5], nullptr, 16);
       std::uint8_t data              = std::stoi(args[6], nullptr, 16);
 
-      const std::uint8_t *data_ptr = reinterpret_cast<const std::uint8_t *>(&data);
-      const core::Result result    = spi->write(register_address, data_ptr, 1);
+      const auto *data_ptr      = reinterpret_cast<const std::uint8_t *>(&data);
+      const core::Result result = spi->write(register_address, data_ptr, 1);
       if (result == core::Result::kFailure) {
         logger.log(core::LogLevel::kFatal, "Failed to write to SPI bus: %d", bus);
         return;

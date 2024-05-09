@@ -2,10 +2,7 @@
 
 #include "state.hpp"
 #include "transition_table.hpp"
-#include "types.hpp"
 
-#include <optional>
-#include <queue>
 #include <unordered_map>
 
 #include <boost/unordered_map.hpp>
@@ -17,7 +14,7 @@ namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine(std::shared_ptr<core::IMqtt> mqtt, const TransitionTable &transition_table);
+  StateMachine(std::shared_ptr<core::IMqtt> mqtt, TransitionTable transition_table);
   void run();
   State getCurrentState();
   core::Result handleTransition(const State &state);

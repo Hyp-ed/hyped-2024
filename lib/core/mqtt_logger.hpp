@@ -12,7 +12,7 @@ class MqttLogger : public ILogger {
              const core::ITimeSource &timer,
              ILogger &logger,
              std::shared_ptr<IMqtt> mqtt);
-  void log(const LogLevel level, const char *format, ...);
+  void log(const LogLevel level, const char *format, ...) override;
 
  private:
   const char *const label_;

@@ -9,7 +9,7 @@ class DummyAdc : public io::IAdc {
   DummyAdc();
   ~DummyAdc() = default;
 
-  virtual std::optional<core::Float> readValue();
+  std::optional<core::Float> readValue() override;
   void setValue(std::vector<std::optional<core::Float>> values);
 
  private:

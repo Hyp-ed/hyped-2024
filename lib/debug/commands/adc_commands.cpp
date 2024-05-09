@@ -2,18 +2,18 @@
 
 namespace hyped::debug {
 
-core::Result AdcCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
+core::Result AdcCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
-  const auto adc_read_command_name        = "adc read";
-  const auto adc_read_command_description = "Read from ADC pin";
-  const auto adc_read_command_usage       = "adc read <pin_number>";
-  const auto adc_read_command_handler     = [&logger, repl](std::vector<std::string> args) {
+  const auto *const adc_read_command_name        = "adc read";
+  const auto *const adc_read_command_description = "Read from ADC pin";
+  const auto *const adc_read_command_usage       = "adc read <pin_number>";
+  const auto adc_read_command_handler            = [&logger, repl](std::vector<std::string> args) {
     if (args.size() != 1) {
       logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
       return;
     }
-    const auto pin_number   = std::stoi(args[0]);
-    const auto optional_adc = repl->getAdc(pin_number);
+    const auto pin_number = std::stoi(args[0]);
+    auto optional_adc     = repl->getAdc(pin_number);
     if (!optional_adc) {
       logger.log(core::LogLevel::kFatal, "Failed to get ADC instance on pin %d", pin_number);
       return;

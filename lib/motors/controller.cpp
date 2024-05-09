@@ -8,8 +8,8 @@ namespace hyped::motors {
 std::optional<std::shared_ptr<Controller>> Controller::create(
   core::ILogger &logger,
   const std::string &message_file_path,
-  const std::shared_ptr<io::ICan> can,
-  const std::shared_ptr<IFrequencyCalculator> frequency_calculator)
+  const std::shared_ptr<io::ICan> &can,
+  const std::shared_ptr<IFrequencyCalculator> &frequency_calculator)
 {
   std::ifstream input_stream(message_file_path);
   if (!input_stream.is_open()) {
@@ -19,7 +19,7 @@ std::optional<std::shared_ptr<Controller>> Controller::create(
   rapidjson::IStreamWrapper input_stream_wrapper(input_stream);
   rapidjson::Document document;
   const rapidjson::ParseResult result = document.ParseStream(input_stream_wrapper);
-  if (!result) {
+  if (result == nullptr) {
     logger.log(core::LogLevel::kFatal,
                "Error parsing JSON: %s",
                rapidjson::GetParseError_En(document.GetParseError()));
@@ -117,8 +117,8 @@ std::optional<std::shared_ptr<Controller>> Controller::create(
 Controller::Controller(core::ILogger &logger,
                        const std::unordered_map<std::string, io::CanFrame> &messages,
                        const std::vector<io::CanFrame> &configuration_messages,
-                       const std::shared_ptr<io::ICan> can,
-                       const std::shared_ptr<IFrequencyCalculator> frequency_calculator)
+                       const std::shared_ptr<io::ICan> &can,
+                       const std::shared_ptr<IFrequencyCalculator> &frequency_calculator)
     : logger_(logger),
       configuration_messages_(configuration_messages),
       messages_(messages),
@@ -131,7 +131,7 @@ Controller::Controller(core::ILogger &logger,
 }
 
 std::optional<io::CanFrame> Controller::parseJsonCanFrame(
-  core::ILogger &logger, rapidjson::GenericObject<true, rapidjson::Value> message)
+  core::ILogger &logger, const rapidjson::GenericObject<true, rapidjson::Value> &message)
 {
   if (!message.HasMember("id")) {
     logger.log(core::LogLevel::kFatal,
@@ -308,37 +308,37 @@ ControllerStatus Controller::processWarningMessage(const std::uint8_t warning_co
   logger_.log(core::LogLevel::kInfo, "Controller Warning found, (code: %x)", warning_code);
 
   // In the event some warning(s) have occured, print each and return highest priority.
-  if (warning_code & 0x1) {
+  if ((warning_code & 0x1) != 0) {
     logger_.log(core::LogLevel::kInfo, "Controller Warning: Controller Temperature Exceeded");
   }
-  if (warning_code & 0x2) {
+  if ((warning_code & 0x2) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: Motor Temperature Exceeded");
   }
-  if (warning_code & 0x4) {
+  if ((warning_code & 0x4) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: DC link under voltage");
   }
-  if (warning_code & 0x8) {
+  if ((warning_code & 0x8) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: DC link over voltage");
   }
-  if (warning_code & 0x10) {
+  if ((warning_code & 0x10) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: DC link over current");
   }
-  if (warning_code & 0x20) {
+  if ((warning_code & 0x20) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: Stall protection active");
   }
-  if (warning_code & 0x40) {
+  if ((warning_code & 0x40) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: Max velocity exceeded");
   }
-  if (warning_code & 0x80) {
+  if ((warning_code & 0x80) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: BMS Proposed Power");
   }
-  if (warning_code & 0x100) {
+  if ((warning_code & 0x100) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: Capacitor temperature exceeded");
   }
-  if (warning_code & 0x200) {
+  if ((warning_code & 0x200) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: I2T protection");
   }
-  if (warning_code & 0x400) {
+  if ((warning_code & 0x400) != 0) {
     logger_.log(core::LogLevel::kFatal, "Controller Warning: Field weakening active");
   }
   return ControllerStatus::kUnrecoverableWarning;

@@ -6,10 +6,6 @@ DummyMqtt::DummyMqtt() : messages_to_receive_(), messages_sent_()
 {
 }
 
-DummyMqtt::~DummyMqtt()
-{
-}
-
 void DummyMqtt::publish(const core::MqttMessage &message, const core::MqttMessageQos qos)
 {
 }

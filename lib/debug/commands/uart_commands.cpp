@@ -2,13 +2,13 @@
 
 namespace hyped::debug {
 
-core::Result UartCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> repl)
+core::Result UartCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
   {
-    const auto uart_read_command_name        = "uart read";
-    const auto uart_read_command_description = "Read from a UART bus";
-    const auto uart_read_command_usage       = "uart read <bus> <baud_rate> <bits_per_byte>";
-    const auto uart_read_command_handler     = [&logger, repl](std::vector<std::string> args) {
+    const auto *const uart_read_command_name        = "uart read";
+    const auto *const uart_read_command_description = "Read from a UART bus";
+    const auto *const uart_read_command_usage       = "uart read <bus> <baud_rate> <bits_per_byte>";
+    const auto uart_read_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 3) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
@@ -16,13 +16,13 @@ core::Result UartCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
       const auto uart_bus      = static_cast<io::UartBus>(std::stoi(args[0]));
       const auto baud_rate     = static_cast<io::UartBaudRate>(std::stoi(args[1]));
       const auto bits_per_byte = static_cast<io::UartBitsPerByte>(std::stoi(args[2]));
-      const auto optional_uart = repl->getUart(uart_bus, baud_rate, bits_per_byte);
+      auto optional_uart       = repl->getUart(uart_bus, baud_rate, bits_per_byte);
       if (!optional_uart) {
         logger.log(core::LogLevel::kFatal, "Failed to get UART bus");
         return;
       }
       const auto uart = std::move(*optional_uart);
-      std::uint8_t read_buffer[255];
+      std::uint8_t read_buffer[255];  // NOLINT
       const core::Result result = uart->readBytes(read_buffer, 255);
       if (result == core::Result::kFailure) {
         logger.log(core::LogLevel::kFatal, "Failed to read from UART bus %d", uart_bus);
@@ -37,9 +37,10 @@ core::Result UartCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
     repl->addCommand(std::move(uart_read_command));
   }
   {
-    const auto uart_write_command_name        = "uart write";
-    const auto uart_write_command_description = "Write to a UART bus";
-    const auto uart_write_command_usage   = "uart write <bus> <baud_rate> <bits_per_byte> <data>";
+    const auto *const uart_write_command_name        = "uart write";
+    const auto *const uart_write_command_description = "Write to a UART bus";
+    const auto *const uart_write_command_usage
+      = "uart write <bus> <baud_rate> <bits_per_byte> <data>";
     const auto uart_write_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 4) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
@@ -48,7 +49,7 @@ core::Result UartCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
       const auto uart_bus      = static_cast<io::UartBus>(std::stoi(args[0]));
       const auto baud_rate     = static_cast<io::UartBaudRate>(std::stoi(args[1]));
       const auto bits_per_byte = static_cast<io::UartBitsPerByte>(std::stoi(args[2]));
-      const auto optional_uart = repl->getUart(uart_bus, baud_rate, bits_per_byte);
+      auto optional_uart       = repl->getUart(uart_bus, baud_rate, bits_per_byte);
       if (!optional_uart) {
         logger.log(core::LogLevel::kFatal, "Failed to get UART bus");
         return;
