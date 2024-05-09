@@ -1,6 +1,7 @@
 #include "dummy_adc.hpp"
 
 #include <optional>
+#include <utility>
 
 namespace hyped::utils {
 
@@ -10,7 +11,7 @@ DummyAdc::DummyAdc() : values_(0.0)
 
 std::optional<core::Float> DummyAdc::readValue()
 {
-  if (values_.empty()) return std::nullopt;
+  if (values_.empty()) { return std::nullopt; }
   const auto val = values_.front();
   values_.erase(values_.begin());
   return val;
@@ -18,7 +19,7 @@ std::optional<core::Float> DummyAdc::readValue()
 
 void DummyAdc::setValue(std::vector<std::optional<core::Float>> values)
 {
-  values_ = values;
+  values_ = std::move(values);
 }
 
 }  // namespace hyped::utils

@@ -2,10 +2,6 @@
 
 namespace hyped::utils {
 
-DummyMqtt::DummyMqtt() : messages_to_receive_(), messages_sent_()
-{
-}
-
 void DummyMqtt::publish(const core::MqttMessage &message, const core::MqttMessageQos qos)
 {
   messages_sent_.push_back(message);
@@ -36,7 +32,7 @@ std::vector<core::MqttMessage> DummyMqtt::getSentMessages()
 
 void DummyMqtt::addMessageToReceive(const core::MqttMessage &message)
 {
-  messages_to_receive_.push_back(message);
+  messages_to_receive_.emplace_back(message);
 }
 
 }  // namespace hyped::utils
