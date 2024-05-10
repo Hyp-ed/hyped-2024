@@ -61,10 +61,6 @@ core::Result I2cMux::writeByteToRegister(const std::uint8_t device_address,
 
 core::Result I2cMux::selectChannel()
 {
-  if (channel_ >= kMaxMuxChannel) {
-    logger_.log(core::LogLevel::kFatal, "I2c Mux Channel number %d is not selectable", channel_);
-    return core::Result::kFailure;
-  }
   const std::uint8_t channel_buffer = 1 << channel_;
   const auto i2c_write_result       = i2c_->writeByte(mux_address_, channel_buffer);
   if (i2c_write_result == core::Result::kFailure) {
