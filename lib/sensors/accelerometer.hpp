@@ -23,7 +23,7 @@ class Accelerometer {
  public:
   static std::optional<Accelerometer> create(core::ILogger &logger,
                                              const std::shared_ptr<io::II2c> &i2c,
-                                             const std::uint8_t channel);
+                                             const std::uint8_t device_address);
 
   /*
    * @brief Checks if the accelerometer is ready to be read

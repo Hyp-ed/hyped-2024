@@ -17,7 +17,6 @@ class Temperature {
  public:
   static std::optional<Temperature> create(core::ILogger &logger,
                                            const std::shared_ptr<io::II2c> &i2c,
-                                           const std::uint8_t channel,
                                            const std::uint8_t device_address);
 
   /*
@@ -36,12 +35,10 @@ class Temperature {
  private:
   Temperature(core::ILogger &logger,
               std::shared_ptr<io::II2c> i2c,
-              const std::uint8_t channel,
               const std::uint8_t device_address);
 
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
-  const std::uint8_t channel_;
   const std::uint8_t device_address_;
 
   // Register addresses/values taken from the datasheet
