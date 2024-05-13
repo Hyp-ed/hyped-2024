@@ -11,7 +11,7 @@ int main(const int argc, char **argv)
   terminal.initialize_window();
   hyped::debug::ReplLogger logger("REPL", hyped::core::LogLevel::kDebug, time, terminal);
   if (argc > 1) {
-    auto optional_repl = hyped::debug::Repl::create(logger, terminal, argv[1]);
+    auto optional_repl = hyped::debug::Repl::create(logger, terminal, time, argv[1]);
     if (!optional_repl) {
       logger.log(
         hyped::core::LogLevel::kFatal, "Failed to create debugger using file: %s", argv[1]);

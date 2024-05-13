@@ -6,6 +6,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/keyence_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/uart_commands.hpp"
@@ -19,9 +20,10 @@ namespace hyped::debug {
 // NOLINTBEGIN(readability-function-cognitive-complexity)
 std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
                                                   Terminal &terminal,
+                                                  core::ITimeSource &time,
                                                   const std::string &filename)
 {
-  auto repl = std::make_shared<Repl>(logger, terminal);
+  auto repl = std::make_shared<Repl>(logger, terminal, time);
   toml::table config;
   try {
     config = toml::parse_file(filename);
@@ -78,6 +80,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       return std::nullopt;
     }
   }
+  if (config["sensors"]["keyence"]["enabled"].value_or(false)) {
+    const auto result = KeyenceCommands::addCommands(logger, repl, time, config);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding keyence commands");
+      return std::nullopt;
+    }
+  }
   auto *const aliases = config["aliases"].as_table();
   for (auto [alias, command] : *aliases) {
     const std::string alias_alias     = static_cast<std::string>(alias.str());
@@ -94,9 +103,10 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
 }
 // NOLINTEND(readability-function-cognitive-complexity)
 
-Repl::Repl(core::ILogger &logger, Terminal &terminal)
+Repl::Repl(core::ILogger &logger, Terminal &terminal, core::ITimeSource &time)
     : logger_(logger),
       terminal_(terminal),
+      time_(time),
       gpio_(std::make_shared<io::HardwareGpio>(logger))
 {
   addHelpCommand();

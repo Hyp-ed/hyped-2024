@@ -45,14 +45,14 @@ class HardwareGpioWriter : public IGpioWriter {
  * be instantiated at the top level and then provided to users through the IGpio interface.
  * Ensure inputted pins are defined as pin = 32*X + Y (GPIOX_Y)
  */
-class HardwareGpio {
+class HardwareGpio : public IGpio {
  public:
   explicit HardwareGpio(core::ILogger &logger);
 
-  virtual std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin,
-                                                                const Edge edge);
-  virtual std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin,
-                                                                const Edge edge);
+  std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin,
+                                                        const Edge edge) override;
+  std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin,
+                                                        const Edge edge) override;
 
  private:
   /**

@@ -28,8 +28,9 @@ class Repl {
  public:
   static std::optional<std::shared_ptr<Repl>> create(core::ILogger &logger,
                                                      Terminal &terminal,
+                                                     core::ITimeSource &time,
                                                      const std::string &filename);
-  Repl(core::ILogger &logger, Terminal &terminal);
+  Repl(core::ILogger &logger, Terminal &terminal, core::ITimeSource &time);
   void run();
   std::vector<std::string> autoComplete(const std::string &partial);
   void handleCommand(std::string &input);
@@ -63,7 +64,7 @@ class Repl {
    *
    * @return std::shared_ptr<io::HardwareGpio> containing the Gpio object
    */
-  std::shared_ptr<io::HardwareGpio> getGpio() { return gpio_; };
+  std::shared_ptr<io::IGpio> getGpio() { return gpio_; };
   /**
    * @brief Get the I2c object associated with the given bus or create a new one if it doesn't exist
    * @param bus target bus for the I2c object
@@ -119,6 +120,7 @@ class Repl {
  private:
   core::ILogger &logger_;
   Terminal terminal_;
+  core::ITimeSource &time_;
   std::vector<std::string> history_;
   std::vector<std::unique_ptr<Command>> commands_;
   std::unordered_map<std::string, std::string> aliases_;
