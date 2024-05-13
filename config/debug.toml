@@ -28,8 +28,8 @@ address = 25
 
 [sensors.temperature]
 enabled = false
-bus = 2
-address = 56
+bus = 1
+address = 0x38
 
 [sensors.optical_flow]
 enabled = false
