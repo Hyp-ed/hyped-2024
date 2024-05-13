@@ -31,6 +31,14 @@ enabled = false
 bus = 2
 address = 56
 
+[sensors.optical_flow]
+enabled = false
+bus = 0
+mode = 0
+word_size = 8
+bit_order = 0
+clock = 2'000'000
+
 [sensors.bms]
 enabled = false
 bus = "can1"

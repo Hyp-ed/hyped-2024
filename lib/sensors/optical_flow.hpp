@@ -37,7 +37,7 @@ class OpticalFlow {
   static constexpr std::uint8_t kYHighAddress = 0x06;
 
   static constexpr std::uint8_t kDeviceIdAddress       = 0x00;
-  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;  // unsure that's the value
+  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;  
 };
 
 }  // namespace hyped::sensors

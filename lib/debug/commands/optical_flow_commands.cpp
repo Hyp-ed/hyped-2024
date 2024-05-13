@@ -10,11 +10,17 @@ core::Result OpticalFlowCommands::addCommands(core::ILogger &logger,
 	//get bus
 	const auto optional_bus = config["bus"].value<std::uint8_t>();
     if (!optional_bus) {
-    logger.log(core::LogLevel::kFatal, "No I2C bus specified");
+    logger.log(core::LogLevel::kFatal, "No SPI bus specified");
     return core::Result::kFailure;
     };
   	const auto bus = *optional_bus;
 
-	//const auto optional_spi = repl->getSpi()
+	// get SPI instance
+  const auto optional_spi = repl->getSpi(bus, mode, word_size, bit_order, clock);
+    if (!optional_spi) {
+    logger.log(core::LogLevel::kFatal, "Error creating I2C bus");
+    return core::Result::kFailure;
+    };
+    const auto i2c = std::move(*optional_spi);
 }
 }
