@@ -132,7 +132,7 @@ if [ "$docker_build" = true ]; then
 
   if [ "$cross_compile" = true ]; then
     echo "[!] Cross-compiling for Raspberry Pi"
-    docker run -e CLEAN=$clean -e DIR=/home/hyped --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
+    docker run -e CLEAN=$clean -e DIR=/home/hyped -e LINT=$lint --name $CC_CONTAINER_NAME -v $(pwd):/home/hyped $CC_IMAGE_NAME bash
   else
     docker run -e CLEAN=$clean -e DIR=/home/hyped -e LINT=$lint --name $BUILD_CONTAINER_NAME -v $(pwd):/home/hyped $IMAGE_NAME bash
   fi
