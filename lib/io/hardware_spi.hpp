@@ -51,7 +51,13 @@ enum class SpiMode { kMode0 = 0, kMode1, kMode2, kMode3 };
 enum class SpiWordSize { kWordSize4 = 4, kWordSize8 = 8, kWordSize16 = 16, kWordSize32 = 32 };
 enum class SpiBitOrder { kMsbFirst = 0, kLsbFirst };
 // Maximum clock frequency for SPI is 100MHz
-enum class SpiClock { k500KHz, k1MHz, k4MHz, k16MHz, k20MHz };
+enum class SpiClock {
+  k500KHz = 500'000,
+  k1MHz   = 1'000'000,
+  k4MHz   = 4'000'000,
+  k16MHz  = 16'000'000,
+  k20MHz  = 20'000'000
+};
 
 class HardwareSpi : public ISpi {
  public:

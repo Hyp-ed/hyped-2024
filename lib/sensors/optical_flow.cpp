@@ -1,15 +1,16 @@
 #include "optical_flow.hpp"
 
+#include <utility>
+
 namespace hyped::sensors {
 
-std::optional<OpticalFlow> OpticalFlow::create(core::ILogger &logger,
-                                               std::shared_ptr<io::ISpi> spi,
-                                               const std::uint8_t channel)
+std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
+  core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
 {
   // check we are communicating with the correct sensor
-  const std::uint8_t *device_id;
-  spi->read(kDeviceIdAddress, device_id, 1);
-  if (!device_id) {
+  const std::uint8_t *device_id = nullptr;
+  const auto result             = spi->read(kDeviceIdAddress, device_id, 1);
+  if (result == core::Result::kFailure || device_id == nullptr) {
     logger.log(core::LogLevel::kFatal, "Failed to read the optical flow device");
     return std::nullopt;
   }
@@ -17,42 +18,47 @@ std::optional<OpticalFlow> OpticalFlow::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for optical flow sensor");
     return std::nullopt;
   }
-  return OpticalFlow(logger, spi, channel);
+  return std::make_shared<OpticalFlow>(logger, spi);
 }
 
-OpticalFlow::OpticalFlow(core::ILogger &logger,
-                         std::shared_ptr<io::ISpi> spi,
-                         const std::uint8_t channel)
+OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
     : logger_(logger),
-      spi_(spi),
-      channel_(channel)
+      spi_(std::move(spi))
 {
 }
 
-OpticalFlow::~OpticalFlow()
+std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
 {
-}
-
-// inspired by Bitcraze_PMW3901 on github
-// (https://github.com/bitcraze/Bitcraze_PMW3901/blob/master/src/Bitcraze_PMW3901.cpp)
-std::uint8_t OpticalFlow::getDeltaX(std::shared_ptr<io::ISpi> spi)
-{
-  std::uint8_t *x_low;
-  std::uint8_t *x_high;
-
-  spi->read(kXLowAddress, x_low, 1);
-  spi->read(kXHighAddress, x_high, 1);
-
+  std::uint8_t *x_low   = nullptr;
+  const auto low_result = spi_->read(kXLowAddress, x_low, 1);
+  if (low_result == core::Result::kFailure || x_low == nullptr) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the x delta");
+    return std::nullopt;
+  }
+  std::uint8_t *x_high   = nullptr;
+  const auto high_result = spi_->read(kXHighAddress, x_high, 1);
+  if (high_result == core::Result::kFailure || x_high == nullptr) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
+    return std::nullopt;
+  }
   return static_cast<std::int16_t>((*x_high << 8) | *x_low);
 }
-std::uint8_t OpticalFlow::getDeltaY(std::shared_ptr<io::ISpi> spi)
+
+std::optional<std::uint8_t> OpticalFlow::getDeltaY() const
 {
-  std::uint8_t *y_low;
-  std::uint8_t *y_high;
-
-  spi->read(kYLowAddress, y_low, 1);
-  spi->read(kYHighAddress, y_high, 1);
-
+  std::uint8_t *y_low   = nullptr;
+  const auto low_result = spi_->read(kYLowAddress, y_low, 1);
+  if (low_result == core::Result::kFailure || y_low == nullptr) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the y delta");
+    return std::nullopt;
+  }
+  std::uint8_t *y_high   = nullptr;
+  const auto high_result = spi_->read(kYHighAddress, y_high, 1);
+  if (high_result == core::Result::kFailure || y_high == nullptr) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the y delta");
+    return std::nullopt;
+  }
   return static_cast<std::int16_t>((*y_high << 8) | *y_low);
 }
+
 }  // namespace hyped::sensors

@@ -12,24 +12,19 @@
 namespace hyped::sensors {
 
 class OpticalFlow {
-  // ToDoLater: include "magic sauce" optimisation?
+  // TODOLater: include "magic sauce" optimisation?
  public:
-  static std::optional<OpticalFlow> create(core::ILogger &logger,
-                                           std::shared_ptr<io::ISpi> spi,
-                                           const std::uint8_t channel);
-  ~OpticalFlow();
+  static std::optional<std::shared_ptr<OpticalFlow>> create(core::ILogger &logger,
+                                                            const std::shared_ptr<io::ISpi> &spi);
 
- private:
-  OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi, const std::uint8_t channel);
-  std::uint8_t getDeltaX(std::shared_ptr<io::ISpi> spi);
-  std::uint8_t getDeltaY(std::shared_ptr<io::ISpi> spi);
+  OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi);
+  std::optional<std::uint8_t> getDeltaX() const;
+  std::optional<std::uint8_t> getDeltaY() const;
 
  private:
   core::ILogger &logger_;
   std::shared_ptr<io::ISpi> spi_;
-  const std::uint8_t channel_;
 
- private:
   // Register addresses for x and y
   static constexpr std::uint8_t kXLowAddress  = 0x03;
   static constexpr std::uint8_t kXHighAddress = 0x04;
@@ -37,7 +32,7 @@ class OpticalFlow {
   static constexpr std::uint8_t kYHighAddress = 0x06;
 
   static constexpr std::uint8_t kDeviceIdAddress       = 0x00;
-  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;  
+  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;
 };
 
 }  // namespace hyped::sensors
