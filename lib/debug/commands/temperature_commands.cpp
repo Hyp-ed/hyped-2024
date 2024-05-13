@@ -25,9 +25,9 @@ core::Result TemperatureCommands::addCommands(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Invalid address");
     return core::Result::kFailure;
   }
-  const auto address               = *optional_address;
-  auto optional_temperature_sensor = sensors::Temperature::create(
-    logger, i2c, 0, static_cast<sensors::temperatureAddress>(address));
+  const auto address = *optional_address;
+  auto optional_temperature_sensor
+    = sensors::Temperature::create(logger, i2c, static_cast<sensors::temperatureAddress>(address));
   if (!optional_temperature_sensor) {
     logger.log(core::LogLevel::kFatal, "Failed to create temperature sensor");
     return core::Result::kFailure;
