@@ -77,7 +77,7 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
     return core::Result::kFailure;
   }
 
-  previous_keyence_reading_ = keyence_data[0];
+  previous_keyence_reading_ = keyence_data.at(0);
 
   logger_.log(core::LogLevel::kInfo, "Keyence data successfully updated");
   return core::Result::kSuccess;
@@ -132,15 +132,15 @@ core::Result Navigator::accelerometerUpdate(
 
 void Navigator::publishCurrentTrajectory()
 {
-  const auto topic = core::MqttTopic::kTest;
+  const auto topic     = core::MqttTopic::kTest;
   auto message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
 
   auto trajectory = currentTrajectory();
-    if (!trajectory) {
-      logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory");
-      //TODO: DO SOMETHING!!
-    }
+  if (!trajectory) {
+    logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory");
+    // TODO: DO SOMETHING, MAYBE BRAKE?
+  }
 
   rapidjson::Value displacement(trajectory->displacement);
   rapidjson::Value velocity(trajectory->velocity);
@@ -151,40 +151,37 @@ void Navigator::publishCurrentTrajectory()
                                          .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
-
 }
-    
-
 
 // TODO: main run loop
 
 void Navigator::run()
 {
   mqtt_->subscribe(core::MqttTopic::kTest);
-  
 
   while (true) {
-
-
     mqtt_->consume();
 
-    auto keyence_data = mqtt_ ->getMessage(core::MqttTopic::kKeyenceData);
-    auto optical_data = mqtt_ ->getMessage(core::MqttTopic::kOpticalData);
-    auto accelerometer_data = mqtt ->getMessage(core::MqttTopic::kAccelerometerData);
+    // auto keyence_data = mqtt_ ->getMessage(core::MqttTopic::kKeyenceData);
+    // auto optical_data = mqtt_ ->getMessage(core::MqttTopic::kOpticalData);
+    // auto accelerometer_data = mqtt ->getMessage(core::MqttTopic::kAccelerometerData);
 
-
-    if (keyenceUpdate(*keyence_data) == core::Result::kFailure ||
-        opticalUpdate(*optical_data) == core::Result::kFailure ||
-        accelerometerUpdate(*accelerometer_data) == core::Result::kFailure) {
+    core::KeyenceData keyence_data = {0, 0};
+    core::OpticalData optical_data = {0, 0};
+    core::AccelerometerData accelerometer_data = {0, 0, 0, 0};
+    /*
+    if (keyenceUpdate(keyence_data) == core::Result::kFailure
+        || opticalUpdate(optical_data) == core::Result::kFailure
+        || accelerometerUpdate(accelerometer_data) == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
       break;
     }
+    */
 
     publishCurrentTrajectory();
 
-    logger_.log(core::LogLevel::kInfo, "Current trajectory: displacement = %f, velocity = %f",
-                trajectory->displacement, trajectory->velocity);
-  
+    // logger_.log(core::LogLevel::kInfo, "Current trajectory: displacement = %f, velocity = %f",
+    //             trajectory->displacement, trajectory->velocity);
   }
 }
 
