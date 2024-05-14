@@ -70,6 +70,14 @@ core::Result TimeOfFlight::initialise()
     for (int i = 0; i < 20; i++) {
       i2c_->writeByteToRegister(device_address_, array_return_addresses[1], data[i]);
     }
+    i2c_->writeByteToRegister(device_address_, 0x0198, 0x01);
+    i2c_->writeByteToRegister(device_address_, 0x01b0, 0x17);
+    i2c_->writeByteToRegister(device_address_, 0x01ad, 0x00);
+    i2c_->writeByteToRegister(device_address_, 0x0100, 0x05);
+    i2c_->writeByteToRegister(device_address_, 0x0199, 0x05);
+    i2c_->writeByteToRegister(device_address_, 0x01a6, 0x1b);
+    i2c_->writeByteToRegister(device_address_, 0x01ac, 0x3e);
+    i2c_->writeByteToRegister(device_address_, 0x01a7, 0x1f);
     i2c_->writeByteToRegister(device_address_, kSystemFreshOutOfReset, 0);
 
     // Recommended : Public registers
@@ -128,7 +136,8 @@ std::optional<std::uint8_t> TimeOfFlight::getRange()
   auto range_status = *status & 0b111;
 
   // Wait for new measurement ready status
-  uint8_t timeout = 0;
+  std::uint8_t timeout = 0;
+  std::uint8_t threshold = 10000;
   while (range_status != 0x04) {
     const auto statuss = i2c_->readByte(device_address_, kResultInterruptStatusGpio);
     if (!statuss) {
@@ -137,7 +146,7 @@ std::optional<std::uint8_t> TimeOfFlight::getRange()
     }
     range_status = *statuss & 0b111;
     timeout++;
-    if (timeout > 1000000) {
+    if (timeout > threshold) {
       logger_.log(core::LogLevel::kFatal,
                   "Failed to get time of flight interrupt status - timeout");
       return std::nullopt;
