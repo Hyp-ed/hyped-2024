@@ -54,6 +54,7 @@ enum class SpiBitOrder { kMsbFirst = 0, kLsbFirst };
 enum class SpiClock {
   k500KHz = 500'000,
   k1MHz   = 1'000'000,
+  k2MHz   = 2'000'000,
   k4MHz   = 4'000'000,
   k16MHz  = 16'000'000,
   k20MHz  = 20'000'000

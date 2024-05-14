@@ -126,6 +126,8 @@ std::uint32_t HardwareSpi::getClockValue(SpiClock clock)
       return 500'000;
     case SpiClock::k1MHz:
       return 1'000'000;
+    case SpiClock::k2MHz:
+      return 2'000'000;
     case SpiClock::k4MHz:
       return 4'000'000;
     case SpiClock::k16MHz:
