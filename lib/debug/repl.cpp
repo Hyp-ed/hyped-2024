@@ -89,7 +89,8 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     }
   }
   if (config["sensors"]["optical_flow"]["enabled"].value_or(false)) {
-    const auto result = OpticalFlowCommands::addCommands(logger, repl, config["optical_flow"]);
+    const auto result
+      = OpticalFlowCommands::addCommands(logger, repl, config["sensors"]["optical_flow"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding optical flow commands");
       return std::nullopt;
