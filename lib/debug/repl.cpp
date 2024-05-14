@@ -27,7 +27,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
   try {
     config = toml::parse_file(filename);
   } catch (const toml::parse_error &e) {
-    logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
+    logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.what());
     return std::nullopt;
   }
   if (config["io"]["adc"]["enabled"].value_or(false)) {
@@ -137,7 +137,7 @@ void Repl::run()
         input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
-      if (input.empty()) { input.pop_back(); }
+      if (!input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
       const auto result = findMatch(input);
       if (result == std::nullopt) { continue; }

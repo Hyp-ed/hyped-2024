@@ -15,7 +15,7 @@ enabled = false
 enabled = false
 
 [io.spi]
-enabled = false
+enabled = false 
 
 [io.uart]
 enabled = false
@@ -37,7 +37,7 @@ bus = 0
 mode = 0
 word_size = 8
 bit_order = 0
-clock = 2'000'000
+clock = 2000000
 
 [sensors.bms]
 enabled = false
