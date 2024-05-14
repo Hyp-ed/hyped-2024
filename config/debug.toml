@@ -35,6 +35,11 @@ address = 0x38
 enabled = false
 bus = "can1"
 
+[sensors.tof]
+enabled = true
+bus = 2
+address = 29
+
 [motors]
 enabled = false
 bus = "can1"
