@@ -6,6 +6,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/optical_flow_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/temperature_commands.hpp"
@@ -84,6 +85,13 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       = TemperatureCommands::addCommands(logger, repl, config["sensors"]["temperature"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding temperature commands");
+      return std::nullopt;
+    }
+  }
+  if (config["sensors"]["optical_flow"]["enabled"].value_or(false)) {
+    const auto result = OpticalFlowCommands::addCommands(logger, repl, config["optical_flow"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding optical flow commands");
       return std::nullopt;
     }
   }
