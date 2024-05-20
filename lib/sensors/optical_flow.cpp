@@ -8,9 +8,9 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
   core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
 {
   // check we are communicating with the correct sensor
-  const std::uint8_t *device_id = nullptr;
-  const auto result             = spi->read(kDeviceIdAddress, device_id, 1);
-  if (result == core::Result::kFailure || device_id == nullptr) {
+  const std::uint8_t device_id[1] = {0};
+  const auto result               = spi->read(kDeviceIdAddress, device_id, 1);
+  if (result == core::Result::kFailure) {
     logger.log(core::LogLevel::kFatal, "Failed to read the optical flow device");
     return std::nullopt;
   }
@@ -29,15 +29,15 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 
 std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
 {
-  std::uint8_t *x_low   = nullptr;
+  std::uint8_t x_low[1] = 0;
   const auto low_result = spi_->read(kXLowAddress, x_low, 1);
-  if (low_result == core::Result::kFailure || x_low == nullptr) {
+  if (low_result == core::Result::kFailure) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the x delta");
     return std::nullopt;
   }
-  std::uint8_t *x_high   = nullptr;
+  std::uint8_t x_high[1] = 0;
   const auto high_result = spi_->read(kXHighAddress, x_high, 1);
-  if (high_result == core::Result::kFailure || x_high == nullptr) {
+  if (high_result == core::Result::kFailure) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
     return std::nullopt;
   }
@@ -46,15 +46,15 @@ std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
 
 std::optional<std::uint8_t> OpticalFlow::getDeltaY() const
 {
-  std::uint8_t *y_low   = nullptr;
+  std::uint8_t y_low[1] = {0};
   const auto low_result = spi_->read(kYLowAddress, y_low, 1);
-  if (low_result == core::Result::kFailure || y_low == nullptr) {
+  if (low_result == core::Result::kFailure) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the y delta");
     return std::nullopt;
   }
-  std::uint8_t *y_high   = nullptr;
+  std::uint8_t y_high[1] = {0};
   const auto high_result = spi_->read(kYHighAddress, y_high, 1);
-  if (high_result == core::Result::kFailure || y_high == nullptr) {
+  if (high_result == core::Result::kFailure) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the y delta");
     return std::nullopt;
   }
