@@ -37,7 +37,7 @@ bus = 0
 mode = 0
 word_size = 8
 bit_order = 0
-clock = 2000000
+clock = 4000000
 
 [sensors.bms]
 enabled = false

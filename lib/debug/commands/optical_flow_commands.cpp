@@ -45,7 +45,7 @@ core::Result OpticalFlowCommands::addCommands(core::ILogger &logger,
   // get SPI instance
   auto optional_spi = repl->getSpi(bus, mode, word_size, bit_order, clock);
   if (!optional_spi) {
-    logger.log(core::LogLevel::kFatal, "Error creating I2C bus");
+    logger.log(core::LogLevel::kFatal, "Error getting spi bus");
     return core::Result::kFailure;
   };
   const auto spi             = std::move(*optional_spi);
