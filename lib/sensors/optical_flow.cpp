@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "core/logger.hpp"
+
 namespace hyped::sensors {
 
 std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
@@ -41,6 +43,7 @@ std::optional<std::uint16_t> OpticalFlow::getDeltaX() const
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
     return std::nullopt;
   }
+  logger_.log(core::LogLevel::kDebug, "x_low: %d, x_high: %d", x_low[0], x_high[0]);
   return static_cast<std::int16_t>(x_high[0]) << 8 | x_low[0];
 }
 
@@ -58,6 +61,7 @@ std::optional<std::uint16_t> OpticalFlow::getDeltaY() const
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the y delta");
     return std::nullopt;
   }
+  logger_.log(core::LogLevel::kDebug, "y_low: %d, y_high: %d", y_low[0], y_high[0]);
   return (static_cast<std::int16_t>(y_high[0]) << 8) | y_low[0];
 }
 
