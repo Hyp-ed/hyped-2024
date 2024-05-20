@@ -121,6 +121,11 @@ Repl::Repl(core::ILogger &logger, Terminal &terminal)
   addQuitCommand();
 }
 
+Repl::~Repl()
+{
+  terminal_.quit();
+}
+
 void Repl::run()
 {
   int i = 0;
