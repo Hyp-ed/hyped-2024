@@ -41,7 +41,7 @@ std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
     return std::nullopt;
   }
-  return static_cast<std::int16_t>((*x_high << 8) | *x_low);
+  return (static_cast<std::int16_t>(*x_high) << 8) | *x_low;
 }
 
 std::optional<std::uint8_t> OpticalFlow::getDeltaY() const
@@ -58,7 +58,7 @@ std::optional<std::uint8_t> OpticalFlow::getDeltaY() const
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the y delta");
     return std::nullopt;
   }
-  return static_cast<std::int16_t>((*y_high << 8) | *y_low);
+  return (static_cast<std::int16_t>(*y_high) << 8) | *y_low;
 }
 
 }  // namespace hyped::sensors
