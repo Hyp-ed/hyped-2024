@@ -18,8 +18,8 @@ class OpticalFlow {
                                                             const std::shared_ptr<io::ISpi> &spi);
 
   OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi);
-  std::optional<std::uint8_t> getDeltaX() const;
-  std::optional<std::uint8_t> getDeltaY() const;
+  std::optional<std::uint16_t> getDeltaX() const;
+  std::optional<std::uint16_t> getDeltaY() const;
 
  private:
   core::ILogger &logger_;

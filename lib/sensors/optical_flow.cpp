@@ -27,7 +27,7 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 {
 }
 
-std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
+std::optional<std::uint16_t> OpticalFlow::getDeltaX() const
 {
   std::uint8_t x_low[1] = {0};
   const auto low_result = spi_->read(kXLowAddress, x_low, 1);
@@ -41,10 +41,10 @@ std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
     return std::nullopt;
   }
-  return (static_cast<std::int16_t>(*x_high) << 8) | *x_low;
+  return static_cast<std::int16_t>(*x_high) << 8 | *x_low;
 }
 
-std::optional<std::uint8_t> OpticalFlow::getDeltaY() const
+std::optional<std::uint16_t> OpticalFlow::getDeltaY() const
 {
   std::uint8_t y_low[1] = {0};
   const auto low_result = spi_->read(kYLowAddress, y_low, 1);
