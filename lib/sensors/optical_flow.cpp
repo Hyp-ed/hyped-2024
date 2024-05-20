@@ -29,13 +29,13 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 
 std::optional<std::uint8_t> OpticalFlow::getDeltaX() const
 {
-  std::uint8_t x_low[1] = 0;
+  std::uint8_t x_low[1] = {0};
   const auto low_result = spi_->read(kXLowAddress, x_low, 1);
   if (low_result == core::Result::kFailure) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the x delta");
     return std::nullopt;
   }
-  std::uint8_t x_high[1] = 0;
+  std::uint8_t x_high[1] = {0};
   const auto high_result = spi_->read(kXHighAddress, x_high, 1);
   if (high_result == core::Result::kFailure) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
