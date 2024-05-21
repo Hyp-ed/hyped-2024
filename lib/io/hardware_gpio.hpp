@@ -11,7 +11,7 @@
 
 namespace hyped::io {
 
-constexpr std::string kGpioChipName = "gpiochip0";
+constexpr std::string kGpioChipName = "/dev/gpiochip0";
 
 class HardwareGpioReader : public IGpioReader {
  public:
