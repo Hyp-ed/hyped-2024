@@ -3,7 +3,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies
 RUN apt-get update && \
-    apt-get install -y git clang clang-format clang-tidy libboost-all-dev libeigen3-dev rapidjson-dev build-essential gcc make cmake libssl-dev libncurses5-dev libncursesw5-dev sudo 
+    apt-get install -y git clang clang-format clang-tidy libboost-all-dev libeigen3-dev rapidjson-dev build-essential gcc make cmake libssl-dev libncurses5-dev libncursesw5-dev sudo libgpiod
 
 # Install Paho C++
 WORKDIR /home
