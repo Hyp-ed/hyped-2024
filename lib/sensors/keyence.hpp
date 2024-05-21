@@ -2,7 +2,6 @@
 
 #include <cstdint>
 #include <memory>
-#include <optional>
 
 #include "io/hardware_gpio.hpp"
 #include <core/logger.hpp>
@@ -11,10 +10,6 @@
 namespace hyped::sensors {
 class Keyence {
  public:
-  static std::optional<std::shared_ptr<Keyence>> create(core::ILogger &logger,
-                                                        std::shared_ptr<io::HardwareGpio> gpio,
-                                                        const std::uint8_t pin);
-
   Keyence(core::ILogger &logger, std::shared_ptr<io::HardwareGpio> gpio, const std::uint8_t pin);
 
   std::uint8_t getStripeCount() const;

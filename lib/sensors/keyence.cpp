@@ -4,14 +4,6 @@
 
 namespace hyped::sensors {
 
-std::optional<std::shared_ptr<Keyence>> Keyence::create(core::ILogger &logger,
-                                                        std::shared_ptr<io::HardwareGpio> gpio,
-                                                        const std::uint8_t pin)
-{
-  logger.log(core::LogLevel::kDebug, "Successfully created Keyence instance");
-  return std::make_shared<Keyence>(logger, gpio, pin);
-}
-
 Keyence::Keyence(core::ILogger &logger,
                  std::shared_ptr<io::HardwareGpio> gpio,
                  const std::uint8_t pin)
