@@ -64,7 +64,7 @@ class Repl {
    *
    * @return std::shared_ptr<io::HardwareGpio> containing the Gpio object
    */
-  std::optional<std::shared_ptr<io::HardwareGpio>> getGpio() { return gpio_; };
+  std::shared_ptr<io::HardwareGpio> getGpio() { return gpio_; };
 
   /**
    * @brief Get the I2c object associated with the given bus or create a new one if it doesn't
