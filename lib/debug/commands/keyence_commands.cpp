@@ -20,14 +20,8 @@ core::Result KeyenceCommands::addCommands(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Invalid pin");
     return core::Result::kFailure;
   }
-  const auto pin                = *optional_pin;
-  const auto optional_gpio_chip = config["gpio_chip"].value<std::string>();
-  if (!optional_gpio_chip) {
-    logger.log(core::LogLevel::kFatal, "Invalid gpio chip");
-    return core::Result::kFailure;
-  }
-  const auto &gpio_chip = *optional_gpio_chip;
-  auto optional_gpio    = repl->getGpio(gpio_chip);
+  const auto pin     = *optional_pin;
+  auto optional_gpio = repl->getGpio();
   if (!optional_gpio) {
     logger.log(core::LogLevel::kFatal, "Failed to get gpio");
     return core::Result::kFailure;
