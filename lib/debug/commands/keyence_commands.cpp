@@ -46,7 +46,11 @@ core::Result KeyenceCommands::addCommands(core::ILogger &logger,
     const std::uint32_t interval = std::stof(args[1]);
     const auto start_time        = time.now();
     while (time.now() - start_time < std::chrono::seconds(run_time)) {
-      keyence->updateStripeCount();
+      const auto result = keyence->updateStripeCount();
+      if (result != core::Result::kSuccess) {
+        logger.log(core::LogLevel::kFatal, "Failed to update stripe count");
+        return;
+      }
       const auto stripe_count = keyence->getStripeCount();
       logger.log(core::LogLevel::kInfo, "Stripe count: %d", stripe_count);
       std::this_thread::sleep_for(std::chrono::seconds(interval));
