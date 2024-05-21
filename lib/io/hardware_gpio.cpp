@@ -47,7 +47,8 @@ std::optional<core::DigitalSignal> HardwareGpio::read(const std::uint8_t pin)
     gpiod::line_request request
       = chip_.prepare_request()
           .set_consumer("hyped")
-          .add_line_settings(0, gpiod::line_settings().set_direction(gpiod::line::direction::INPUT))
+          .add_line_settings(pin,
+                             gpiod::line_settings().set_direction(gpiod::line::direction::INPUT))
           .do_request();
     gpiod::line::value read_result = request.get_value(pin);
     if (read_result == gpiod::line::value::ACTIVE) {
@@ -69,7 +70,7 @@ core::Result HardwareGpio::write(const std::uint8_t pin, const core::DigitalSign
     auto request = chip_.prepare_request()
                      .set_consumer("hyped")
                      .add_line_settings(
-                       2, gpiod::line_settings().set_direction(gpiod::line::direction::OUTPUT))
+                       pin, gpiod::line_settings().set_direction(gpiod::line::direction::OUTPUT))
                      .do_request();
     if (state == core::DigitalSignal::kLow) {
       logger_.log(core::LogLevel::kDebug, "Writing low to GPIO %d", pin);
