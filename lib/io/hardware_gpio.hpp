@@ -53,9 +53,9 @@ class HardwareGpio {
  public:
   explicit HardwareGpio(core::ILogger &log);
 
-  core::DigitalSignal read(const std::uint8_t pin);
+  std::optional<core::DigitalSignal> read(const std::uint8_t pin);
 
-  void write(const std::uint8_t pin, const core::DigitalSignal state);
+  core::Result write(const std::uint8_t pin, const core::DigitalSignal state);
 
  private:
   core::ILogger &logger_;

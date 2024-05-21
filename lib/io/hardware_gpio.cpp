@@ -41,39 +41,47 @@ HardwareGpio::HardwareGpio(core::ILogger &log) : logger_(log), chip_(kGpioChipNa
 {
 }
 
-core::DigitalSignal HardwareGpio::read(const std::uint8_t pin)
+std::optional<core::DigitalSignal> HardwareGpio::read(const std::uint8_t pin)
 {
-  auto request
-    = chip_.prepare_request()
-        .set_consumer("hyped")
-        .add_line_settings(2, gpiod::line_settings().set_direction(gpiod::line::direction::INPUT))
-        .do_request();
-  gpiod::line::value read_result = request.get_value(pin);
-  if (read_result == gpiod::line::value::INACTIVE) {
+  try {
+    auto request
+      = chip_.prepare_request()
+          .set_consumer("hyped")
+          .add_line_settings(2, gpiod::line_settings().set_direction(gpiod::line::direction::INPUT))
+          .do_request();
+    gpiod::line::value read_result = request.get_value(pin);
+    if (read_result == gpiod::line::value::ACTIVE) {
+      logger_.log(core::LogLevel::kDebug, "Read high from GPIO %d", pin);
+      return core::DigitalSignal::kHigh;
+    }
     logger_.log(core::LogLevel::kDebug, "Read low from GPIO %d", pin);
     return core::DigitalSignal::kLow;
+  } catch (const std::exception &e) {
+    logger_.log(core::LogLevel::kFatal, "Error reading from GPIO %d: %s", pin, e.what());
+    return std::nullopt;
   }
-  if (read_result == gpiod::line::value::ACTIVE) {
-    logger_.log(core::LogLevel::kDebug, "Read high from GPIO %d", pin);
-    return core::DigitalSignal::kHigh;
-  }
-  return core::DigitalSignal::kLow;
 }
 
-void HardwareGpio::write(const std::uint8_t pin, const core::DigitalSignal state)
+core::Result HardwareGpio::write(const std::uint8_t pin, const core::DigitalSignal state)
 {
-  auto request
-    = chip_.prepare_request()
-        .set_consumer("hyped")
-        .add_line_settings(2, gpiod::line_settings().set_direction(gpiod::line::direction::OUTPUT))
-        .do_request();
-  if (state == core::DigitalSignal::kLow) {
-    logger_.log(core::LogLevel::kDebug, "Writing low to GPIO %d", pin);
-    request.set_value(pin, gpiod::line::value::INACTIVE);
-  }
-  if (state == core::DigitalSignal::kHigh) {
-    logger_.log(core::LogLevel::kDebug, "Writing high to GPIO %d", pin);
-    request.set_value(pin, gpiod::line::value::ACTIVE);
+  try {
+    auto request = chip_.prepare_request()
+                     .set_consumer("hyped")
+                     .add_line_settings(
+                       2, gpiod::line_settings().set_direction(gpiod::line::direction::OUTPUT))
+                     .do_request();
+    if (state == core::DigitalSignal::kLow) {
+      logger_.log(core::LogLevel::kDebug, "Writing low to GPIO %d", pin);
+      request.set_value(pin, gpiod::line::value::INACTIVE);
+    }
+    if (state == core::DigitalSignal::kHigh) {
+      logger_.log(core::LogLevel::kDebug, "Writing high to GPIO %d", pin);
+      request.set_value(pin, gpiod::line::value::ACTIVE);
+    }
+    return core::Result::kSuccess;
+  } catch (const std::exception &e) {
+    logger_.log(core::LogLevel::kFatal, "Error writing to GPIO %d: %s", pin, e.what());
+    return core::Result::kFailure;
   }
 }
 

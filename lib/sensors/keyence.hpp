@@ -18,8 +18,7 @@ class Keyence {
   Keyence(core::ILogger &logger, std::shared_ptr<io::HardwareGpio> gpio, const std::uint8_t pin);
 
   std::uint8_t getStripeCount() const;
-
-  void updateStripeCount();
+  core::Result updateStripeCount();
 
  private:
   std::uint8_t stripe_count_;
