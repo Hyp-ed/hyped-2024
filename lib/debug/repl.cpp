@@ -107,7 +107,8 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
 Repl::Repl(core::ILogger &logger, Terminal &terminal, core::ITimeSource &time)
     : logger_(logger),
       terminal_(terminal),
-      time_(time)
+      time_(time),
+      gpio_(std::make_shared<io::HardwareGpio>(logger))
 {
   addHelpCommand();
   addQuitCommand();
@@ -272,17 +273,6 @@ std::optional<std::shared_ptr<io::ICan>> Repl::getCan(const std::string &bus)
     return *new_can;
   }
   return can->second;
-}
-
-std::optional<std::shared_ptr<io::HardwareGpio>> Repl::getGpio(const std::string &chip_name)
-{
-  const auto gpio = gpio_.find(chip_name);
-  if (gpio == gpio_.end()) {
-    auto new_gpio = std::make_shared<io::HardwareGpio>(logger_, chip_name);
-    gpio_.emplace(chip_name, new_gpio);
-    return new_gpio;
-  }
-  return gpio->second;
 }
 
 std::optional<std::shared_ptr<io::II2c>> Repl::getI2c(const std::uint8_t bus)

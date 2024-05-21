@@ -37,9 +37,7 @@ core::Result HardwareGpioWriter::write(const core::DigitalSignal state)
   return core::Result::kFailure;
 }
 
-HardwareGpio::HardwareGpio(core::ILogger &log, const std::string &chip_name)
-    : logger_(log),
-      chip_(chip_name)
+HardwareGpio::HardwareGpio(core::ILogger &log) : logger_(log), chip_(kGpioChipName)
 {
 }
 

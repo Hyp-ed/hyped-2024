@@ -11,6 +11,8 @@
 
 namespace hyped::io {
 
+constexpr std::string kGpioChipName = "gpiochip0";
+
 class HardwareGpioReader : public IGpioReader {
  public:
   HardwareGpioReader(core::ILogger &logger, gpiod::chip &chip, const std::uint8_t pin);
@@ -49,9 +51,7 @@ class HardwareGpioWriter : public IGpioWriter {
  */
 class HardwareGpio {
  public:
-  std::optional<std::shared_ptr<IGpio>> create(const std::string &chip_name);
-
-  HardwareGpio(core::ILogger &log, const std::string &chip_name);
+  explicit HardwareGpio(core::ILogger &log);
 
   core::DigitalSignal read(const std::uint8_t pin);
 
