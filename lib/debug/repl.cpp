@@ -81,7 +81,8 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     }
   }
   if (config["sensors"]["keyence"]["enabled"].value_or(false)) {
-    const auto result = KeyenceCommands::addCommands(logger, repl, time, config);
+    const auto result
+      = KeyenceCommands::addCommands(logger, repl, time, config["sensors"]["keyence"]);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding keyence commands");
       return std::nullopt;
