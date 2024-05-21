@@ -30,7 +30,7 @@ include_directories(${CURSES_INCLUDE_DIR})
 find_package(Boost REQUIRED)
 find_package(PahoMqttCpp REQUIRED)
 include_directories(${PahoMqttCpp_INCLUDE_DIRS})
-find_library(GPIOD_LIBRARY REQUIRED)
+find_library(GPIOD_LIBRARY REQUIRED NAMES libgpiodcxx.so)
 include(FetchContent)
 FetchContent_Declare(
   rapidjson GIT_REPOSITORY https://github.com/Tencent/rapidjson.git
