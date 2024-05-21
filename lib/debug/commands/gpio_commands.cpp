@@ -15,9 +15,15 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
       }
-      auto gpio        = repl->getGpio();
-      const auto pin   = std::stoi(args[0]);
-      const auto value = gpio->read(pin);
+      auto gpio                 = repl->getGpio();
+      const auto pin            = std::stoi(args[0]);
+      auto optional_gpio_reader = gpio->getReader(pin, io::Edge::kRising);
+      if (!optional_gpio_reader) {
+        logger.log(core::LogLevel::kFatal, "Failed to create GPIO reader for pin %d", pin);
+        return;
+      }
+      const auto gpio_reader = *optional_gpio_reader;
+      const auto value       = gpio_reader->read();
       if (!value) {
         logger.log(core::LogLevel::kFatal, "Failed to read from GPIO pin %d", pin);
         return;
@@ -42,8 +48,14 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
         return;
       }
-      const auto gpio  = repl->getGpio();
-      const auto pin   = std::stoi(args[0]);
+      const auto gpio           = repl->getGpio();
+      const auto pin            = std::stoi(args[0]);
+      auto optional_gpio_writer = gpio->getWriter(pin, io::Edge::kRising);
+      if (!optional_gpio_writer) {
+        logger.log(core::LogLevel::kFatal, "Failed to create GPIO writer for pin %d", pin);
+        return;
+      }
+      auto gpio_writer = *optional_gpio_writer;
       const auto value = std::stoi(args[1]);
       core::DigitalSignal signal;
       switch (value) {
@@ -57,7 +69,7 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
           logger.log(core::LogLevel::kFatal, "Invalid GPIO value: %d, must be 0 or 1", value);
           return;
       }
-      const auto result = gpio->write(pin, signal);
+      const auto result = gpio_writer->write(signal);
       if (result == core::Result::kFailure) {
         logger.log(core::LogLevel::kFatal, "Failed to write to GPIO pin %d", pin);
         return;

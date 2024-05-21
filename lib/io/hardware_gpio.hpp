@@ -15,7 +15,8 @@ constexpr std::string kGpioChipName = "/dev/gpiochip0";
 
 class HardwareGpioReader : public IGpioReader {
  public:
-  HardwareGpioReader(core::ILogger &logger, gpiod::chip &chip, const std::uint8_t pin);
+  HardwareGpioReader(core::ILogger &logger, gpiod::line_request &request, const std::uint8_t pin);
+  ~HardwareGpioReader();
 
   /**
    * @brief Read a high or low from the GPIO pin.
@@ -24,13 +25,14 @@ class HardwareGpioReader : public IGpioReader {
 
  private:
   core::ILogger &logger_;
-  gpiod::chip &chip_;
+  gpiod::line_request &request_;
   const std::uint8_t pin_;
 };
 
 class HardwareGpioWriter : public IGpioWriter {
  public:
-  HardwareGpioWriter(core::ILogger &logger, gpiod::chip &chip, const std::uint8_t pin);
+  HardwareGpioWriter(core::ILogger &logger, gpiod::line_request &request, const std::uint8_t pin);
+  ~HardwareGpioWriter();
 
   /**
    * @brief Writes a high or low to the GPIO pin.
@@ -40,22 +42,23 @@ class HardwareGpioWriter : public IGpioWriter {
 
  private:
   core::ILogger &logger_;
-  gpiod::chip &chip_;
+  gpiod::line_request &request_;
   const std::uint8_t pin_;
 };
 
 /**
  * Hardware GPIO interface, requires physical GPIO pins to be present. This should only
  * be instantiated at the top level and then provided to users through the IGpio interface.
- * Ensure inputted pins are defined as pin = 32*X + Y (GPIOX_Y)
  */
-class HardwareGpio {
+class HardwareGpio : public IGpio {
  public:
   explicit HardwareGpio(core::ILogger &log);
 
-  std::optional<core::DigitalSignal> read(const std::uint8_t pin);
+  std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin,
+                                                        const Edge edge) override;
 
-  core::Result write(const std::uint8_t pin, const core::DigitalSignal state);
+  std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin,
+                                                        const Edge edge) override;
 
  private:
   core::ILogger &logger_;

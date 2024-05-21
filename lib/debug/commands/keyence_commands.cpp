@@ -20,9 +20,14 @@ core::Result KeyenceCommands::addCommands(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Invalid pin");
     return core::Result::kFailure;
   }
-  const auto pin                          = *optional_pin;
-  auto gpio                               = repl->getGpio();
-  auto keyence                            = std::make_shared<sensors::Keyence>(logger, gpio, pin);
+  const auto pin        = *optional_pin;
+  auto gpio             = repl->getGpio();
+  auto optional_keyence = sensors::Keyence::create(logger, gpio, pin);
+  if (!optional_keyence) {
+    logger.log(core::LogLevel::kFatal, "Failed to create keyence sensor");
+    return core::Result::kFailure;
+  }
+  auto keyence                            = *optional_keyence;
   const auto *const keyence_command_name  = "keyence read";
   const auto *const keyence_command_usage = "keyence read <time> <interval>";
   const auto *const keyence_command_description
