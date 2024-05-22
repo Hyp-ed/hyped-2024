@@ -72,12 +72,22 @@ HardwareGpio::HardwareGpio(core::ILogger &log) : logger_(log), chip_(kGpioChipNa
 std::optional<std::shared_ptr<IGpioReader>> HardwareGpio::getReader(const std::uint8_t pin,
                                                                     const Edge edge)
 {
+  if (!used_pins_.insert(pin).second) {
+    logger_.log(
+      core::LogLevel::kFatal, "Cannot create a gpio reader for pin %d: already in use", pin);
+    return std::nullopt;
+  }
   return std::make_shared<HardwareGpioReader>(logger_, chip_, pin);
 }
 
 std::optional<std::shared_ptr<IGpioWriter>> HardwareGpio::getWriter(const std::uint8_t pin,
                                                                     const Edge edge)
 {
+  if (!used_pins_.insert(pin).second) {
+    logger_.log(
+      core::LogLevel::kFatal, "Cannot create a gpio writer for pin %d: already in use", pin);
+    return std::nullopt;
+  }
   return std::make_shared<HardwareGpioWriter>(logger_, chip_, pin);
 }
 

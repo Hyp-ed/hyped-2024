@@ -5,6 +5,7 @@
 #include <cstdint>
 #include <optional>
 #include <string>
+#include <unordered_set>
 
 #include <core/types.hpp>
 #include <gpiod.hpp>
@@ -65,6 +66,7 @@ class HardwareGpio : public IGpio {
  private:
   core::ILogger &logger_;
   gpiod::chip chip_;
+  std::unordered_set<std::uint8_t> used_pins_;
 };
 
 }  // namespace hyped::io
