@@ -17,7 +17,7 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
       }
       auto gpio                 = repl->getGpio();
       const auto pin            = std::stoi(args[0]);
-      auto optional_gpio_reader = gpio->getReader(pin, io::Edge::kRising);
+      auto optional_gpio_reader = gpio->getReader(pin);
       if (!optional_gpio_reader) {
         logger.log(core::LogLevel::kFatal, "Failed to create GPIO reader for pin %d", pin);
         return;
@@ -50,7 +50,7 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
       }
       const auto gpio           = repl->getGpio();
       const auto pin            = std::stoi(args[0]);
-      auto optional_gpio_writer = gpio->getWriter(pin, io::Edge::kRising);
+      auto optional_gpio_writer = gpio->getWriter(pin);
       if (!optional_gpio_writer) {
         logger.log(core::LogLevel::kFatal, "Failed to create GPIO writer for pin %d", pin);
         return;

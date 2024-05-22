@@ -53,11 +53,9 @@ class HardwareGpio : public IGpio {
  public:
   explicit HardwareGpio(core::ILogger &log);
 
-  std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin,
-                                                        const Edge edge) override;
+  std::optional<std::shared_ptr<IGpioReader>> getReader(const std::uint8_t pin) override;
 
-  std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin,
-                                                        const Edge edge) override;
+  std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin) override;
 
   std::optional<core::DigitalSignal> read(const std::uint8_t pin);
 

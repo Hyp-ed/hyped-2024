@@ -7,7 +7,7 @@ namespace hyped::sensors {
 std::optional<std::shared_ptr<sensors::Keyence>> Keyence::create(
   core::ILogger &logger, const std::shared_ptr<io::IGpio> &gpio, const std::uint8_t pin)
 {
-  auto reader = gpio->getReader(pin, io::Edge::kRising);
+  auto reader = gpio->getReader(pin);
   if (!reader) {
     logger.log(core::LogLevel::kFatal, "Failed to create GPIO reader for pin %d", pin);
     return std::nullopt;

@@ -69,8 +69,7 @@ HardwareGpio::HardwareGpio(core::ILogger &log) : logger_(log), chip_(kGpioChipNa
 {
 }
 
-std::optional<std::shared_ptr<IGpioReader>> HardwareGpio::getReader(const std::uint8_t pin,
-                                                                    const Edge edge)
+std::optional<std::shared_ptr<IGpioReader>> HardwareGpio::getReader(const std::uint8_t pin)
 {
   if (!used_pins_.insert(pin).second) {
     logger_.log(
@@ -80,8 +79,7 @@ std::optional<std::shared_ptr<IGpioReader>> HardwareGpio::getReader(const std::u
   return std::make_shared<HardwareGpioReader>(logger_, chip_, pin);
 }
 
-std::optional<std::shared_ptr<IGpioWriter>> HardwareGpio::getWriter(const std::uint8_t pin,
-                                                                    const Edge edge)
+std::optional<std::shared_ptr<IGpioWriter>> HardwareGpio::getWriter(const std::uint8_t pin)
 {
   if (!used_pins_.insert(pin).second) {
     logger_.log(
