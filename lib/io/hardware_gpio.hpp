@@ -15,8 +15,7 @@ constexpr std::string kGpioChipName = "/dev/gpiochip0";
 
 class HardwareGpioReader : public IGpioReader {
  public:
-  HardwareGpioReader(core::ILogger &logger, gpiod::line_request &request, const std::uint8_t pin);
-  ~HardwareGpioReader();
+  HardwareGpioReader(core::ILogger &logger, gpiod::chip &chip, const std::uint8_t pin);
 
   /**
    * @brief Read a high or low from the GPIO pin.
@@ -25,14 +24,13 @@ class HardwareGpioReader : public IGpioReader {
 
  private:
   core::ILogger &logger_;
-  gpiod::line_request &request_;
+  gpiod::chip &chip_;
   const std::uint8_t pin_;
 };
 
 class HardwareGpioWriter : public IGpioWriter {
  public:
-  HardwareGpioWriter(core::ILogger &logger, gpiod::line_request &request, const std::uint8_t pin);
-  ~HardwareGpioWriter();
+  HardwareGpioWriter(core::ILogger &logger, gpiod::chip &chip, const std::uint8_t pin);
 
   /**
    * @brief Writes a high or low to the GPIO pin.
@@ -42,7 +40,7 @@ class HardwareGpioWriter : public IGpioWriter {
 
  private:
   core::ILogger &logger_;
-  gpiod::line_request &request_;
+  gpiod::chip &chip_;
   const std::uint8_t pin_;
 };
 
@@ -59,6 +57,10 @@ class HardwareGpio : public IGpio {
 
   std::optional<std::shared_ptr<IGpioWriter>> getWriter(const std::uint8_t pin,
                                                         const Edge edge) override;
+
+  std::optional<core::DigitalSignal> read(const std::uint8_t pin);
+
+  core::Result write(const std::uint8_t pin, const core::DigitalSignal state);
 
  private:
   core::ILogger &logger_;
