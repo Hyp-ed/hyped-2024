@@ -23,10 +23,8 @@ std::optional<core::DigitalSignal> HardwareGpioReader::read()
   try {
     auto request = chip_.prepare_request()
                      .set_consumer("hyped")
-                     .add_line_settings(pin_,
-                                        gpiod::line_settings()
-                                          .set_direction(gpiod::line::direction::OUTPUT)
-                                          .set_bias(gpiod::line::bias::PULL_UP))
+                     .add_line_settings(
+                       pin_, gpiod::line_settings().set_direction(gpiod::line::direction::INPUT))
                      .do_request();
     gpiod::line::value read_result = request.get_value(pin_);
     if (read_result == gpiod::line::value::ACTIVE) {
