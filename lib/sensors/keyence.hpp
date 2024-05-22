@@ -12,9 +12,7 @@ class Keyence {
   static std::optional<std::shared_ptr<sensors::Keyence>> create(
     core::ILogger &logger, const std::shared_ptr<io::IGpio> &gpio, const std::uint8_t pin);
 
-  Keyence(core::ILogger &logger,
-          std::shared_ptr<io::IGpioReader> gpio_reader,
-          const std::uint8_t pin);
+  Keyence(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader);
 
   std::uint8_t getStripeCount() const;
   core::Result updateStripeCount();
@@ -24,7 +22,6 @@ class Keyence {
   std::shared_ptr<io::IGpioReader> gpio_reader_;
   core::ILogger &logger_;
   core::DigitalSignal last_signal_;
-  const std::uint8_t pin_;
 };
 
 }  // namespace hyped::sensors

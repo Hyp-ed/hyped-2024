@@ -15,14 +15,11 @@ std::optional<std::shared_ptr<sensors::Keyence>> Keyence::create(
   return std::make_shared<Keyence>(logger, *reader, pin);
 }
 
-Keyence::Keyence(core::ILogger &logger,
-                 std::shared_ptr<io::IGpioReader> gpio_reader,
-                 const std::uint8_t pin)
+Keyence::Keyence(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
     : gpio_reader_(std::move(gpio_reader)),
       logger_(logger),
       stripe_count_(0),
-      last_signal_(core::DigitalSignal::kLow),
-      pin_(pin)
+      last_signal_(core::DigitalSignal::kLow)
 {
 }
 
@@ -35,7 +32,7 @@ core::Result Keyence::updateStripeCount()
 {
   const auto optional_signal = gpio_reader_->read();
   if (!optional_signal) {
-    logger_.log(core::LogLevel::kFatal, "Failed to read from GPIO %d", pin_);
+    logger_.log(core::LogLevel::kFatal, "Failed to read GPIO");
     return core::Result::kFailure;
   }
   const auto signal = *optional_signal;
