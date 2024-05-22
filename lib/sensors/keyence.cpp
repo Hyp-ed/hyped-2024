@@ -12,7 +12,7 @@ std::optional<std::shared_ptr<sensors::Keyence>> Keyence::create(
     logger.log(core::LogLevel::kFatal, "Failed to create GPIO reader for pin %d", pin);
     return std::nullopt;
   }
-  return std::make_shared<Keyence>(logger, *reader, pin);
+  return std::make_shared<Keyence>(logger, *reader);
 }
 
 Keyence::Keyence(core::ILogger &logger, std::shared_ptr<io::IGpioReader> gpio_reader)
