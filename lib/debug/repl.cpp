@@ -146,7 +146,7 @@ void Repl::run()
         input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
-      if (input.empty()) { input.pop_back(); }
+      if (!input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
       const auto result = findMatch(input);
       if (result == std::nullopt) { continue; }
