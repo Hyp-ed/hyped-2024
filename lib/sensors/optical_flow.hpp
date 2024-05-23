@@ -45,10 +45,11 @@ class OpticalFlow {
   static constexpr std::uint8_t kYLowAddress  = 0x05;
   static constexpr std::uint8_t kYHighAddress = 0x06;
 
-  static constexpr std::uint8_t kDeviceIdAddress        = 0x00;
-  static constexpr std::uint8_t kExpectedDeviceIdValue  = 0x49;
-  static constexpr std::uint8_t kRegPowerUpResetAddress = 0x3A;
-  static constexpr std::uint8_t kRegPowerUpResetValue   = 0x5A;
+  static constexpr std::uint8_t kDeviceIdAddress       = 0x00;
+  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;
+  static constexpr std::uint8_t kPowerUpResetAddress   = 0x3A;
+  static constexpr std::uint8_t kPowerUpResetValue     = 0x5A;
+  static constexpr std::uint8_t kOrientationAddress    = 0x5B;
 
   static constexpr std::uint8_t kInvertX = 0b00100000;
   static constexpr std::uint8_t kInvertY = 0b01000000;

@@ -20,9 +20,21 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for optical flow sensor");
     return std::nullopt;
   }
-  spi->write(kRegPowerUpResetAddress, {kRegPowerUpResetValue});
-  setRotation(logger, spi, rotation);
-  doMagic(logger, spi);
+  const auto power_up_result = spi->write(kPowerUpResetAddress, {kPowerUpResetValue});
+  if (power_up_result != core::Result::kSuccess) {
+    logger.log(core::LogLevel::kFatal, "Failed to power up reset the optical flow sensor");
+    return std::nullopt;
+  }
+  const auto rotation_result = setRotation(logger, spi, rotation);
+  if (rotation_result != core::Result::kSuccess) {
+    logger.log(core::LogLevel::kFatal, "Failed to set the rotation of the optical flow sensor");
+    return std::nullopt;
+  }
+  const auto magic_result = doMagic(logger, spi);
+  if (magic_result != core::Result::kSuccess) {
+    logger.log(core::LogLevel::kFatal, "Failed to send magic numbers to the optical flow sensor");
+    return std::nullopt;
+  }
   return std::make_shared<OpticalFlow>(logger, spi);
 }
 
@@ -100,7 +112,7 @@ core::Result OpticalFlow::setRotation(core::ILogger &logger,
       break;
   }
   const std::vector<std::uint8_t> tx = {orientation};
-  return spi->write(kRegOrientation, tx);
+  return spi->write(kOrientationAddress, tx);
 }
 
 }  // namespace hyped::sensors

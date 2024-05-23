@@ -49,7 +49,7 @@ core::Result OpticalFlowCommands::addCommands(core::ILogger &logger,
     return core::Result::kFailure;
   };
   const auto spi             = std::move(*optional_spi);
-  auto optional_optical_flow = sensors::OpticalFlow::create(logger, spi);
+  auto optional_optical_flow = sensors::OpticalFlow::create(logger, spi, sensors::Rotation::kNone);
   if (!optional_optical_flow) {
     logger.log(core::LogLevel::kFatal, "Error creating optical flow sensor");
     return core::Result::kFailure;
