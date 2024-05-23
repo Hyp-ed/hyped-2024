@@ -174,12 +174,13 @@ void Navigator::run()
       data = {0.0f, 0.0f};
     }
 
-    std::array<core::RawAccelerationData, core::kNumAccelerometers> dummy_accelerometer_data;
-    for (auto &data : dummy_accelerometer_data) {
-      data = core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false);
-    }
-    
-    if (keyenceUpdate(dummy_keyence_data) == core::Result::kFailure
+    std::array<core::RawAccelerationData, core::kNumAccelerometers> dummy_accelerometer_data
+      = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+         core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+         core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+         core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
+
+        if (keyenceUpdate(dummy_keyence_data) == core::Result::kFailure
         || opticalUpdate(dummy_optical_data) == core::Result::kFailure
         || accelerometerUpdate(dummy_accelerometer_data) == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");

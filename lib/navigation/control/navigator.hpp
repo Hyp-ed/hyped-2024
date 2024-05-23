@@ -6,8 +6,8 @@
 #include <optional>
 
 #include <core/logger.hpp>
-#include <core/types.hpp>
 #include <core/mqtt.hpp>
+#include <core/types.hpp>
 #include <navigation/filtering/kalman_filter.hpp>
 #include <navigation/filtering/kalman_matrices.hpp>
 #include <navigation/preprocessing/preprocess_accelerometer.hpp>
@@ -18,7 +18,9 @@ namespace hyped::navigation {
 
 class Navigator : public INavigator {
  public:
-  Navigator(core::ILogger &logger, const core::ITimeSource &time,  std::shared_ptr<hyped::core::IMqtt> mqtt);
+  Navigator(core::ILogger &logger,
+            const core::ITimeSource &time,
+            std::shared_ptr<hyped::core::IMqtt> mqtt);
   void run();
   /**
    *@brief runs cross checking and returns trajectory
