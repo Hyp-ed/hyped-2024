@@ -44,21 +44,36 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 {
 }
 
+static constexpr std::uint8_t kMotionBurst = 0x16;
+
 std::optional<std::uint16_t> OpticalFlow::getDeltaX() const
 {
-  auto optional_x_low = spi_->read(kXLowAddress, 1);
-  if (!optional_x_low) {
-    logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the x delta");
+  auto data = spi_->read(kMotionBurst, 5);
+  if (!data) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read motion burst data");
     return std::nullopt;
   }
-  const auto x_low     = *optional_x_low;
-  auto optional_x_high = spi_->read(kXHighAddress, 1);
-  if (!optional_x_high) {
-    logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
-    return std::nullopt;
-  }
-  const auto x_high = *optional_x_high;
-  return static_cast<std::int16_t>(x_high[0]) << 8 | x_low[0];
+  logger_.log(core::LogLevel::kDebug,
+              "Motion burst data: %d %d %d %d %d",
+              (*data)[0],
+              (*data)[1],
+              (*data)[2],
+              (*data)[3],
+              (*data)[4]);
+  return std::nullopt;
+  //  auto optional_x_low = spi_->read(kXLowAddress, 1);
+  //  if (!optional_x_low) {
+  //    logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the x delta");
+  //    return std::nullopt;
+  //  }
+  //  const auto x_low     = *optional_x_low;
+  //  auto optional_x_high = spi_->read(kXHighAddress, 1);
+  //  if (!optional_x_high) {
+  //    logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
+  //    return std::nullopt;
+  //  }
+  //  const auto x_high = *optional_x_high;
+  //  return static_cast<std::int16_t>(x_high[0]) << 8 | x_low[0];
 }
 
 std::optional<std::uint16_t> OpticalFlow::getDeltaY() const
