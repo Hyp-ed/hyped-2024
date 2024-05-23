@@ -59,19 +59,13 @@ core::Result OpticalFlowCommands::addCommands(core::ILogger &logger,
   const auto *const read_optical_flow_usage       = "optical flow read";
   const auto *const read_optical_flow_description = "Read the optical flow sensor";
   const auto read_optical_flow_handler = [&logger, optical_flow](const std::vector<std::string> &) {
-    const auto optional_delta_x = optical_flow->getDeltaX();
-    if (!optional_delta_x) {
-      logger.log(core::LogLevel::kFatal, "Error reading delta x");
+    auto optional_delta = optical_flow->read();
+    if (!optional_delta) {
+      logger.log(core::LogLevel::kFatal, "Error reading optical flow sensor");
       return;
     }
-    const auto delta_x          = *optional_delta_x;
-    const auto optional_delta_y = optical_flow->getDeltaY();
-    if (!optional_delta_y) {
-      logger.log(core::LogLevel::kFatal, "Error reading delta y");
-      return;
-    }
-    const auto delta_y = *optional_delta_y;
-    logger.log(core::LogLevel::kInfo, "Delta x: %d, Delta y: %d", delta_x, delta_y);
+    const auto delta = optional_delta;
+    logger.log(core::LogLevel::kInfo, "Delta: %d", delta);
   };
   auto read_optical_flow_command = std::make_unique<Command>(read_optical_flow_name,
                                                              read_optical_flow_description,

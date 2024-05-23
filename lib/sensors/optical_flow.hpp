@@ -14,12 +14,14 @@ namespace hyped::sensors {
 enum class Rotation { kNone, kClockwise90, kClockwise180, kClockwise270 };
 
 class OpticalFlow {
+  // This is all derived from https://github.com/pimoroni/pmw3901-python/ as the datasheet is no use
  public:
   static std::optional<std::shared_ptr<OpticalFlow>> create(core::ILogger &logger,
                                                             const std::shared_ptr<io::ISpi> &spi,
                                                             Rotation rotation);
 
   OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi);
+  std::optional<std::uint16_t> read();
   std::optional<std::uint16_t> getDeltaX() const;
   std::optional<std::uint16_t> getDeltaY() const;
 
@@ -50,6 +52,7 @@ class OpticalFlow {
   static constexpr std::uint8_t kPowerUpResetAddress   = 0x3A;
   static constexpr std::uint8_t kPowerUpResetValue     = 0x5A;
   static constexpr std::uint8_t kOrientationAddress    = 0x5B;
+  static constexpr std::uint8_t kMotionBurst           = 0x02;
 
   static constexpr std::uint8_t kInvertX = 0b00100000;
   static constexpr std::uint8_t kInvertY = 0b01000000;
