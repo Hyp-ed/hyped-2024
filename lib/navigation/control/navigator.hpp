@@ -20,7 +20,7 @@ class Navigator : public INavigator {
  public:
   Navigator(core::ILogger &logger,
             const core::ITimeSource &time,
-            std::shared_ptr<hyped::core::IMqtt> mqtt);
+            std::shared_ptr<core::IMqtt> mqtt);
   void run();
   /**
    *@brief runs cross checking and returns trajectory
@@ -56,7 +56,7 @@ class Navigator : public INavigator {
   core::ILogger &logger_;
   const core::ITimeSource &time_;
 
-  std::shared_ptr<hyped::core::IMqtt> mqtt_;
+  std::shared_ptr<core::IMqtt> mqtt_;
 
   KalmanFilter kalman_filter_;
 
