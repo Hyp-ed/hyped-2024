@@ -139,10 +139,7 @@ void Navigator::publishCurrentTrajectory()
   message_payload->SetObject();
 
   auto trajectory = currentTrajectory();
-  if (!trajectory) {
-    logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory");
-    // TODO: DO SOMETHING, MAYBE BRAKE?
-  }
+  if (!trajectory) { logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory"); }
 
   rapidjson::Value displacement(trajectory->displacement);
   rapidjson::Value velocity(trajectory->velocity);
@@ -155,36 +152,44 @@ void Navigator::publishCurrentTrajectory()
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 
-// TODO: main run loop
-
 void Navigator::run()
 {
-  mqtt_->subscribe(core::MqttTopic::kTest);
+  mqtt_->subscribe(core::MqttTopic::kKeyence);
+  mqtt_->subscribe(core::MqttTopic::kOpticalFlow);
+  mqtt_->subscribe(core::MqttTopic::kAccelerometer);
 
   while (true) {
     mqtt_->consume();
 
-    // auto keyence_data = mqtt_ ->getMessage(core::MqttTopic::kKeyenceData);
-    // auto optical_data = mqtt_ ->getMessage(core::MqttTopic::kOpticalData);
-    // auto accelerometer_data = mqtt ->getMessage(core::MqttTopic::kAccelerometerData);
+    auto keyence_msg       = mqtt_->getMessage();
+    auto optical_msg       = mqtt_->getMessage();
+    auto accelerometer_msg = mqtt_->getMessage();
 
-    core::KeyenceData keyence_data = {0, 0};
-    core::OpticalData optical_data = {0, 0};
-    core::AccelerometerData accelerometer_data = {0, 0, 0, 0};
-    /*
-    if (keyenceUpdate(keyence_data) == core::Result::kFailure
-        || opticalUpdate(optical_data) == core::Result::kFailure
-        || accelerometerUpdate(accelerometer_data) == core::Result::kFailure) {
+    auto keyence_payload          = keyence_msg->payload;
+    auto optical_payload          = optical_msg->payload;
+    auto raw_acceleration_payload = accelerometer_msg->payload;
+
+    core::KeyenceData dummy_keyence_data = {0, 0};
+
+    core::OpticalData dummy_optical_data;
+    for (auto &data : dummy_optical_data) {
+      data = {0.0f, 0.0f};
+    }
+
+    std::array<core::RawAccelerationData, core::kNumAccelerometers> dummy_accelerometer_data;
+    for (auto &data : dummy_accelerometer_data) {
+      data = core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false);
+    }
+    
+    if (keyenceUpdate(dummy_keyence_data) == core::Result::kFailure
+        || opticalUpdate(dummy_optical_data) == core::Result::kFailure
+        || accelerometerUpdate(dummy_accelerometer_data) == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
       break;
     }
-    */
-
-    publishCurrentTrajectory();
-
-    // logger_.log(core::LogLevel::kInfo, "Current trajectory: displacement = %f, velocity = %f",
-    //             trajectory->displacement, trajectory->velocity);
   }
+
+  publishCurrentTrajectory();
 }
 
 }  // namespace hyped::navigation
