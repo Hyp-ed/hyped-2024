@@ -7,7 +7,7 @@
 namespace hyped::sensors {
 
 std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
-  core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
+  core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi, Rotation rotation)
 {
   // check we are communicating with the correct sensor
   auto optional_device_id = spi->read(kDeviceIdAddress, 1);
@@ -20,6 +20,8 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for optical flow sensor");
     return std::nullopt;
   }
+  spi->write(kRegPowerUpResetAddress, {kRegPowerUpResetValue});
+  setRotation(logger, spi, rotation);
   doMagic(logger, spi);
   return std::make_shared<OpticalFlow>(logger, spi);
 }
@@ -76,6 +78,29 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
     }
   }
   return core::Result::kSuccess;
+}
+
+core::Result OpticalFlow::setRotation(core::ILogger &logger,
+                                      const std::shared_ptr<io::ISpi> &spi,
+                                      Rotation rotation)
+{
+  std::uint8_t orientation = 0;
+  switch (rotation) {
+    case Rotation::kNone:
+      orientation = kInvertX | kInvertY | kSwapXY;
+      break;
+    case Rotation::kClockwise90:
+      orientation = kInvertY;
+      break;
+    case Rotation::kClockwise180:
+      orientation = 0;
+      break;
+    case Rotation::kClockwise270:
+      orientation = kInvertX;
+      break;
+  }
+  const std::vector<std::uint8_t> tx = {orientation};
+  return spi->write(kRegOrientation, tx);
 }
 
 }  // namespace hyped::sensors

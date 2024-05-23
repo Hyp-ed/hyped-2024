@@ -11,10 +11,13 @@
 
 namespace hyped::sensors {
 
+enum class Rotation { kNone, kClockwise90, kClockwise180, kClockwise270 };
+
 class OpticalFlow {
  public:
   static std::optional<std::shared_ptr<OpticalFlow>> create(core::ILogger &logger,
-                                                            const std::shared_ptr<io::ISpi> &spi);
+                                                            const std::shared_ptr<io::ISpi> &spi,
+                                                            Rotation rotation);
 
   OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi);
   std::optional<std::uint16_t> getDeltaX() const;
@@ -25,6 +28,14 @@ class OpticalFlow {
    * @brief This is proprietary magic numbers that must be sent to the sensor.
    */
   static core::Result doMagic(core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi);
+  /**
+   * @brief Set the rotation of the sensor.
+   */
+  static core::Result setRotation(core::ILogger &logger,
+                                  const std::shared_ptr<io::ISpi> &spi,
+                                  Rotation rotation);
+  static std::uint8_t getOrientation(Rotation rotation);
+
   core::ILogger &logger_;
   std::shared_ptr<io::ISpi> spi_;
 
@@ -34,8 +45,14 @@ class OpticalFlow {
   static constexpr std::uint8_t kYLowAddress  = 0x05;
   static constexpr std::uint8_t kYHighAddress = 0x06;
 
-  static constexpr std::uint8_t kDeviceIdAddress       = 0x00;
-  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x49;
+  static constexpr std::uint8_t kDeviceIdAddress        = 0x00;
+  static constexpr std::uint8_t kExpectedDeviceIdValue  = 0x49;
+  static constexpr std::uint8_t kRegPowerUpResetAddress = 0x3A;
+  static constexpr std::uint8_t kRegPowerUpResetValue   = 0x5A;
+
+  static constexpr std::uint8_t kInvertX = 0b00100000;
+  static constexpr std::uint8_t kInvertY = 0b01000000;
+  static constexpr std::uint8_t kSwapXY  = 0b10000000;
 
   // Magic numbers for "performance optimisation"
   static constexpr std::array<std::pair<std::uint8_t, std::uint8_t>, 15> kMagicNumbers = {{
