@@ -182,7 +182,7 @@ void Navigator::run()
          core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
          core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
 
-        if (keyenceUpdate(dummy_keyence_data) == core::Result::kFailure
+    if (keyenceUpdate(dummy_keyence_data) == core::Result::kFailure
         || opticalUpdate(dummy_optical_data) == core::Result::kFailure
         || accelerometerUpdate(dummy_accelerometer_data) == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
