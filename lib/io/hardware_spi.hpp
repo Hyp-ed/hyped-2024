@@ -76,12 +76,10 @@ class HardwareSpi : public ISpi {
   HardwareSpi(core::ILogger &logger, const int file_descriptor);
   ~HardwareSpi();
 
-  core::Result read(const std::uint8_t register_address,
-                    const std::uint8_t *rx,
-                    const std::uint16_t len) override;
+  std::optional<std::vector<std::uint8_t>> read(const std::uint8_t register_address,
+                                                const std::uint16_t len) override;
   core::Result write(const std::uint8_t register_address,
-                     const std::uint8_t *tx,
-                     const std::uint16_t len) override;
+                     const std::vector<std::uint8_t> tx) override;
 
  private:
   /**

@@ -2,16 +2,13 @@
 
 namespace hyped::utils {
 
-core::Result DummySpi::read(const std::uint8_t addr,
-                            const std::uint8_t *rx,
-                            const std::uint16_t len)
+std::optional<std::vector<std::uint8_t>> DummySpi::read(const std::uint8_t addr,
+                                                        const std::uint16_t len)
 {
-  return core::Result::kFailure;
+  return std::nullopt;
 }
 
-core::Result DummySpi::write(const std::uint8_t addr,
-                             const std::uint8_t *tx,
-                             const std::uint16_t len)
+core::Result DummySpi::write(const std::uint8_t addr, std::vector<std::uint8_t> tx)
 {
   return core::Result::kFailure;
 }

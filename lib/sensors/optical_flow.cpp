@@ -10,13 +10,13 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
   core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
 {
   // check we are communicating with the correct sensor
-  const std::uint8_t device_id[1] = {0};
-  const auto result               = spi->read(kDeviceIdAddress, device_id, 1);
-  if (result == core::Result::kFailure) {
-    logger.log(core::LogLevel::kFatal, "Failed to read the optical flow device");
+  auto optional_device_id = spi->read(kDeviceIdAddress, 1);
+  if (!optional_device_id) {
+    logger.log(core::LogLevel::kFatal, "Failed to read the optical flow device ID");
     return std::nullopt;
   }
-  if (*device_id != kExpectedDeviceIdValue) {
+  const auto device_id = *optional_device_id;
+  if (device_id[0] != kExpectedDeviceIdValue) {
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for optical flow sensor");
     return std::nullopt;
   }
@@ -31,36 +31,35 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 
 std::optional<std::uint16_t> OpticalFlow::getDeltaX() const
 {
-  std::uint8_t x_low[1] = {0};
-  const auto low_result = spi_->read(kXLowAddress, x_low, 1);
-  if (low_result == core::Result::kFailure) {
+  auto optional_x_low = spi_->read(kXLowAddress, 1);
+  if (!optional_x_low) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the x delta");
     return std::nullopt;
   }
-  std::uint8_t x_high[1] = {0};
-  const auto high_result = spi_->read(kXHighAddress, x_high, 1);
-  if (high_result == core::Result::kFailure) {
+  const auto x_low     = *optional_x_low;
+  auto optional_x_high = spi_->read(kXHighAddress, 1);
+  if (!optional_x_high) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the x delta");
     return std::nullopt;
   }
-  logger_.log(core::LogLevel::kDebug, "x_low: %d, x_high: %d", x_low[0], x_high[0]);
+  const auto x_high = *optional_x_high;
   return static_cast<std::int16_t>(x_high[0]) << 8 | x_low[0];
 }
 
 std::optional<std::uint16_t> OpticalFlow::getDeltaY() const
 {
-  std::uint8_t y_low[1] = {0};
-  const auto low_result = spi_->read(kYLowAddress, y_low, 1);
-  if (low_result == core::Result::kFailure) {
+  auto optional_y_low = spi_->read(kYLowAddress, 1);
+  if (!optional_y_low) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the low byte of the y delta");
     return std::nullopt;
   }
-  std::uint8_t y_high[1] = {0};
-  const auto high_result = spi_->read(kYHighAddress, y_high, 1);
-  if (high_result == core::Result::kFailure) {
+  const auto y_low     = *optional_y_low;
+  auto optional_y_high = spi_->read(kYHighAddress, 1);
+  if (!optional_y_high) {
     logger_.log(core::LogLevel::kFatal, "Failed to read the high byte of the y delta");
     return std::nullopt;
   }
+  const auto y_high = *optional_y_high;
   logger_.log(core::LogLevel::kDebug, "y_low: %d, y_high: %d", y_low[0], y_high[0]);
   return (static_cast<std::int16_t>(y_high[0]) << 8) | y_low[0];
 }
