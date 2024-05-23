@@ -31,6 +31,11 @@ enabled = false
 bus = 1
 address = 0x38
 
+[sensors.low_power_bms]
+enabled = false
+bus = 1
+address = 0x08
+
 [sensors.bms]
 enabled = false
 bus = "can1"
