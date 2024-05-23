@@ -30,6 +30,7 @@ class Repl {
                                                      Terminal &terminal,
                                                      const std::string &filename);
   Repl(core::ILogger &logger, Terminal &terminal);
+  ~Repl();
   void run();
   std::vector<std::string> autoComplete(const std::string &partial);
   void handleCommand(std::string &input);

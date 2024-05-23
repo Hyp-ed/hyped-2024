@@ -6,6 +6,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/optical_flow_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/temperature_commands.hpp"
@@ -27,7 +28,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
   try {
     config = toml::parse_file(filename);
   } catch (const toml::parse_error &e) {
-    logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
+    logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.what());
     return std::nullopt;
   }
   if (config["io"]["adc"]["enabled"].value_or(false)) {
@@ -87,6 +88,14 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       return std::nullopt;
     }
   }
+  if (config["sensors"]["optical_flow"]["enabled"].value_or(false)) {
+    const auto result
+      = OpticalFlowCommands::addCommands(logger, repl, config["sensors"]["optical_flow"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding optical flow commands");
+      return std::nullopt;
+    }
+  }
   auto *const aliases = config["aliases"].as_table();
   for (auto [alias, command] : *aliases) {
     const std::string alias_alias     = static_cast<std::string>(alias.str());
@@ -110,6 +119,11 @@ Repl::Repl(core::ILogger &logger, Terminal &terminal)
 {
   addHelpCommand();
   addQuitCommand();
+}
+
+Repl::~Repl()
+{
+  terminal_.quit();
 }
 
 void Repl::run()
@@ -137,7 +151,7 @@ void Repl::run()
         input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
-      if (input.empty()) { input.pop_back(); }
+      if (!input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
       const auto result = findMatch(input);
       if (result == std::nullopt) { continue; }
