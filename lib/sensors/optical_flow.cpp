@@ -20,6 +20,7 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for optical flow sensor");
     return std::nullopt;
   }
+  doMagic(logger, spi);
   return std::make_shared<OpticalFlow>(logger, spi);
 }
 
@@ -62,6 +63,19 @@ std::optional<std::uint16_t> OpticalFlow::getDeltaY() const
   const auto y_high = *optional_y_high;
   logger_.log(core::LogLevel::kDebug, "y_low: %d, y_high: %d", y_low[0], y_high[0]);
   return (static_cast<std::int16_t>(y_high[0]) << 8) | y_low[0];
+}
+
+core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
+{
+  for (const auto &[address, value] : kMagicNumbers) {
+    const std::vector<std::uint8_t> tx = {value};
+    const auto result                  = spi->write(address, tx);
+    if (result != core::Result::kSuccess) {
+      logger.log(core::LogLevel::kFatal, "Failed to write magic number to %d", address);
+      return result;
+    }
+  }
+  return core::Result::kSuccess;
 }
 
 }  // namespace hyped::sensors
