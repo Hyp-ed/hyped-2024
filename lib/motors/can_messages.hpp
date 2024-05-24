@@ -15,13 +15,13 @@ class ControllerCanProcessor : public io::ICanProcessor {
   static constexpr std::uint8_t kErrorId = 0;  // TODOLater decide
 
  public:
-  ControllerCanProcessor(std::shared_ptr<io::ICan> can);
+  explicit ControllerCanProcessor(std::shared_ptr<io::ICan> can);
   core::Result sendResponse(Operation operation, Location location, std::uint64_t data);
   core::Result sendError(Error error);
   core::Result receiveMessage(io::CanFrame frame);
 
  private:
-  std::vector<uint8_t> convertToBytes(std::uint64_t value, std::size_t length);
+  static std::vector<uint8_t> convertToBytes(std::uint64_t value, std::size_t length);
   std::shared_ptr<io::ICan> can_;
 };
 

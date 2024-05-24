@@ -6,6 +6,7 @@
 
 namespace hyped::io {
 
+// TODOLater: make both these methods not be pointers
 class IUart {
  public:
   /**

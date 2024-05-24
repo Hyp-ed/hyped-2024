@@ -5,6 +5,7 @@
 #include <chrono>
 #include <cstdint>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -24,7 +25,7 @@ class TimeFrequencyCalculator : public IFrequencyCalculator {
    *
    * @return core::Float equal to the passed in frequency
    */
-  std::uint32_t calculateFrequency(core::Float velocity);
+  std::uint32_t calculateFrequency(core::Float velocity) override;
 
   /**
    * @brief Resets the start time to the current time

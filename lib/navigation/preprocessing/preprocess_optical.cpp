@@ -1,7 +1,5 @@
 #include "preprocess_optical.hpp"
 
-#include <cstdint>
-
 namespace hyped::navigation {
 
 OpticalPreprocessor::OpticalPreprocessor(core::ILogger &logger) : logger_(logger)

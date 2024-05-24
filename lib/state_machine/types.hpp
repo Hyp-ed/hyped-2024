@@ -2,8 +2,6 @@
 
 #include "state.hpp"
 
-#include <cstdint>
-
 #include <boost/functional/hash/hash.hpp>
 
 namespace hyped::state_machine {

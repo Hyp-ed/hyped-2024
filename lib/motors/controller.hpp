@@ -44,10 +44,10 @@ class Controller {
   static std::optional<std::shared_ptr<Controller>> create(
     core::ILogger &logger,
     const std::string &message_file_path,
-    const std::shared_ptr<io::ICan> can,
-    const std::shared_ptr<IFrequencyCalculator> frequency_calculator);
+    const std::shared_ptr<io::ICan> &can,
+    const std::shared_ptr<IFrequencyCalculator> &frequency_calculator);
   static std::optional<io::CanFrame> parseJsonCanFrame(
-    core::ILogger &logger, rapidjson::GenericObject<true, rapidjson::Value> message);
+    core::ILogger &logger, const rapidjson::GenericObject<true, rapidjson::Value> &message);
   void processErrorMessage(const std::uint16_t error_code);
   ControllerStatus processWarningMessage(const std::uint8_t warning_code);
   core::Result processNmtMessage(const std::uint8_t nmt_code);
@@ -66,8 +66,8 @@ class Controller {
   Controller(core::ILogger &logger,
              const std::unordered_map<std::string, io::CanFrame> &messages,
              const std::vector<io::CanFrame> &configuration_messages,
-             const std::shared_ptr<io::ICan> can,
-             const std::shared_ptr<IFrequencyCalculator> frequency_calculator);
+             const std::shared_ptr<io::ICan> &can,
+             const std::shared_ptr<IFrequencyCalculator> &frequency_calculator);
   std::uint8_t getControllerTemperature() const;
   core::Float getControllerCurrent() const;
 
@@ -104,7 +104,6 @@ class Controller {
    */
   core::Result reset();
 
- private:
   static constexpr std::uint16_t kSdoErrorIndex       = 0x603f;
   static constexpr std::uint16_t kSdoWarningIndex     = 0x2027;
   static constexpr std::uint16_t kSdoTemperatureIndex = 0x2026;

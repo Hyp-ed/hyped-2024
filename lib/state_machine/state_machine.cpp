@@ -1,18 +1,17 @@
 #include "state_machine.hpp"
 
-#include <iostream>
-
 #include <rapidjson/document.h>
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
+#include <core/wall_clock.hpp>
+
 namespace hyped::state_machine {
 
-StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt,
-                           const TransitionTable &transition_table)
+StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt, TransitionTable transition_table)
     : current_state_(State::kIdle),
       mqtt_(std::move(mqtt)),
-      transition_to_state_(transition_table)
+      transition_to_state_(std::move(transition_table))
 {
   mqtt_->subscribe(core::MqttTopic::kTest);
 }
@@ -75,6 +74,41 @@ void StateMachine::run()
     publishCurrentState();
   }
   publishCurrentState();
+}
+
+core::Result StateMachine::startNode(toml::v3::node_view<const toml::v3::node> config,
+                                     const std::string &mqtt_ip,
+                                     const std::uint32_t mqtt_port)
+{
+  core::WallClock wall_clock;
+  core::Logger logger("STATE_MACHINE", core::LogLevel::kDebug, wall_clock);
+  auto optional_mqtt = core::Mqtt::create(logger, "state_machine", mqtt_ip, mqtt_port);
+  if (!optional_mqtt) {
+    logger.log(core::LogLevel::kFatal, "Failed to create MQTT client");
+    return core::Result::kFailure;
+  }
+  auto mqtt                     = *optional_mqtt;
+  auto optional_transition_list = config["state_machine"]["transition_table"].value<std::string>();
+  if (!optional_transition_list) {
+    logger.log(core::LogLevel::kFatal, "Failed to get transition list from config");
+    return core::Result::kFailure;
+  }
+  const std::string transition_list = *optional_transition_list;
+  if (transition_list == "full_run") {
+    const state_machine::TransitionTable transition_table
+      = state_machine::transition_to_state_dynamic;
+    state_machine::StateMachine state_machine(mqtt, transition_table);
+    state_machine.run();
+  } else if (transition_list == "static_run") {
+    const state_machine::TransitionTable transition_table
+      = state_machine::transition_to_state_static;
+    state_machine::StateMachine state_machine(mqtt, transition_table);
+    state_machine.run();
+  } else {
+    logger.log(core::LogLevel::kFatal, "Unknown transition list: %s", transition_list.c_str());
+    return core::Result::kFailure;
+  }
+  return core::Result::kSuccess;
 }
 
 }  // namespace hyped::state_machine

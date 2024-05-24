@@ -23,6 +23,7 @@ jobs:
           args: --check
 
   find-todos-fixme:
+    name: Find todos and fixmes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,6 +36,7 @@ jobs:
           fi
 
   find-missing-std:
+    name: "Find missing std::"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,6 +51,7 @@ jobs:
           done
 
   find-redundant-hyped:
+    name: "Find redundant hyped:: namespaces"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -61,6 +64,7 @@ jobs:
         working-directory: lib
 
   check-header-pragma-once:
+    name: Check headers for \#pragma once
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -70,7 +74,9 @@ jobs:
             echo "[ERROR] found header without #pragma once"
             exit 1
           fi
+
   check-no-crlf:
+    name: Check no crlf line endings
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
