@@ -29,13 +29,13 @@ core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
       const auto spi = std::move(*optional_spi);
 
       std::uint16_t register_address = std::stoi(args[5], nullptr, 16);
-      std::uint8_t read_buffer;
-      const core::Result result = spi->read(register_address, &read_buffer, 1);
-      if (result == core::Result::kFailure) {
+      auto optional_read_byte        = spi->read(register_address, 1);
+      if (!optional_read_byte) {
         logger.log(core::LogLevel::kFatal, "Failed to read from SPI bus %d", bus);
         return;
       }
-      logger.log(core::LogLevel::kDebug, "SPI value from bus %d: %d", bus, read_buffer);
+      const auto read_byte = *optional_read_byte;
+      logger.log(core::LogLevel::kDebug, "SPI value from bus %d: %d", bus, read_byte[0]);
     };
     auto spi_read_byte_command = std::make_unique<Command>(spi_read_byte_command_name,
                                                            spi_read_byte_command_description,
@@ -66,11 +66,10 @@ core::Result SpiCommands::addCommands(core::ILogger &logger, std::shared_ptr<Rep
       }
       const auto spi = std::move(*optional_spi);
 
-      std::uint16_t register_address = std::stoi(args[5], nullptr, 16);
-      std::uint8_t data              = std::stoi(args[6], nullptr, 16);
-
-      const auto *data_ptr      = reinterpret_cast<const std::uint8_t *>(&data);
-      const core::Result result = spi->write(register_address, data_ptr, 1);
+      std::uint16_t register_address             = std::stoi(args[5], nullptr, 16);
+      std::uint8_t data                          = std::stoi(args[6], nullptr, 16);
+      const std::vector<std::uint8_t> data_array = {data};
+      const core::Result result                  = spi->write(register_address, data_array);
       if (result == core::Result::kFailure) {
         logger.log(core::LogLevel::kFatal, "Failed to write to SPI bus: %d", bus);
         return;

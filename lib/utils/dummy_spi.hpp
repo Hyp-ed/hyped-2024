@@ -11,12 +11,9 @@ namespace hyped::utils {
  */
 class DummySpi : public io::ISpi {
  public:
-  core::Result read(const std::uint8_t addr,
-                    const std::uint8_t *rx,
-                    const std::uint16_t len) override;
-  core::Result write(const std::uint8_t addr,
-                     const std::uint8_t *tx,
-                     const std::uint16_t len) override;
+  std::optional<std::vector<std::uint8_t>> read(const std::uint8_t addr,
+                                                const std::uint16_t len) override;
+  core::Result write(const std::uint8_t addr, const std::vector<std::uint8_t> tx) override;
 };
 
 }  // namespace hyped::utils
