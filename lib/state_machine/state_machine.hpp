@@ -25,8 +25,8 @@ class StateMachine {
 
  private:
   void publishCurrentState();
-  State stringToState(const std::string &state_name);
-  std::string stateToString(const State &state);
+  static State stringToState(const std::string &state_name);
+  static std::string stateToString(const State &state);
   void update();
 
   core::ITimeSource &time_;
