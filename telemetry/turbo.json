@@ -11,12 +11,12 @@
       "persistent": true
     },
     "dev:test": {
-      "dependsOn": ["^build", "build:fake"],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "e2e:test": {
-      "dependsOn": ["^build", "build:fake"],
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
