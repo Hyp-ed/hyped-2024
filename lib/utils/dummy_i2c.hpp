@@ -1,7 +1,5 @@
 #pragma once
 
-#include "dummy_adc.hpp"
-
 #include <io/i2c.hpp>
 
 namespace hyped::utils {
@@ -15,22 +13,27 @@ namespace hyped::utils {
  */
 class DummyI2c : public io::II2c {
  public:
-  virtual std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
-                                               const std::uint8_t register_address);
-  virtual core::Result writeByteToRegister(const std::uint8_t device_address,
-                                           const std::uint8_t register_address,
-                                           const std::uint8_t data);
-  virtual core::Result writeByteToRegister(const std::uint8_t device_address,
-                                           const std::uint16_t register_address,
-                                           const std::uint8_t data);
-  virtual core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data);
+  std::optional<std::uint8_t> readByte(const std::uint8_t device_address,
+                                       const std::uint8_t register_address) override;
+  core::Result writeByteToRegister(const std::uint8_t device_address,
+                                   const std::uint8_t register_address,
+                                   const std::uint8_t data) override;
+  core::Result writeByteToRegister(const std::uint8_t device_address,
+                                   const std::uint16_t register_address,
+                                   const std::uint8_t data) override;
+  core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data) override;
 
   void setWriteByteResults(std::vector<core::Result> results);
   void setReadByteResults(std::vector<std::optional<std::uint8_t>> results);
+  /**
+   * @return a vector of pairs of device address and data that was sent
+   */
+  std::vector<std::pair<std::uint8_t, std::uint8_t>> getSentData();
 
  private:
   std::vector<core::Result> write_byte_results_;
   std::vector<std::optional<std::uint8_t>> read_byte_results_;
+  std::vector<std::pair<std::uint8_t, std::uint8_t>> sent_data_;
 };
 
 }  // namespace hyped::utils
