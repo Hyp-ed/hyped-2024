@@ -15,11 +15,10 @@ TEST(DummyGpio, construct)
 
 void testRead(utils::DummyGpio &dummy_gpio,
               const std::uint8_t pin,
-              const io::Edge edge,
               const std::string &expected_output)
 {
   testing::internal::CaptureStdout();
-  auto dummy_gpio_reader_opt = dummy_gpio.getReader(pin, edge);
+  auto dummy_gpio_reader_opt = dummy_gpio.getReader(pin);
   ASSERT_TRUE(dummy_gpio_reader_opt);
   auto dummy_gpio_reader = *dummy_gpio_reader_opt;
   ASSERT_TRUE(dummy_gpio_reader);
@@ -30,12 +29,11 @@ void testRead(utils::DummyGpio &dummy_gpio,
 
 void testWrite(utils::DummyGpio &dummy_gpio,
                const std::uint8_t pin,
-               const io::Edge edge,
                const core::DigitalSignal state,
                const std::string &expected_output)
 {
   testing::internal::CaptureStdout();
-  auto dummy_gpio_writer_opt = dummy_gpio.getWriter(pin, edge);
+  auto dummy_gpio_writer_opt = dummy_gpio.getWriter(pin);
   ASSERT_TRUE(dummy_gpio_writer_opt);
   auto dummy_gpio_writer = *dummy_gpio_writer_opt;
   ASSERT_TRUE(dummy_gpio_writer);
@@ -64,15 +62,14 @@ TEST(DummyGpio, printToStdout)
       std::cout << " to " << static_cast<int>(pin) << "\n";
       return hyped::core::Result::kSuccess;
     });
-  testRead(dummy_gpio, 4, hyped::io::Edge::kNone, "read from 4\n");
-  testRead(dummy_gpio, 42, hyped::io::Edge::kNone, "read from 42\n");
-  testRead(dummy_gpio, 255, hyped::io::Edge::kNone, "read from 255\n");
-  testRead(dummy_gpio, 0, hyped::io::Edge::kNone, "read from 0\n");
-  testWrite(dummy_gpio, 4, hyped::io::Edge::kNone, core::DigitalSignal::kHigh, "wrote high to 4\n");
-  testWrite(dummy_gpio, 42, hyped::io::Edge::kNone, core::DigitalSignal::kLow, "wrote low to 42\n");
-  testWrite(
-    dummy_gpio, 255, hyped::io::Edge::kNone, core::DigitalSignal::kHigh, "wrote high to 255\n");
-  testWrite(dummy_gpio, 0, hyped::io::Edge::kNone, core::DigitalSignal::kLow, "wrote low to 0\n");
+  testRead(dummy_gpio, 4, "read from 4\n");
+  testRead(dummy_gpio, 42, "read from 42\n");
+  testRead(dummy_gpio, 255, "read from 255\n");
+  testRead(dummy_gpio, 0, "read from 0\n");
+  testWrite(dummy_gpio, 4, core::DigitalSignal::kHigh, "wrote high to 4\n");
+  testWrite(dummy_gpio, 42, core::DigitalSignal::kLow, "wrote low to 42\n");
+  testWrite(dummy_gpio, 255, core::DigitalSignal::kHigh, "wrote high to 255\n");
+  testWrite(dummy_gpio, 0, core::DigitalSignal::kLow, "wrote low to 0\n");
 }
 
 }  // namespace hyped::test
