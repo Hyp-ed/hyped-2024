@@ -44,6 +44,7 @@ const std::unordered_map<std::string, State> string_to_state
      {"kFailureBrake", State::kFailureBrake},
      {"kFailure", State::kFailure},
      {"kSafe", State::kSafe}};
+
 const std::unordered_map<State, std::string> state_to_string
   = {{State::kIdle, "kIdle"},
      {State::kCalibrate, "kCalibrate"},

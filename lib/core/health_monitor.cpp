@@ -65,7 +65,7 @@ void HealthMonitor::run()
     const auto result = startup();
     if (result == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to start up");
-      sendCriticalFailure();
+      publishTransitionRequest(state_machine::State::kFailure);
       return;
     }
   }
@@ -73,14 +73,14 @@ void HealthMonitor::run()
     const auto result = processBatch();
     if (result == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to process batch");
-      sendCriticalFailure();
+      publishTransitionRequest(state_machine::State::kFailure);
       return;
     }
     const auto current_time = time_.now();
     for (auto &[name, checkin] : checkins_) {
       if (current_time - *checkin > kCheckinTimeout) {
         logger_.log(core::LogLevel::kFatal, "System %s has not checked in", name.c_str());
-        sendCriticalFailure();
+        publishTransitionRequest(state_machine::State::kFailure);
         return;
       }
     }
@@ -103,14 +103,19 @@ core::Result HealthMonitor::startup()
         break;
       }
     }
-    if (all_nodes_checked_in) { return core::Result::kSuccess; }
+    if (all_nodes_checked_in) {
+      logger_.log(core::LogLevel::kInfo,
+                  "All nodes checked in in %d seconds",
+                  (time_.now() - start_time).count());
+      publishTransitionRequest(state_machine::State::kCalibrate);
+      return core::Result::kSuccess;
+    }
   }
   std::string missing_nodes;
   for (auto &[name, checkin] : checkins_) {
     if (!checkin) { missing_nodes += name + ", "; }
   }
-  logger_.log(
-    core::LogLevel::kFatal, "Nodes failed to check in, missing: %s", missing_nodes.c_str());
+  logger_.log(core::LogLevel::kFatal, "%s failed to check in", missing_nodes.c_str());
   return core::Result::kFailure;
 }
 
@@ -137,14 +142,12 @@ core::Result HealthMonitor::processBatch()
   return core::Result::kSuccess;
 }
 
-void HealthMonitor::sendCriticalFailure()
+void HealthMonitor::publishTransitionRequest(state_machine::State state)
 {
   auto message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
-  const std::string state = "kCriticalFailure";
-  // TODO: why doesn't this work???? cmake i think...
-  // state_machine::state_to_string(state_machine::State::kCriticalFailure);
-  rapidjson::Value requested_state(state.c_str(), message_payload->GetAllocator());
+  const std::string &state_str = state_machine::state_to_string.at(state);
+  rapidjson::Value requested_state(state_str.c_str(), message_payload->GetAllocator());
   message_payload->AddMember("transition", requested_state, message_payload->GetAllocator());
   const core::MqttMessage::Header header{time_.now(), core::MqttMessagePriority::kCritical};
   const core::MqttMessage message{core::MqttTopic::kStateRequest, header, message_payload};

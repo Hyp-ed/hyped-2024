@@ -8,6 +8,7 @@
 #include <string>
 #include <unordered_map>
 
+#include "state_machine/state.hpp"
 #include <toml++/toml.hpp>
 
 namespace hyped::core {
@@ -41,7 +42,7 @@ class HealthMonitor {
    * @brief Updates the checkin times for all pending checkin messages
    */
   core::Result processBatch();
-  void sendCriticalFailure();
+  void publishTransitionRequest(state_machine::State state);
 
   core::ILogger &logger_;
   core::ITimeSource &time_;
