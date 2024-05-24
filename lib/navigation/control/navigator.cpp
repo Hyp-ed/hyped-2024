@@ -169,6 +169,8 @@ void Navigator::run()
     auto optical_payload          = optical_msg->payload;
     auto raw_acceleration_payload = accelerometer_msg->payload;
 
+    //dummy vals
+
     core::KeyenceData dummy_keyence_data = {0, 0};
 
     core::OpticalData dummy_optical_data;
