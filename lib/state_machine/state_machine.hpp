@@ -3,8 +3,6 @@
 #include "state.hpp"
 #include "transition_table.hpp"
 
-#include <unordered_map>
-
 #include "core/time.hpp"
 #include <boost/unordered_map.hpp>
 #include <core/mqtt.hpp>

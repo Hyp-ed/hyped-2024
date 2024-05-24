@@ -59,7 +59,7 @@ void StateMachine::update()
 void StateMachine::publishCurrentState()
 {
   const auto state_string = stateToString(getCurrentState());
-  const auto topic        = core::MqttTopic::kTest;
+  const auto topic        = core::MqttTopic::kState;
   auto message_payload    = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
   rapidjson::Value state_value(state_string.c_str(), message_payload->GetAllocator());
@@ -72,6 +72,8 @@ void StateMachine::publishCurrentState()
 
 void StateMachine::run()
 {
+  const auto subscribe_result = mqtt_->subscribe(core::MqttTopic::kStateRequest);
+  if (subscribe_result == core::Result::kFailure) { return; }
   while (getCurrentState() != State::kShutdown) {
     mqtt_->consume();
     update();
