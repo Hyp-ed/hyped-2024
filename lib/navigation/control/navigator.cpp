@@ -175,7 +175,7 @@ void Navigator::run()
 
     core::OpticalData dummy_optical_data;
     for (auto &data : dummy_optical_data) {
-      data = {0.0f, 0.0f};
+      data = {0.0F, 0.0F};
     }
 
     std::array<core::RawAccelerationData, core::kNumAccelerometers> dummy_accelerometer_data
