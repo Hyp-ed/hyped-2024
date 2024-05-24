@@ -3,6 +3,7 @@
 #include "consts.hpp"
 
 #include <array>
+#include <memory>
 #include <optional>
 
 #include <core/logger.hpp>
@@ -25,20 +26,20 @@ class Navigator : public INavigator {
   /**
    *@brief runs cross checking and returns trajectory
    */
-  std::optional<core::Trajectory> currentTrajectory() override;
+  std::optional<core::Trajectory> currentTrajectory();
 
   /**
    * @brief preprocesses keyence data and updates trajectory
    *
    * @param keyence_data
    */
-  core::Result keyenceUpdate(const core::KeyenceData &keyence_data) override;
+  core::Result keyenceUpdate(const core::KeyenceData &keyence_data);
   /**
    * @brief Preprocesses optical flow data and updates trajectory
    *
    * @param optical_data
    */
-  core::Result opticalUpdate(const core::OpticalData &optical_data) override;
+  core::Result opticalUpdate(const core::OpticalData &optical_data);
   /**
    * @brief preprocesses accelerometer data and updates trajectory
    *
