@@ -10,7 +10,7 @@ class DummyAdc : public io::IAdc {
   ~DummyAdc() = default;
 
   std::optional<core::Float> readValue() override;
-  void setValue(std::vector<std::optional<core::Float>> values);
+  void setValues(std::vector<std::optional<core::Float>> values);
 
  private:
   std::vector<std::optional<core::Float>> values_;

@@ -5,10 +5,6 @@
 
 namespace hyped::utils {
 
-DummyAdc::DummyAdc() : values_(0.0)
-{
-}
-
 std::optional<core::Float> DummyAdc::readValue()
 {
   if (values_.empty()) { return std::nullopt; }
@@ -17,7 +13,7 @@ std::optional<core::Float> DummyAdc::readValue()
   return val;
 }
 
-void DummyAdc::setValue(std::vector<std::optional<core::Float>> values)
+void DummyAdc::setValues(std::vector<std::optional<core::Float>> values)
 {
   values_ = std::move(values);
 }
