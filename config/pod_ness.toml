@@ -1,0 +1,54 @@
+name = "Pod Ness"
+
+[hostnames]
+raspberry = "192.168.1.0"
+
+[mqtt]
+host = "127.0.0.1"
+port = 4556
+
+[raspberry]
+nodes = ["state_machine", "mqtt_broker"]
+
+[state_machine]
+transition_table = "full_run"
+
+[sensors]
+[sensors.accelerometer]
+count = 5
+name = 'Acceleration'
+topic = 'accelerometer'
+format = 'float'
+type = 'acceleration'
+unit = 'm/s²'
+[sensors.acceleromter.limits]
+[sensors.accelerometer.limits.critical]
+upper = 100
+lower = 0
+
+[sensors.thermistor]
+count = 12
+name = 'Thermistor'
+topic = 'thermistor'
+format = 'float'
+type = 'temperature'
+unit = '°C'
+[sensors.thermistor.limits]
+[sensors.thermistor.limits.critical]
+upper = 125
+lower = -40
+[sensors.thermistor.limits.warning]
+upper = 100
+lower = 20
+
+[sensors.pressure_back_pull]
+name = 'Pressure - Back Pull'
+type = 'pressure'
+unit = 'bar'
+[sensors.pressure_back_pull.limits]
+[sensors.pressure_back_pull.limits.critical]
+upper = 5.5
+lower = -0.2
+[sensors.pressure_back_pull.limits.warning]
+upper = 5.2
+lower = -0.19
