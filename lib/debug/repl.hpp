@@ -30,7 +30,7 @@ class Repl {
                                                      Terminal &terminal,
                                                      core::ITimeSource &time,
                                                      const std::string &filename);
-  Repl(core::ILogger &logger, Terminal &terminal, core::ITimeSource &time);
+  Repl(core::ILogger &logger, Terminal &terminal);
   void run();
   std::vector<std::string> autoComplete(const std::string &partial);
   void handleCommand(std::string &input);
@@ -122,7 +122,6 @@ class Repl {
  private:
   core::ILogger &logger_;
   Terminal terminal_;
-  core::ITimeSource &time_;
   std::vector<std::string> history_;
   std::vector<std::unique_ptr<Command>> commands_;
   std::unordered_map<std::string, std::string> aliases_;

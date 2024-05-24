@@ -24,7 +24,7 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
                                                   core::ITimeSource &time,
                                                   const std::string &filename)
 {
-  auto repl = std::make_shared<Repl>(logger, terminal, time);
+  auto repl = std::make_shared<Repl>(logger, terminal);
   toml::table config;
   try {
     config = toml::parse_file(filename);
@@ -113,10 +113,9 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
 }
 // NOLINTEND(readability-function-cognitive-complexity)
 
-Repl::Repl(core::ILogger &logger, Terminal &terminal, core::ITimeSource &time)
+Repl::Repl(core::ILogger &logger, Terminal &terminal)
     : logger_(logger),
       terminal_(terminal),
-      time_(time),
       gpio_(std::make_shared<io::HardwareGpio>(logger))
 {
   addHelpCommand();

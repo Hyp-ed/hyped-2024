@@ -12,8 +12,6 @@
 
 namespace hyped::io {
 
-constexpr std::string kGpioChipName = "/dev/gpiochip0";
-
 class HardwareGpioReader : public IGpioReader {
  public:
   HardwareGpioReader(core::ILogger &logger, gpiod::chip &chip, const std::uint8_t pin);
@@ -65,6 +63,8 @@ class HardwareGpio : public IGpio {
   core::ILogger &logger_;
   gpiod::chip chip_;
   std::unordered_set<std::uint8_t> used_pins_;
+
+  static constexpr std::string kGpioChipName = "/dev/gpiochip0";
 };
 
 }  // namespace hyped::io
