@@ -1,4 +1,6 @@
-[hostnames]
+hostnames = ["raspberry", "banoffee", "pumpkin", "rhubarb"]
+
+[ips]
 raspberry = "192.168.1.0"
 banoffee = "192.168.1.1"
 pumpkin = "192.168.1.2"

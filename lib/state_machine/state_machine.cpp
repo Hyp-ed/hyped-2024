@@ -22,12 +22,12 @@ StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt,
 
 State StateMachine::stringToState(const std::string &state_name)
 {
-  return string_to_state_.at(state_name);
+  return string_to_state.at(state_name);
 }
 
 std::string StateMachine::stateToString(const State &state)
 {
-  return state_to_string_.at(state);
+  return state_to_string.at(state);
 }
 
 State StateMachine::getCurrentState()
@@ -51,9 +51,9 @@ void StateMachine::update()
   if (!nextMessage) { return; }
 
   const auto payload       = nextMessage->payload;
-  const auto message_state = string_to_state_.find((*payload)["transition"].GetString());
+  const auto message_state = string_to_state.find((*payload)["transition"].GetString());
 
-  if (message_state != string_to_state_.end()) { handleTransition(message_state->second); }
+  if (message_state != string_to_state.end()) { handleTransition(message_state->second); }
 }
 
 void StateMachine::publishCurrentState()

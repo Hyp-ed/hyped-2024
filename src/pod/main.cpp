@@ -35,7 +35,7 @@ int main(int argc, char **argv)
 
   // parse the config file
   const toml::table config = toml::parse_file(config_file);
-  const auto optional_ip   = config["hostnames"][hostname].value<std::string>();
+  const auto optional_ip   = config["ips"][hostname].value<std::string>();
   if (!optional_ip) {
     std::cerr << "Failed to get IP from config file\n";
     return 1;
