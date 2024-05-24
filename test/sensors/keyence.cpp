@@ -10,16 +10,24 @@ namespace hyped::test {
 
 TEST(Keyence, count)
 {
+  static bool output_low                 = true;
   std::shared_ptr<utils::DummyGpio> gpio = std::make_shared<utils::DummyGpio>(
     [](const std::uint8_t) {
-      return std::optional<core::DigitalSignal>(core::DigitalSignal::kHigh);
+      if (output_low) {
+        output_low = false;
+        return core::DigitalSignal::kLow;
+      }
+      output_low = true;
+      return core::DigitalSignal::kHigh;
     },
     [](const std::uint8_t, core::DigitalSignal) { return core::Result::kSuccess; });
   utils::DummyLogger logger;
-  auto keyence = sensors::Keyence::create(logger, gpio, 0);
+  auto optional_keyence = sensors::Keyence::create(logger, gpio, 0);
+  ASSERT_NE(optional_keyence, std::nullopt);
+  auto keyence = optional_keyence.value();
   for (int i = 1; i < 10; i++) {
     keyence->updateStripeCount();
-    ASSERT_EQ(keyence->getStripeCount(), i);
+    ASSERT_EQ(keyence->getStripeCount(), i / 2);
   }
 }
 
