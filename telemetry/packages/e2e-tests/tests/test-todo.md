@@ -21,7 +21,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </li>
 <hr>
 
-<li><span class="todo">Switching between pods changes the selected pod for certain elements</span>
+<li><span class="totest">Switching between pods changes the selected pod for certain elements</span>
 <details>
   <summary>Issues</summary>
   <ul>
@@ -33,7 +33,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </li>
 <hr>
 
-<li><span class="todo">All view options are listed, visible and render the correct component</span>
+<li><span class="totest">All view options are listed, visible and render the correct component</span>
 <details>
   <summary>Issues</summary>
   <ul>
@@ -45,7 +45,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </li>
 <hr>
 
-<li><span class="todo">State machine diagram renders with the expected nodes visible</span>
+<li><span class="totest">State machine diagram renders with the expected nodes visible</span>
 <details>
   <summary>Issues</summary>
   <ul>
@@ -54,7 +54,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </li>
 <hr>
 
-<li><span class="todo">Open MCT plots measurements on graphs correctly (historical test)</span>
+<li><span class="totest">Open MCT plots measurements on graphs correctly (historical test)</span>
 <details>
   <summary>Issues</summary>
   <ul>
@@ -63,7 +63,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </li>
 <hr>
 
-<li><span class="todo">Open MCT plots live measurements from MQTT messages (realtime test)</span>
+<li><span class="totest">Open MCT plots live measurements from MQTT messages (realtime test)</span>
 <details>
   <summary>Issues</summary>
   <ul>
@@ -72,7 +72,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </li>
 <hr>
 
-<li><span class="todo">Open MCT logs a fault when a measurement limit is exceeded (check warning and critical limits)</span>
+<li><span class="totest">Open MCT logs a fault when a measurement limit is exceeded (check warning and critical limits)</span>
 <details>
   <summary>Issues</summary>
   <ul>
@@ -87,7 +87,7 @@ branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing
 </ol>
 
 <style>
-  .todo {
+  .totest {
     color: #FF7F7F;
   }
   .doing {
