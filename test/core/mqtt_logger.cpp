@@ -20,7 +20,7 @@ TEST(MqttLogger, sendMqttMessage)
   const auto &message = sent_messages.at(0);
   ASSERT_EQ(message.topic, core::MqttTopic::kLog);
   ASSERT_EQ(message.header.priority, core::MqttMessagePriority::kCritical);
-  ASSERT_EQ(message.header.timestamp, 0);
+  ASSERT_EQ(message.header.timestamp, manual_time.now());
   const auto &payload = message.payload->GetObject();
   ASSERT_EQ(payload.MemberCount(), 1);
   ASSERT_TRUE(payload.HasMember("log"));
@@ -42,8 +42,7 @@ TEST(MqttLogger, correctTime)
   const auto &message = sent_messages.at(0);
   ASSERT_EQ(message.topic, core::MqttTopic::kLog);
   ASSERT_EQ(message.header.priority, core::MqttMessagePriority::kCritical);
-  ASSERT_EQ(message.header.timestamp,
-            std::chrono::system_clock::from_time_t(3600).time_since_epoch().count());
+  ASSERT_EQ(message.header.timestamp, manual_time.now());
   const auto &payload = message.payload->GetObject();
   ASSERT_EQ(payload.MemberCount(), 1);
   ASSERT_TRUE(payload.HasMember("log"));
@@ -64,7 +63,7 @@ TEST(MqttLogger, sendFormattedMessage)
   const auto &message = sent_messages.at(0);
   ASSERT_EQ(message.topic, core::MqttTopic::kLog);
   ASSERT_EQ(message.header.priority, core::MqttMessagePriority::kCritical);
-  ASSERT_EQ(message.header.timestamp, 0);
+  ASSERT_EQ(message.header.timestamp, manual_time.now());
   const auto &payload = message.payload->GetObject();
   ASSERT_EQ(payload.MemberCount(), 1);
   ASSERT_TRUE(payload.HasMember("log"));

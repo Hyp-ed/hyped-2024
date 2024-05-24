@@ -34,8 +34,8 @@ void MqttLogger::log(const LogLevel level, const char *format, ...)
   rapidjson::Value log_string_value;
   log_string_value.SetString(buffer, message_payload->GetAllocator());
   message_payload->AddMember("log", log_string_value, message_payload->GetAllocator());
-  const auto now = static_cast<std::uint64_t>(time_source_.now().time_since_epoch().count());
-  const MqttMessage::Header header{.timestamp = now, .priority = MqttMessagePriority::kCritical};
+  const MqttMessage::Header header{.timestamp = time_source_.now(),
+                                   .priority  = MqttMessagePriority::kCritical};
   const MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, MqttMessageQos::kAtLeastOnce);
 }

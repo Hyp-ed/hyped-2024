@@ -4,12 +4,16 @@
 #include <rapidjson/stringbuffer.h>
 #include <rapidjson/writer.h>
 
+#include "core/time.hpp"
 #include <core/wall_clock.hpp>
 
 namespace hyped::state_machine {
 
-StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt, TransitionTable transition_table)
-    : current_state_(State::kIdle),
+StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt,
+                           core::ITimeSource &time,
+                           TransitionTable transition_table)
+    : time_(time),
+      current_state_(State::kIdle),
       mqtt_(std::move(mqtt)),
       transition_to_state_(std::move(transition_table))
 {
@@ -60,7 +64,7 @@ void StateMachine::publishCurrentState()
   message_payload->SetObject();
   rapidjson::Value state_value(state_string.c_str(), message_payload->GetAllocator());
   message_payload->AddMember("transition", state_value, message_payload->GetAllocator());
-  const core::MqttMessage::Header header{.timestamp = 0,
+  const core::MqttMessage::Header header{.timestamp = time_.now(),
                                          .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
@@ -97,12 +101,12 @@ core::Result StateMachine::startNode(toml::v3::node_view<const toml::v3::node> c
   if (transition_list == "full_run") {
     const state_machine::TransitionTable transition_table
       = state_machine::transition_to_state_dynamic;
-    state_machine::StateMachine state_machine(mqtt, transition_table);
+    state_machine::StateMachine state_machine(mqtt, wall_clock, transition_table);
     state_machine.run();
   } else if (transition_list == "static_run") {
     const state_machine::TransitionTable transition_table
       = state_machine::transition_to_state_static;
-    state_machine::StateMachine state_machine(mqtt, transition_table);
+    state_machine::StateMachine state_machine(mqtt, wall_clock, transition_table);
     state_machine.run();
   } else {
     logger.log(core::LogLevel::kFatal, "Unknown transition list: %s", transition_list.c_str());

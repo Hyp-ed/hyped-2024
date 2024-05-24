@@ -5,6 +5,7 @@
 
 #include <unordered_map>
 
+#include "core/time.hpp"
 #include <boost/unordered_map.hpp>
 #include <core/mqtt.hpp>
 #include <core/types.hpp>
@@ -14,7 +15,9 @@ namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine(std::shared_ptr<core::IMqtt> mqtt, TransitionTable transition_table);
+  StateMachine(std::shared_ptr<core::IMqtt> mqtt,
+               core::ITimeSource &time,
+               TransitionTable transition_table);
   void run();
   State getCurrentState();
   core::Result handleTransition(const State &state);
@@ -64,6 +67,7 @@ class StateMachine {
        {State::kFailure, "kFailure"},
        {State::kSafe, "kSafe"}};
 
+  core::ITimeSource &time_;
   State current_state_;
   const std::shared_ptr<core::IMqtt> mqtt_;
   TransitionTable transition_to_state_;

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include "utils/manual_time.hpp"
 #include <core/logger.hpp>
 #include <core/mqtt.hpp>
 #include <core/wall_clock.hpp>
@@ -14,7 +15,7 @@ void testTransition(const std::shared_ptr<state_machine::StateMachine> &stm,
                     state_machine::State expected_state)
 {
   stm->handleTransition(transition_state);
-  ASSERT_TRUE(stm->getCurrentState() == expected_state);
+  ASSERT_EQ(stm->getCurrentState(), expected_state);
 }
 
 std::shared_ptr<utils::DummyMqtt> getMockMqtt()
@@ -24,8 +25,9 @@ std::shared_ptr<utils::DummyMqtt> getMockMqtt()
 
 TEST(StateMachine, cleanRunDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -48,8 +50,9 @@ TEST(StateMachine, cleanRunDynamic)
 
 TEST(StateMachine, cleanRunDuplicatedMessagesDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -90,8 +93,9 @@ TEST(StateMachine, cleanRunDuplicatedMessagesDynamic)
 
 TEST(StateMachine, failureBrakeFromAcceleratingDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -109,8 +113,9 @@ TEST(StateMachine, failureBrakeFromAcceleratingDynamic)
 
 TEST(StateMachine, failureBrakeFromLIMBrakeDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -129,8 +134,9 @@ TEST(StateMachine, failureBrakeFromLIMBrakeDynamic)
 
 TEST(StateMachine, failureBrakeFrictionBrakeDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -150,8 +156,9 @@ TEST(StateMachine, failureBrakeFrictionBrakeDynamic)
 
 TEST(StateMachine, duplicatedMessagesFailureStatesDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -184,8 +191,9 @@ TEST(StateMachine, duplicatedMessagesFailureStatesDynamic)
 
 TEST(StateMachine, duplicatedMessageAfterStateChangeDynamic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_dynamic);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_dynamic);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kPrecharge);
@@ -195,8 +203,9 @@ TEST(StateMachine, duplicatedMessageAfterStateChangeDynamic)
 
 TEST(StateMachine, cleanRunStatic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_static);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -215,8 +224,9 @@ TEST(StateMachine, cleanRunStatic)
 
 TEST(StateMachine, cleanRunDuplicatedMessagesStatic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_static);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -249,8 +259,9 @@ TEST(StateMachine, cleanRunDuplicatedMessagesStatic)
 
 TEST(StateMachine, failureBrakeFromLevitatingStatic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_static);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -267,8 +278,9 @@ TEST(StateMachine, failureBrakeFromLevitatingStatic)
 
 TEST(StateMachine, failurePriorToLevitationStatic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_static);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
@@ -280,8 +292,9 @@ TEST(StateMachine, failurePriorToLevitationStatic)
 
 TEST(StateMachine, duplicatedMessagesFailureStatesStatic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_static);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kFailureBrake, state_machine::State::kIdle);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
@@ -308,12 +321,14 @@ TEST(StateMachine, duplicatedMessagesFailureStatesStatic)
 
 TEST(StateMachine, duplicatedMessageAfterStateChangeStatic)
 {
+  utils::ManualTime manual_time;
   auto stm = std::make_shared<state_machine::StateMachine>(
-    getMockMqtt(), state_machine::transition_to_state_static);
+    getMockMqtt(), manual_time, state_machine::transition_to_state_static);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kCalibrate);
   testTransition(stm, state_machine::State::kPrecharge, state_machine::State::kPrecharge);
   testTransition(stm, state_machine::State::kCalibrate, state_machine::State::kPrecharge);
   testTransition(
     stm, state_machine::State::kReadyForLevitation, state_machine::State::kReadyForLevitation);
 }
+
 }  // namespace hyped::test
