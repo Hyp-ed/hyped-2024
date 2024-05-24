@@ -22,12 +22,14 @@ COPY pnpm-workspace.yaml ./
 COPY patches ./patches
 COPY turbo.json ./
 RUN pnpm install --frozen-lockfile
+RUN pnpm --filter=e2e-tests exec playwright install --with-deps
 
 # Expose ports
 EXPOSE 5173
 EXPOSE 3000
 EXPOSE 3001
 EXPOSE 8086
+EXPOSE 9323
 
 # Entrypoint
 COPY entry.sh ./

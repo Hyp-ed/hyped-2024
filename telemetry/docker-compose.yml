@@ -10,9 +10,11 @@ services:
       - 5173:5173
       - 3000:3000
       - 3001:3001
+      - 9323:9323
     environment:
       - PNPM_SCRIPT
       - IS_DOCKER=true
+      - E2E_TEST_MQTT_BROKER=mqtt://mosquitto:1883
     volumes:
       - ./:/usr/src/app
       # Exclude node_modules from being mounted
@@ -26,8 +28,6 @@ services:
       - /usr/src/app/packages/fake/node_modules
       - /usr/src/app/packages/eslint-config/node_modules
       - /usr/src/app/packages/e2e-tests/node_modules
-      # persist turborepo cache
-      - /usr/src/app/.turborepo
     networks:
       - telemetry
   influxdb:

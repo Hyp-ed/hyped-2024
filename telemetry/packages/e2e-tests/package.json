@@ -4,7 +4,7 @@
   "description": "End-to-end tests for HYPED Telemetry",
   "main": "index.js",
   "scripts": {
-    "e2e:test": "pnpm dlx playwright test"
+    "e2e:test": "playwright test"
   },
   "dependencies": {
     "@hyped/telemetry-server": "workspace:*",
