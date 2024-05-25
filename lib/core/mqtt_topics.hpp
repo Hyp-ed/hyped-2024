@@ -20,6 +20,6 @@ const std::unordered_map<std::string, MqttTopic> mqtt_string_to_topic
      {"accelerometer", MqttTopic::kAccelerometer},
      {"optical_flow", MqttTopic::kOpticalFlow},
      {"keyence", MqttTopic::kKeyence},
-     {"started", MqttTopic::kStarted};
+     {"started", MqttTopic::kStarted}};
 
 }  // namespace hyped::core

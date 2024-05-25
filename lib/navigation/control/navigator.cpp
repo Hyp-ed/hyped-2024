@@ -132,10 +132,11 @@ core::Result Navigator::accelerometerUpdate(
   return core::Result::kSuccess;
 }
 
-void Navigator::requestFailure(const std::string &failure_message)
+// Publish failure message to kState topic
+void Navigator::requestFailure()
 {
-  const auto topic     = core::MqttTopic::kState;
-  auto message_payload = std::make_shared<rapidjson::Document>();
+  failure_message = "kFailure" const auto topic = core::MqttTopic::kState;
+  auto message_payload                          = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
 
   rapidjson::Value message_value;
@@ -148,6 +149,7 @@ void Navigator::requestFailure(const std::string &failure_message)
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 
+// Publish current trajectory to kTest topic
 void Navigator::publishCurrentTrajectory()
 {
   const auto topic     = core::MqttTopic::kTest;
@@ -183,9 +185,22 @@ void Navigator::run()
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 
-  mqtt_->subscribe(core::MqttTopic::kKeyence);
-  mqtt_->subscribe(core::MqttTopic::kOpticalFlow);
-  mqtt_->subscribe(core::MqttTopic::kAccelerometer);
+  // Subscribe to all required topics
+  bool Navigator::subscribeAndCheck(core::MqttTopic topic)
+  {
+    if (!mqtt_->subscribe(topic)) {
+      publishFailure();
+      logger_.log(core::LogLevel::kFatal, "Failed to subscribe to topic");
+      return false;
+    }
+    return true;
+  }
+
+  if (!subscribeAndCheck(core::MqttTopic::kKeyence)
+      || !subscribeAndCheck(core::MqttTopic::kOpticalFlow)
+      || !subscribeAndCheck(core::MqttTopic::kAccelerometer)) {
+    return;
+  }
 
   while (true) {
     mqtt_->consume();
