@@ -68,6 +68,7 @@ void HealthMonitor::run()
       publishTransitionRequest(state_machine::State::kFailure);
       return;
     }
+    publishTransitionRequest(state_machine::State::kReady);
   }
   while (true) {
     const auto result = processBatch();
@@ -151,6 +152,7 @@ void HealthMonitor::publishTransitionRequest(state_machine::State state)
   message_payload->AddMember("transition", requested_state, message_payload->GetAllocator());
   const core::MqttMessage::Header header{time_.now(), core::MqttMessagePriority::kCritical};
   const core::MqttMessage message{core::MqttTopic::kStateRequest, header, message_payload};
+  mqtt_->publish(message, kExactlyOnce);
 }
 
 }  // namespace hyped::core
