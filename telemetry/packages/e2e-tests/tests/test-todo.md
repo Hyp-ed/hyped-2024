@@ -1,11 +1,9 @@
 # End to End Testing Briefing
 
-[Issue #102](https://github.com/Hyp-ed/hyped-2024/issues/102)
-
-(link branch for each testing topic in the list below once indv. branches have been pushed)
+Full list: [Issue #102](https://github.com/Hyp-ed/hyped-2024/issues/102)
 
 <ol>
-<li><span class="doing">All inputs on the sidebar, including setting levitation height, are visible with correct labels and the correct MQTT state transition message is emitted (for the GO button, make sure that the enable toggle works)
+<li><span class="totest">All inputs on the sidebar, including setting levitation height, are visible with correct labels and the correct MQTT state transition message is emitted (for the GO button, make sure that the enable toggle works)
 </span>
 <details>
   <summary>Issues</summary>
@@ -15,8 +13,6 @@
     <li>MQTT State Transition Message Emitted (<em>Enable Toggle should work for 'GO' button</em>)</li>
   </ul>
 </details>
-
-branch: [test-sidebar](https://github.com/Hyp-ed/hyped-2024/tree/tel-e2e_testing)
 
 </li>
 <hr>
