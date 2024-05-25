@@ -53,6 +53,18 @@ class Navigator : public INavigator {
    */
   void publishCurrentTrajectory();
 
+  /**
+   * @brief Publishes a failure message to the MQTT broker
+   */
+  void requestFailure();
+
+  /**
+   * @brief Checks if subscribing to a topic was successful
+   *
+   * @param message
+   */
+  bool subscribeAndCheck(core::MqttTopic topic);
+
  private:
   core::ILogger &logger_;
   const core::ITimeSource &time_;
