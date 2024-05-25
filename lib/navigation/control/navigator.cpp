@@ -132,6 +132,22 @@ core::Result Navigator::accelerometerUpdate(
   return core::Result::kSuccess;
 }
 
+void Navigator::requestFailure(const std::string &failure_message)
+{
+  const auto topic     = core::MqttTopic::kState;
+  auto message_payload = std::make_shared<rapidjson::Document>();
+  message_payload->SetObject();
+
+  rapidjson::Value message_value;
+  message_value.SetString(failure_message.c_str(), message_payload->GetAllocator());
+  message_payload->AddMember("transition", message_value, message_payload->GetAllocator());
+
+  const core::MqttMessage::Header header{.timestamp = 0,
+                                         .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage message{topic, header, message_payload};
+  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+}
+
 void Navigator::publishCurrentTrajectory()
 {
   const auto topic     = core::MqttTopic::kTest;
@@ -159,8 +175,7 @@ void Navigator::run()
   message_payload->SetObject();
 
   rapidjson::Value message_value;
-  message_value.SetString("Nav module running",
-                          message_payload->GetAllocator());
+  message_value.SetString("Nav module running", message_payload->GetAllocator());
   message_payload->AddMember("message", message_value, message_payload->GetAllocator());
 
   const core::MqttMessage::Header header{.timestamp = 0,
@@ -204,6 +219,8 @@ void Navigator::run()
         || optical_update_result == core::Result::kFailure
         || accelerometer_update_result == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
+      requestFailure("Failed to update sensor data");
+
       break;
     }
 
