@@ -2,9 +2,11 @@
   "name": "@hyped/env",
   "version": "1.0.0",
   "description": "Contains environment variable validation schemas for HYPED Telemetry",
+  "main": "dist/env.js",
+  "types": "dist/env.d.ts",
   "type": "module",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && node ./dist/env.js",
     "dev": "tsc -w",
     "validate": "tsc && node ./dist/env.js"
   },

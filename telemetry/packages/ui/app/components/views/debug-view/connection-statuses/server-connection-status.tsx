@@ -7,11 +7,11 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Server } from 'lucide-react';
-import { config } from '@/config';
 import { useLiveLogs } from '@/context/live-logs';
 import { useEffect, useState } from 'react';
 import { LatencyChart } from '@/components/shared/latency-chart';
 import { PreviousLatenciesType } from '@/context/pods';
+import { env } from '@hyped/env';
 
 /**
  * The number of previous latencies to show in the chart.
@@ -40,7 +40,7 @@ export const ServerConnectionStatus = () => {
     // Check for server ping every second and set the latency
     const interval = setInterval(() => {
       const start = Date.now();
-      fetch(`${config.SERVER_ENDPOINT}/ping`)
+      fetch(`${env.PUBLIC_TELEMETRY_SERVER_URL}/ping`)
         .then(() => {
           // The latency is the time it took to get a response from the server (round trip)
           const latency = Date.now() - start;
@@ -106,7 +106,7 @@ export const ServerConnectionStatus = () => {
         </div>
       </CardContent>
       <CardFooter className="text-sm text-muted-foreground">
-        {config.SERVER_ENDPOINT}
+        {env.PUBLIC_TELEMETRY_SERVER_URL}
       </CardFooter>
     </Card>
   );

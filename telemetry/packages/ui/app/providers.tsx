@@ -1,9 +1,9 @@
 import { LiveLogsProvider } from './context/live-logs';
 import { MQTTProvider } from './context/mqtt';
 import { PodsProvider } from './context/pods';
-import { config } from './config';
 import { QoS } from './types/mqtt';
 import { ErrorProvider } from './context/errors';
+import { env } from '@hyped/env';
 
 /**
  * Provider for all the contexts.
@@ -11,7 +11,10 @@ import { ErrorProvider } from './context/errors';
  */
 export const Providers = ({ children }: { children: React.ReactNode }) => (
   <ErrorProvider>
-    <MQTTProvider broker={config.MQTT_BROKER} qos={config.MQTT_QOS as QoS}>
+    <MQTTProvider
+      broker={env.PUBLIC_MQTT_BROKER_HOST}
+      qos={env.PUBLIC_MQTT_QOS as QoS}
+    >
       <PodsProvider>
         <LiveLogsProvider>{children}</LiveLogsProvider>
       </PodsProvider>

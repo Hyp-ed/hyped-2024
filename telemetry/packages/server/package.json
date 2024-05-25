@@ -13,6 +13,7 @@
     "lint:fix": "eslint \"src/**/*.ts\" --fix"
   },
   "dependencies": {
+    "@hyped/env": "workspace:*",
     "@hyped/telemetry-constants": "workspace:*",
     "@influxdata/influxdb-client": "^1.33.1",
     "@nestjs/common": "^9.2.1",

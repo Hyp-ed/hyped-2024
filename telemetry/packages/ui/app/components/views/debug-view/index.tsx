@@ -8,7 +8,7 @@ import {
 } from '@/components/ui/resizable';
 import { useCurrentPod } from '@/context/pods';
 import { PodStateUpdater } from './pod-state-updater';
-import { config } from '@/config';
+import { env } from '@hyped/env';
 
 /**
  * Debug view. Contains components for debugging.
@@ -21,7 +21,8 @@ import { config } from '@/config';
 export const DebugView = () => {
   const { currentPod: podId } = useCurrentPod();
 
-  const showExternalDebuggingTools = config.EXTENDED_DEBUGGING_TOOLS ?? false;
+  const showExternalDebuggingTools =
+    env.PUBLIC_EXTENDED_DEBUGGING_TOOLS ?? false;
 
   return (
     <ResizablePanelGroup direction="vertical">

@@ -1,14 +1,8 @@
 import { InfluxDB, QueryApi, WriteApi } from '@influxdata/influxdb-client';
 import { Injectable, LoggerService, OnModuleInit } from '@nestjs/common';
-import {
-  INFLUX_TELEMETRY_BUCKET,
-  INFLUX_ORG,
-  INFLUX_TOKEN,
-  INFLUX_URL,
-  INFLUX_FAULTS_BUCKET,
-} from '@/modules/core/config';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { InfluxServiceError } from './errors/InfluxServiceError';
+import { env } from '@hyped/env';
 
 @Injectable()
 export class InfluxService implements OnModuleInit {
@@ -20,24 +14,27 @@ export class InfluxService implements OnModuleInit {
   private readonly logger: LoggerService;
 
   async $connect() {
-    this.connection = new InfluxDB({ url: INFLUX_URL, token: INFLUX_TOKEN });
+    this.connection = new InfluxDB({
+      url: env.INFLUX_URL,
+      token: env.INFLUX_TOKEN,
+    });
     this.telemetryWrite = this.connection.getWriteApi(
-      INFLUX_ORG,
-      INFLUX_TELEMETRY_BUCKET,
+      env.INFLUX_ORG,
+      env.INFLUX_TELEMETRY_BUCKET,
       'ns',
       {
         batchSize: 1,
       },
     );
     this.faultsWrite = this.connection.getWriteApi(
-      INFLUX_ORG,
-      INFLUX_FAULTS_BUCKET,
+      env.INFLUX_ORG,
+      env.INFLUX_FAULTS_BUCKET,
       'ns',
       {
         batchSize: 1,
       },
     );
-    this.query = this.connection.getQueryApi(INFLUX_ORG);
+    this.query = this.connection.getQueryApi(env.INFLUX_ORG);
 
     // Warn if InfluxDB isn't running
     try {

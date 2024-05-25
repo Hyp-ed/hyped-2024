@@ -1,9 +1,9 @@
 import { flux, fluxDateTime } from '@influxdata/influxdb-client';
 import { HttpException, Injectable, LoggerService } from '@nestjs/common';
-import { INFLUX_TELEMETRY_BUCKET } from '@/core/config';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
 import { InfluxRow } from '@/modules/common/types/InfluxRow';
+import { env } from '@hyped/env';
 
 interface InfluxHistoricalRow extends InfluxRow {
   measurementKey: string;
@@ -32,7 +32,7 @@ export class HistoricalTelemetryDataService {
     );
 
     const query = flux`
-      from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
+      from(bucket: "${env.INFLUX_TELEMETRY_BUCKET}")
         |> range(start: ${fluxStart}, stop: ${fluxEnd})
         |> filter(fn: (r) => r["measurementKey"] == "${measurementKey}")
         |> filter(fn: (r) => r["podId"] == "${podId}")`;

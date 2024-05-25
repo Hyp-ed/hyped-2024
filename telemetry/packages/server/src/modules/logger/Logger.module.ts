@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { utilities, WinstonModule, WinstonModuleOptions } from 'nest-winston';
 import { format, transports } from 'winston';
-import { ENV } from '@/modules/core/config';
 import { LiveLogsTransport } from '../live-logs/LiveLogsTransport';
+import { env } from '@hyped/env';
 
 // In top-level 'telemetry' directory
 const LOGGING_DIRECTORY = '../../logs';
@@ -26,7 +26,7 @@ const unhandledErrorFormat = format((info) => {
 });
 
 export const loggerOptions: WinstonModuleOptions = {
-  level: ENV === 'development' ? 'debug' : 'info',
+  level: env.ENV === 'development' ? 'debug' : 'info',
   format: format.combine(
     unhandledErrorFormat(),
     format.timestamp({
@@ -44,7 +44,7 @@ export const loggerOptions: WinstonModuleOptions = {
       level: 'error',
     }),
     new transports.File({ filename: 'all.log', dirname: LOGGING_DIRECTORY }),
-    ...(ENV === 'development'
+    ...(env.ENV === 'development'
       ? [
           new transports.Console({
             format: format.combine(

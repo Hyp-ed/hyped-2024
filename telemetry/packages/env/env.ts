@@ -1,6 +1,9 @@
 import { createEnv } from '@t3-oss/env-core';
 import { z } from 'zod';
-import 'dotenv/config';
+import dotenv from 'dotenv';
+
+// Load environment variables from the ".env" file in the root of the `/telemetry` directory.
+dotenv.config({ path: '../../.env' });
 
 /**
  * HYPED Telemetry environment variables for the GUI.
@@ -12,6 +15,7 @@ export const env = createEnv({
     INFLUX_ORG: z.string().min(1),
     INFLUX_TELEMETRY_BUCKET: z.string().min(1),
     INFLUX_FAULTS_BUCKET: z.string().min(1),
+    ENV: z.enum(['development', 'production']).default('development'),
   },
 
   /**
@@ -38,6 +42,7 @@ export const env = createEnv({
     PUBLIC_EXTENDED_DEBUGGING_TOOLS: z.coerce.boolean().default(false),
     PUBLIC_PUBLIC_APP_POD_ID: z.string().min(1),
     PUBLIC_TELEMETRY_SERVER_URL: z.string().min(1),
+    PUBLIC_IS_DOCKER: z.coerce.boolean().default(false),
   },
 
   /**

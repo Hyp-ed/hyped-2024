@@ -1,7 +1,7 @@
-import { INFLUX_FAULTS_BUCKET } from '@/core/config';
 import { InfluxRow } from '@/modules/common/types/InfluxRow';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { Logger } from '@/modules/logger/Logger.decorator';
+import { env } from '@hyped/env';
 import { OpenMctFault } from '@hyped/telemetry-types';
 import { HistoricalFaults } from '@hyped/telemetry-types/dist/openmct/openmct-fault.types';
 import { fluxString } from '@influxdata/influxdb-client';
@@ -35,7 +35,7 @@ export class HistoricalFaultDataService {
   ): Promise<HistoricalFaults> {
     const { podId, measurementKey, faultId } = props;
 
-    const query = `from(bucket: "${INFLUX_FAULTS_BUCKET}")
+    const query = `from(bucket: "${env.INFLUX_FAULTS_BUCKET}")
       |> range(start: -24h)
       ${podId ? `|> filter(fn: (r) => r["podId"] == ${fluxString(podId) as unknown as string})` : ''}
       ${

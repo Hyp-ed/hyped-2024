@@ -1,9 +1,9 @@
+import { env } from '@hyped/env';
 import { useState, useEffect, createContext, useContext } from 'react';
-import { config } from '@/config';
 import { io } from 'socket.io-client';
 
 // Socket.io client for live logs from the telemetry server
-const socket = io(config.SERVER_ENDPOINT, {
+const socket = io(env.PUBLIC_TELEMETRY_SERVER_URL, {
   path: '/live-logs',
 });
 

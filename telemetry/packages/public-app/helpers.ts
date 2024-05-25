@@ -4,11 +4,12 @@ import {
   LaunchTimeResponse,
   VelocityResponse,
 } from '@hyped/telemetry-types/dist/server/responses';
+import { env } from '@hyped/env';
 
 /**
  * The server endpoint for fetching public data.
  */
-export const SERVER_ENDPOINT = `${process.env.NEXT_PUBLIC_TELEMETRY_SERVER}/pods/${process.env.NEXT_PUBLIC_POD_ID}/public-data`;
+export const SERVER_ENDPOINT = `${env.PUBLIC_TELEMETRY_SERVER_URL}/pods/${env.PUBLIC_PUBLIC_APP_POD_ID}/public-data`;
 
 const ONE_MINUTE = 60;
 

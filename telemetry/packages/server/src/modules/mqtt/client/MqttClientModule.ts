@@ -1,9 +1,9 @@
+import { env } from '@hyped/env';
 import { Module } from '@nestjs/common';
 import { MqttModule } from 'nest-mqtt';
-import { MQTT_BROKER_HOST } from 'src/modules/core/config';
 
 const mqttClient = MqttModule.forRoot({
-  host: MQTT_BROKER_HOST,
+  host: env.PUBLIC_MQTT_BROKER_HOST,
 });
 
 @Module({

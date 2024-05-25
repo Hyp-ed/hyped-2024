@@ -1,6 +1,5 @@
 import { HttpException, Injectable, LoggerService } from '@nestjs/common';
 import { Logger } from '@/modules/logger/Logger.decorator';
-import { INFLUX_TELEMETRY_BUCKET } from '../core/config';
 import { flux } from '@influxdata/influxdb-client';
 import { InfluxService } from '@/modules/influx/Influx.service';
 import { ACTIVE_STATES } from '@hyped/telemetry-constants';
@@ -9,6 +8,7 @@ import {
   LaunchTimeResponse,
   StateResponse,
 } from '@hyped/telemetry-types/dist/server/responses';
+import { env } from '@hyped/env';
 
 interface InfluxStateRow extends InfluxRow {
   stateType: string;
@@ -30,7 +30,7 @@ export class PublicDataService {
   public async getState(podId: string): Promise<StateResponse> {
     // Get the last state reading from InfluxDB (measurement name should be 'state')
     const query = flux`
-      from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
+      from(bucket: "${env.INFLUX_TELEMETRY_BUCKET}")
         |> range(start: -1d)
         |> filter(fn: (r) => r["_measurement"] == "state")
         |> filter(fn: (r) => r["podId"] == "${podId}")
@@ -93,7 +93,7 @@ export class PublicDataService {
 
     // Get the last "ACCELERATING" state reading from InfluxDB
     const query = flux`
-      from(bucket: "${INFLUX_TELEMETRY_BUCKET}")
+      from(bucket: "${env.INFLUX_TELEMETRY_BUCKET}")
         |> range(start: -1d)
         |> filter(fn: (r) => r["_measurement"] == "state")
         |> filter(fn: (r) => r["podId"] == "${podId}")
