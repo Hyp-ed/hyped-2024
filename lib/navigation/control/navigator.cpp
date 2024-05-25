@@ -182,15 +182,19 @@ void Navigator::run()
          core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
          core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
 
-    if (keyenceUpdate(dummy_keyence_data) == core::Result::kFailure
-        || opticalUpdate(dummy_optical_data) == core::Result::kFailure
-        || accelerometerUpdate(dummy_accelerometer_data) == core::Result::kFailure) {
+    auto keyence_update_result       = keyenceUpdate(dummy_keyence_data);
+    auto optical_update_result       = opticalUpdate(dummy_optical_data);
+    auto accelerometer_update_result = accelerometerUpdate(dummy_accelerometer_data);
+
+    if (keyence_update_result == core::Result::kFailure
+        || optical_update_result == core::Result::kFailure
+        || accelerometer_update_result == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
       break;
     }
-  }
 
-  publishCurrentTrajectory();
+    publishCurrentTrajectory();
+  }
 }
 
 }  // namespace hyped::navigation
