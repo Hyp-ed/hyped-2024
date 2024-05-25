@@ -35,6 +35,10 @@ address = 0x38
 enabled = false
 bus = "can1"
 
+[sensors.keyence]
+enabled = false
+pin = 1
+
 [motors]
 enabled = false
 bus = "can1"

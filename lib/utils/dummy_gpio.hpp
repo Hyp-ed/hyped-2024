@@ -50,10 +50,8 @@ class DummyGpio : public io::IGpio {
  public:
   DummyGpio(DummyGpioReader::ReadHandler read_handler, DummyGpioWriter::WriteHandler write_handler);
 
-  std::optional<std::shared_ptr<io::IGpioReader>> getReader(const std::uint8_t pin,
-                                                            const io::Edge edge) override;
-  std::optional<std::shared_ptr<io::IGpioWriter>> getWriter(const std::uint8_t pin,
-                                                            const io::Edge edge) override;
+  std::optional<std::shared_ptr<io::IGpioReader>> getReader(const std::uint8_t pin) override;
+  std::optional<std::shared_ptr<io::IGpioWriter>> getWriter(const std::uint8_t pin) override;
 
  private:
   DummyGpioReader::ReadHandler read_handler_;

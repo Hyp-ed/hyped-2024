@@ -1,13 +1,15 @@
 #include "gpio_commands.hpp"
 
+#include <io/hardware_gpio.hpp>
+
 namespace hyped::debug {
 
 core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Repl> &repl)
 {
   {
-    const auto *const gpio_read_command_name        = "gpio read";
-    const auto *const gpio_read_command_description = "Read from GPIO pins";
-    const auto *const gpio_read_command_usage       = "gpio read <pin_number>";
+    const std::string gpio_read_command_name        = "gpio read";
+    const std::string gpio_read_command_description = "Read from GPIO pins";
+    const std::string gpio_read_command_usage       = "gpio read <pin_number>";
     const auto gpio_read_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 1) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
@@ -15,12 +17,12 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
       }
       const auto gpio           = repl->getGpio();
       const auto pin            = std::stoi(args[0]);
-      auto optional_gpio_reader = gpio->getReader(pin, io::Edge::kNone);
+      auto optional_gpio_reader = gpio->getReader(pin);
       if (!optional_gpio_reader) {
-        logger.log(core::LogLevel::kFatal, "Failed to get GPIO reader on pin %d", pin);
+        logger.log(core::LogLevel::kFatal, "Failed to create GPIO reader for pin %d", pin);
         return;
       }
-      const auto gpio_reader = std::move(*optional_gpio_reader);
+      const auto gpio_reader = *optional_gpio_reader;
       const auto value       = gpio_reader->read();
       if (!value) {
         logger.log(core::LogLevel::kFatal, "Failed to read from GPIO pin %d", pin);
@@ -38,9 +40,9 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
     repl->addCommand(std::move(gpio_read_command));
   }
   {
-    const auto *const gpio_write_command_name        = "gpio write";
-    const auto *const gpio_write_command_description = "Write to GPIO pin (0 or 1)";
-    const auto *const gpio_write_command_usage       = "gpio write <pin_number> <value>";
+    const std::string gpio_write_command_name        = "gpio write";
+    const std::string gpio_write_command_description = "Write to GPIO pin (0 or 1)";
+    const std::string gpio_write_command_usage       = "gpio write <pin_number> <value>";
     const auto gpio_write_command_handler = [&logger, repl](std::vector<std::string> args) {
       if (args.size() != 2) {
         logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
@@ -48,12 +50,12 @@ core::Result GpioCommands::addCommands(core::ILogger &logger, std::shared_ptr<Re
       }
       const auto gpio           = repl->getGpio();
       const auto pin            = std::stoi(args[0]);
-      auto optional_gpio_writer = gpio->getWriter(pin, io::Edge::kNone);
+      auto optional_gpio_writer = gpio->getWriter(pin);
       if (!optional_gpio_writer) {
-        logger.log(core::LogLevel::kFatal, "Failed to create GPIO writer on pin %d", pin);
+        logger.log(core::LogLevel::kFatal, "Failed to create GPIO writer for pin %d", pin);
         return;
       }
-      const auto gpio_writer = std::move(*optional_gpio_writer);
+      const auto gpio_writer = *optional_gpio_writer;
       const auto value       = std::stoi(args[1]);
       core::DigitalSignal signal;
       switch (value) {
