@@ -13,6 +13,9 @@
 
 namespace hyped::core {
 
+static constexpr Duration kCheckinTimeout = TimePoint::duration(1);
+static constexpr Duration kStartupTimeout = TimePoint::duration(60);
+
 /**
  * @brief HealthMonitor tracks the status of all nodes running on the pod, and if any fail to check
  * in within a certain period it will send a critical failure message. It also ensures all nodes
@@ -48,9 +51,6 @@ class HealthMonitor {
   core::ITimeSource &time_;
   std::shared_ptr<core::IMqtt> mqtt_;
   std::unordered_map<std::string, std::optional<TimePoint>> checkins_;
-
-  static constexpr Duration kCheckinTimeout = TimePoint::duration(1);
-  static constexpr Duration kStartupTimeout = TimePoint::duration(60);
 };
 
 }  // namespace hyped::core
