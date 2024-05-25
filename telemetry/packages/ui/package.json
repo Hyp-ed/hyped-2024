@@ -12,6 +12,7 @@
     "lint:fix": "eslint --fix --ext .ts,.tsx ."
   },
   "dependencies": {
+    "@hyped/env": "workspace:*",
     "@fontsource/ibm-plex-mono": "^5.0.8",
     "@fontsource/raleway": "^4.5.12",
     "@hookform/resolvers": "^3.3.4",

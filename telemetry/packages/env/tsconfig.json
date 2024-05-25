@@ -1,0 +1,9 @@
+{
+  "extends": "@hyped/tsconfig/base.json",
+  "compilerOptions": {
+    "baseUrl": "../../",
+    "moduleResolution": "bundler",
+  },
+  "include": ["shared-env.ts", "server.ts", "ui.ts", "pubic-app.ts"],
+  "exclude": ["node_modules"],
+}

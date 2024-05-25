@@ -13,7 +13,7 @@ import {
   PodConnectionStatusType,
 } from '@/types/PodConnectionStatus';
 import { log } from '@/lib/logger';
-import { config } from '@/config';
+import { uiEnv } from '@hyped/env/ui';
 
 /**
  * Dialog to display when pod disconnects or encounters an error.
@@ -42,7 +42,7 @@ export const PodDisconnectError = ({
   };
 
   return (
-    <AlertDialog open={config.DISCONNECTED_MESSAGE_DISABLED ? false : open}>
+    <AlertDialog open={uiEnv ? false : open}>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>Pod disconnected!</AlertDialogTitle>
