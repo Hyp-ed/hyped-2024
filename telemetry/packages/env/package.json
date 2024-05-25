@@ -2,16 +2,11 @@
   "name": "@hyped/env",
   "version": "1.0.0",
   "description": "Contains environment variable validation schemas for HYPED Telemetry",
-  "files": [
-    "ui.ts",
-    "server.ts",
-    "shared-env.ts",
-    "public-app.ts"
-  ],
   "type": "module",
   "scripts": {
-    "build": "tsc --noEmit",
-    "dev": "tsc -w --noEmit"
+    "build": "tsc",
+    "dev": "tsc -w",
+    "validate": "tsc && node ./dist/env.js"
   },
   "dependencies": {
     "@t3-oss/env-core": "^0.9.2",
@@ -19,7 +14,8 @@
   },
   "devDependencies": {
     "@hyped/tsconfig": "workspace:*",
-    "typescript": "^5.4.2",
-    "@types/node": "^20.11.30"
+    "@types/node": "^20.11.30",
+    "dotenv": "^16.0.3",
+    "typescript": "^5.4.2"
   }
 }

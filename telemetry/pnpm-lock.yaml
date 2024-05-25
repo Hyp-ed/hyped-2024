@@ -68,6 +68,9 @@ importers:
       '@types/node':
         specifier: ^20.11.30
         version: 20.11.30
+      dotenv:
+        specifier: ^16.0.3
+        version: 16.1.4
       typescript:
         specifier: ^5.4.2
         version: 5.4.2
@@ -129,6 +132,9 @@ importers:
 
   packages/public-app:
     dependencies:
+      '@hyped/env':
+        specifier: workspace:*
+        version: link:../env
       '@preact/signals-react':
         specifier: ^1.3.6
         version: 1.3.8(react@18.2.0)
@@ -6686,7 +6692,6 @@ packages:
   /dotenv@16.1.4:
     resolution: {integrity: sha512-m55RtE8AsPeJBpOIFKihEmqUcoVncQIwo7x9U8ZwLEZw9ZpXboz2c+rvog+jUaJvVrZ5kBOeYQBX5+8Aa/OZQw==}
     engines: {node: '>=12'}
-    dev: false
 
   /duplexify@3.7.1:
     resolution: {integrity: sha512-07z8uv2wMyS51kKhD1KsdXJg5WQ6t93RneqRxUHnskXVtlYYkLqM0gqStQZ3pj073g687jPCHrqNfCzawLYh5g==}
