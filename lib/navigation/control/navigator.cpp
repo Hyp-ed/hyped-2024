@@ -154,6 +154,20 @@ void Navigator::publishCurrentTrajectory()
 
 void Navigator::run()
 {
+  const auto topic     = core::MqttTopic::kStarted;
+  auto message_payload = std::make_shared<rapidjson::Document>();
+  message_payload->SetObject();
+
+  rapidjson::Value message_value;
+  message_value.SetString("Nav module running",
+                          message_payload->GetAllocator());
+  message_payload->AddMember("message", message_value, message_payload->GetAllocator());
+
+  const core::MqttMessage::Header header{.timestamp = 0,
+                                         .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage message{topic, header, message_payload};
+  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+
   mqtt_->subscribe(core::MqttTopic::kKeyence);
   mqtt_->subscribe(core::MqttTopic::kOpticalFlow);
   mqtt_->subscribe(core::MqttTopic::kAccelerometer);
