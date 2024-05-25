@@ -1,12 +1,15 @@
 #include "repl.hpp"
-#include "repl_logger.hpp"
+
+#include <optional>
 
 #include "commands/adc_commands.hpp"
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/keyence_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
+#include "commands/temperature_commands.hpp"
 #include "commands/uart_commands.hpp"
 #include <core/wall_clock.hpp>
 #include <io/hardware_adc.hpp>
@@ -15,8 +18,10 @@
 
 namespace hyped::debug {
 
+// NOLINTBEGIN(readability-function-cognitive-complexity)
 std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
                                                   Terminal &terminal,
+                                                  core::ITimeSource &time,
                                                   const std::string &filename)
 {
   auto repl = std::make_shared<Repl>(logger, terminal);
@@ -27,56 +32,72 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
     return std::nullopt;
   }
-  if (config["io"]["adc"]) {
-    const auto result = AdcCommands::addCommands(logger, repl, config["io"]["adc"]);
+  if (config["io"]["adc"]["enabled"].value_or(false)) {
+    const auto result = AdcCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
       return std::nullopt;
     }
   }
   if (config["io"]["can"]["enabled"].value_or(false)) {
-    const auto result = CanCommands::addCommands(logger, repl, config["io"]["can"]);
+    const auto result = CanCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding CAN commands");
       return std::nullopt;
     }
   }
   if (config["io"]["gpio"]["enabled"].value_or(false)) {
-    const auto result = GpioCommands::addCommands(logger, repl, config["io"]["gpio"]);
+    const auto result = GpioCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding GPIO commands");
       return std::nullopt;
     }
   }
   if (config["io"]["i2c"]["enabled"].value_or(false)) {
-    const auto result = I2cCommands::addCommands(logger, repl, config["io"]["i2c"]);
+    const auto result = I2cCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding I2C commands");
       return std::nullopt;
     }
   }
   if (config["io"]["pwm"]["enabled"].value_or(false)) {
-    const auto result = PwmCommands::addCommands(logger, repl, config["io"]["pwm"]);
+    const auto result = PwmCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding PWM commands");
       return std::nullopt;
     }
   }
   if (config["io"]["spi"]["enabled"].value_or(false)) {
-    const auto result = SpiCommands::addCommands(logger, repl, config["io"]["spi"]);
+    const auto result = SpiCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding SPI commands");
       return std::nullopt;
     }
   }
   if (config["io"]["uart"]["enabled"].value_or(false)) {
-    const auto result = UartCommands::addCommands(logger, repl, config["io"]["uart"]);
+    const auto result = UartCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding UART commands");
       return std::nullopt;
     }
   }
-  const auto aliases = config["aliases"].as_table();
+  if (config["sensors"]["keyence"]["enabled"].value_or(false)) {
+    const auto result
+      = KeyenceCommands::addCommands(logger, repl, time, config["sensors"]["keyence"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding keyence commands");
+      return std::nullopt;
+    }
+  }
+  if (config["sensors"]["temperature"]["enabled"].value_or(false)) {
+    const auto result
+      = TemperatureCommands::addCommands(logger, repl, config["sensors"]["temperature"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding temperature commands");
+      return std::nullopt;
+    }
+  }
+  auto *const aliases = config["aliases"].as_table();
   for (auto [alias, command] : *aliases) {
     const std::string alias_alias     = static_cast<std::string>(alias.str());
     const auto optional_alias_command = command.value<std::string>();
@@ -84,21 +105,17 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       logger.log(core::LogLevel::kFatal, "Error parsing alias command: %s", alias_alias.c_str());
       return std::nullopt;
     }
-    const std::string alias_command = *optional_alias_command;
-    const auto result               = repl->addAlias(alias_alias, alias_command);
+    const std::string &alias_command = *optional_alias_command;
+    const auto result                = repl->addAlias(alias_alias, alias_command);
     if (result == core::Result::kFailure) { return std::nullopt; }
   }
   return repl;
 }
+// NOLINTEND(readability-function-cognitive-complexity)
 
 Repl::Repl(core::ILogger &logger, Terminal &terminal)
     : logger_(logger),
       terminal_(terminal),
-      i2c_(),
-      spi_(),
-      pwm_(),
-      adc_(),
-      uart_(),
       gpio_(std::make_shared<io::HardwareGpio>(logger))
 {
   addHelpCommand();
@@ -107,8 +124,8 @@ Repl::Repl(core::ILogger &logger, Terminal &terminal)
 
 void Repl::run()
 {
-  int i             = 0;
-  std::string input = "";
+  int i = 0;
+  std::string input;
 
   while (true) {
     terminal_.refresh_line(input, ">> ");
@@ -116,16 +133,7 @@ void Repl::run()
     if (key == debug::KeyPress::kASCII) {
       input += letter;
     } else if (key == debug::KeyPress::kEnter) {
-      terminal_.cr();
-      history_.push_back(input);
-      const auto alias = aliases_.find(input);
-      if (alias != aliases_.end()) { input = alias->second; }
-      for (auto &command : commands_) {
-        if (command->getName() == input) {
-          command->execute();
-          break;
-        }
-      }
+      handleCommand(input);
       input = "";
       i     = 0;
     } else if (key == debug::KeyPress::kUp) {
@@ -139,18 +147,11 @@ void Repl::run()
         input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
-      if (input.size() > 0) { input.pop_back(); }
+      if (input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
-      std::vector<std::string> matches = autoComplete(input);
-      if (matches.size() == 1) {
-        input = matches[0];
-      } else if (matches.size() > 1) {
-        terminal_.cr();
-        for (auto &match : matches) {
-          terminal_.printf("%s\n", match.c_str());
-        }
-        terminal_.refresh_line(input, ">> ");
-      }
+      const auto result = findMatch(input);
+      if (result == std::nullopt) { continue; }
+      input = *result;
     } else if (key == debug::KeyPress::kEscape) {
       input = "";
       terminal_.cr();
@@ -158,11 +159,52 @@ void Repl::run()
   }
 }
 
+void Repl::handleCommand(std::string &input)
+{
+  terminal_.cr();
+  history_.push_back(input);
+  const auto alias = aliases_.find(input);
+  if (alias != aliases_.end()) { input = alias->second; }
+  for (auto &command : commands_) {
+    // Match on first command that is a prefix of the input
+    if (input.starts_with(command->getName())) {
+      std::vector<std::string> args;
+      // Get argument string and remove command from it
+      std::stringstream ss(input.substr(command->getName().size()));
+      std::string arg;
+      while (getline(ss, arg, ' ')) {
+        // Discard whitespace
+        if (arg.empty()) { continue; }
+        args.push_back(arg);
+      }
+      command->execute(args);
+      break;
+    }
+  }
+}
+
+std::optional<std::string> Repl::findMatch(std::string &input)
+{
+  std::vector<std::string> matches = autoComplete(input);
+  if (matches.size() == 1) { return matches[0]; }
+  if (matches.size() > 1) {
+    terminal_.cr();
+    for (auto &match : matches) {
+      terminal_.printf("%s\n", match.c_str());
+    }
+    terminal_.refresh_line(input, ">> ");
+  }
+  return std::nullopt;
+}
+
 std::vector<std::string> Repl::autoComplete(const std::string &partial)
 {
   std::vector<std::string> matches;
   for (auto &command : commands_) {
-    if (command->getName().find(partial) == 0) { matches.push_back(command->getName()); }
+    if (command->getName().starts_with(partial)) { matches.push_back(command->getName()); }
+  }
+  for (auto &[alias, command] : aliases_) {
+    if (alias.starts_with(partial)) { matches.push_back(alias); }
   }
   return matches;
 }
@@ -192,35 +234,38 @@ void Repl::printHelp()
 {
   for (auto &command : commands_) {
     logger_.log(core::LogLevel::kDebug,
-                "%s: %s",
+                "%s: %s, usage: '%s'",
                 command->getName().c_str(),
-                command->getDescription().c_str());
+                command->getDescription().c_str(),
+                command->getUsage().c_str());
   }
 }
 
 void Repl::addHelpCommand()
 {
-  addCommand(std::make_unique<Command>("help", "Print this help message", [this]() {
-    printHelp();
-    return core::Result::kSuccess;
-  }));
+  addCommand(std::make_unique<Command>(
+    "help", "Print this help message", "help", [this](const std::vector<std::string> &args) {
+      printHelp();
+      return;
+    }));
 }
 
 void Repl::addQuitCommand()
 {
-  addCommand(std::make_unique<Command>("quit", "Quit the program", [this]() {
-    terminal_.quit();
-    exit(0);
-  }));
+  addCommand(std::make_unique<Command>(
+    "quit", "Quit the program", "quit", [this](const std::vector<std::string> &args) {
+      terminal_.quit();
+      exit(0);
+    }));
 }
 
-std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t bus)
+std::optional<std::shared_ptr<io::IAdc>> Repl::getAdc(const std::uint8_t pin)
 {
-  const auto adc = adc_.find(bus);
+  const auto adc = adc_.find(pin);
   if (adc == adc_.end()) {
-    const auto new_adc = io::HardwareAdc::create(logger_, bus);
+    const auto new_adc = io::HardwareAdc::create(logger_, pin);
     if (!new_adc) { return std::nullopt; }
-    adc_.emplace(bus, *new_adc);
+    adc_.emplace(pin, *new_adc);
     return *new_adc;
   }
   return adc->second;

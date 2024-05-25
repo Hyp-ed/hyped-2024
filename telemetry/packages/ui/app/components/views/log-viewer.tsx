@@ -8,7 +8,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Button } from '../ui/button';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, X } from 'lucide-react';
 
 const defaultLogLevel = [
   LOG_LEVELS.INFO,
@@ -55,10 +55,13 @@ export const LogViewer = () => {
             </>
           )}
         </div>
-        <LogLevelFilter
-          logLevelFilters={logLevelFilters}
-          setLogLevelFilters={setLogLevelFilters}
-        />
+        <div className="flex gap-2">
+          <ClearLogsButton />
+          <LogLevelFilter
+            logLevelFilters={logLevelFilters}
+            setLogLevelFilters={setLogLevelFilters}
+          />
+        </div>
       </div>
       {isConnected ? (
         <div
@@ -139,6 +142,26 @@ const LogLevelFilter = ({
     </DropdownMenuContent>
   </DropdownMenu>
 );
+
+/**
+ * A button to clear all the logs.
+ * @returns The clear logs button
+ */
+const ClearLogsButton = () => {
+  const { clearAll } = useLiveLogs();
+
+  return (
+    <Button
+      variant="outline"
+      onClick={clearAll}
+      className="flex gap-2"
+      disabled={false}
+    >
+      <X className="h-4 w-4 opacity-50" />
+      Clear logs
+    </Button>
+  );
+};
 
 /**
  * Get the colour of the log based on the level

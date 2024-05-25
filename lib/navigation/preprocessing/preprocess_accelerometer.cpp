@@ -1,5 +1,7 @@
 #include "preprocess_accelerometer.hpp"
 
+#include <optional>
+
 namespace hyped::navigation {
 
 AccelerometerPreprocessor::AccelerometerPreprocessor(core::ILogger &logger,
@@ -24,14 +26,15 @@ std::optional<core::AccelerometerData> AccelerometerPreprocessor::processData(
     }
     accelerometer_data.at(i) = std::sqrt(magnitude);
   }
-  const core::AccelerometerData clean_accelerometer_data = handleOutliers(accelerometer_data);
-  SensorChecks sensorcheck                               = checkReliable();
+  const auto clean_accelerometer_data = handleOutliers(accelerometer_data);
+  if (clean_accelerometer_data == std::nullopt) { return std::nullopt; }
+  SensorChecks sensorcheck = checkReliable();
 
   if (sensorcheck == SensorChecks::kUnacceptable) { return std::nullopt; }
-  return clean_accelerometer_data;
+  return *clean_accelerometer_data;
 }
 
-core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
+std::optional<core::AccelerometerData> AccelerometerPreprocessor::handleOutliers(
   core::AccelerometerData accelerometer_data)
 {
   Quartiles quartiles;
@@ -49,6 +52,7 @@ core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
     quartiles = getQuartiles(filtered_data);
   } else {
     logger_.log(core::LogLevel::kFatal, "Maximum number of unreliable accelerometers exceeded");
+    return std::nullopt;
   }
   // TODOLater : maybe make a nice data structure
   const core::Float iqr = quartiles.q3 - quartiles.q1;
@@ -65,7 +69,7 @@ core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
   for (std::size_t i = 0; i < core::kNumAccelerometers; ++i) {
     // converts outliers or unreliables to medians, updates number of consecutive outliers for each
     // sensor
-    if (are_accelerometers_reliable_.at(i) == false) {
+    if (!are_accelerometers_reliable_.at(i)) {
       accelerometer_data.at(i) = quartiles.median;
     } else if (accelerometer_data.at(i) < lower_bound || accelerometer_data.at(i) > upper_bound) {
       accelerometer_data.at(i) = quartiles.median;
@@ -80,7 +84,7 @@ core::AccelerometerData AccelerometerPreprocessor::handleOutliers(
 SensorChecks AccelerometerPreprocessor::checkReliable()
 {  // changes reliable sensor to false if max consecutive outliers are reached
   for (std::size_t i = 0; i < core::kNumAccelerometers; ++i) {
-    if (are_accelerometers_reliable_.at(i) == true
+    if (are_accelerometers_reliable_.at(i)
         && num_outliers_per_accelerometer_.at(i) >= kNumAllowedAccelerometerFailures_) {
       are_accelerometers_reliable_.at(i) = false;
       num_reliable_accelerometers_ -= 1;

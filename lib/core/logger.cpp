@@ -4,10 +4,10 @@
 
 namespace hyped::core {
 
-Logger::Logger(const char *const label, const LogLevel level, const core::ITimeSource &time_source_)
+Logger::Logger(const char *const label, const LogLevel level, const core::ITimeSource &timer)
     : label_(label),
       level_(level),
-      time_source_(time_source_)
+      time_source_(timer)
 {
 }
 
@@ -18,10 +18,10 @@ void Logger::printHead(FILE *file, const char *title)
   const auto time_point_seconds = std::chrono::system_clock::from_time_t(timestamp);
   const std::chrono::milliseconds time_point_milliseconds
     = std::chrono::duration_cast<std::chrono::milliseconds>(time_point - time_point_seconds);
-  const long long time_milliseconds = time_point_milliseconds.count();
-  const std::tm *time_struct        = localtime(&timestamp);
+  const std::int64_t time_milliseconds = time_point_milliseconds.count();
+  const std::tm *time_struct           = localtime(&timestamp);
   fprintf(file,
-          "%02d:%02d:%02d.%03lld %s[%s] ",
+          "%02d:%02d:%02d.%03ld %s[%s] ",
           time_struct->tm_hour,
           time_struct->tm_min,
           time_struct->tm_sec,
@@ -52,7 +52,7 @@ void Logger::log(const LogLevel level, const char *format, ...)
         printHead(file, "FATAL");
         break;
       default:
-        break;
+        return;
     }
     va_list args;
     va_start(args, format);

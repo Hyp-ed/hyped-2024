@@ -11,4 +11,5 @@ target_link_libraries(
   hyped_io
   hyped_utils
   hyped_statemachine
+  tomlplusplus::tomlplusplus
 )

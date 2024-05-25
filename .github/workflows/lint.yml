@@ -8,9 +8,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run clang-format style check
-        uses: jidicula/clang-format-action@v4.9.0
+        uses: jidicula/clang-format-action@v4.11.0
         with:
-          clang-format-version: "13"
+          clang-format-version: "16"
           style: "file"
 
   cmake-format:
@@ -23,6 +23,7 @@ jobs:
           args: --check
 
   find-todos-fixme:
+    name: Find todos and fixmes
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,6 +36,7 @@ jobs:
           fi
 
   find-missing-std:
+    name: "Find missing std::"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -49,6 +51,7 @@ jobs:
           done
 
   find-redundant-hyped:
+    name: "Find redundant hyped:: namespaces"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -61,6 +64,7 @@ jobs:
         working-directory: lib
 
   check-header-pragma-once:
+    name: Check headers for \#pragma once
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -68,5 +72,17 @@ jobs:
         run: |
           if grep -rL "#pragma once" --include \*.hpp | grep -v "lint.yml"; then
             echo "[ERROR] found header without #pragma once"
+            exit 1
+          fi
+
+  check-no-crlf:
+    name: Check no crlf line endings
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run check for CRLF line endings
+        run: |
+          if git ls-files --eol | grep crlf; then
+            echo "[ERROR] found CRLF line endings, install dos2unix and run 'find . -type f -exec dos2unix {} \;' to fix"
             exit 1
           fi

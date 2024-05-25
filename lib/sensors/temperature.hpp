@@ -1,7 +1,5 @@
 #pragma once
 
-#include "i2c_sensors.hpp"
-
 #include <cstdint>
 #include <memory>
 #include <optional>
@@ -11,18 +9,18 @@
 
 namespace hyped::sensors {
 
-// Two possible addresses for the temperature sensor
-constexpr std::uint8_t kDefaultTemperatureAddress     = 0x38;
-constexpr std::uint8_t kAlternativeTemperatureAddress = 0x3F;
+enum class temperatureAddress { k7F = 0x7F, k38 = 0x38, k3C = 0x3C, k3E = 0x3E };
 
-class Temperature : public II2cMuxSensor<std::int16_t> {
+class Temperature {
  public:
-  static std::optional<Temperature> create(core::ILogger &logger,
-                                           std::shared_ptr<io::II2c> i2c,
-                                           const std::uint8_t channel,
-                                           const std::uint8_t device_address);
+  static std::optional<std::shared_ptr<Temperature>> create(
+    core::ILogger &logger,
+    const std::shared_ptr<io::II2c> &i2c,
+    const temperatureAddress device_address);
 
-  ~Temperature();
+  Temperature(core::ILogger &logger,
+              std::shared_ptr<io::II2c> i2c,
+              const std::uint8_t device_address);
 
   /*
    * @brief Checks if the temperature sensor is ready to be read
@@ -37,21 +35,11 @@ class Temperature : public II2cMuxSensor<std::int16_t> {
    */
   std::optional<std::int16_t> read();
 
-  std::uint8_t getChannel() const;
-
- private:
-  Temperature(core::ILogger &logger,
-              std::shared_ptr<io::II2c> i2c,
-              const std::uint8_t channel,
-              const std::uint8_t device_address);
-
  private:
   core::ILogger &logger_;
   std::shared_ptr<io::II2c> i2c_;
-  const std::uint8_t channel_;
   const std::uint8_t device_address_;
 
- private:
   // Register addresses/values taken from the datasheet
   static constexpr std::uint8_t kCtrl                = 0x04;
   static constexpr std::uint8_t kDataTemperatureHigh = 0x07;

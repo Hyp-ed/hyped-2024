@@ -12,8 +12,11 @@ import {
   PodId,
   PodStateType,
   pods,
+  ModeType,
 } from '@hyped/telemetry-constants';
 import { http } from 'openmct/core/http';
+import { ERROR_IDS, useErrors } from './errors';
+import { FAILURE_STATES } from '@hyped/telemetry-constants';
 
 /**
  * The maximum latency before a pod is considered disconnected, in milliseconds
@@ -54,6 +57,7 @@ type PodsStateType = {
   [podId: string]: {
     id: PodId;
     name: string;
+    operationMode: ModeType;
     connectionStatus: PodConnectionStatusType;
     previousLatencies?: PreviousLatenciesType;
     latency?: number;
@@ -81,7 +85,8 @@ function createPodsStateFromIds(podIds: typeof POD_IDS): PodsStateType {
     podsContext[podId] = {
       id: podId,
       name: pods[podId].name,
-      connectionStatus: POD_CONNECTION_STATUS.DISCONNECTED,
+      operationMode: pods[podId].operationMode,
+      connectionStatus: POD_CONNECTION_STATUS.CONNECTED,
       podState: ALL_POD_STATES.UNKNOWN,
     };
   }
@@ -103,24 +108,37 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
   const { client, publish, subscribe, unsubscribe, mqttConnectionStatus } =
     useMQTT();
 
+  const { raiseError } = useErrors();
+
   useEffect(
     /**
      * When the MQTT connection status changes, check if we need to set the pod connection statuses to disconnected.
      */
     function checkMqttConnectionStatus() {
-      // If we don't have an MQTT connection, set all pod connection statuses to disconnected
+      // If the MQTT connection status has changed to disconnected, set all pod connection statuses to disconnected
       if (mqttConnectionStatus !== MQTT_CONNECTION_STATUS.CONNECTED) {
         setPodsState((prevState) => {
           const newPodsState = { ...prevState };
           for (const podId of POD_IDS) {
-            newPodsState[podId].connectionStatus =
-              POD_CONNECTION_STATUS.DISCONNECTED;
+            if (
+              newPodsState[podId].connectionStatus !==
+              POD_CONNECTION_STATUS.DISCONNECTED
+            ) {
+              newPodsState[podId].connectionStatus =
+                POD_CONNECTION_STATUS.DISCONNECTED;
+              raiseError(
+                ERROR_IDS.POD_DISCONNECT,
+                `Pod ${podId} disconnected!`,
+                `Lost connection to ${podId} because the connection to the MQTT broker has been lost.`,
+                podId,
+              );
+            }
           }
           return newPodsState;
         });
       }
     },
-    [mqttConnectionStatus],
+    [mqttConnectionStatus, raiseError],
   );
 
   useEffect(
@@ -168,12 +186,18 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
                 connectionEstablished: undefined,
               },
             }));
+            raiseError(
+              ERROR_IDS.POD_DISCONNECT,
+              `Pod ${podId} disconnected!`,
+              `Lost connection to ${podId} because the latency between the base station and the pod is too high.`,
+              podId,
+            );
           }
         });
       }, POD_MAX_LATENCY);
       return () => clearInterval(interval);
     },
-    [lastLatencyResponse],
+    [lastLatencyResponse, raiseError],
   );
 
   useEffect(
@@ -182,11 +206,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
      */
     function subscribeToMqttAndLatency() {
       if (!client) return;
-      const processMessage = (
-        podId: string,
-        topic: string,
-        message: Buffer,
-      ) => {
+      const processMessage = (podId: PodId, topic: string, message: Buffer) => {
         if (topic === getTopic('state', podId)) {
           const newPodState = message.toString();
           const allowedStates = Object.values(ALL_POD_STATES);
@@ -198,6 +218,15 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
                 podState: newPodState as PodStateType,
               },
             }));
+          }
+          // raise an error if we are in a failure state
+          if (Object.keys(FAILURE_STATES).includes(newPodState)) {
+            raiseError(
+              ERROR_IDS.POD_FAILURE_STATE,
+              `Pod ${podId} in failure state!`,
+              `Pod ${podId} is in a failure state.`,
+              podId,
+            );
           }
         } else if (topic === getTopic('latency/response', podId)) {
           // calculate the latency
@@ -304,8 +333,8 @@ export const usePods = () => {
 };
 
 /**
- * Hook to get the pod info for the currentlt selected pod.
- * @returns The pod info for the current pod
+ * Hook to retrieve selected pod info
+ * @returns Summary info for the current pod
  */
 export const useCurrentPod = () => {
   const context = useContext(PodsContext);

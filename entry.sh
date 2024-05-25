@@ -17,6 +17,11 @@ elif [ ! -d "build" ]; then
 fi
 
 cd build 
-cmake ..
-make -j
+if [[ $LINT = true ]]; then
+    cmake .. -DLINT=ON
+else
+    cmake ..
+fi
+
+make -j$(nproc)
 make test

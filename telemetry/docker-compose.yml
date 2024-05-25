@@ -25,6 +25,8 @@ services:
       - /usr/src/app/packages/public-app/.next
       - /usr/src/app/packages/fake/node_modules
       - /usr/src/app/packages/eslint-config/node_modules
+      # persist turborepo cache
+      - /usr/src/app/.turborepo
     networks:
       - telemetry
   influxdb:

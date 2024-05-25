@@ -7,7 +7,6 @@ import toast from 'react-hot-toast';
 import { useCurrentPod } from '@/context/pods';
 import { Latency } from './latency';
 import { PodControls } from './pod-controls';
-import { PodDisconnectError } from '@/components/pod-disconnect-error';
 import { PodConnectionStatus } from './pod-connection-status';
 import { Logo } from '@/components/shared/logo';
 import { PodSelector } from './pod-selector';
@@ -25,7 +24,7 @@ export const Sidebar = ({
 }) => {
   const {
     currentPod,
-    pod: { podState, connectionStatus },
+    pod: { podState },
   } = useCurrentPod();
 
   // Display notification when the pod state changes
@@ -45,7 +44,6 @@ export const Sidebar = ({
         <div className="flex flex-col gap-2">
           <p className="font-bold text-xl">Connection to pod</p>
           <PodConnectionStatus podId={currentPod} />
-          <PodDisconnectError status={connectionStatus} podId={currentPod} />
           <Latency podId={currentPod} />
         </div>
         <div className="flex flex-col justify-start">

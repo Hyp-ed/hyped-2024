@@ -2,14 +2,10 @@
 
 #include "types.hpp"
 
-#include <optional>
-#include <queue>
-#include <unordered_map>
-
 #include <boost/unordered_map.hpp>
 
 namespace hyped::state_machine {
-typedef boost::unordered_map<SourceAndTarget, State, source_and_target_hash> TransitionTable;
+using TransitionTable = boost::unordered_map<SourceAndTarget, State, source_and_target_hash>;
 
 const TransitionTable transition_to_state_dynamic
   = {{{State::kIdle, State::kCalibrate}, State::kCalibrate},

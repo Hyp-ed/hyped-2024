@@ -21,9 +21,9 @@
   },
   "pnpm": {
     "patchedDependencies": {
-      "openmct@2.2.5": "patches/openmct@2.2.5.patch",
       "@nestjs/common@9.4.2": "patches/@nestjs__common@9.4.2.patch",
-      "nest-mqtt@0.2.0": "patches/nest-mqtt@0.2.0.patch"
+      "nest-mqtt@0.2.0": "patches/nest-mqtt@0.2.0.patch",
+      "openmct@3.2.0": "patches/openmct@3.2.0.patch"
     }
   }
 }
