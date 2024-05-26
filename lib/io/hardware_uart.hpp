@@ -70,8 +70,8 @@ class Uart : public IUart {
   Uart(core::ILogger &logger, const int file_descriptor);
   ~Uart();
 
-  virtual core::Result sendBytes(const char *tx, const std::uint8_t length);
-  virtual core::Result readBytes(unsigned char *rx, const std::uint8_t length);
+  core::Result sendBytes(const char *tx, const std::uint8_t length) override;
+  core::Result readBytes(unsigned char *rx, const std::uint8_t length) override;
 
  private:
   /**
@@ -82,7 +82,6 @@ class Uart : public IUart {
                                                 const std::uint32_t baud_mask,
                                                 const std::uint32_t bits_per_byte_mask);
 
- private:
   core::ILogger &logger_;
   const int file_descriptor_;
 };

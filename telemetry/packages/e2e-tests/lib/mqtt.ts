@@ -1,6 +1,8 @@
 import mqtt from 'mqtt';
 
-export const client = mqtt.connect('mqtt://localhost:1883');
+export const client = mqtt.connect(
+  process.env.E2E_TEST_MQTT_BROKER || 'mqtt://localhost:1883',
+);
 
 type MqttMessageValidation = (receivedTopic: string, message: Buffer) => void;
 
@@ -15,19 +17,36 @@ export async function validateMqttMessage(
   validate: MqttMessageValidation,
   timeout = 1000,
 ): Promise<void> {
+  const receivedMessages: { topic: string; message: Buffer }[] = [];
+
   return new Promise(async (resolve, reject) => {
-    const client = mqtt.connect('mqtt://localhost:1883');
+    const client = mqtt.connect(
+      process.env.E2E_TEST_MQTT_BROKER || 'mqtt://localhost:1883',
+    );
 
     client.on('connect', async () => {
       await client.subscribeAsync('#');
 
       // Handle incoming messages
       client.on('message', (receivedTopic, message) => {
-        validate(receivedTopic, message);
-        resolve();
+        receivedMessages.push({ topic: receivedTopic, message });
       });
 
       trigger();
+
+      // Check that the message is in the received messages
+      const interval = setInterval(() => {
+        for (const receivedMessage of receivedMessages) {
+          try {
+            validate(receivedMessage.topic, receivedMessage.message);
+            clearInterval(interval);
+            client.end();
+            resolve();
+          } catch (e) {
+            // Ignore errors
+          }
+        }
+      }, 100);
     });
 
     // Timeout if the message is not received

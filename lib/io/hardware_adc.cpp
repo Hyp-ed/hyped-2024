@@ -13,7 +13,7 @@ std::optional<std::shared_ptr<HardwareAdc>> HardwareAdc::create(core::ILogger &l
     logger.log(core::LogLevel::kFatal, "Failed to create HardwareAdc object: invalid pin %d", pin);
     return std::nullopt;
   }
-  char buf[100];
+  char buf[100];  // NOLINT
   snprintf(buf, sizeof(buf), "/sys/bus/iio/devices/iio:device0/in_voltage%i_raw", pin);
   const int file_descriptor = open(buf, O_RDONLY);
   if (file_descriptor < 0) {
@@ -53,7 +53,7 @@ std::optional<core::Float> HardwareAdc::resetAndRead4(const int file_descriptor)
     logger_.log(core::LogLevel::kFatal, "Failed to reset file offset");
     return std::nullopt;
   }
-  char read_buffer[4];  // buffer size 4 for fs value
+  char read_buffer[4];  // NOLINT buffer size 4 for fs value
   const int num_bytes_read = read(file_descriptor, &read_buffer, sizeof(read_buffer));
   if (num_bytes_read < 2) {  // 2 bytes minimum as value ranges from [0, 4095]
     logger_.log(core::LogLevel::kFatal, "Failed to read sufficient bytes from ADC");

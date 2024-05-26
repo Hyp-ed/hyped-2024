@@ -1,11 +1,9 @@
 #include "scheduler.hpp"
-#include "wall_clock.hpp"
+
+#include <utility>
 namespace hyped::core {
 
-Scheduler::Scheduler(core::ILogger &logger, core::ITimeSource &time)
-    : logger_(logger),
-      time_(time),
-      task_queue_()
+Scheduler::Scheduler(core::ILogger &logger, core::ITimeSource &time) : logger_(logger), time_(time)
 {
 }
 
@@ -27,7 +25,7 @@ core::Result Scheduler::run()
 void Scheduler::schedule(const core::Duration delay, std::function<core::Result(void)> handler)
 {
   auto execution_timepoint = time_.now() + std::chrono::nanoseconds(delay);
-  const Task task(execution_timepoint, handler);
+  const Task task(execution_timepoint, std::move(handler));
   task_queue_.push(task);
 }
 

@@ -28,10 +28,13 @@ class Repl {
  public:
   static std::optional<std::shared_ptr<Repl>> create(core::ILogger &logger,
                                                      Terminal &terminal,
+                                                     core::ITimeSource &time,
                                                      const std::string &filename);
   Repl(core::ILogger &logger, Terminal &terminal);
   void run();
   std::vector<std::string> autoComplete(const std::string &partial);
+  void handleCommand(std::string &input);
+  std::optional<std::string> findMatch(std::string &input);
 
   void addCommand(std::unique_ptr<Command> command);
   void printHelp();
@@ -61,9 +64,11 @@ class Repl {
    *
    * @return std::shared_ptr<io::HardwareGpio> containing the Gpio object
    */
-  std::shared_ptr<io::HardwareGpio> getGpio() { return gpio_; };
+  std::shared_ptr<io::IGpio> getGpio() { return gpio_; };
+
   /**
-   * @brief Get the I2c object associated with the given bus or create a new one if it doesn't exist
+   * @brief Get the I2c object associated with the given bus or create a new one if it doesn't
+   * exist
    * @param bus target bus for the I2c object
    * @return std::optional<std::shared_ptr<io::II2c>> containing the I2c object at bus or
    * std::nullopt if the I2c could not be created
@@ -123,7 +128,7 @@ class Repl {
 
   std::unordered_map<std::uint8_t, std::shared_ptr<io::IAdc>> adc_;
   std::unordered_map<std::string, std::shared_ptr<io::ICan>> can_;
-  std::shared_ptr<io::HardwareGpio> gpio_;
+  std::shared_ptr<io::IGpio> gpio_;
   std::unordered_map<std::uint8_t, std::shared_ptr<io::II2c>> i2c_;
   std::unordered_map<io::PwmModule, std::shared_ptr<io::Pwm>> pwm_;
   std::unordered_map<io::SpiBus, std::shared_ptr<io::ISpi>> spi_;

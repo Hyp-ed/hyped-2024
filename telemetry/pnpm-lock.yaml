@@ -55,15 +55,15 @@ importers:
 
   packages/e2e-tests:
     dependencies:
-      '@hyped/telemetry-constants':
-        specifier: workspace:*
-        version: link:../constants
       '@hyped/telemetry-server':
         specifier: workspace:*
         version: link:../server
       '@hyped/telemetry-ui':
         specifier: workspace:*
         version: link:../ui
+      mqtt:
+        specifier: ^5.5.0
+        version: 5.5.0
     devDependencies:
       '@hyped/tsconfig':
         specifier: workspace:*
@@ -1780,6 +1780,14 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: 0.14.1
+    dev: false
+
+  /@babel/runtime@7.24.4:
+    resolution: {integrity: sha512-dkxf7+hn8mFBwKjs9bvBlArzLVxVbS8usaPUDd5p2a9JCL9tB8OaOVN1isD4+Xyk4ns89/xeOmbQvgdK7IIVdA==}
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: 0.14.1
+    dev: false
 
   /@babel/template@7.22.15:
     resolution: {integrity: sha512-QPErUVm4uyJa60rkI73qneDacvdvzxshT3kksGqlGWYdOTIUOwJ7RDUL8sGqslY1uXWSL6xMFKEXDS3ox2uF0w==}
@@ -4275,7 +4283,6 @@ packages:
     resolution: {integrity: sha512-M/GPWVS2wLkSkNHVeLkrF2fD5Lx5UC4PxA0uZcKc6QqbIQUJyW1jVjueJYi1z8n0I5PxYrtpnPnWglE+y9A0KA==}
     dependencies:
       undici-types: 5.26.5
-    dev: true
 
   /@types/normalize-package-data@2.4.1:
     resolution: {integrity: sha512-Gj7cI7z+98M282Tqmp2K5EIsoouUEzbBJhQQzDE3jSIRk6r9gsz0oUokqIUR4u1R3dMHo0pDHM7sNOHyhulypw==}
@@ -4319,7 +4326,7 @@ packages:
   /@types/readable-stream@4.0.10:
     resolution: {integrity: sha512-AbUKBjcC8SHmImNi4yK2bbjogQlkFSg7shZCcicxPQapniOlajG8GCc39lvXzCWX4lLRRs7DM3VAeSlqmEVZUA==}
     dependencies:
-      '@types/node': 18.11.18
+      '@types/node': 20.11.28
       safe-buffer: 5.1.2
     dev: false
 
@@ -6598,7 +6605,7 @@ packages:
   /dom-helpers@3.4.0:
     resolution: {integrity: sha512-LnuPJ+dwqKDIyotW1VzmOZ5TONUN7CwkCR5hrgawTUbkBGYdeoNLZo6nNfGkCrjtE1nXXaj7iMMpDa8/d9WoIA==}
     dependencies:
-      '@babel/runtime': 7.23.9
+      '@babel/runtime': 7.24.4
     dev: false
 
   /dom-helpers@5.2.1:
@@ -7462,7 +7469,7 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
     dependencies:
-      '@babel/runtime': 7.23.9
+      '@babel/runtime': 7.22.6
       aria-query: 5.1.3
       array-includes: 3.1.6
       array.prototype.flatmap: 1.3.1
@@ -7478,7 +7485,7 @@ packages:
       minimatch: 3.1.2
       object.entries: 1.1.6
       object.fromentries: 2.0.6
-      semver: 6.3.1
+      semver: 6.3.0
     dev: true
 
   /eslint-plugin-only-warn@1.1.0:
@@ -8003,6 +8010,14 @@ packages:
 
   /fast-safe-stringify@2.1.1:
     resolution: {integrity: sha512-W+KJc2dmILlPplD/H4K9l9LcAHAfPtP6BY84uVLXQ6Evcz9Lcg33Y2z1IVblT6xdY54PXYVHEv+0Wpq8Io6zkA==}
+
+  /fast-unique-numbers@8.0.13:
+    resolution: {integrity: sha512-7OnTFAVPefgw2eBJ1xj2PGGR9FwYzSUso9decayHgCDX4sJkHLdcsYTytTg+tYv+wKF3U8gJuSBz2jJpQV4u/g==}
+    engines: {node: '>=16.1.0'}
+    dependencies:
+      '@babel/runtime': 7.24.4
+      tslib: 2.6.2
+    dev: false
 
   /fast-unique-numbers@9.0.0:
     resolution: {integrity: sha512-lgIjiflW23W7qgagregmo5FFzM+m4/dWaDUVneRi2AV7o2k5npggeEX7srSKlYfJU9fKXvQV2Gzk3272fJT65w==}
@@ -10427,6 +10442,7 @@ packages:
       help-me: 5.0.0
       lru-cache: 10.2.0
       minimist: 1.2.8
+      mqtt: 5.5.0
       mqtt-packet: 9.0.0
       number-allocator: 1.0.14
       readable-stream: 4.5.2
@@ -10434,6 +10450,33 @@ packages:
       rfdc: 1.3.0
       split2: 4.2.0
       worker-timers: 7.1.2
+      ws: 8.16.0
+    transitivePeerDependencies:
+      - bufferutil
+      - supports-color
+      - utf-8-validate
+    dev: false
+
+  /mqtt@5.5.0:
+    resolution: {integrity: sha512-8WGQpjEzABcCh/UwLj7XaEoLsSLHJrJK3YLu57fJoLUBdz6zPGFdxWK3i1YYdPqKDu0sU6YHt+tly/qdLsLiyg==}
+    engines: {node: '>=16.0.0'}
+    hasBin: true
+    dependencies:
+      '@types/readable-stream': 4.0.10
+      '@types/ws': 8.5.10
+      commist: 3.2.0
+      concat-stream: 2.0.0
+      debug: 4.3.4
+      help-me: 5.0.0
+      lru-cache: 10.2.0
+      minimist: 1.2.8
+      mqtt-packet: 9.0.0
+      number-allocator: 1.0.14
+      readable-stream: 4.5.2
+      reinterval: 1.1.0
+      rfdc: 1.3.0
+      split2: 4.2.0
+      worker-timers: 7.1.7
       ws: 8.16.0
     transitivePeerDependencies:
       - bufferutil
@@ -11845,6 +11888,7 @@ packages:
 
   /regenerator-runtime@0.14.1:
     resolution: {integrity: sha512-dYnhHh0nJoMfnkZs6GmmhFknAGRrLznOu5nc9ML+EJxGvrx6H7teuevqVqCuPcPK//3eDrrjQhehXVx9cnkGdw==}
+    dev: false
 
   /regenerator-transform@0.15.1:
     resolution: {integrity: sha512-knzmNAcuyxV+gQCufkYcvOqX/qIIfHLv0u5x79kRxuGojfYVky1f15TzZEu2Avte8QGepvUNTnLskf8E6X6Vyg==}
@@ -14008,7 +14052,6 @@ packages:
       vue-tweet-embed: 2.4.0(vue@2.7.14)
       vue-twentytwenty: 0.6.2
     dev: false
-    bundledDependencies: false
 
   /victory-vendor@36.6.11:
     resolution: {integrity: sha512-nT8kCiJp8dQh8g991J/R5w5eE2KnO8EAIP0xocWlh9l2okngMWglOPoMZzJvek8Q1KUc4XE/mJxTZnvOB1sTYg==}
@@ -14453,10 +14496,26 @@ packages:
       worker-timers-worker: 7.0.66
     dev: false
 
+  /worker-timers-broker@6.1.7:
+    resolution: {integrity: sha512-8hb4lSMAijDY/Dp/MOw9Hc2x6uU59XWFYjcWQgC4bai+sxcLXjeexd9aYKdYMFZPiPoieGzMYIs9WGpv2Co3eA==}
+    dependencies:
+      '@babel/runtime': 7.24.4
+      fast-unique-numbers: 8.0.13
+      tslib: 2.6.2
+      worker-timers-worker: 7.0.70
+    dev: false
+
   /worker-timers-worker@7.0.66:
     resolution: {integrity: sha512-VCLa0H5K9fE2DVI/9r5zDuFrMQIpNL3UD/h4Ui49fIiRBTgv1Sqe0RM12brr83anBsm103aUQkvKvCBL+KpNtg==}
     dependencies:
       '@babel/runtime': 7.23.9
+      tslib: 2.6.2
+    dev: false
+
+  /worker-timers-worker@7.0.70:
+    resolution: {integrity: sha512-lemWEME0RHB78hzGkkQcKfF6L82gqVhV3T9iY14jHBhbLxLq9t1RRCLmPDBZV7sdnUoW6Khkfn6coqPjgEK6cw==}
+    dependencies:
+      '@babel/runtime': 7.24.4
       tslib: 2.6.2
     dev: false
 
@@ -14467,6 +14526,15 @@ packages:
       tslib: 2.6.2
       worker-timers-broker: 6.1.2
       worker-timers-worker: 7.0.66
+    dev: false
+
+  /worker-timers@7.1.7:
+    resolution: {integrity: sha512-Dr4La61d94SjOA8P57h2LN8W3MXOVe/m1P7jER8cmuIy+JaDMqPttSwo6QRJFSK6YnG9cD6SU7J8m7CVlu8jlw==}
+    dependencies:
+      '@babel/runtime': 7.24.4
+      tslib: 2.6.2
+      worker-timers-broker: 6.1.7
+      worker-timers-worker: 7.0.70
     dev: false
 
   /wrap-ansi@3.0.1:

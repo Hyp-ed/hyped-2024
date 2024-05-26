@@ -78,4 +78,5 @@ MSYS_NO_PATHCONV=1 docker run -e PNPM_SCRIPT=build --name $CONTAINER_NAME -v $(p
   -v /usr/src/app/packages/public-app/.next \
   -v /usr/src/app/packages/fake/node_modules \
   -v /usr/src/app/packages/eslint-config/node_modules \
+  -v /usr/src/app/packages/e2e-tests/node_modules \
   $IMAGE_NAME
