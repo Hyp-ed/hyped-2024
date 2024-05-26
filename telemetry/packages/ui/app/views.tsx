@@ -1,8 +1,9 @@
-import { Bug, GitBranch, LineChart, Terminal } from 'lucide-react';
-import { LogViewer } from './components/views/log-viewer';
 import { OpenMCT } from './components/views/openmct';
+import { PiManagement } from './components/views/pi-management/pi-management';
+import { Bug, LineChart, Cpu, GitBranch, Terminal } from 'lucide-react';
 import { DebugView } from './components/views/debug-view';
 import { StateMachine } from './components/views/state-machine';
+import { LogViewer } from './components/views/log-viewer';
 
 /**
  * The views that can be rendered in the LHS of the GUI.
@@ -27,6 +28,11 @@ export const VIEWS = {
     name: 'State',
     component: <StateMachine />,
     icon: <GitBranch width={18} />,
+  },
+  PI_MGT: {
+    name: 'Pi Management',
+    component: <PiManagement />,
+    icon: <Cpu width={18} />,
   },
 } as const;
 

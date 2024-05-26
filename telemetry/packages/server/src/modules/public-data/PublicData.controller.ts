@@ -1,15 +1,14 @@
 import { Controller, Get, HttpException, Param, Query } from '@nestjs/common';
 import { PublicDataService } from './PublicData.service';
 import { HistoricalTelemetryDataService } from '@/modules/openmct/data/historical/HistoricalTelemetryData.service';
+import { validatePodId } from '../common/utils/validatePodId';
 import {
   LevitationHeightResponse,
   RawLevitationHeight,
 } from '@hyped/telemetry-types';
 import {
   HistoricalValueResponse,
-  LaunchTimeResponse,
   LevitationHeight,
-  StateResponse,
 } from '@hyped/telemetry-types/dist/server/responses';
 import { POD_IDS, PodId } from '@hyped/telemetry-constants';
 
@@ -21,16 +20,14 @@ export class PublicDataController {
   ) {}
 
   @Get('launch-time')
-  async getLaunchTime(
-    @Param('podId') podId: string,
-  ): Promise<LaunchTimeResponse> {
-    this.validatePodId(podId);
+  async getLaunchTime(@Param('podId') podId: string) {
+    validatePodId(podId);
     return this.publicDataService.getLaunchTime(podId);
   }
 
   @Get('state')
-  async getState(@Param('podId') podId: string): Promise<StateResponse> {
-    this.validatePodId(podId);
+  async getState(@Param('podId') podId: string) {
+    validatePodId(podId);
     return this.publicDataService.getState(podId);
   }
 
@@ -43,7 +40,7 @@ export class PublicDataController {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
       'velocity',
@@ -61,7 +58,7 @@ export class PublicDataController {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
       'displacement',
@@ -79,7 +76,7 @@ export class PublicDataController {
     if (!startTimestamp) {
       throw new HttpException("Missing 'start' query parameter", 400);
     }
-    this.validatePodId(podId);
+    validatePodId(podId);
     return this.historialTelemetryDataService.getHistoricalReading(
       podId,
       'acceleration',

@@ -16,6 +16,14 @@ export type {
 export type { OpenMctFault } from './openmct/openmct-fault.types';
 export type { Unpacked } from './utils/Unpacked';
 export type {
+  Pi,
+  PiId,
+  VersionStatus,
+  PiConnectionStatus,
+  PiInfo,
+  Hashes,
+} from './pods/pis.types';
+export type {
   RawLevitationHeight,
   LevitationHeight,
   LevitationHeightResponse,

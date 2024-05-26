@@ -427,6 +427,7 @@ export const pods: Pods = {
         sampling_time: 500,
       },
     },
+    pis: {},
   },
 
   pod_2024: {
@@ -873,6 +874,18 @@ export const pods: Pods = {
         },
         rms_noise: 2, // from Time-of-Flight datasheet
         sampling_time: 500,
+      },
+    },
+    pis: {
+      pi_1: {
+        id: 'pi_1',
+        ip: '192.168.1.41',
+        hostname: 'pi-1',
+      },
+      pi_2: {
+        id: 'pi_2',
+        ip: '192.168.1.42',
+        hostname: 'pi-2',
       },
     },
   },

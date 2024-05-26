@@ -1,3 +1,5 @@
+import { Pi, PiId } from './pis.types';
+
 // common properties shared by all response variables
 export type BaseMeasurement = {
   name: string;
@@ -44,6 +46,7 @@ export type Pod = {
   name: string;
   id: string;
   measurements: Record<string, Measurement>;
+  pis: Record<PiId, Pi>;
   // Not ideal given this is defined in the constants package but will do until TOML is done
   operationMode: 'ALL_SYSTEMS_ON' | 'LEVITATION_ONLY' | 'LIM_ONLY';
 };
