@@ -58,7 +58,7 @@ class OpticalFlow {
   static constexpr std::uint8_t kPowerUpResetAddress   = 0x3A;
   static constexpr std::uint8_t kPowerUpResetValue     = 0x5A;
   static constexpr std::uint8_t kOrientationAddress    = 0x5B;
-  static constexpr std::uint8_t kMotionBurst           = 0x02;
+  static constexpr std::uint8_t kMotionBurst           = 0x16;
 
   static constexpr std::uint8_t kInvertX = 0b00100000;
   static constexpr std::uint8_t kInvertY = 0b01000000;

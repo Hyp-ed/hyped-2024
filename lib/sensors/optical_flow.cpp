@@ -49,7 +49,7 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 
 std::optional<std::uint16_t> OpticalFlow::read()
 {
-  for (auto i = 0; i < 1000000; i++) {
+  for (auto i = 0; i < 10000; i++) {
     auto optional_data = spi_->read(kMotionBurst, 13);
     if (!optional_data) {
       logger_.log(core::LogLevel::kFatal, "Failed to read motion burst data");
