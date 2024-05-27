@@ -71,7 +71,7 @@ core::Result OpticalFlowCommands::addCommands(core::ILogger &logger,
             logger.log(core::LogLevel::kFatal, "Error reading optical flow sensor");
             return;
           }
-          const auto delta = optional_delta;
+          const auto delta = *optional_delta;
           logger.log(core::LogLevel::kInfo, "Delta: %d", delta);
         }
       };
