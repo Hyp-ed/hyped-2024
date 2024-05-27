@@ -65,10 +65,10 @@ HardwareSpi::~HardwareSpi()
   close(file_descriptor_);
 }
 
-core::Result HardwareSpi::read(const std::uint8_t register_address,
-                               const std::uint8_t *rx,
-                               const std::uint16_t len)
+std::optional<std::vector<std::uint8_t>> HardwareSpi::read(const std::uint8_t register_address,
+                                                           const std::uint16_t len)
 {
+  std::vector<std::uint8_t> rx(len);
   spi_ioc_transfer message[2] = {};  // NOLINT
   // send address
   message[0].tx_buf = reinterpret_cast<std::uint64_t>(&register_address);
@@ -76,20 +76,23 @@ core::Result HardwareSpi::read(const std::uint8_t register_address,
   message[0].len    = 1;
   // receive data
   message[1].tx_buf     = 0;
-  message[1].rx_buf     = reinterpret_cast<std::uint64_t>(rx);
+  message[1].rx_buf     = reinterpret_cast<std::uint64_t>(rx.data());
   message[1].len        = len;
   const int read_result = ioctl(file_descriptor_, SPI_IOC_MESSAGE(2), message);
   if (read_result < 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to read from SPI device");
-    return core::Result::kFailure;
+    return std::nullopt;
+  }
+  if (rx.size() != len) {
+    logger_.log(core::LogLevel::kFatal, "Failed to read the correct number of bytes from SPI");
+    return std::nullopt;
   }
   logger_.log(core::LogLevel::kDebug, "Successfully read from SPI device");
-  return core::Result::kSuccess;
+  return rx;
 }
 
 core::Result HardwareSpi::write(const std::uint8_t register_address,
-                                const std::uint8_t *tx,
-                                const std::uint16_t len)
+                                const std::vector<std::uint8_t> tx)
 {
   spi_ioc_transfer message[2] = {};  // NOLINT
   // send address
@@ -97,9 +100,9 @@ core::Result HardwareSpi::write(const std::uint8_t register_address,
   message[0].rx_buf = 0;
   message[0].len    = 1;
   // write data
-  message[1].tx_buf      = reinterpret_cast<std::uint64_t>(tx);
+  message[1].tx_buf      = reinterpret_cast<std::uint64_t>(tx.data());
   message[1].rx_buf      = 0;
-  message[1].len         = len;
+  message[1].len         = tx.size();
   const int write_result = ioctl(file_descriptor_, SPI_IOC_MESSAGE(2), message);
   if (write_result < 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to write to SPI device");
@@ -126,6 +129,8 @@ std::uint32_t HardwareSpi::getClockValue(SpiClock clock)
       return 500'000;
     case SpiClock::k1MHz:
       return 1'000'000;
+    case SpiClock::k2MHz:
+      return 2'000'000;
     case SpiClock::k4MHz:
       return 4'000'000;
     case SpiClock::k16MHz:

@@ -11,12 +11,18 @@ namespace hyped::utils {
  */
 class DummySpi : public io::ISpi {
  public:
-  core::Result read(const std::uint8_t addr,
-                    const std::uint8_t *rx,
-                    const std::uint16_t len) override;
-  core::Result write(const std::uint8_t addr,
-                     const std::uint8_t *tx,
-                     const std::uint16_t len) override;
+  std::optional<std::vector<std::uint8_t>> read(const std::uint8_t addr,
+                                                const std::uint16_t len) override;
+  core::Result write(const std::uint8_t addr, const std::vector<std::uint8_t> tx) override;
+
+  void setReadResults(std::vector<std::optional<std::vector<std::uint8_t>>> results);
+  void setWriteResults(std::vector<core::Result> results);
+  std::vector<std::vector<std::uint8_t>> getSentData();
+
+ private:
+  std::vector<std::optional<std::vector<std::uint8_t>>> read_results_;
+  std::vector<core::Result> write_results_;
+  std::vector<std::vector<std::uint8_t>> sent_data_;
 };
 
 }  // namespace hyped::utils

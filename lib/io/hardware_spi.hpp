@@ -51,7 +51,14 @@ enum class SpiMode { kMode0 = 0, kMode1, kMode2, kMode3 };
 enum class SpiWordSize { kWordSize4 = 4, kWordSize8 = 8, kWordSize16 = 16, kWordSize32 = 32 };
 enum class SpiBitOrder { kMsbFirst = 0, kLsbFirst };
 // Maximum clock frequency for SPI is 100MHz
-enum class SpiClock { k500KHz, k1MHz, k4MHz, k16MHz, k20MHz };
+enum class SpiClock {
+  k500KHz = 500'000,
+  k1MHz   = 1'000'000,
+  k2MHz   = 2'000'000,
+  k4MHz   = 4'000'000,
+  k16MHz  = 16'000'000,
+  k20MHz  = 20'000'000
+};
 
 class HardwareSpi : public ISpi {
  public:
@@ -69,12 +76,10 @@ class HardwareSpi : public ISpi {
   HardwareSpi(core::ILogger &logger, const int file_descriptor);
   ~HardwareSpi();
 
-  core::Result read(const std::uint8_t register_address,
-                    const std::uint8_t *rx,
-                    const std::uint16_t len) override;
+  std::optional<std::vector<std::uint8_t>> read(const std::uint8_t register_address,
+                                                const std::uint16_t len) override;
   core::Result write(const std::uint8_t register_address,
-                     const std::uint8_t *tx,
-                     const std::uint16_t len) override;
+                     const std::vector<std::uint8_t> tx) override;
 
  private:
   /**

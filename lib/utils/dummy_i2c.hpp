@@ -22,6 +22,18 @@ class DummyI2c : public io::II2c {
                                    const std::uint16_t register_address,
                                    const std::uint8_t data) override;
   core::Result writeByte(const std::uint8_t device_address, const std::uint8_t data) override;
+
+  void setWriteByteResults(std::vector<core::Result> results);
+  void setReadByteResults(std::vector<std::optional<std::uint8_t>> results);
+  /**
+   * @return a vector of pairs of device address and data that was sent
+   */
+  std::vector<std::pair<std::uint8_t, std::uint8_t>> getSentData();
+
+ private:
+  std::vector<core::Result> write_byte_results_;
+  std::vector<std::optional<std::uint8_t>> read_byte_results_;
+  std::vector<std::pair<std::uint8_t, std::uint8_t>> sent_data_;
 };
 
 }  // namespace hyped::utils

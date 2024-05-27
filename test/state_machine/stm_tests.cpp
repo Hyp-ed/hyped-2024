@@ -17,9 +17,9 @@ void testTransition(const std::shared_ptr<state_machine::StateMachine> &stm,
   ASSERT_TRUE(stm->getCurrentState() == expected_state);
 }
 
-std::shared_ptr<utils::MockMqtt> getMockMqtt()
+std::shared_ptr<utils::DummyMqtt> getMockMqtt()
 {
-  return std::make_shared<utils::MockMqtt>();
+  return std::make_shared<utils::DummyMqtt>();
 }
 
 TEST(StateMachine, cleanRunDynamic)
