@@ -125,6 +125,8 @@ const char *HardwareSpi::getSpiBusAddress(const SpiBus bus)
 std::uint32_t HardwareSpi::getClockValue(SpiClock clock)
 {
   switch (clock) {
+    case SpiClock::k400KHz:
+      return 400'000;
     case SpiClock::k500KHz:
       return 500'000;
     case SpiClock::k1MHz:
