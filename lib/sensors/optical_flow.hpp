@@ -36,7 +36,6 @@ class OpticalFlow {
   static core::Result setRotation(core::ILogger &logger,
                                   const std::shared_ptr<io::ISpi> &spi,
                                   Rotation rotation);
-  static std::uint8_t getOrientation(Rotation rotation);
 
   /**
    * @brief Write a number of address value pairs to the sensor.

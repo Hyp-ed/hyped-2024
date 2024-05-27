@@ -29,14 +29,15 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
     logger.log(core::LogLevel::kFatal, "Failed to power up reset the optical flow sensor");
     return std::nullopt;
   }
-  const auto rotation_result = setRotation(logger, spi, rotation);
-  if (rotation_result != core::Result::kSuccess) {
-    logger.log(core::LogLevel::kFatal, "Failed to set the rotation of the optical flow sensor");
-    return std::nullopt;
-  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(50));
   const auto magic_result = doMagic(logger, spi);
   if (magic_result != core::Result::kSuccess) {
     logger.log(core::LogLevel::kFatal, "Failed to send magic numbers to the optical flow sensor");
+    return std::nullopt;
+  }
+  const auto rotation_result = setRotation(logger, spi, rotation);
+  if (rotation_result != core::Result::kSuccess) {
+    logger.log(core::LogLevel::kFatal, "Failed to set the rotation of the optical flow sensor");
     return std::nullopt;
   }
   return std::make_shared<OpticalFlow>(logger, spi);
@@ -89,6 +90,8 @@ core::Result OpticalFlow::bulkWrite(const std::shared_ptr<io::ISpi> &spi,
   return core::Result::kSuccess;
 }
 
+// NOLINTBEGIN(readability-function-cognitive-complexity) - This function is horrible cope and
+// seethe
 core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
 {
   for (auto i = 2; i < 7; i++) {
@@ -164,6 +167,7 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
   if (result != core::Result::kSuccess) { return result; }
   return result;
 }
+// NOLINTEND(readability-function-cognitive-complexity)
 
 core::Result OpticalFlow::setRotation(core::ILogger &logger,
                                       const std::shared_ptr<io::ISpi> &spi,
