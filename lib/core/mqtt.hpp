@@ -2,6 +2,7 @@
 
 #include "logger.hpp"
 #include "mqtt_topics.hpp"
+#include "time.hpp"
 #include "types.hpp"
 
 #include <optional>
@@ -28,7 +29,7 @@ enum MqttMessageQos {
 struct MqttMessage {
   MqttTopic topic;
   struct Header {
-    std::uint64_t timestamp;
+    TimePoint timestamp;
     MqttMessagePriority priority;
   };
   Header header;

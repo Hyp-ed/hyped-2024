@@ -3,8 +3,7 @@
 #include "state.hpp"
 #include "transition_table.hpp"
 
-#include <unordered_map>
-
+#include "core/time.hpp"
 #include <boost/unordered_map.hpp>
 #include <core/mqtt.hpp>
 #include <core/types.hpp>
@@ -14,7 +13,9 @@ namespace hyped::state_machine {
 
 class StateMachine {
  public:
-  StateMachine(std::shared_ptr<core::IMqtt> mqtt, TransitionTable transition_table);
+  StateMachine(std::shared_ptr<core::IMqtt> mqtt,
+               core::ITimeSource &time,
+               TransitionTable transition_table);
   void run();
   State getCurrentState();
   core::Result handleTransition(const State &state);
@@ -24,46 +25,11 @@ class StateMachine {
 
  private:
   void publishCurrentState();
-  State stringToState(const std::string &state_name);
-  std::string stateToString(const State &state);
+  static State stringToState(const std::string &state_name);
+  static std::string stateToString(const State &state);
   void update();
-  const std::unordered_map<std::string, State> string_to_state_
-    = {{"kIdle", State::kIdle},
-       {"kCalibrate", State::kCalibrate},
-       {"kPrecharge", State::kPrecharge},
-       {"kReadyForLeviation", State::kReadyForLevitation},
-       {"kBeginLevitation", State::kBeginLevitation},
-       {"kLevitating", State::kLevitating},
-       {"kReady", State::kReady},
-       {"kAccelerate", State::kAccelerate},
-       {"kLimBrake", State::kLimBrake},
-       {"kFrictionBrake", State::kFrictionBrake},
-       {"kStopLevitation", State::kStopLevitation},
-       {"kStopped", State::kStopped},
-       {"kBatteryRecharge", State::kBatteryRecharge},
-       {"kCapacitorDischarge", State::kCapacitorDischarge},
-       {"kFailureBrake", State::kFailureBrake},
-       {"kFailure", State::kFailure},
-       {"kSafe", State::kSafe}};
-  const std::unordered_map<State, std::string> state_to_string_
-    = {{State::kIdle, "kIdle"},
-       {State::kCalibrate, "kCalibrate"},
-       {State::kPrecharge, "kPrecharge"},
-       {State::kReadyForLevitation, "kReadyForLevitation"},
-       {State::kBeginLevitation, "kBeginLevitation"},
-       {State::kLevitating, "kLevitating"},
-       {State::kReady, "kReady"},
-       {State::kAccelerate, "kAccelerate"},
-       {State::kLimBrake, "kLimBrake"},
-       {State::kFrictionBrake, "kFrictionBrake"},
-       {State::kStopLevitation, "kStopLevitation"},
-       {State::kStopped, "kStopped"},
-       {State::kBatteryRecharge, "kBatteryRecharge"},
-       {State::kCapacitorDischarge, "kCapacitorDischarge"},
-       {State::kFailureBrake, "kFailureBrake"},
-       {State::kFailure, "kFailure"},
-       {State::kSafe, "kSafe"}};
 
+  core::ITimeSource &time_;
   State current_state_;
   const std::shared_ptr<core::IMqtt> mqtt_;
   TransitionTable transition_to_state_;

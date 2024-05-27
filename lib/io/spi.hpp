@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+#include <optional>
+#include <vector>
 
 #include <core/types.hpp>
 
@@ -11,24 +13,18 @@ class ISpi {
   /**
    * @brief Get data from sensor, starting at some address.
    * @param addr  - register from which the reading should start
-   * @param rx    - pointer to head of read buffer
-   * @param len   - number of bytes to be read, i.e. size of the read buffer
+   * @param len   - number of bytes to be read
    */
-  virtual core::Result read(const std::uint8_t addr,
-                            const std::uint8_t *rx,
-                            const std::uint16_t len)
+  virtual std::optional<std::vector<std::uint8_t>> read(const std::uint8_t addr,
+                                                        const std::uint16_t len)
     = 0;
 
   /**
    * @brief Write data to sensor, starting at some address.
    * @param addr  - register from which writing to starts
-   * @param tx    - pointer to head of write buffer
-   * @param len   - number of bytes to be written, i.e. size of the write buffer
+   * @param tx    - data to be written
    */
-  virtual core::Result write(const std::uint8_t addr,
-                             const std::uint8_t *tx,
-                             const std::uint16_t len)
-    = 0;
+  virtual core::Result write(const std::uint8_t addr, const std::vector<std::uint8_t> tx) = 0;
 };
 
 }  // namespace hyped::io

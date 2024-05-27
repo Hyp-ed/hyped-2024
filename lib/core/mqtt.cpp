@@ -107,7 +107,8 @@ mqtt::message_ptr Mqtt::messageToMessagePtr(const MqttMessage &message)
   rapidjson::Document header;
   header.SetObject();
   header.AddMember("priority", message.header.priority, header.GetAllocator());
-  header.AddMember("timestamp", message.header.timestamp, header.GetAllocator());
+  const auto timestamp = message.header.timestamp.time_since_epoch().count();
+  header.AddMember("timestamp", timestamp, header.GetAllocator());
   payload.AddMember("header", header, payload.GetAllocator());
   rapidjson::Document payload_json;
   payload_json.CopyFrom(*message.payload, payload_json.GetAllocator());
@@ -151,6 +152,7 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
     logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing priority");
   }
   const auto timestamp = header["timestamp"].GetUint64();
+  const auto timepoint = TimePoint(std::chrono::nanoseconds(timestamp));
   const auto priority  = header["priority"].GetUint();
   if (!message_contents_json.HasMember("payload")) {
     logger_.log(core::LogLevel::kFatal, "Failed to parse MQTT message: missing payload");
@@ -162,7 +164,7 @@ std::optional<MqttMessage> Mqtt::messagePtrToMessage(std::shared_ptr<const mqtt:
   auto mqtt_priority           = static_cast<MqttMessagePriority>(priority);
   std::shared_ptr mqtt_payload = std::make_shared<rapidjson::Document>();
   mqtt_payload->CopyFrom(message_contents_json["payload"], mqtt_payload->GetAllocator());
-  MqttMessage::Header mqtt_header{timestamp, mqtt_priority};
+  MqttMessage::Header mqtt_header{timepoint, mqtt_priority};
   return MqttMessage{mqtt_topic->second, mqtt_header, mqtt_payload};
 }
 
