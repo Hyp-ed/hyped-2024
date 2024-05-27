@@ -86,9 +86,9 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
   auto result
     = bulkWrite(spi, {{{0x7f, 0x00}, {0x55, 0x01}, {0x50, 0x07}, {0x7F, 0x0E}, {0x43, 0x10}}});
   if (result != core::Result::kSuccess) { return result; }
-  auto a = spi->read(0x67, 0x01);
-  if (!a) { return core::Result::kFailure; }
-  if ((a->at(0) & 0b10000000) != 0) {
+  auto magic_read_1 = spi->read(0x67, 0x01);
+  if (!magic_read_1) { return core::Result::kFailure; }
+  if ((magic_read_1->at(0) & 0b10000000) != 0) {
     result = spi->write(0x48, {0x04});
     if (result != core::Result::kSuccess) { return result; }
   } else {
@@ -97,24 +97,25 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
   }
   result = bulkWrite(spi, {{{0X7F, 0X00}, {0X51, 0X7B}, {0X50, 0X00}, {0X55, 0X00}, {0X7F, 0X03}}});
   if (result != core::Result::kSuccess) { return result; }
-  auto b = spi->read(0x73, 0x01);
-  if (!b) { return core::Result::kFailure; }
-  if (b->at(0) == 0x00) {
-    const auto optional_c1 = spi->read(0x70, 0x01);
-    if (!optional_c1) { return core::Result::kFailure; }
-    auto c1                = optional_c1->at(0);
-    const auto optional_c2 = spi->read(0x71, 0x01);
-    if (!optional_c2) { return core::Result::kFailure; }
-    auto c2 = optional_c2->at(0);
-    if (c1 <= 28) { c1 += 14; }
-    if (c1 > 28) { c1 += 11; }
-    c1     = std::max(static_cast<std::uint8_t>(0), std::min(static_cast<std::uint8_t>(0x3F), c1));
-    c2     = (c2 * 45) / 100;
-    result = bulkWrite(spi, {{{0x7F, 0x00}, {0x61, 0xAD}, {0X51, 0X70}, {0X7F, 0X0E}}});
+  auto magic_read_2 = spi->read(0x73, 0x01);
+  if (!magic_read_2) { return core::Result::kFailure; }
+  if (magic_read_2->at(0) == 0x00) {
+    const auto optional_constant_1 = spi->read(0x70, 0x01);
+    if (!optional_constant_1) { return core::Result::kFailure; }
+    auto magic_constant_1          = optional_constant_1->at(0);
+    const auto optional_constant_2 = spi->read(0x71, 0x01);
+    if (!optional_constant_2) { return core::Result::kFailure; }
+    auto magic_constant_2 = optional_constant_2->at(0);
+    if (magic_constant_1 <= 28) { magic_constant_1 += 14; }
+    if (magic_constant_1 > 28) { magic_constant_1 += 11; }
+    magic_constant_1 = std::max(static_cast<std::uint8_t>(0),
+                                std::min(static_cast<std::uint8_t>(0x3F), magic_constant_1));
+    magic_constant_2 = (magic_constant_2 * 45) / 100;
+    result           = bulkWrite(spi, {{{0x7F, 0x00}, {0x61, 0xAD}, {0X51, 0X70}, {0X7F, 0X0E}}});
     if (result != core::Result::kSuccess) { return result; }
-    result = spi->write(0x70, {c1});
+    result = spi->write(0x70, {magic_constant_1});
     if (result != core::Result::kSuccess) { return result; }
-    result = spi->write(0x71, {c2});
+    result = spi->write(0x71, {magic_constant_2});
     if (result != core::Result::kSuccess) { return result; }
   }
   result = bulkWrite(
