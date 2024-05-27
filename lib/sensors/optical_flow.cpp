@@ -83,6 +83,10 @@ core::Result OpticalFlow::bulkWrite(const std::shared_ptr<io::ISpi> &spi,
 
 core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
 {
+  for (auto i = 2; i < 7; i++) {
+    const auto magic_read = spi->read(i, 0x01);
+    if (!magic_read) { return core::Result::kFailure; }
+  }
   auto result
     = bulkWrite(spi, {{{0x7f, 0x00}, {0x55, 0x01}, {0x50, 0x07}, {0x7F, 0x0E}, {0x43, 0x10}}});
   if (result != core::Result::kSuccess) { return result; }
