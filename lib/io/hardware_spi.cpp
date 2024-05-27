@@ -108,7 +108,6 @@ core::Result HardwareSpi::write(const std::uint8_t register_address,
     logger_.log(core::LogLevel::kFatal, "Failed to write to SPI device");
     return core::Result::kFailure;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully wrote to SPI device");
   return core::Result::kSuccess;
 }
 

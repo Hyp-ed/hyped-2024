@@ -62,7 +62,6 @@ std::optional<std::uint8_t> HardwareI2c::readByte(const std::uint8_t device_addr
     logger_.log(core::LogLevel::kFatal, "Failed to read from i2c device");
     return std::nullopt;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully read byte from i2c device");
   return read_buffer[0];
 }
 
@@ -96,7 +95,6 @@ core::Result HardwareI2c::writeBytesToDevice(const std::uint8_t device_address,
     logger_.log(core::LogLevel::kFatal, "Failed to write to i2c device");
     return core::Result::kFailure;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully wrote bytes to i2c device register");
   return core::Result::kSuccess;
 }
 
@@ -109,7 +107,6 @@ core::Result HardwareI2c::writeByte(const std::uint8_t device_address, const std
     logger_.log(core::LogLevel::kFatal, "Failed to write to i2c device");
     return core::Result::kFailure;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully wrote byte to i2c device");
   return core::Result::kSuccess;
 }
 

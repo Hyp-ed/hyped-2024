@@ -91,7 +91,6 @@ core::Result Uart::sendBytes(const char *tx, const std::uint8_t length)
     logger_.log(core::LogLevel::kFatal, "Failed to write the desired number of bytes to UART");
     return core::Result::kFailure;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully wrote %d bytes to UART", length);
   return core::Result::kSuccess;
 }
 
@@ -102,7 +101,6 @@ core::Result Uart::readBytes(unsigned char *rx, const std::uint8_t length)
     logger_.log(core::LogLevel::kFatal, "Failed to read the desired number of bytes from UART");
     return core::Result::kFailure;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully read %d bytes over UART", length);
   return core::Result::kFailure;
 }
 
