@@ -74,6 +74,7 @@ std::optional<std::uint16_t> OpticalFlow::read()
                   i);
       return std::sqrt(x * x + y * y);
     }
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
   }
   logger_.log(core::LogLevel::kFatal, "Optical flow sensor timed out");
   return std::nullopt;

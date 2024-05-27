@@ -56,17 +56,25 @@ core::Result OpticalFlowCommands::addCommands(core::ILogger &logger,
   }
   const auto optical_flow                         = std::move(*optional_optical_flow);
   const auto *const read_optical_flow_name        = "optical flow read";
-  const auto *const read_optical_flow_usage       = "optical flow read";
+  const auto *const read_optical_flow_usage       = "optical flow read <number_of_times>";
   const auto *const read_optical_flow_description = "Read the optical flow sensor";
-  const auto read_optical_flow_handler = [&logger, optical_flow](const std::vector<std::string> &) {
-    auto optional_delta = optical_flow->read();
-    if (!optional_delta) {
-      logger.log(core::LogLevel::kFatal, "Error reading optical flow sensor");
-      return;
-    }
-    const auto delta = optional_delta;
-    logger.log(core::LogLevel::kInfo, "Delta: %d", delta);
-  };
+  const auto read_optical_flow_handler
+    = [&logger, optical_flow](const std::vector<std::string> &args) {
+        if (args.size() != 1) {
+          logger.log(core::LogLevel::kFatal, "Invalid number of arguments");
+          return;
+        }
+        auto number_of_times = std::stoi(args[0]);
+        for (auto i = 0; i < number_of_times; i++) {
+          auto optional_delta = optical_flow->read();
+          if (!optional_delta) {
+            logger.log(core::LogLevel::kFatal, "Error reading optical flow sensor");
+            return;
+          }
+          const auto delta = optional_delta;
+          logger.log(core::LogLevel::kInfo, "Delta: %d", delta);
+        }
+      };
   auto read_optical_flow_command = std::make_unique<Command>(read_optical_flow_name,
                                                              read_optical_flow_description,
                                                              read_optical_flow_usage,
