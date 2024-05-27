@@ -49,25 +49,32 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 
 std::optional<std::uint16_t> OpticalFlow::read()
 {
-  auto optional_data = spi_->read(kMotionBurst, 12);
-  if (!optional_data) {
-    logger_.log(core::LogLevel::kFatal, "Failed to read motion burst data");
-    return std::nullopt;
+  for (auto i = 0; i < 1000000; i++) {
+    auto optional_data = spi_->read(kMotionBurst, 13);
+    if (!optional_data) {
+      logger_.log(core::LogLevel::kFatal, "Failed to read motion burst data");
+      return std::nullopt;
+    }
+    const auto data          = *optional_data;
+    const auto ready         = data[1] & 0x80;
+    const auto x             = static_cast<std::uint16_t>((data[4] << 8) | data[3]);
+    const auto y             = static_cast<std::uint16_t>((data[6] << 8) | data[5]);
+    const auto quality       = data[7];
+    const auto shutter_upper = data[11];
+    if (ready != 0) {
+      logger_.log(core::LogLevel::kDebug,
+                  "Read data: ready %d, x %d, y %d, quality %d, shutter upper %d, i %d",
+                  ready,
+                  x,
+                  y,
+                  quality,
+                  shutter_upper,
+                  i);
+      return std::sqrt(x * x + y * y);
+    }
   }
-  const auto data          = *optional_data;
-  const auto ready         = data[1] & 0x80;
-  const auto x             = static_cast<std::uint16_t>((data[4] << 8) | data[3]);
-  const auto y             = static_cast<std::uint16_t>((data[6] << 8) | data[5]);
-  const auto quality       = data[7];
-  const auto shutter_upper = data[11];
-  logger_.log(core::LogLevel::kDebug,
-              "Read data: ready %d, x %d, y %d, quality %d, shutter upper %d",
-              ready,
-              x,
-              y,
-              quality,
-              shutter_upper);
-  return std::sqrt(x * x + y * y);
+  logger_.log(core::LogLevel::kFatal, "Optical flow sensor timed out");
+  return std::nullopt;
 }
 
 core::Result OpticalFlow::bulkWrite(const std::shared_ptr<io::ISpi> &spi,
@@ -132,10 +139,10 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
            {0x4B, 0x78}, {0x44, 0x08}, {0x45, 0x50}, {0x64, 0xFF}, {0x65, 0x1F}, {0x7F, 0x14},
            {0x65, 0x67}, {0x66, 0x08}, {0x63, 0x70}, {0x7F, 0x15}, {0x48, 0x48}, {0x7F, 0x07},
            {0x41, 0x0D}, {0x43, 0x14}, {0x4B, 0x0E}, {0x45, 0x0F}, {0x44, 0x42}, {0x4C, 0x80},
-           {0x7F, 0x10}, {0x5B, 0x02}, {0x7F, 0x07}, {0x40, 0x41}, {0x70, 0x00}, {-1, 0x0A},
+           {0x7F, 0x10}, {0x5B, 0x02}, {0x7F, 0x07}, {0x40, 0x41}, {0x70, 0x00}, {0xFF, 0x0A},
            {0x32, 0x44}, {0x7F, 0x07}, {0x40, 0x40}, {0x7F, 0x06}, {0x62, 0xF0}, {0x63, 0x00},
            {0x7F, 0x0D}, {0x48, 0xC0}, {0x6F, 0xD5}, {0x7F, 0x00}, {0x5B, 0xA0}, {0x4E, 0xA8},
-           {0x5A, 0x50}, {0x40, 0x80}, {-1, 0xF0},   {0x7F, 0x14}, {0x6F, 0x1C}, {0x7F, 0x00}}});
+           {0x5A, 0x50}, {0x40, 0x80}, {0xFF, 0xF0}, {0x7F, 0x14}, {0x6F, 0x1C}, {0x7F, 0x00}}});
   return result;
 }
 
