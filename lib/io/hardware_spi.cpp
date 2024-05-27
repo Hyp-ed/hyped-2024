@@ -87,7 +87,6 @@ std::optional<std::vector<std::uint8_t>> HardwareSpi::read(const std::uint8_t re
     logger_.log(core::LogLevel::kFatal, "Failed to read the correct number of bytes from SPI");
     return std::nullopt;
   }
-  logger_.log(core::LogLevel::kDebug, "Successfully read from SPI device");
   return rx;
 }
 
