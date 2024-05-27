@@ -61,7 +61,7 @@ std::optional<std::uint16_t> OpticalFlow::read()
     const auto y             = static_cast<std::uint16_t>((data[6] << 8) | data[5]);
     const auto quality       = data[7];
     const auto shutter_upper = data[11];
-    if (ready != 0) {
+    if (ready != 0 && (quality >= 0x19 || shutter_upper != 0x1F)) {
       logger_.log(core::LogLevel::kDebug,
                   "Read data: ready %d, x %d, y %d, quality %d, shutter upper %d, i %d",
                   ready,
