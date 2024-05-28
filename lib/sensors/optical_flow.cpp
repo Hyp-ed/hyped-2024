@@ -59,8 +59,8 @@ std::optional<std::uint16_t> OpticalFlow::read()
     }
     const auto data          = *optional_data;
     const auto ready         = data[1] & 0x40;
-    const auto x             = static_cast<std::uint16_t>((data[4] << 8) | data[3]);
-    const auto y             = static_cast<std::uint16_t>((data[6] << 8) | data[5]);
+    const auto x             = static_cast<std::uint16_t>((data[3] << 8) | data[4]);
+    const auto y             = static_cast<std::uint16_t>((data[5] << 8) | data[6]);
     const auto quality       = data[7];
     const auto shutter_upper = data[11];
     if (ready != 0 && (quality >= 0x19 || shutter_upper != 0x1F)) {
