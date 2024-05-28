@@ -13,7 +13,17 @@ namespace hyped::sensors {
 std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
   core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi, Rotation rotation)
 {
-  // check we are communicating with the correct sensor
+  const auto power_up_result = spi->write(kPowerUpResetAddress, {kPowerUpResetValue});
+  if (power_up_result != core::Result::kSuccess) {
+    logger.log(core::LogLevel::kFatal, "Failed to power up reset the optical flow sensor");
+    return std::nullopt;
+  }
+  std::this_thread::sleep_for(std::chrono::milliseconds(20));
+  const auto magic_result = doMagic(logger, spi);
+  if (magic_result != core::Result::kSuccess) {
+    logger.log(core::LogLevel::kFatal, "Failed to send magic numbers to the optical flow sensor");
+    return std::nullopt;
+  }
   auto optional_device_id = spi->read(kDeviceIdAddress, 1);
   if (!optional_device_id) {
     logger.log(core::LogLevel::kFatal, "Failed to read the optical flow device ID");
@@ -22,17 +32,6 @@ std::optional<std::shared_ptr<OpticalFlow>> OpticalFlow::create(
   const auto device_id = *optional_device_id;
   if (device_id[0] != kExpectedDeviceIdValue) {
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for optical flow sensor");
-    return std::nullopt;
-  }
-  const auto power_up_result = spi->write(kPowerUpResetAddress, {kPowerUpResetValue});
-  if (power_up_result != core::Result::kSuccess) {
-    logger.log(core::LogLevel::kFatal, "Failed to power up reset the optical flow sensor");
-    return std::nullopt;
-  }
-  std::this_thread::sleep_for(std::chrono::milliseconds(50));
-  const auto magic_result = doMagic(logger, spi);
-  if (magic_result != core::Result::kSuccess) {
-    logger.log(core::LogLevel::kFatal, "Failed to send magic numbers to the optical flow sensor");
     return std::nullopt;
   }
   const auto rotation_result = setRotation(logger, spi, rotation);
@@ -111,7 +110,7 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
     result = spi->write(0x48, {0x02});
     if (result != core::Result::kSuccess) { return result; }
   }
-  result = bulkWrite(spi, {{{0X7F, 0X00}, {0X51, 0X7B}, {0X50, 0X00}, {0X55, 0X00}, {0X7F, 0X03}}});
+  result = bulkWrite(spi, {{{0x7F, 0x00}, {0x51, 0x7B}, {0x50, 0x00}, {0x55, 0x00}, {0x7F, 0x0E}}});
   if (result != core::Result::kSuccess) { return result; }
   auto magic_read_2 = spi->read(0x73, 0x01);
   if (!magic_read_2) { return core::Result::kFailure; }
@@ -127,7 +126,7 @@ core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<i
     magic_constant_1 = std::max(static_cast<std::uint8_t>(0),
                                 std::min(static_cast<std::uint8_t>(0x3F), magic_constant_1));
     magic_constant_2 = (magic_constant_2 * 45) / 100;
-    result           = bulkWrite(spi, {{{0x7F, 0x00}, {0x61, 0xAD}, {0X51, 0X70}, {0X7F, 0X0E}}});
+    result           = bulkWrite(spi, {{{0x7F, 0x00}, {0x61, 0xAD}, {0x51, 0x70}, {0x7F, 0x0E}}});
     if (result != core::Result::kSuccess) { return result; }
     result = spi->write(0x70, {magic_constant_1});
     if (result != core::Result::kSuccess) { return result; }
