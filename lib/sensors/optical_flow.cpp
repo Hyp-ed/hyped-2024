@@ -57,7 +57,7 @@ std::optional<std::uint16_t> OpticalFlow::read()
       return std::nullopt;
     }
     const auto data          = *optional_data;
-    const auto ready         = data[1] & 0x80;
+    const auto ready         = data[1] & 0x40;
     const auto x             = static_cast<std::uint16_t>((data[4] << 8) | data[3]);
     const auto y             = static_cast<std::uint16_t>((data[6] << 8) | data[5]);
     const auto quality       = data[7];
