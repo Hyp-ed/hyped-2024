@@ -52,26 +52,17 @@ OpticalFlow::OpticalFlow(core::ILogger &logger, std::shared_ptr<io::ISpi> spi)
 std::optional<std::uint16_t> OpticalFlow::read()
 {
   for (auto i = 0; i < 10000; i++) {
-    auto optional_data = spi_->read(kMotionBurst, 13);
+    auto optional_data = spi_->read(kReadyAddress, 5);
     if (!optional_data) {
       logger_.log(core::LogLevel::kFatal, "Failed to read motion burst data");
       return std::nullopt;
     }
-    const auto data          = *optional_data;
-    const auto ready         = data[1] & 0x80;
-    const auto x             = static_cast<std::uint16_t>((data[3] << 8) | data[4]);
-    const auto y             = static_cast<std::uint16_t>((data[5] << 8) | data[6]);
-    const auto quality       = data[7];
-    const auto shutter_upper = data[11];
-    if (ready != 0 && (quality >= 0x19 || shutter_upper != 0x1F)) {
-      logger_.log(core::LogLevel::kDebug,
-                  "Read data: ready %d, x %d, y %d, quality %d, shutter upper %d, i %d",
-                  ready,
-                  x,
-                  y,
-                  quality,
-                  shutter_upper,
-                  i);
+    const auto data  = *optional_data;
+    const auto ready = data[0] & 0x80;
+    const auto x     = static_cast<std::uint16_t>((data[2] << 8) | data[1]);
+    const auto y     = static_cast<std::uint16_t>((data[4] << 8) | data[3]);
+    if (ready != 0) {
+      logger_.log(core::LogLevel::kDebug, "Read data: ready %d, x %d, y %d, i %d", ready, x, y, i);
       return std::sqrt(x * x + y * y);
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(1));
@@ -91,8 +82,8 @@ core::Result OpticalFlow::bulkWrite(const std::shared_ptr<io::ISpi> &spi,
   return core::Result::kSuccess;
 }
 
-// NOLINTBEGIN(readability-function-cognitive-complexity) - This function is horrible cope and
-// seethe
+// NOLINTBEGIN(readability-function-cognitive-complexity)
+// This function is horrible cope and seethe
 core::Result OpticalFlow::doMagic(core::ILogger &logger, const std::shared_ptr<io::ISpi> &spi)
 {
   for (auto i = 2; i < 7; i++) {
