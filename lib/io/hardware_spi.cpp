@@ -3,6 +3,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+#include <thread>
+
 #include <sys/ioctl.h>
 
 namespace hyped::io {
@@ -79,6 +81,7 @@ std::optional<std::vector<std::uint8_t>> HardwareSpi::read(const std::uint8_t re
   message[1].rx_buf     = reinterpret_cast<std::uint64_t>(rx.data());
   message[1].len        = len;
   const int read_result = ioctl(file_descriptor_, SPI_IOC_MESSAGE(2), message);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
   if (read_result < 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to read from SPI device");
     return std::nullopt;
@@ -103,6 +106,7 @@ core::Result HardwareSpi::write(const std::uint8_t register_address,
   message[1].rx_buf      = 0;
   message[1].len         = tx.size();
   const int write_result = ioctl(file_descriptor_, SPI_IOC_MESSAGE(2), message);
+  std::this_thread::sleep_for(std::chrono::milliseconds(1));
   if (write_result < 0) {
     logger_.log(core::LogLevel::kFatal, "Failed to write to SPI device");
     return core::Result::kFailure;
