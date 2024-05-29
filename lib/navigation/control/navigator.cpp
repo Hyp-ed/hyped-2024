@@ -171,18 +171,7 @@ void Navigator::publishCurrentTrajectory()
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 
-bool Navigator::subscribeAndCheck(core::MqttTopic topic)
-{
-  auto result = mqtt_->subscribe(topic);
-  if (result == core::Result::kFailure) {
-    requestFailure();
-    logger_.log(core::LogLevel::kFatal, "Failed to subscribe to topic");
-    return false;
-  }
-  return true;
-}
-
-void Navigator::run()
+void Navigator::publishStart()
 {
   const auto topic     = core::MqttTopic::kStarted;
   auto message_payload = std::make_shared<rapidjson::Document>();
@@ -196,7 +185,22 @@ void Navigator::run()
                                          .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+}
 
+bool Navigator::subscribeAndCheck(core::MqttTopic topic)
+{
+  auto result = mqtt_->subscribe(topic);
+  if (result == core::Result::kFailure) {
+    requestFailure();
+    logger_.log(core::LogLevel::kFatal, "Failed to subscribe to topic");
+    return false;
+  }
+  return true;
+}
+
+void Navigator::run()
+{
+  publishStart();
   // Subscribe to all required topics
 
   if (!subscribeAndCheck(core::MqttTopic::kKeyence)
