@@ -206,42 +206,75 @@ void Navigator::run()
   }
 
   while (true) {
-    mqtt_->consume();
+    bool sensor_data_received = false;
 
-    auto keyence_msg       = mqtt_->getMessage();
-    auto optical_msg       = mqtt_->getMessage();
-    auto accelerometer_msg = mqtt_->getMessage();
+    std::optional<core::KeyenceData> most_recent_keyence_data = std::nullopt;
 
-    auto keyence_payload          = keyence_msg->payload;
-    auto optical_payload          = optical_msg->payload;
-    auto raw_acceleration_payload = accelerometer_msg->payload;
+    std::optional<core::OpticalData> most_recent_optical_data = std::nullopt;
 
-    core::KeyenceData dummy_keyence_data = {0, 0};
+    std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
+      most_recent_accelerometer_data = std::nullopt;
 
-    core::OpticalData dummy_optical_data;
-    for (auto &data : dummy_optical_data) {
+    while (!sensor_data_received) {
+      mqtt_->consume();
+
+      auto msg = mqtt_->getMessage();
+
+      if (msg.has_value() && msg.value().topic == core::MqttTopic::kKeyence) {
+        auto payload = msg->payload;
+        // TODOLater: read the payload
+        most_recent_keyence_data = core::KeyenceData{0, 0};
+      } else if (msg.has_value() && msg.value().topic == core::MqttTopic::kOpticalFlow) {
+        auto payload = msg->payload;
+        // TODOLater: read the payload
+        core::OpticalData most_recent_optical_data;
+        for (auto &data : most_recent_optical_data) {
+          data = {0.0F, 0.0F};
+        }
+      } else if (msg.has_value() && msg.value().topic == core::MqttTopic::kAccelerometer) {
+        auto payload = msg->payload;
+        // TODOLater: read the payload
+        std::array<core::RawAccelerationData, core::kNumAccelerometers>
+          most_recent_accelerometer_data
+          = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+             core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+             core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+             core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
+      }
+
+      if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
+        sensor_data_received = true;
+      }
+    }
+
+    core::OpticalData default_optical_data;
+    for (auto &data : default_optical_data) {
       data = {0.0F, 0.0F};
     }
 
-    std::array<core::RawAccelerationData, core::kNumAccelerometers> dummy_accelerometer_data
-      = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-         core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-         core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-         core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
+    if (most_recent_keyence_data.has_value()) {
+      auto keyence_update_result = keyenceUpdate(most_recent_keyence_data.value());
+    }
 
-    auto keyence_update_result       = keyenceUpdate(dummy_keyence_data);
-    auto optical_update_result       = opticalUpdate(dummy_optical_data);
-    auto accelerometer_update_result = accelerometerUpdate(dummy_accelerometer_data);
+    if (most_recent_optical_data.has_value()) {
+      auto optical_update_result = opticalUpdate(most_recent_optical_data.value());
+      // If no optical data received, use {0,0}
+    } else {
+      auto optical_update_result = opticalUpdate(default_optical_data);
+    }
+
+    if (most_recent_accelerometer_data.has_value()) {
+      auto accelerometer_update_result
+        = accelerometerUpdate(most_recent_accelerometer_data.value());
+    }
 
     if (keyence_update_result == core::Result::kFailure
         || optical_update_result == core::Result::kFailure
         || accelerometer_update_result == core::Result::kFailure) {
       logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
       requestFailure();
-
-      break;
+      return;
     }
-
     publishCurrentTrajectory();
   }
 }

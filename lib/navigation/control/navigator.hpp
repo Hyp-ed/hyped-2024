@@ -83,6 +83,10 @@ class Navigator : public INavigator {
   core::Float previous_keyence_reading_;
   core::Float previous_accelerometer_data_;
 
+  core::Result keyence_update_result = core::Result::kSuccess;
+  core::Result optical_update_result = core::Result::kSuccess;
+  core::Result accelerometer_update_result = core::Result::kSuccess;
+
   // current navigation trajectory
   core::Trajectory trajectory_;
 };
