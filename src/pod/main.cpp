@@ -76,6 +76,9 @@ int main(int argc, char **argv)
       if (node_name == "state_machine") {
         auto state_machine_config = config["state_machine"];
         hyped::state_machine::StateMachine::startNode(state_machine_config, mqtt_ip, mqtt_port);
+      else if (node_name == "navigator") {
+        auto navigator_config = config["navigator"];
+        hyped::navigation::Navigator::startNode(navigator_config, mqtt_ip, mqtt_port);
       } else {
         std::cerr << "Unknown node: " << node_name << "\n";
         return 1;

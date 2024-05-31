@@ -162,8 +162,10 @@ void Navigator::publishCurrentTrajectory()
 
   rapidjson::Value displacement(trajectory->displacement);
   rapidjson::Value velocity(trajectory->velocity);
+  rapidjson::Value acceleration(previous_accelerometer_data_);
   message_payload->AddMember("displacement", displacement, message_payload->GetAllocator());
   message_payload->AddMember("velocity", velocity, message_payload->GetAllocator());
+  message_payload->AddMember("acceleration", acceleration, message_payload->GetAllocator());
 
   const core::MqttMessage::Header header{.timestamp = 0,
                                          .priority  = core::MqttMessagePriority::kNormal};
