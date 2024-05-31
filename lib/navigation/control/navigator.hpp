@@ -83,7 +83,7 @@ class Navigator : public INavigator {
   AccelerometerPreprocessor accelerometer_preprocessor_;
   OpticalPreprocessor optical_preprocessor_;
 
-    // previous readings
+  // previous readings
   core::Float previous_optical_reading_;
   core::Float previous_keyence_reading_;
   core::Float previous_accelerometer_data_;
