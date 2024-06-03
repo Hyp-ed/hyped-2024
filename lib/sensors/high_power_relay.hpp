@@ -9,11 +9,12 @@
 
 namespace hyped::sensors {
 class HpRelay {
-  public:
+ public:
   static std::optional<HpRelay> create(core::ILogger &logger,
-                                      std::shared_ptr<io::IGpio> gpio,
-                                      const std::uint8_t new_pin);
-  
-                                      
+                                       std::shared_ptr<io::IGpio> gpio,
+                                       const std::uint8_t new_pin);
+
+  ~HpRelay();
 };
-} // namespace::sensors
+
+}  // namespace hyped::sensors
