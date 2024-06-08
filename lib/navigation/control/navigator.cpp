@@ -226,26 +226,35 @@ void Navigator::run()
 
       auto msg = mqtt_->getMessage();
 
-      if (msg.has_value() && msg.value().topic == core::MqttTopic::kKeyence) {
-        auto payload = msg->payload;
-        // TODOLater: read the payload
-        most_recent_keyence_data = core::KeyenceData{0, 0};
-      } else if (msg.has_value() && msg.value().topic == core::MqttTopic::kOpticalFlow) {
-        auto payload = msg->payload;
-        // TODOLater: read the payload
-        core::OpticalData most_recent_optical_data;
-        for (auto &data : most_recent_optical_data) {
-          data = {0.0F, 0.0F};
+      switch (msg.value().topic) {
+        case core::MqttTopic::kKeyence: {
+          auto payload = msg->payload;
+          // TODOLater: read the payload
+          most_recent_keyence_data = core::KeyenceData{0, 0};
+          break;
         }
-      } else if (msg.has_value() && msg.value().topic == core::MqttTopic::kAccelerometer) {
-        auto payload = msg->payload;
-        // TODOLater: read the payload
-        std::array<core::RawAccelerationData, core::kNumAccelerometers>
-          most_recent_accelerometer_data
-          = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-             core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-             core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-             core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
+        case core::MqttTopic::kOpticalFlow: {
+          auto payload = msg->payload;
+          // TODOLater: read the payload
+          core::OpticalData most_recent_optical_data;
+          for (auto &data : most_recent_optical_data) {
+            data = {0.0F, 0.0F};
+          }
+          break;
+        }
+        case core::MqttTopic::kAccelerometer: {
+          auto payload = msg->payload;
+          // TODOLater: read the payload
+          std::array<core::RawAccelerationData, core::kNumAccelerometers>
+            most_recent_accelerometer_data
+            = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+               core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+               core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
+               core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
+          break;
+        }
+        default:
+          break;
       }
 
       if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
