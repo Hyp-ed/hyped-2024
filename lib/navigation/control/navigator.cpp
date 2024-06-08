@@ -311,7 +311,8 @@ void Navigator::run()
       }
     }
 
-    updateSensorData(most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
+    updateSensorData(
+      most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
     publishCurrentTrajectory();
   }
 }

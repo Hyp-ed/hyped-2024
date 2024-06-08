@@ -71,7 +71,7 @@ class Navigator : public INavigator {
   bool subscribeAndCheck(core::MqttTopic topic);
 
   /**
-   * @brief Subscribes to all necessary topics
+   * @brief Subscribes to topics
    */
   bool subscribeToTopics();
 
