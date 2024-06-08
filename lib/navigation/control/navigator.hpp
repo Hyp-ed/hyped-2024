@@ -75,6 +75,19 @@ class Navigator : public INavigator {
    */
   bool subscribeToTopics();
 
+  /**
+   * @brief Updates the sensor data and the trajectory
+   *
+   * @param keyence_data
+   * @param optical_data
+   * @param accelerometer_data
+   */
+  void updateSensorData(
+    std::optional<core::KeyenceData> &keyence_data,
+    std::optional<core::OpticalData> &optical_data,
+    std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
+      &accelerometer_data);
+
  private:
   core::ILogger &logger_;
   const core::ITimeSource &time_;

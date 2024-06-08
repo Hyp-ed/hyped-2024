@@ -207,6 +207,52 @@ bool Navigator::subscribeToTopics()
          && subscribeAndCheck(core::MqttTopic::kAccelerometer);
 }
 
+void Navigator::updateSensorData(
+  std::optional<core::KeyenceData> &keyence_data,
+  std::optional<core::OpticalData> &optical_data,
+  std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
+    &accelerometer_data)
+{
+  core::OpticalData default_optical_data;
+  for (auto &data : default_optical_data) {
+    data = {0.0F, 0.0F};
+  }
+
+  if (keyence_data.has_value()) {
+    auto keyence_update_result = keyenceUpdate(keyence_data.value());
+    if (keyence_update_result == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update Keyence sensor data");
+      requestFailure();
+      return;
+    }
+  }
+
+  if (optical_data.has_value()) {
+    auto optical_update_result = opticalUpdate(optical_data.value());
+    if (optical_update_result == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update Optical sensor data");
+      requestFailure();
+      return;
+    }
+  } else {
+    auto optical_update_result = opticalUpdate(default_optical_data);
+    if (optical_update_result == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update Optical sensor data");
+      requestFailure();
+      return;
+    }
+  }
+
+  if (accelerometer_data.has_value()) {
+    auto accelerometer_update_result = accelerometerUpdate(accelerometer_data.value());
+    if (accelerometer_update_result == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to update Accelerometer sensor data");
+      requestFailure();
+      return;
+    }
+  }
+}
+
 void Navigator::run()
 {
   publishStart();
@@ -265,34 +311,7 @@ void Navigator::run()
       }
     }
 
-    core::OpticalData default_optical_data;
-    for (auto &data : default_optical_data) {
-      data = {0.0F, 0.0F};
-    }
-
-    if (most_recent_keyence_data.has_value()) {
-      auto keyence_update_result = keyenceUpdate(most_recent_keyence_data.value());
-    }
-
-    if (most_recent_optical_data.has_value()) {
-      auto optical_update_result = opticalUpdate(most_recent_optical_data.value());
-      // If no optical data received, use {0,0}
-    } else {
-      auto optical_update_result = opticalUpdate(default_optical_data);
-    }
-
-    if (most_recent_accelerometer_data.has_value()) {
-      auto accelerometer_update_result
-        = accelerometerUpdate(most_recent_accelerometer_data.value());
-    }
-
-    if (keyence_update_result == core::Result::kFailure
-        || optical_update_result == core::Result::kFailure
-        || accelerometer_update_result == core::Result::kFailure) {
-      logger_.log(core::LogLevel::kFatal, "Failed to update sensor data");
-      requestFailure();
-      return;
-    }
+    updateSensorData(most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
     publishCurrentTrajectory();
   }
 }
