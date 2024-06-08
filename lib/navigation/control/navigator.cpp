@@ -200,16 +200,19 @@ bool Navigator::subscribeAndCheck(core::MqttTopic topic)
   return true;
 }
 
+bool Navigator::subscribeToTopics()
+{
+  return subscribeAndCheck(core::MqttTopic::kKeyence)
+         && subscribeAndCheck(core::MqttTopic::kOpticalFlow)
+         && subscribeAndCheck(core::MqttTopic::kAccelerometer);
+}
+
 void Navigator::run()
 {
   publishStart();
   // Subscribe to all required topics
 
-  if (!subscribeAndCheck(core::MqttTopic::kKeyence)
-      || !subscribeAndCheck(core::MqttTopic::kOpticalFlow)
-      || !subscribeAndCheck(core::MqttTopic::kAccelerometer)) {
-    return;
-  }
+  if (!subscribeToTopics()) { return; }
 
   while (true) {
     bool sensor_data_received = false;

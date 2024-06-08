@@ -70,6 +70,11 @@ class Navigator : public INavigator {
    */
   bool subscribeAndCheck(core::MqttTopic topic);
 
+  /**
+   * @brief Subscribes to all necessary topics
+   */
+  bool subscribeToTopics();
+
  private:
   core::ILogger &logger_;
   const core::ITimeSource &time_;
