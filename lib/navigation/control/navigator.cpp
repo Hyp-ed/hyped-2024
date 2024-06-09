@@ -314,15 +314,15 @@ void Navigator::run()
 
           break;
       }
+
+      if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
+        sensor_data_received = true;
+      }
     }
 
-    if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
-      sensor_data_received = true;
-    }
+    updateSensorData(
+      most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
+    publishCurrentTrajectory();
   }
-
-  updateSensorData(
-    most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
-  publishCurrentTrajectory();
 }
 }  // namespace hyped::navigation
