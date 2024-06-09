@@ -260,15 +260,19 @@ void Navigator::run()
 
   if (!subscribeToTopics()) { return; }
 
+  std::optional<core::KeyenceData> most_recent_keyence_data = std::nullopt;
+
+  std::optional<core::OpticalData> most_recent_optical_data = std::nullopt;
+
+  std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
+    most_recent_accelerometer_data = std::nullopt;
+
   while (true) {
     bool sensor_data_received = false;
 
-    std::optional<core::KeyenceData> most_recent_keyence_data = std::nullopt;
-
-    std::optional<core::OpticalData> most_recent_optical_data = std::nullopt;
-
-    std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
-      most_recent_accelerometer_data = std::nullopt;
+    most_recent_keyence_data       = std::nullopt;
+    most_recent_optical_data       = std::nullopt;
+    most_recent_accelerometer_data = std::nullopt;
 
     while (!sensor_data_received) {
       mqtt_->consume();
@@ -285,36 +289,40 @@ void Navigator::run()
         case core::MqttTopic::kOpticalFlow: {
           auto payload = msg->payload;
           // TODOLater: read the payload
-          core::OpticalData most_recent_optical_data;
-          for (auto &data : most_recent_optical_data) {
-            data = {0.0F, 0.0F};
+          if (!most_recent_optical_data.has_value()) {
+            for (auto &data : most_recent_optical_data.value()) {
+              data = {0.0F, 0.0F};
+            }
           }
           break;
         }
         case core::MqttTopic::kAccelerometer: {
           auto payload = msg->payload;
           // TODOLater: read the payload
-          std::array<core::RawAccelerationData, core::kNumAccelerometers>
-            most_recent_accelerometer_data
+
+          std::array<core::RawAccelerationData, core::kNumAccelerometers> temp_data
             = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
                core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
                core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
                core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
+
+          most_recent_accelerometer_data.emplace(temp_data);
           break;
         }
-        default:
-          break;
-      }
 
-      if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
-        sensor_data_received = true;
+        default:
+
+          break;
       }
     }
 
-    updateSensorData(
-      most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
-    publishCurrentTrajectory();
+    if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
+      sensor_data_received = true;
+    }
   }
-}
 
+  updateSensorData(
+    most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
+  publishCurrentTrajectory();
+}
 }  // namespace hyped::navigation
