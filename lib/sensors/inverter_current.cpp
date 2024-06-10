@@ -1,7 +1,8 @@
 #include "adc_mux.hpp"
 
-#include <inverter_current.hpp>
 #include <cstdint>
+
+#include <inverter_current.hpp>
 
 namespace hyped::sensors {
 
@@ -28,21 +29,24 @@ std::optional<core::Float> InverterCurrent::readCurrent()
   }
 
   // The sensor maps -75A to 75A into -3V to 3V
-  // Since the ADC isn't differential, we need to differentiate the reference signal and the output signal
-  static const int MAX_CURRENT = 75;
-  static const int MIN_CURRENT = -75;
+  // Since the ADC isn't differential, we need to differentiate the reference signal and the output
+  // signal
+  static const int MAX_CURRENT         = 75;
+  static const int MIN_CURRENT         = -75;
   static const core::Float MAX_VOLTAGE = 3.3;
   static const core::Float MIN_VOLTAGE = -3.3;
 
   // These can be adjusted
-  const int reference_voltage = 1.65;
+  const int reference_voltage      = 1.65;
   const core::Float virtual_ground = MAX_VOLTAGE / 2;
 
   // Calculate the current
-  const int inverter_current_voltage = *inverter_current * (MAX_VOLTAGE - virtual_ground) + virtual_ground;
-  const core::Float current = sensor_voltage * ((MAX_CURRENT - MIN_CURRENT) / (MAX_VOLTAGE - MIN_VOLTAGE)) + MIN_CURRENT;
+  const int inverter_current_voltage
+    = *inverter_current * (MAX_VOLTAGE - virtual_ground) + virtual_ground;
+  const core::Float current
+    = sensor_voltage * ((MAX_CURRENT - MIN_CURRENT) / (MAX_VOLTAGE - MIN_VOLTAGE)) + MIN_CURRENT;
   const core::Float reference_voltage_biased = reference_voltage + virtual_ground;
-  const core::Float current_difference = current - reference_voltage_biased;
+  const core::Float current_difference       = current - reference_voltage_biased;
   return current_difference;
 }
 
