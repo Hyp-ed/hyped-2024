@@ -6,8 +6,7 @@ namespace hyped::utils {
 
 class DummyLogger : public core::ILogger {
  public:
-  DummyLogger();
-  virtual void log(const core::LogLevel level, const char *format...);
+  void log(const core::LogLevel level, const char *format...) override;
 };
 
 }  // namespace hyped::utils

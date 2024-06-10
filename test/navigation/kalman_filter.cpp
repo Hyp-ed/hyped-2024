@@ -41,20 +41,20 @@ TEST(KalmanFilter, cartRunSimulation)
   navigation::ControlMatrix control_matrix;
   control_matrix << 0.5, 1;
 
-  navigation::StateTransitionCovarianceMatrix process_noise_covariance;
-  process_noise_covariance << 0.25 * 3, 0.5 * 3, 0.5 * 3, 1 * 3;
+  navigation::StateTransitionCovarianceMatrix transition_covariance;
+  transition_covariance << 0.25 * 3, 0.5 * 3, 0.5 * 3, 1 * 3;
 
   navigation::MeasurementMatrix measurement_matrix;
   measurement_matrix << 1, 0, 0, 1;
 
   navigation::MeasurementNoiseCovarianceMatrix measurement_noise_covariance;
-  measurement_noise_covariance << 3, 0, 0, 3;
+  measurement_noise_covariance << 1, 0, 0, 0;
 
   KalmanFilter kalman_filter(initial_state,
                              initial_error_covariance,
                              transition_matrix,
                              control_matrix,
-                             process_noise_covariance,
+                             transition_covariance,
                              measurement_matrix,
                              measurement_noise_covariance);
 
@@ -91,7 +91,7 @@ TEST(KalmanFilter, cartRunSimulation)
 
   state_estimate = kalman_filter.getStateEstimate();
 
-  std::cout << "State estimate: " << state_estimate << std::endl;
+  std::cout << "State estimate: " << state_estimate << "\n";
 
   for (int i = 0; i < 20; i++) {
     measurement << dist_measurements[i], vel_measurements[i];
@@ -108,14 +108,14 @@ TEST(KalmanFilter, cartRunSimulation)
     vel_error_sum += vel_error * vel_error;
   }
 
-  std::cout << "State estimate: " << state_estimate << std::endl;
+  std::cout << "State estimate: " << state_estimate << "\n";
 
   // Calculate RMSE
 
   const double dist_rmse = std::sqrt(dist_error_sum / 20);
   const double vel_rmse  = std::sqrt(vel_error_sum / 20);
 
-  std::cout << "Distance RMSE: " << dist_rmse << std::endl;
-  std::cout << "Velocity RMSE: " << vel_rmse << std::endl;
+  std::cout << "Distance RMSE: " << dist_rmse << "\n";
+  std::cout << "Velocity RMSE: " << vel_rmse << "\n";
 }
 }  // namespace hyped::test

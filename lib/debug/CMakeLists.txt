@@ -12,4 +12,5 @@ target_link_libraries(
   hyped_sensors
   hyped_motors
   ${CURSES_LIBRARIES}
+  tomlplusplus::tomlplusplus
 )

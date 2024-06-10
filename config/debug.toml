@@ -1,33 +1,24 @@
 [io]
 [io.adc]
 enabled = false
-pins = []
 
 [io.can]
 enabled = false
-buses = ["can1"]
 
 [io.gpio]
 enabled = false
-read_pins = []
-write_pins = []
 
 [io.i2c]
 enabled = false
-buses = []
 
 [io.pwm]
 enabled = false
-modules = []
-period = []
 
 [io.spi]
 enabled = false
-buses = []
 
 [io.uart]
 enabled = false
-buses = []
 
 [sensors]
 [sensors.accelerometer]
@@ -37,8 +28,8 @@ address = 25
 
 [sensors.temperature]
 enabled = false
-bus = 2
-address = 56
+bus = 1
+address = 0x38
 
 [sensors.bms]
 enabled = false
@@ -48,6 +39,10 @@ bus = "can1"
 enabled = false
 bus = 2
 adc_mux_channel = 0
+
+[sensors.keyence]
+enabled = false
+pin = 1
 
 [motors]
 enabled = false
