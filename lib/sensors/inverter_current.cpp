@@ -44,7 +44,7 @@ std::optional<core::Float> InverterCurrent::readCurrent()
   const int inverter_current_voltage
     = *inverter_current * (MAX_VOLTAGE - virtual_ground) + virtual_ground;
   const core::Float current
-    = sensor_voltage * ((MAX_CURRENT - MIN_CURRENT) / (MAX_VOLTAGE - MIN_VOLTAGE)) + MIN_CURRENT;
+    = inverter_current_voltage * ((MAX_CURRENT - MIN_CURRENT) / (MAX_VOLTAGE - MIN_VOLTAGE)) + MIN_CURRENT;
   const core::Float reference_voltage_biased = reference_voltage + virtual_ground;
   const core::Float current_difference       = current - reference_voltage_biased;
   return current_difference;
