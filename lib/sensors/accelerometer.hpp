@@ -74,7 +74,7 @@ class Accelerometer {
 
   static constexpr std::uint8_t kDataReady             = 0x27;
   static constexpr std::uint8_t kDeviceIdAddress       = 0x0F;
-  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x44;
+  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x43;
 };
 
 }  // namespace hyped::sensors
