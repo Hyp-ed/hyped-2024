@@ -36,7 +36,7 @@ export const SetLevitationHeight = ({ podId }: { podId: string }) => {
         <Button
           data-testid="set-height-button"
           className="bg-white hover:bg-gray-200 text-black"
-          onClick={void setLevitationHeight}
+          onClick={setLevitationHeight}
         >
           Set
         </Button>

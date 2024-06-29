@@ -1,45 +1,43 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, Page, Frame } from '@playwright/test';
 import { validateMqttMessage } from '../lib/mqtt';
 
-import { levitationHeightCommon } from '@hyped/telemetry-constants/src/pods/common';
-const  { limits: { critical } } = levitationHeightCommon;
+const getSidebar = async (page: Page): Promise<Frame> => {
+  await page.goto('http://localhost:5173');
+  const react = page.frame({
+    url: 'http://localhost:5173/app/index.html',
+  });
+  expect(react).toBeTruthy();
+  return react as Frame;
+};
+
+test('has sidebar', async ({ page }) => {
+  const react = await getSidebar(page);
+  await expect(react.getByRole('main').getByText('Controls')).toBeVisible();
+});
 
 test('registers user input for levitation height input', async ({ page }) => {
-  await page.goto('http://localhost:5173');
+  const react = await getSidebar(page);
 
-  // Manouvre to debug logging view
-  await page.click('text="Logs"');
+  const low = 0;
+  const high = 100;
 
+  // Input random value within allowable range
+  const testInput = Math.floor(Math.random() * (high - low)).toString();
+  await react
+    .getByTestId(`pod-controls-pod_2024`)
+    .getByTestId('height-input')
+    .fill(testInput);
+
+  // Set levitation height and verify that the correct MQTT message is sent
   await validateMqttMessage(
-    () => {},
-    (receivedTopic, msg) => {
-      const connectionStatus = msg.toString();
-      if (connectionStatus !== 'Connected') {
-        throw new Error(`Connection status is not established, got ${connectionStatus} waiting...`);
-      }
+    async () =>
+      await react
+        .getByTestId(`pod-controls-pod_2024`)
+        .getByTestId('set-height-button')
+        .click(),
+    (receivedTopic, message) => {
+      expect(receivedTopic).toBe(`hyped/pod_2024/controls/levitation_height`);
+      expect(message.toString()).toBe(testInput);
     },
-    5000, // timeout after excessive load time
   );
-  
-  // Ensure connection is established
-  expect(['Connected, Disconnected']).toContain(connectionStatus);
-  
-  const [lower, upper] = [critical.low, critical.high];
-  // Input random value within allowable ranged
-  const testInput = Math.floor(Math.random() * (upper - lower)).toString();
-  await page.fill('[data-testid="height-input"]', testInput);
-  // Set height and send levitation message to control system
-  await page.click('text="Set"');
-  await page.click('text=" LEVITATE"')
-
-  await expect(page).
-})
-
-/**]     ß
- * Tests response for input within allowed range of levitation height
- */
-// test('correct response for allowed height input value', asymc ({ page }) => {
-//   await page.goto('http://localhost:5173');
-
-//   await page.click()
-// })
+});

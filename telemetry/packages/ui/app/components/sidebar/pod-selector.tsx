@@ -16,13 +16,17 @@ export const PodSelector = () => {
   const { currentPod, setCurrentPod } = useCurrentPod();
 
   return (
-    <div className="space-y-2">
+    <div className="space-y-2" data-testid="pod-selector">
       <Label htmlFor="pod-select">Select Pod:</Label>
       <Select
         value={getDisplayText(currentPod)}
         onValueChange={(v) => setCurrentPod(getPodIdFromDisplayText(v))}
       >
-        <SelectTrigger id="pod-select" className="w-full">
+        <SelectTrigger
+          id="pod-select"
+          data-testid="pod-select-trigger"
+          className="w-full"
+        >
           <SelectValue />
         </SelectTrigger>
         <SelectContent>

@@ -21,7 +21,10 @@ export const PodControls = ({
   show: boolean;
 }) => {
   return (
-    <div className={cn('mt-2 space-y-8', show ? 'block' : 'hidden')}>
+    <div
+      className={cn('mt-2 space-y-8', show ? 'block' : 'hidden')}
+      data-testid={`pod-controls-${podId}`}
+    >
       <div className="flex flex-col gap-2">
         <div className="flex flex-col gap-2">
           <SetLevitationHeight podId={podId} />
