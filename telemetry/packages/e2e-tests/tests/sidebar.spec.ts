@@ -7,6 +7,8 @@ const getSidebar = async (page: Page): Promise<Frame> => {
     url: 'http://localhost:5173/app/index.html',
   });
   expect(react).toBeTruthy();
+  // wait until we get a response from the server
+  await page.waitForResponse('http://localhost:3000/ping');
   return react as Frame;
 };
 
