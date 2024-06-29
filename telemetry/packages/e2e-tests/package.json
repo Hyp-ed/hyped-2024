@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "description": "End-to-end tests for HYPED Telemetry",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "e2e:test": "playwright test"
   },
   "dependencies": {
+    "@hyped/telemetry-constants": "workspace:*",
     "@hyped/telemetry-server": "workspace:*",
     "@hyped/telemetry-ui": "workspace:*",
     "mqtt": "^5.5.0"

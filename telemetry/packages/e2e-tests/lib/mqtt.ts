@@ -8,7 +8,7 @@ type MqttMessageValidation = (receivedTopic: string, message: Buffer) => void;
 
 /**
  * Validates a message received on an MQTT topic.
- * @param topic The topic the message will be send on
+ * @param trigger A function which will trigger the message to be sent
  * @param validate A validation function which will be called with the received topic and message values
  * @param timeout Time to wait (in ms) before giving up
  */
