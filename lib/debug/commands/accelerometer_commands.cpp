@@ -60,7 +60,7 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
   const auto *const read_command_description = "Read from the accelerometer";
   const auto *const read_command_usage       = "accelerometer read";
   const auto read_command_handler
-    = [&logger, &accelerometer_sensor](const std::vector<std::string> &) {
+    = [&logger, accelerometer_sensor](const std::vector<std::string> &) {
         const auto value_ready = accelerometer_sensor->isValueReady();
         if (!value_ready) {
           logger.log(core::LogLevel::kFatal, "Value is not ready");
