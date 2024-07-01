@@ -16,8 +16,8 @@ jobs:
       - name: Docker
         uses: docker/setup-buildx-action@v3
 
-      - name: Lint
-        run: ./telemetry.sh ci
+      - name: Build, lint and test
+        run: ./telemetry.sh ci -m
 
   telemetry-formatting:
     name: Telemetry formatting
