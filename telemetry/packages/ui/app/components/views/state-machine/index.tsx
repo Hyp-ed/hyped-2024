@@ -527,7 +527,11 @@ export function StateMachine() {
       nodes.filter((node) =>
         isEnabledState(
           currentMode,
-          node.id.replace(/-/g, '_').toUpperCase() as PodStateType,
+          ALL_POD_STATES[
+            node.id
+              .replace(/-/g, '_')
+              .toUpperCase() as keyof typeof ALL_POD_STATES
+          ],
         ),
       ),
     );

@@ -1,4 +1,4 @@
-export type PodStateType = keyof typeof ALL_POD_STATES;
+export type PodStateType = (typeof ALL_POD_STATES)[keyof typeof ALL_POD_STATES];
 
 export const FAILURE_STATES = {
   FAILURE_BRAKING: 'kFailureBrake',
@@ -47,11 +47,11 @@ export const ALL_POD_STATE_TYPES = [
 export type PodStateCategoryType = (typeof ALL_POD_STATE_TYPES)[number];
 
 export const getStateType = (
-  state: string,
+  state: any,
 ): (typeof ALL_POD_STATE_TYPES)[number] => {
-  if (FAILURE_STATES[state as keyof typeof FAILURE_STATES]) return 'FAILURE';
-  if (PASSIVE_STATES[state as keyof typeof PASSIVE_STATES]) return 'PASSIVE';
-  if (ACTIVE_STATES[state as keyof typeof ACTIVE_STATES]) return 'ACTIVE';
-  if (NULL_STATES[state as keyof typeof NULL_STATES]) return 'NULL';
+  if (Object.values(FAILURE_STATES).includes(state)) return 'FAILURE';
+  if (Object.values(PASSIVE_STATES).includes(state)) return 'PASSIVE';
+  if (Object.values(ACTIVE_STATES).includes(state)) return 'ACTIVE';
+  if (Object.values(NULL_STATES).includes(state)) return 'NULL';
   throw new Error(`Unknown state: ${state}`);
 };
