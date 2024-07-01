@@ -158,27 +158,50 @@ void Navigator::requestBraking()
 }
 
 // Publish current trajectory to kTest topic
-void Navigator::publishCurrentTrajectory()
+core::Result Navigator::publishCurrentTrajectory()
 {
-  const auto topic     = core::MqttTopic::kNavigationData;
-  auto message_payload = std::make_shared<rapidjson::Document>();
-  message_payload->SetObject();
-
   const auto trajectory = currentTrajectory();
-  if (!trajectory) { logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory"); }
-
-  rapidjson::Value displacement(trajectory->displacement);
-  rapidjson::Value velocity(trajectory->velocity);
-  rapidjson::Value acceleration(previous_accelerometer_data_);
-  message_payload->AddMember("displacement", displacement, message_payload->GetAllocator());
-  message_payload->AddMember("velocity", velocity, message_payload->GetAllocator());
-  message_payload->AddMember("acceleration", acceleration, message_payload->GetAllocator());
-
-  const core::MqttMessage::Header header{
-    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
-    .priority  = core::MqttMessagePriority::kNormal};
-  const core::MqttMessage message{topic, header, message_payload};
-  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+  if (!trajectory) {
+    logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory");
+    return core::Result::kFailure;
+  }
+  {
+    const auto topic     = core::MqttTopic::kDisplacement;
+    auto message_payload = std::make_shared<rapidjson::Document>();
+    message_payload->SetObject();
+    rapidjson::Value displacement(trajectory->displacement);
+    message_payload->AddMember("displacement", displacement, message_payload->GetAllocator());
+    const core::MqttMessage::Header header{
+      .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+      .priority  = core::MqttMessagePriority::kNormal};
+    const core::MqttMessage message{topic, header, message_payload};
+    mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+  }
+  {
+    const auto topic     = core::MqttTopic::kVelocity;
+    auto message_payload = std::make_shared<rapidjson::Document>();
+    message_payload->SetObject();
+    rapidjson::Value velocity(trajectory->velocity);
+    message_payload->AddMember("velocity", velocity, message_payload->GetAllocator());
+    const core::MqttMessage::Header header{
+      .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+      .priority  = core::MqttMessagePriority::kNormal};
+    const core::MqttMessage message{topic, header, message_payload};
+    mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+  }
+  {
+    const auto topic     = core::MqttTopic::kAcceleration;
+    auto message_payload = std::make_shared<rapidjson::Document>();
+    message_payload->SetObject();
+    rapidjson::Value acceleration(trajectory->acceleration);
+    message_payload->AddMember("acceleration", acceleration, message_payload->GetAllocator());
+    const core::MqttMessage::Header header{
+      .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+      .priority  = core::MqttMessagePriority::kNormal};
+    const core::MqttMessage message{topic, header, message_payload};
+    mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+  }
+  return core::Result::kSuccess;
 }
 
 void Navigator::publishStart()
@@ -297,7 +320,12 @@ void Navigator::run()
 
     updateSensorData(
       *most_recent_keyence_data, *most_recent_optical_data, *most_recent_accelerometer_data);
-    publishCurrentTrajectory();
+    const auto result = publishCurrentTrajectory();
+    if (result == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal, "Failed to publish current trajectory");
+      requestFailure();
+      return;
+    }
   }
 }
 

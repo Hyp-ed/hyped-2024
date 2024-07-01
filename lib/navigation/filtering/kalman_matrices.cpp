@@ -33,6 +33,7 @@ const StateTransitionCovarianceMatrix transition_covariance
 const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
   = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0).finished();
 
+// TODOLater: this is entirely arbitrary, someone needs to work out what it should be
 const ErrorCovarianceMatrix kErrorCovarianceMatrix
   = (ErrorCovarianceMatrix() << 0.01, 0, 0, 0.01).finished();
 

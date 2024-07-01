@@ -6,31 +6,35 @@
 namespace hyped::core {
 
 enum class MqttTopic {
-  kTest,
   kState,
+  kStateRequest,
   kAccelerometer,
   kOpticalFlow,
   kKeyence,
   kStarted,
-  kNavigationData
+  kDisplacement,
+  kVelocity,
+  kAcceleration,
 };
 
 const std::unordered_map<MqttTopic, std::string> mqtt_topic_to_string
-  = {{MqttTopic::kTest, "test"},
-     {MqttTopic::kState, "state"},
-     {MqttTopic::kAccelerometer, "accelerometer"},
-     {MqttTopic::kOpticalFlow, "optical_flow"},
-     {MqttTopic::kKeyence, "keyence"},
-     {MqttTopic::kStarted, "started"},
-     {MqttTopic::kNavigationData, "navigation_data"}};
+  = {{MqttTopic::kState, "hyped/cart_2024/state/state"},
+     {MqttTopic::kStateRequest, "hypd/cart_2024/state/state_request"},
+     {MqttTopic::kAccelerometer, "hyped/cart_2024/measurement/accelerometer"},
+     {MqttTopic::kOpticalFlow, "hypd/cart_2024/measurement/optical_flow"},
+     {MqttTopic::kKeyence, "hyped/cart_2024/measurement/keyence"},
+     {MqttTopic::kDisplacement, "hypd/cart_2024/navigation/displacement"},
+     {MqttTopic::kVelocity, "hypd/cart_2024/navigation/velocity"},
+     {MqttTopic::kAcceleration, "hypd/cart_2024/navigation/acceleration"}};
 
 const std::unordered_map<std::string, MqttTopic> mqtt_string_to_topic
-  = {{"test", MqttTopic::kTest},
-     {"state", MqttTopic::kState},
-     {"accelerometer", MqttTopic::kAccelerometer},
-     {"optical_flow", MqttTopic::kOpticalFlow},
-     {"keyence", MqttTopic::kKeyence},
-     {"started", MqttTopic::kStarted},
-     {"navigation_data", MqttTopic::kNavigationData}};
+  = {{"hyped/cart_2024/state/state", MqttTopic::kState},
+     {"hypd/cart_2024/state/state_request", MqttTopic::kState},
+     {"hyped/cart_2024/measurement/accelerometer", MqttTopic::kAccelerometer},
+     {"hyped/cart_2024/measurement/optical_flow", MqttTopic::kOpticalFlow},
+     {"hyped/cart_2024/measurement/keyence", MqttTopic::kKeyence},
+     {"hypd/cart_2024/navigation/displacement", MqttTopic::kDisplacement},
+     {"hypd/cart_2024/navigation/velocity", MqttTopic::kVelocity},
+     {"hypd/cart_2024/navigation/acceleration", MqttTopic::kAcceleration}};
 
 }  // namespace hyped::core

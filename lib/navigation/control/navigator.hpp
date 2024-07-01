@@ -58,7 +58,7 @@ class Navigator : public INavigator {
   /**
    * @brief Publishes the current trajectory to the MQTT broker
    */
-  void publishCurrentTrajectory();
+  core::Result publishCurrentTrajectory();
 
   /**
    * @brief Publishes a failure message to the MQTT broker
