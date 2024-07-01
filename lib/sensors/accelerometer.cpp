@@ -4,17 +4,15 @@
 
 namespace hyped::sensors {
 
-std::optional<Accelerometer> Accelerometer::create(core::ILogger &logger,
-                                                   const std::shared_ptr<io::II2c> &i2c,
-                                                   const std::uint8_t device_address)
+std::optional<std::shared_ptr<Accelerometer>> Accelerometer::create(
+  core::ILogger &logger,
+  const std::shared_ptr<io::II2c> &i2c,
+  const accelerometerAddress device_address)
 {
-  if (device_address != kDefaultAccelerometerAddress
-      && device_address != kAlternativeAccelerometerAddress) {
-    logger.log(core::LogLevel::kFatal, "Invalid device address for accelerometer");
-    return std::nullopt;
-  }
+  const auto device_address_int = static_cast<std::uint8_t>(device_address);
+
   // check we are communicating with the correct sensor
-  const auto device_id = i2c->readByte(device_address, kDeviceIdAddress);
+  const auto device_id = i2c->readByte(device_address_int, kDeviceIdAddress);
   if (!device_id) {
     logger.log(core::LogLevel::kFatal, "Failed to read the accelerometer device ID");
     return std::nullopt;
@@ -23,13 +21,16 @@ std::optional<Accelerometer> Accelerometer::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Failure, mismatched device ID for accelerometer");
     return std::nullopt;
   }
-  const auto ctrl1_result = i2c->writeByteToRegister(device_address, kCtrl1Address, kCtrl1Value);
+  const auto ctrl1_result
+    = i2c->writeByteToRegister(device_address_int, kCtrl1Address, kCtrl1Value);
   if (ctrl1_result == core::Result::kFailure) { return std::nullopt; };
-  const auto ctrl2_result = i2c->writeByteToRegister(device_address, kCtrl2Address, kCtrl2Value);
+  const auto ctrl2_result
+    = i2c->writeByteToRegister(device_address_int, kCtrl2Address, kCtrl2Value);
   if (ctrl2_result == core::Result::kFailure) { return std::nullopt; };
-  const auto ctrl6_result = i2c->writeByteToRegister(device_address, kCtrl6Address, kCtrl6Value);
+  const auto ctrl6_result
+    = i2c->writeByteToRegister(device_address_int, kCtrl6Address, kCtrl6Value);
   if (ctrl6_result == core::Result::kFailure) { return std::nullopt; };
-  return Accelerometer(logger, i2c, device_address);
+  return std::make_shared<Accelerometer>(logger, i2c, device_address_int);
 }
 
 Accelerometer::Accelerometer(core::ILogger &logger,
@@ -40,6 +41,7 @@ Accelerometer::Accelerometer(core::ILogger &logger,
       device_address_(device_address),
       low_byte_address_(kXOutLow),
       high_byte_address_(kXOutHigh)
+
 {
 }
 

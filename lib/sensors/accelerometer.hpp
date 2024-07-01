@@ -15,15 +15,18 @@ namespace hyped::sensors {
 
 constexpr std::array<std::string_view, 3> kAxisLabels = {"x-axis", "y-axis", "z-axis"};
 
-// possible addresses for the accelerometer (from the datasheet)
-constexpr std::uint8_t kDefaultAccelerometerAddress     = 0x19;
-constexpr std::uint8_t kAlternativeAccelerometerAddress = 0x18;
+enum class accelerometerAddress { k1D = 0x1D, k1E = 0x1E };
 
 class Accelerometer {
  public:
-  static std::optional<Accelerometer> create(core::ILogger &logger,
-                                             const std::shared_ptr<io::II2c> &i2c,
-                                             const std::uint8_t device_address);
+  static std::optional<std::shared_ptr<Accelerometer>> create(
+    core::ILogger &logger,
+    const std::shared_ptr<io::II2c> &i2c,
+    const accelerometerAddress device_address);
+
+  Accelerometer(core::ILogger &logger,
+                const std::shared_ptr<io::II2c> &i2c,
+                const std::uint8_t device_address);
 
   /*
    * @brief Checks if the accelerometer is ready to be read
@@ -36,9 +39,6 @@ class Accelerometer {
   std::optional<core::RawAccelerationData> read();
 
  private:
-  Accelerometer(core::ILogger &logger,
-                const std::shared_ptr<io::II2c> &i2c,
-                const std::uint8_t device_address);
   std::optional<std::int16_t> getRawAcceleration(const core::Axis axis);
   static std::int32_t getAccelerationFromRawValue(const std::int16_t rawAcceleration);
   void setRegisterAddressFromAxis(const core::Axis axis);
@@ -74,7 +74,7 @@ class Accelerometer {
 
   static constexpr std::uint8_t kDataReady             = 0x27;
   static constexpr std::uint8_t kDeviceIdAddress       = 0x0F;
-  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x44;
+  static constexpr std::uint8_t kExpectedDeviceIdValue = 0x43;
 };
 
 }  // namespace hyped::sensors

@@ -2,6 +2,7 @@
 
 #include <optional>
 
+#include "commands/accelerometer_commands.hpp"
 #include "commands/adc_commands.hpp"
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
@@ -32,7 +33,15 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Error parsing TOML file: %s", e.description());
     return std::nullopt;
   }
-  if (config["io"]["adc"]["enabled"].value_or(false)) {
+  if (config["sensors"]["accelerometer"]["enabled"].value_or(false)) {
+    const auto result
+      = AccelerometerCommands::addCommands(logger, repl, config["sensors"]["accelerometer"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding Accelerometer commands");
+      return std::nullopt;
+    }
+  }
+  if (config["io"]["adc"]) {
     const auto result = AdcCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding ADC commands");
@@ -147,7 +156,7 @@ void Repl::run()
         input = history_[history_.size() - 1 - i];
       }
     } else if (key == debug::KeyPress::kBackspace) {
-      if (input.empty()) { input.pop_back(); }
+      if (!input.empty()) { input.pop_back(); }
     } else if (key == debug::KeyPress::kTab) {
       const auto result = findMatch(input);
       if (result == std::nullopt) { continue; }
