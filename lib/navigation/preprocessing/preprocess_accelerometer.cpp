@@ -8,8 +8,8 @@ AccelerometerPreprocessor::AccelerometerPreprocessor(core::ILogger &logger,
                                                      const core::ITimeSource &time)
     : logger_(logger),
       time_(time),
-      num_outliers_per_accelerometer_({0, 0, 0, 0}),
-      are_accelerometers_reliable_({true, true, true, true}),
+      num_outliers_per_accelerometer_({0}),
+      are_accelerometers_reliable_({true}),
       num_reliable_accelerometers_(core::kNumAccelerometers)
 {
 }

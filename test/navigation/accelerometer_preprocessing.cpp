@@ -7,59 +7,7 @@
 
 namespace hyped::test {
 
-core::Float epsilon = 1e-5;
-bool checkArrayEquality(const core::AccelerometerData &data_a,
-                        const core::AccelerometerData &data_b)
-{
-  if (data_a.size() != data_b.size()) { return false; }
-  for (std::size_t i = 0; i < data_a.size(); ++i) {
-    if (!(std::abs(data_a.at(i) - data_b.at(i)) < epsilon)) { return false; }
-  }
-  return true;
-}
+// TODOLater: Revert this file to commit hash 2764a99cca274496995ce6b866c7f61f75ea20b6 as soon as we
+// go back to 4 accelerometers
 
-TEST(Accelerometer, equalData)
-{
-  utils::ManualTime manual_time;
-  core::Logger logger("test", core::LogLevel::kFatal, manual_time);
-  navigation::AccelerometerPreprocessor accelerometer_processer(logger, manual_time);
-  const core::RawAccelerometerData data = {{{1, 1, 1}, {1, 1, 1}, {1, 1, 1}, {1, 1, 1}}};
-  const core::AccelerometerData answer  = {{static_cast<core::Float>(std::sqrt(3.0)),
-                                            static_cast<core::Float>(std::sqrt(3.0)),
-                                            static_cast<core::Float>(std::sqrt(3.0)),
-                                            static_cast<core::Float>(std::sqrt(3.0))}};
-  const auto final_data                 = accelerometer_processer.processData(data);
-  ASSERT_TRUE(checkArrayEquality(*final_data, answer));
-}
-
-TEST(Accelerometer, notEqualData)
-{
-  utils::ManualTime manual_time;
-  core::Logger logger("test", core::LogLevel::kFatal, manual_time);
-  navigation::AccelerometerPreprocessor accelerometer_processer(logger, manual_time);
-  const core::RawAccelerometerData data = {{{3, 5, 6}, {1, 1, 1}, {1, 1, 1}, {1, 1, 1}}};
-  const core::AccelerometerData answer  = {{static_cast<core::Float>(std::sqrt(3.0)),
-                                            static_cast<core::Float>(std::sqrt(3.0)),
-                                            static_cast<core::Float>(std::sqrt(3.0)),
-                                            static_cast<core::Float>(std::sqrt(3.0))}};
-  const auto final_data                 = accelerometer_processer.processData(data);
-  ASSERT_TRUE(checkArrayEquality(*final_data, answer));
-}
-
-TEST(Accelerometer, oneUnreliableSensor)
-{
-  utils::ManualTime manual_time;
-  core::Logger logger("test", core::LogLevel::kFatal, manual_time);
-  navigation::AccelerometerPreprocessor accelerometer_processer(logger, manual_time);
-  const core::RawAccelerometerData data = {{{3, 5, 6}, {1, 1, 1}, {1, 1, 1}, {1, 1, 1}}};
-  for (std::size_t i = 0; i < 22; ++i) {
-    accelerometer_processer.processData(data);
-  }
-  const core::AccelerometerData answer = {{static_cast<core::Float>(std::sqrt(3.0)),
-                                           static_cast<core::Float>(std::sqrt(3.0)),
-                                           static_cast<core::Float>(std::sqrt(3.0)),
-                                           static_cast<core::Float>(std::sqrt(3.0))}};
-  const auto final_data                = accelerometer_processer.processData(data);
-  ASSERT_TRUE(checkArrayEquality(*final_data, answer));
-}
 }  // namespace hyped::test

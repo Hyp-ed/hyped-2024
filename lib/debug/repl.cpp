@@ -7,6 +7,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/keyence_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
 #include "commands/temperature_commands.hpp"
@@ -21,6 +22,7 @@ namespace hyped::debug {
 // NOLINTBEGIN(readability-function-cognitive-complexity)
 std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
                                                   Terminal &terminal,
+                                                  core::ITimeSource &time,
                                                   const std::string &filename)
 {
   auto repl = std::make_shared<Repl>(logger, terminal);
@@ -85,6 +87,14 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
     const auto result = UartCommands::addCommands(logger, repl);
     if (result == core::Result::kFailure) {
       logger.log(core::LogLevel::kFatal, "Error adding UART commands");
+      return std::nullopt;
+    }
+  }
+  if (config["sensors"]["keyence"]["enabled"].value_or(false)) {
+    const auto result
+      = KeyenceCommands::addCommands(logger, repl, time, config["sensors"]["keyence"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding keyence commands");
       return std::nullopt;
     }
   }

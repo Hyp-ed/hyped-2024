@@ -16,17 +16,20 @@ COPY packages/public-app/package.json ./packages/public-app/
 COPY packages/fake/package.json ./packages/fake/
 COPY packages/eslint-config/package.json ./packages/eslint-config/
 COPY packages/tsconfig/package.json ./packages/tsconfig/
+COPY packages/e2e-tests/package.json ./packages/e2e-tests/
 COPY pnpm-lock.yaml ./
 COPY pnpm-workspace.yaml ./
 COPY patches ./patches
 COPY turbo.json ./
 RUN pnpm install --frozen-lockfile
+RUN pnpm --filter=e2e-tests exec playwright install --with-deps
 
 # Expose ports
 EXPOSE 5173
 EXPOSE 3000
 EXPOSE 3001
 EXPOSE 8086
+EXPOSE 9323
 
 # Entrypoint
 COPY entry.sh ./

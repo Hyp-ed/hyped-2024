@@ -13,7 +13,7 @@ StateMachine::StateMachine(std::shared_ptr<core::IMqtt> mqtt, TransitionTable tr
       mqtt_(std::move(mqtt)),
       transition_to_state_(std::move(transition_table))
 {
-  mqtt_->subscribe(core::MqttTopic::kTest);
+  mqtt_->subscribe(core::MqttTopic::kStateRequest);
 }
 
 State StateMachine::stringToState(const std::string &state_name)
@@ -55,7 +55,7 @@ void StateMachine::update()
 void StateMachine::publishCurrentState()
 {
   const auto state_string = stateToString(getCurrentState());
-  const auto topic        = core::MqttTopic::kTest;
+  const auto topic        = core::MqttTopic::kState;
   auto message_payload    = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
   rapidjson::Value state_value(state_string.c_str(), message_payload->GetAllocator());
