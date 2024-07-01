@@ -23,12 +23,12 @@ export const pods: Pods = {
         name: 'Optical Flow',
         key: 'optical_flow',
         format: 'float',
-        type: 'optical_flow',
-        unit: 'm',
+        type: 'velocity',
+        unit: 'm/s',
         limits: {
           critical: {
             low: 0,
-            high: 100,
+            high: 10,
           },
         },
         rms_noise: 0,
