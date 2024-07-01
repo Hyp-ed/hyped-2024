@@ -71,6 +71,11 @@ class Navigator : public INavigator {
   void publishStart();
 
   /**
+   * @brief Publishes a failure message to the MQTT broker
+   */
+  void requestBraking();
+
+  /**
    * @brief Subscribes to topics
    */
   core::Result subscribeToTopics();

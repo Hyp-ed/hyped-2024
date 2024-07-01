@@ -1,6 +1,7 @@
 #include "navigator.hpp"
 
 #include "core/mqtt.hpp"
+#include "core/mqtt_topics.hpp"
 #include "core/types.hpp"
 #include "core/wall_clock.hpp"
 #include "navigation/filtering/kalman_matrices.hpp"
@@ -57,6 +58,7 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   if (trajectory_.displacement
       > static_cast<core::Float>(kTrackLength - (1.5 * kBrakingDistance))) {
     logger_.log(core::LogLevel::kFatal, "Time to brake!");
+    requestBraking();
     return std::nullopt;
   }
 
@@ -133,8 +135,24 @@ void Navigator::requestFailure()
   message_value.SetString(failure_message.c_str(), message_payload->GetAllocator());
   message_payload->AddMember("transition", message_value, message_payload->GetAllocator());
 
-  const core::MqttMessage::Header header{.timestamp = 0,
-                                         .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage::Header header{
+    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage message{topic, header, message_payload};
+  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+}
+
+void Navigator::requestBraking()
+{
+  const auto topic           = core::MqttTopic::kState;
+  const auto message_payload = std::make_shared<rapidjson::Document>();
+  message_payload->SetObject();
+  rapidjson::Value message_value;
+  message_value.SetString("kLimBrake", message_payload->GetAllocator());
+  message_payload->AddMember("state", message_value, message_payload->GetAllocator());
+  const core::MqttMessage::Header header{
+    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
@@ -156,8 +174,9 @@ void Navigator::publishCurrentTrajectory()
   message_payload->AddMember("velocity", velocity, message_payload->GetAllocator());
   message_payload->AddMember("acceleration", acceleration, message_payload->GetAllocator());
 
-  const core::MqttMessage::Header header{.timestamp = 0,
-                                         .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage::Header header{
+    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
@@ -172,8 +191,9 @@ void Navigator::publishStart()
   message_value.SetString("Nav module running", message_payload->GetAllocator());
   message_payload->AddMember("message", message_value, message_payload->GetAllocator());
 
-  const core::MqttMessage::Header header{.timestamp = 0,
-                                         .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage::Header header{
+    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
