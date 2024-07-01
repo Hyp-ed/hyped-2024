@@ -123,7 +123,6 @@ core::Result Navigator::accelerometerUpdate(const core::RawAccelerometerData &ac
   return core::Result::kSuccess;
 }
 
-// Publish failure message to kState topic
 void Navigator::requestFailure()
 {
   std::string failure_message = "kFailure";
@@ -157,7 +156,6 @@ void Navigator::requestBraking()
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 
-// Publish current trajectory to kTest topic
 core::Result Navigator::publishCurrentTrajectory()
 {
   const auto trajectory = currentTrajectory();
