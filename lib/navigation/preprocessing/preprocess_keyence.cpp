@@ -7,6 +7,7 @@ KeyencePreprocessor::KeyencePreprocessor(core::ILogger &logger)
       previous_data_status_(KeyenceDataStatus::kAgreed)
 {
 }
+
 SensorChecks KeyencePreprocessor::checkKeyenceAgrees(const core::KeyenceData &keyence_data)
 {
   KeyenceDataStatus current_data_status = KeyenceDataStatus::kDisagreed;

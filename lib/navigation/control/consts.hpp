@@ -8,8 +8,8 @@
 namespace hyped::navigation {
 
 // TODOLater: move most of these to a config file
-static constexpr core::Float kTrackLength     = 100.0;  // m
-static constexpr core::Float kBrakingDistance = 20.0;   // m TODOLater:check!
+static constexpr core::Float kTrackLength     = 6.0;  // m
+static constexpr core::Float kBrakingDistance = 2.0;  // m TODOLater:check!
 static constexpr core::Float kStripeDistance  = 5.0;
 static constexpr bool kIsKeyenceActive        = true;
 
@@ -30,4 +30,5 @@ class INavigator {
     = 0;
   virtual core::Result opticalUpdate(const core::OpticalData &optical_data) = 0;
 };
+
 }  // namespace hyped::navigation

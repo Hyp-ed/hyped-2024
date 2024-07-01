@@ -7,6 +7,7 @@
 #include <core/types.hpp>
 #include <core/wall_clock.hpp>
 #include <io/hardware_gpio.hpp>
+#include <navigation/control/navigator.hpp>
 #include <state_machine/state_machine.hpp>
 #include <state_machine/transition_table.hpp>
 #include <toml++/toml.hpp>
@@ -76,6 +77,9 @@ int main(int argc, char **argv)
       if (node_name == "state_machine") {
         auto state_machine_config = config["state_machine"];
         hyped::state_machine::StateMachine::startNode(state_machine_config, mqtt_ip, mqtt_port);
+      } else if (node_name == "navigation") {
+        auto navigator_config = config["navigation"];
+        hyped::navigation::Navigator::startNode(navigator_config, mqtt_ip, mqtt_port);
       } else {
         std::cerr << "Unknown node: " << node_name << "\n";
         return 1;

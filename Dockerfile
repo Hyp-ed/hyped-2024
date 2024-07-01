@@ -9,8 +9,8 @@ RUN apt-get update && \
 WORKDIR /home
 RUN git clone --recurse-submodules https://github.com/eclipse/paho.mqtt.cpp.git
 WORKDIR /home/paho.mqtt.cpp
-RUN git checkout v1.3.2
-RUN cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_STATIC=ON -DPAHO_BUILD_DOCUMENTATION=OFF -DPAHO_BUILD_SAMPLES=OFF
+RUN git checkout v1.4.0
+RUN cmake -Bbuild -H. -DPAHO_WITH_MQTT_C=ON -DPAHO_BUILD_STATIC=OFF -DPAHO_BUILD_DOCUMENTATION=OFF -DPAHO_BUILD_SAMPLES=OFF -DPAHO_BUILD_SHARED=ON
 RUN sudo cmake --build build/ --target install
 
 # Install libgpiod
