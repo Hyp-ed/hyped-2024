@@ -9,4 +9,11 @@ include_directories(
   "${CMAKE_CURRENT_SOURCE_DIR}"
   "${CMAKE_SOURCE_DIR}/lib/navigation"
 )
-target_link_libraries(${target} Eigen3::Eigen hyped_core tomlplusplus::tomlplusplus hyped_navigation_filters hyped_navigation_preprocessing)
+target_link_libraries(
+  ${target}
+  Eigen3::Eigen
+  hyped_core
+  tomlplusplus::tomlplusplus
+  hyped_navigation_filters
+  hyped_navigation_preprocessing
+)
