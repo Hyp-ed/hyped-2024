@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 export type PodStateType = (typeof ALL_POD_STATES)[keyof typeof ALL_POD_STATES];
 
 export const FAILURE_STATES = {

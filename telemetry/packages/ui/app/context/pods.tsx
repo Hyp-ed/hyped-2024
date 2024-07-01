@@ -216,7 +216,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
               ...prevState,
               [podId]: {
                 ...prevState[podId],
-                podState: newPodState as PodStateType,
+                podState: newPodState,
               },
             }));
           }
