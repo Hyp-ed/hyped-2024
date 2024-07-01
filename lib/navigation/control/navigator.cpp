@@ -1,9 +1,6 @@
 #include "navigator.hpp"
 
-#include <cstdint>
-
 namespace hyped::navigation {
-// TODOLater: check we stop once near calculated safe stopping distance
 
 Navigator::Navigator(core::ILogger &logger,
                      const core::ITimeSource &time,
@@ -29,8 +26,6 @@ Navigator::Navigator(core::ILogger &logger,
 
 std::optional<core::Trajectory> Navigator::currentTrajectory()
 {
-  // TODOLater: check fail state if required
-
   control_input_vector << previous_accelerometer_data_;
   measurement_vector << previous_keyence_reading_, previous_optical_reading_;
 
@@ -43,7 +38,7 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
 
   kalman_filter_.filter(measurement_vector, control_input_vector);
   previous_keyence_reading_ = 0.0;  // Reset keyence reading to 0.0 after use so that next step uses
-                                    // optical measurment matrix only.
+                                    // optical measurement matrix only.
 
   trajectory_.displacement = kalman_filter_.getStateEstimate()(0);
   trajectory_.velocity     = kalman_filter_.getStateEstimate()(1);
@@ -63,7 +58,6 @@ std::optional<core::Trajectory> Navigator::currentTrajectory()
   return trajectory_;
 }
 
-// TODOLater: check input from sensors matches this
 core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 {
   // Check keyence strictly increasing
@@ -81,9 +75,10 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 
   previous_keyence_reading_ = keyence_data.at(0);
 
-  logger_.log(core::LogLevel::kInfo, "Keyence data successfully updated");
+  logger_.log(core::LogLevel::kDebug, "Keyence data successfully updated");
   return core::Result::kSuccess;
 }
+
 core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
 {
   // Run preprocessing on optical
@@ -97,7 +92,7 @@ core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
   }
   previous_optical_reading_ /= core::kNumOptical;
 
-  logger_.log(core::LogLevel::kInfo, "Optical flow data successfully updated");
+  logger_.log(core::LogLevel::kDebug, "Optical flow data successfully updated");
   return core::Result::kSuccess;
 }
 
@@ -128,7 +123,7 @@ core::Result Navigator::accelerometerUpdate(
   }
   previous_accelerometer_data_ /= core::kNumAccelerometers;
 
-  logger_.log(core::LogLevel::kInfo, "Accelerometer data successfully updated");
+  logger_.log(core::LogLevel::kDebug, "Accelerometer data successfully updated");
   return core::Result::kSuccess;
 }
 
@@ -153,11 +148,11 @@ void Navigator::requestFailure()
 // Publish current trajectory to kTest topic
 void Navigator::publishCurrentTrajectory()
 {
-  const auto topic     = core::MqttTopic::kTest;
+  const auto topic     = core::MqttTopic::kNavigationData;
   auto message_payload = std::make_shared<rapidjson::Document>();
   message_payload->SetObject();
 
-  auto trajectory = currentTrajectory();
+  const auto trajectory = currentTrajectory();
   if (!trajectory) { logger_.log(core::LogLevel::kFatal, "Failed to get current trajectory"); }
 
   rapidjson::Value displacement(trajectory->displacement);
@@ -189,139 +184,107 @@ void Navigator::publishStart()
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
 }
 
-bool Navigator::subscribeAndCheck(core::MqttTopic topic)
+core::Result Navigator::subscribeToTopics()
 {
-  auto result = mqtt_->subscribe(topic);
-  if (result == core::Result::kFailure) {
-    requestFailure();
-    logger_.log(core::LogLevel::kFatal, "Failed to subscribe to topic");
-    return false;
+  for (const auto &topic : kSubscribedTopics) {
+    const auto result = mqtt_->subscribe(topic);
+    if (result == core::Result::kFailure) {
+      logger_.log(core::LogLevel::kFatal,
+                  "Failed to subscribe to topic: %s",
+                  core::mqtt_topic_to_string.find(topic));
+      return core::Result::kFailure;
+    }
   }
-  return true;
-}
-
-bool Navigator::subscribeToTopics()
-{
-  return subscribeAndCheck(core::MqttTopic::kKeyence)
-         && subscribeAndCheck(core::MqttTopic::kOpticalFlow)
-         && subscribeAndCheck(core::MqttTopic::kAccelerometer);
+  return core::Result::kSuccess;
 }
 
 void Navigator::updateSensorData(
-  std::optional<core::KeyenceData> &keyence_data,
-  std::optional<core::OpticalData> &optical_data,
-  std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
-    &accelerometer_data)
+  core::KeyenceData &keyence_data,
+  core::OpticalData &optical_data,
+  std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data)
 {
-  core::OpticalData default_optical_data;
-  for (auto &data : default_optical_data) {
-    data = {0.0F, 0.0F};
+  auto keyence_update_result = keyenceUpdate(keyence_data);
+  if (keyence_update_result == core::Result::kFailure) {
+    logger_.log(core::LogLevel::kFatal, "Failed to update Keyence sensor data");
+    requestFailure();
+    return;
   }
-
-  if (keyence_data.has_value()) {
-    auto keyence_update_result = keyenceUpdate(keyence_data.value());
-    if (keyence_update_result == core::Result::kFailure) {
-      logger_.log(core::LogLevel::kFatal, "Failed to update Keyence sensor data");
-      requestFailure();
-      return;
-    }
+  auto optical_update_result = opticalUpdate(optical_data);
+  if (optical_update_result == core::Result::kFailure) {
+    logger_.log(core::LogLevel::kFatal, "Failed to update Optical sensor data");
+    requestFailure();
+    return;
   }
-
-  if (optical_data.has_value()) {
-    auto optical_update_result = opticalUpdate(optical_data.value());
-    if (optical_update_result == core::Result::kFailure) {
-      logger_.log(core::LogLevel::kFatal, "Failed to update Optical sensor data");
-      requestFailure();
-      return;
-    }
-  } else {
-    auto optical_update_result = opticalUpdate(default_optical_data);
-    if (optical_update_result == core::Result::kFailure) {
-      logger_.log(core::LogLevel::kFatal, "Failed to update Optical sensor data");
-      requestFailure();
-      return;
-    }
-  }
-
-  if (accelerometer_data.has_value()) {
-    auto accelerometer_update_result = accelerometerUpdate(accelerometer_data.value());
-    if (accelerometer_update_result == core::Result::kFailure) {
-      logger_.log(core::LogLevel::kFatal, "Failed to update Accelerometer sensor data");
-      requestFailure();
-      return;
-    }
+  auto accelerometer_update_result = accelerometerUpdate(accelerometer_data);
+  if (accelerometer_update_result == core::Result::kFailure) {
+    logger_.log(core::LogLevel::kFatal, "Failed to update Accelerometer sensor data");
+    requestFailure();
+    return;
   }
 }
 
 void Navigator::run()
 {
   publishStart();
-  // Subscribe to all required topics
+  core::Result result = subscribeToTopics();
+  if (result == core::Result::kFailure) {
+    logger_.log(core::LogLevel::kFatal, "Failed to subscribe to topics");
+    requestFailure();
+    return;
+  }
 
-  if (!subscribeToTopics()) { return; }
-
-  std::optional<core::KeyenceData> most_recent_keyence_data = std::nullopt;
-
-  std::optional<core::OpticalData> most_recent_optical_data = std::nullopt;
-
-  std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
-    most_recent_accelerometer_data = std::nullopt;
+  // TODOLater: all these are assuming there is only one sensor each
+  std::optional<core::KeyenceData> most_recent_keyence_data               = std::nullopt;
+  std::optional<core::OpticalData> most_recent_optical_data               = std::nullopt;
+  std::optional<core::RawAccelerationData> most_recent_accelerometer_data = {std::nullopt};
 
   while (true) {
-    bool sensor_data_received = false;
-
     most_recent_keyence_data       = std::nullopt;
     most_recent_optical_data       = std::nullopt;
     most_recent_accelerometer_data = std::nullopt;
 
-    while (!sensor_data_received) {
-      mqtt_->consume();
+    while (
+      !(most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data)) {
+      const auto consume_result = mqtt_->consume();
+      if (consume_result == core::Result::kFailure) {
+        logger_.log(core::LogLevel::kFatal, "Invalid message received from MQTT");
+      }
+      auto optional_message = mqtt_->getMessage();
+      if (!optional_message) { continue; }
+      auto message = *optional_message;
 
-      auto msg = mqtt_->getMessage();
-
-      switch (msg.value().topic) {
+      // TODOLater: make the parsing more robust
+      switch (message.topic) {
         case core::MqttTopic::kKeyence: {
-          auto payload = msg->payload;
-          // TODOLater: read the payload
-          most_recent_keyence_data = core::KeyenceData{0, 0};
+          auto payload             = message.payload;
+          const auto keyence_data  = core::KeyenceData{(*payload)["keyence_data"].GetUint()};
+          most_recent_keyence_data = core::KeyenceData{keyence_data};
           break;
         }
         case core::MqttTopic::kOpticalFlow: {
-          auto payload = msg->payload;
-          // TODOLater: read the payload
-          if (!most_recent_optical_data.has_value()) {
-            for (auto &data : most_recent_optical_data.value()) {
-              data = {0.0F, 0.0F};
-            }
-          }
+          auto payload             = message.payload;
+          const auto x             = (*payload)["x"].GetFloat();
+          const auto y             = (*payload)["y"].GetFloat();
+          const auto optical_data  = core::OpticalData{{x, y}};
+          most_recent_optical_data = core::OpticalData{optical_data};
           break;
         }
         case core::MqttTopic::kAccelerometer: {
-          auto payload = msg->payload;
-          // TODOLater: read the payload
-
-          std::array<core::RawAccelerationData, core::kNumAccelerometers> temp_data
-            = {core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-               core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-               core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false),
-               core::RawAccelerationData(0, 0, 0, core::TimePoint{}, false)};
-
-          most_recent_accelerometer_data.emplace(temp_data);
+          auto payload                   = message.payload;
+          const auto x                   = (*payload)["x"].GetInt();
+          const auto y                   = (*payload)["y"].GetInt();
+          const auto z                   = (*payload)["z"].GetInt();
+          most_recent_accelerometer_data = core::RawAccelerationData{x, y, z, time_.now(), true};
           break;
         }
-
         default:
-
           break;
-      }
-
-      if (most_recent_keyence_data && most_recent_optical_data && most_recent_accelerometer_data) {
-        sensor_data_received = true;
       }
     }
 
-    updateSensorData(
-      most_recent_keyence_data, most_recent_optical_data, most_recent_accelerometer_data);
+    auto accelerometer_data = std::array<core::RawAccelerationData, core::kNumAccelerometers>{
+      *most_recent_accelerometer_data};
+    updateSensorData(*most_recent_keyence_data, *most_recent_optical_data, accelerometer_data);
     publishCurrentTrajectory();
   }
 }

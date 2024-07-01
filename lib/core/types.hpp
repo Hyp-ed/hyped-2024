@@ -23,10 +23,10 @@ struct Trajectory {
 };
 
 // number of each type of sensors
-static constexpr std::uint8_t kNumAccelerometers = 4;
+static constexpr std::uint8_t kNumAccelerometers = 1;
 static constexpr std::uint8_t kNumAxis           = 3;
 static constexpr std::uint8_t kNumEncoders       = 4;
-static constexpr std::uint8_t kNumKeyence        = 2;
+static constexpr std::uint8_t kNumKeyence        = 1;
 static constexpr std::uint8_t kNumOptical        = 1;
 
 // data format for raw sensor data
@@ -38,25 +38,11 @@ using OpticalData          = std::array<std::array<Float, 2>, kNumOptical>;
 // data produced by the accelerometer sensor
 // values are in milli-g (standard gravity)
 struct RawAccelerationData {
-  RawAccelerationData(const std::int32_t x,
-                      const std::int32_t y,
-                      const std::int32_t z,
-                      const TimePoint measured_at,
-                      const bool is_sensor_active)
-      : x(x),
-        y(y),
-        z(z),
-        measured_at(measured_at),
-        is_sensor_active(is_sensor_active)
-
-  {
-  }
-
-  const std::int32_t x;
-  const std::int32_t y;
-  const std::int32_t z;
-  const TimePoint measured_at;
-  const bool is_sensor_active;
+  std::int32_t x;
+  std::int32_t y;
+  std::int32_t z;
+  TimePoint measured_at;
+  bool is_sensor_active;
 };
 
 }  // namespace hyped::core

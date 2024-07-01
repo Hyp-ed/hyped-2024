@@ -26,20 +26,20 @@ class Navigator : public INavigator {
   /**
    *@brief runs cross checking and returns trajectory
    */
-  std::optional<core::Trajectory> currentTrajectory();
+  std::optional<core::Trajectory> currentTrajectory() override;
 
   /**
    * @brief preprocesses keyence data and updates trajectory
    *
    * @param keyence_data
    */
-  core::Result keyenceUpdate(const core::KeyenceData &keyence_data);
+  core::Result keyenceUpdate(const core::KeyenceData &keyence_data) override;
   /**
    * @brief Preprocesses optical flow data and updates trajectory
    *
    * @param optical_data
    */
-  core::Result opticalUpdate(const core::OpticalData &optical_data);
+  core::Result opticalUpdate(const core::OpticalData &optical_data) override;
   /**
    * @brief preprocesses accelerometer data and updates trajectory
    *
@@ -64,16 +64,9 @@ class Navigator : public INavigator {
   void publishStart();
 
   /**
-   * @brief Checks if subscribing to a topic was successful
-   *
-   * @param message
-   */
-  bool subscribeAndCheck(core::MqttTopic topic);
-
-  /**
    * @brief Subscribes to topics
    */
-  bool subscribeToTopics();
+  core::Result subscribeToTopics();
 
   /**
    * @brief Updates the sensor data and the trajectory
@@ -83,10 +76,9 @@ class Navigator : public INavigator {
    * @param accelerometer_data
    */
   void updateSensorData(
-    std::optional<core::KeyenceData> &keyence_data,
-    std::optional<core::OpticalData> &optical_data,
-    std::optional<std::array<core::RawAccelerationData, core::kNumAccelerometers>>
-      &accelerometer_data);
+    core::KeyenceData &keyence_data,
+    core::OpticalData &optical_data,
+    std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
 
  private:
   core::ILogger &logger_;
@@ -112,6 +104,9 @@ class Navigator : public INavigator {
 
   // current navigation trajectory
   core::Trajectory trajectory_;
+
+  constexpr static std::array<core::MqttTopic, 3> kSubscribedTopics
+    = {core::MqttTopic::kKeyence, core::MqttTopic::kOpticalFlow, core::MqttTopic::kAccelerometer};
 };
 
 }  // namespace hyped::navigation
