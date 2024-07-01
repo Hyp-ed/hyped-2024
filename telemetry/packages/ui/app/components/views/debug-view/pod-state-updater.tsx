@@ -33,7 +33,7 @@ export const PodStateUpdater = ({ podId }: { podId: string }) => {
       <div className="min-w-max">
         <PodState podId={podId} />
       </div>
-      {/* <div className="space-y-2 w-[300px] my-auto">
+      <div className="space-y-2 w-[300px] my-auto hidden">
         <Label htmlFor="pod-select">Set State:</Label>
         <div className="flex gap-2">
           <Select
@@ -49,7 +49,7 @@ export const PodStateUpdater = ({ podId }: { podId: string }) => {
           </Select>
           <Button onClick={publishPodState}>Set</Button>
         </div>
-      </div> */}
+      </div>
     </div>
   );
 };
