@@ -17,7 +17,7 @@ namespace hyped::test {
 // Measurements taken every 1s
 // 20 measurements taken
 
-// Variance of measurments:
+// Variance of measurements:
 //  Distance: 10
 //  Velocity: 5
 //  Acceleration: 3

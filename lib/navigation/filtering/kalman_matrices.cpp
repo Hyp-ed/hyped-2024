@@ -1,6 +1,7 @@
 #include "kalman_matrices.hpp"
 
 namespace hyped::navigation {
+// TODOLater: this entire thing is awful, fix it
 
 // Constant matrices
 const StateTransitionMatrix kStateTransitionMatrix
@@ -31,6 +32,10 @@ const StateTransitionCovarianceMatrix transition_covariance
 
 const MeasurementNoiseCovarianceMatrix kMeasurementNoiseCovarianceMatrix
   = (MeasurementNoiseCovarianceMatrix() << 0.01, 0, 0, 0).finished();
+
+// TODOLater: this is entirely arbitrary, someone needs to work out what it should be
+const ErrorCovarianceMatrix kErrorCovarianceMatrix
+  = (ErrorCovarianceMatrix() << 0.01, 0, 0, 0.01).finished();
 
 // Changing matrices
 StateVector initial_state = (StateVector::Zero());
