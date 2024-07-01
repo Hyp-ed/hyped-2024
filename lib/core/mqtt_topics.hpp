@@ -15,6 +15,7 @@ enum class MqttTopic {
   kDisplacement,
   kVelocity,
   kAcceleration,
+  kLogs
 };
 
 const std::unordered_map<MqttTopic, std::string> mqtt_topic_to_string
@@ -25,7 +26,8 @@ const std::unordered_map<MqttTopic, std::string> mqtt_topic_to_string
      {MqttTopic::kKeyence, "hyped/cart_2024/measurement/keyence"},
      {MqttTopic::kDisplacement, "hyped/cart_2024/navigation/displacement"},
      {MqttTopic::kVelocity, "hyped/cart_2024/navigation/velocity"},
-     {MqttTopic::kAcceleration, "hyped/cart_2024/navigation/acceleration"}};
+     {MqttTopic::kAcceleration, "hyped/cart_2024/navigation/acceleration"},
+     {MqttTopic::kLogs, "hyped/cart_2024/logs"}};
 
 const std::unordered_map<std::string, MqttTopic> mqtt_string_to_topic
   = {{"hyped/cart_2024/state/state", MqttTopic::kState},
@@ -35,6 +37,7 @@ const std::unordered_map<std::string, MqttTopic> mqtt_string_to_topic
      {"hyped/cart_2024/measurement/keyence", MqttTopic::kKeyence},
      {"hyped/cart_2024/navigation/displacement", MqttTopic::kDisplacement},
      {"hyped/cart_2024/navigation/velocity", MqttTopic::kVelocity},
-     {"hyped/cart_2024/navigation/acceleration", MqttTopic::kAcceleration}};
+     {"hyped/cart_2024/navigation/acceleration", MqttTopic::kAcceleration},
+     {"hyped/cart_2024/logs", MqttTopic::kLogs}};
 
 }  // namespace hyped::core
