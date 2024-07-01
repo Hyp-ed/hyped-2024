@@ -19,9 +19,24 @@ export const pods: Pods = {
     operationMode: 'LIM_ONLY',
     measurements: {
       // ************************************ ACCELEROMETER ************************************ //
-      optical_flow: {
-        name: 'Optical Flow',
-        key: 'optical_flow',
+      optical_flow_x: {
+        name: 'Optical Flow x-axis',
+        key: 'optical_flow_x',
+        format: 'float',
+        type: 'velocity',
+        unit: 'm/s',
+        limits: {
+          critical: {
+            low: 0,
+            high: 10,
+          },
+        },
+        rms_noise: 0,
+        sampling_time: 500,
+      },
+      optical_flow_y: {
+        name: 'Optical Flow y-axis',
+        key: 'optical_flow_y',
         format: 'float',
         type: 'velocity',
         unit: 'm/s',
@@ -35,9 +50,19 @@ export const pods: Pods = {
         sampling_time: 500,
       },
       // ************************************ ACCELEROMETER ************************************ //
-      accelerometer: {
-        name: 'Accelerometer',
-        key: 'accelerometer',
+      accelerometer_x: {
+        name: 'Accelerometer x-axis',
+        key: 'accelerometer_x',
+        ...accelerometerCommon,
+      },
+      accelerometer_y: {
+        name: 'Accelerometer y-axis',
+        key: 'accelerometer_y',
+        ...accelerometerCommon,
+      },
+      accelerometer_z: {
+        name: 'Accelerometer z-axis',
+        key: 'accelerometer_z',
         ...accelerometerCommon,
       },
       // ************************************ NAVIGATION ************************************ //

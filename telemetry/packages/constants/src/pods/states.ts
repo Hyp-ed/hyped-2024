@@ -1,27 +1,29 @@
 export type PodStateType = keyof typeof ALL_POD_STATES;
 
 export const FAILURE_STATES = {
-  FAILURE_BRAKING: 'FAILURE_BRAKING',
+  FAILURE_BRAKING: 'kFailureBrake',
+  FAILURE: 'kFailure',
 } as const;
 
 export const PASSIVE_STATES = {
-  IDLE: 'IDLE',
-  CALIBRATE: 'CALIBRATE',
-  SAFE: 'SAFE',
+  IDLE: 'kIdle',
+  CALIBRATE: 'kCalibrate',
+  SAFE: 'kSafe',
 } as const;
 
 export const ACTIVE_STATES = {
-  PRECHARGE: 'PRECHARGE',
-  READY_FOR_LEVITATION: 'READY_FOR_LEVITATION',
-  BEGIN_LEVITATION: 'BEGIN_LEVITATION',
-  READY_FOR_LAUNCH: 'READY_FOR_LAUNCH',
-  ACCELERATE: 'ACCELERATE',
-  LIM_BRAKE: 'LIM_BRAKE',
-  FRICTION_BRAKE: 'FRICTION_BRAKE',
-  STOP_LEVITATION: 'STOP_LEVITATION',
-  STOPPED: 'STOPPED',
-  BATTERY_RECHARGE: 'BATTERY_RECHARGE',
-  CAPACITOR_DISCHARGE: 'CAPACITOR_DISCHARGE',
+  PRECHARGE: 'kPrecharge',
+  READY_FOR_LEVITATION: 'kReadyForLevitation',
+  BEGIN_LEVITATION: 'kBeginLevitation',
+  LEVITATING: 'kLevitating',
+  READY_FOR_LAUNCH: 'kReady',
+  ACCELERATE: 'kAccelerate',
+  LIM_BRAKE: 'kLimBrake',
+  FRICTION_BRAKE: 'kFrictionBrake',
+  STOP_LEVITATION: 'kStopLevitation',
+  STOPPED: 'kStopped',
+  BATTERY_RECHARGE: 'kBatteryRecharge',
+  CAPACITOR_DISCHARGE: 'kCapacitorDischarge',
 } as const;
 
 export const NULL_STATES = {

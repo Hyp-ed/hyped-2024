@@ -17,10 +17,27 @@ export class PodControlsService {
    * @returns True if the message was sent successfully, false otherwise
    */
   async sendControlMessage(control: string, podId: string) {
-    await this.mqttService.publish(
-      `hyped/${podId}/controls/${control}`,
-      control,
-    );
+    switch (control) {
+      case 'start':
+        // TODO: replace with state machine transition message to accelerating state
+        await this.mqttService.publish(
+          `hyped/${podId}/controls/${control}`,
+          control,
+        );
+        break;
+      case 'stop':
+        // TODO: replace with state machine transition message to braking state
+        await this.mqttService.publish(
+          `hyped/${podId}/controls/${control}`,
+          control,
+        );
+        break;
+      default:
+        await this.mqttService.publish(
+          `hyped/${podId}/controls/${control}`,
+          control,
+        );
+    }
     this.logger.log(
       `Control message "${control}" sent to pod "${podId}"`,
       PodControlsService.name,
