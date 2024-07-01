@@ -1,6 +1,6 @@
 import ReactFlow, { Background, Position } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { PodStateType, ALL_POD_STATES } from '@hyped/telemetry-constants';
+import { ALL_POD_STATES } from '@hyped/telemetry-constants';
 import { PassiveNode, FailureNode, ActiveNode, NeutralNode } from './nodes';
 import { useMemo, useEffect, useState } from 'react';
 import './styles.css';
@@ -527,7 +527,11 @@ export function StateMachine() {
       nodes.filter((node) =>
         isEnabledState(
           currentMode,
-          node.id.replace(/-/g, '_').toUpperCase() as PodStateType,
+          ALL_POD_STATES[
+            node.id
+              .replace(/-/g, '_')
+              .toUpperCase() as keyof typeof ALL_POD_STATES
+          ],
         ),
       ),
     );

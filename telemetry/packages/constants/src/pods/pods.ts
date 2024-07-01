@@ -8,11 +8,117 @@ import {
   levitationHeightCommon,
 } from './common';
 
-export const POD_IDS = ['pod_1', 'pod_2024'] as const;
+export const POD_IDS = ['pod_1', 'pod_2024', 'cart_2024'] as const;
 export type PodId = (typeof POD_IDS)[number];
 export type Pods = Record<PodId, Pod>;
 
 export const pods: Pods = {
+  cart_2024: {
+    id: 'cart_2024',
+    name: 'Cart 2024',
+    operationMode: 'LIM_ONLY',
+    measurements: {
+      // ************************************ ACCELEROMETER ************************************ //
+      optical_flow_x: {
+        name: 'Optical Flow x-axis',
+        key: 'optical_flow_x',
+        format: 'float',
+        type: 'velocity',
+        unit: 'm/s',
+        limits: {
+          critical: {
+            low: 0,
+            high: 10,
+          },
+        },
+        rms_noise: 0,
+        sampling_time: 500,
+      },
+      optical_flow_y: {
+        name: 'Optical Flow y-axis',
+        key: 'optical_flow_y',
+        format: 'float',
+        type: 'velocity',
+        unit: 'm/s',
+        limits: {
+          critical: {
+            low: 0,
+            high: 10,
+          },
+        },
+        rms_noise: 0,
+        sampling_time: 500,
+      },
+      // ************************************ ACCELEROMETER ************************************ //
+      accelerometer_x: {
+        name: 'Accelerometer x-axis',
+        key: 'accelerometer_x',
+        ...accelerometerCommon,
+      },
+      accelerometer_y: {
+        name: 'Accelerometer y-axis',
+        key: 'accelerometer_y',
+        ...accelerometerCommon,
+      },
+      accelerometer_z: {
+        name: 'Accelerometer z-axis',
+        key: 'accelerometer_z',
+        ...accelerometerCommon,
+      },
+      // ************************************ NAVIGATION ************************************ //
+      displacement: {
+        name: 'Displacement',
+        key: 'displacement',
+        format: 'float',
+        type: 'motion',
+        unit: 'm',
+        limits: {
+          critical: {
+            low: 0,
+            high: 100,
+          },
+        },
+        rms_noise: 0,
+        sampling_time: accelerometerCommon.sampling_time,
+      },
+      velocity: {
+        name: 'Velocity',
+        key: 'velocity',
+        format: 'float',
+        type: 'motion',
+        unit: 'm/s',
+        limits: {
+          critical: {
+            low: 0,
+            high: 50,
+          },
+        },
+        rms_noise: accelerometerCommon.rms_noise,
+        sampling_time: accelerometerCommon.sampling_time,
+      },
+      acceleration: {
+        name: 'Acceleration',
+        key: 'acceleration',
+        format: 'float',
+        type: 'motion',
+        unit: 'm/s²',
+        limits: {
+          critical: {
+            low: 0,
+            high: 5,
+          },
+        },
+        rms_noise: accelerometerCommon.rms_noise,
+        sampling_time: accelerometerCommon.sampling_time,
+      },
+      // ************************************ KEYENCE ************************************ //
+      keyence: {
+        name: 'Keyence',
+        key: 'keyence',
+        ...keyenceCommon,
+      },
+    },
+  },
   pod_1: {
     id: 'pod_1',
     name: 'Pod Ness',
@@ -428,7 +534,6 @@ export const pods: Pods = {
       },
     },
   },
-
   pod_2024: {
     id: 'pod_2024',
     name: 'Poddington',

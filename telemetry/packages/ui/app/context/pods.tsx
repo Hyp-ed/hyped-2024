@@ -46,7 +46,7 @@ const LATENCY_REQUEST_INTERVAL = 100 as const;
 /**
  * The default pod ID to use
  */
-export const DEFAULT_POD_ID = POD_IDS[1];
+export const DEFAULT_POD_ID = POD_IDS[2];
 
 export type PreviousLatenciesType = {
   index: number;
@@ -207,15 +207,16 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
     function subscribeToMqttAndLatency() {
       if (!client) return;
       const processMessage = (podId: PodId, topic: string, message: Buffer) => {
-        if (topic === getTopic('state', podId)) {
-          const newPodState = message.toString();
+        if (topic === getTopic('state/state', podId)) {
+          const newPodState = JSON.parse(message.toString())
+            .state as PodStateType;
           const allowedStates = Object.values(ALL_POD_STATES);
           if ((allowedStates as string[]).includes(newPodState)) {
             setPodsState((prevState) => ({
               ...prevState,
               [podId]: {
                 ...prevState[podId],
-                podState: newPodState as PodStateType,
+                podState: newPodState,
               },
             }));
           }
@@ -275,7 +276,7 @@ export const PodsProvider = ({ children }: { children: React.ReactNode }) => {
       // subscribe to latency messages and add MQTT message callback for each pod
       POD_IDS.map((podId) => {
         subscribe('latency/response', podId);
-        subscribe('state', podId);
+        subscribe('state/state', podId);
         client.on('message', (topic, message) =>
           processMessage(podId, topic, message),
         );

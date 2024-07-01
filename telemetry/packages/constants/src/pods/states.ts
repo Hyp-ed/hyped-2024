@@ -1,27 +1,30 @@
-export type PodStateType = keyof typeof ALL_POD_STATES;
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+export type PodStateType = (typeof ALL_POD_STATES)[keyof typeof ALL_POD_STATES];
 
 export const FAILURE_STATES = {
-  FAILURE_BRAKING: 'FAILURE_BRAKING',
+  FAILURE_BRAKING: 'kFailureBrake',
+  FAILURE: 'kFailure',
 } as const;
 
 export const PASSIVE_STATES = {
-  IDLE: 'IDLE',
-  CALIBRATE: 'CALIBRATE',
-  SAFE: 'SAFE',
+  IDLE: 'kIdle',
+  CALIBRATE: 'kCalibrate',
+  SAFE: 'kSafe',
 } as const;
 
 export const ACTIVE_STATES = {
-  PRECHARGE: 'PRECHARGE',
-  READY_FOR_LEVITATION: 'READY_FOR_LEVITATION',
-  BEGIN_LEVITATION: 'BEGIN_LEVITATION',
-  READY_FOR_LAUNCH: 'READY_FOR_LAUNCH',
-  ACCELERATE: 'ACCELERATE',
-  LIM_BRAKE: 'LIM_BRAKE',
-  FRICTION_BRAKE: 'FRICTION_BRAKE',
-  STOP_LEVITATION: 'STOP_LEVITATION',
-  STOPPED: 'STOPPED',
-  BATTERY_RECHARGE: 'BATTERY_RECHARGE',
-  CAPACITOR_DISCHARGE: 'CAPACITOR_DISCHARGE',
+  PRECHARGE: 'kPrecharge',
+  READY_FOR_LEVITATION: 'kReadyForLevitation',
+  BEGIN_LEVITATION: 'kBeginLevitation',
+  LEVITATING: 'kLevitating',
+  READY_FOR_LAUNCH: 'kReady',
+  ACCELERATE: 'kAccelerate',
+  LIM_BRAKE: 'kLimBrake',
+  FRICTION_BRAKE: 'kFrictionBrake',
+  STOP_LEVITATION: 'kStopLevitation',
+  STOPPED: 'kStopped',
+  BATTERY_RECHARGE: 'kBatteryRecharge',
+  CAPACITOR_DISCHARGE: 'kCapacitorDischarge',
 } as const;
 
 export const NULL_STATES = {
@@ -45,11 +48,11 @@ export const ALL_POD_STATE_TYPES = [
 export type PodStateCategoryType = (typeof ALL_POD_STATE_TYPES)[number];
 
 export const getStateType = (
-  state: string,
+  state: any,
 ): (typeof ALL_POD_STATE_TYPES)[number] => {
-  if (FAILURE_STATES[state as keyof typeof FAILURE_STATES]) return 'FAILURE';
-  if (PASSIVE_STATES[state as keyof typeof PASSIVE_STATES]) return 'PASSIVE';
-  if (ACTIVE_STATES[state as keyof typeof ACTIVE_STATES]) return 'ACTIVE';
-  if (NULL_STATES[state as keyof typeof NULL_STATES]) return 'NULL';
+  if (Object.values(FAILURE_STATES).includes(state)) return 'FAILURE';
+  if (Object.values(PASSIVE_STATES).includes(state)) return 'PASSIVE';
+  if (Object.values(ACTIVE_STATES).includes(state)) return 'ACTIVE';
+  if (Object.values(NULL_STATES).includes(state)) return 'NULL';
   throw new Error(`Unknown state: ${state}`);
 };

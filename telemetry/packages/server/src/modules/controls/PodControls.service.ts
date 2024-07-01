@@ -1,6 +1,7 @@
 import { Injectable, LoggerService, Inject } from '@nestjs/common';
 import { MqttService } from 'nest-mqtt';
 import { Logger } from '@/modules/logger/Logger.decorator';
+import { ALL_POD_STATES } from '@hyped/telemetry-constants';
 
 @Injectable()
 export class PodControlsService {
@@ -17,10 +18,28 @@ export class PodControlsService {
    * @returns True if the message was sent successfully, false otherwise
    */
   async sendControlMessage(control: string, podId: string) {
-    await this.mqttService.publish(
-      `hyped/${podId}/controls/${control}`,
-      control,
-    );
+    switch (control) {
+      case 'start':
+        await this.mqttService.publish(`hyped/${podId}/state/state_request`, {
+          state: ALL_POD_STATES.ACCELERATE,
+        });
+        break;
+      case 'stop':
+        await this.mqttService.publish(`hyped/${podId}/state/state_request`, {
+          state: ALL_POD_STATES.LIM_BRAKE,
+        });
+        break;
+      case 'levitate':
+        await this.mqttService.publish(`hyped/${podId}/state/state_request`, {
+          state: ALL_POD_STATES.BEGIN_LEVITATION,
+        });
+        break;
+      default:
+        await this.mqttService.publish(
+          `hyped/${podId}/controls/${control}`,
+          control,
+        );
+    }
     this.logger.log(
       `Control message "${control}" sent to pod "${podId}"`,
       PodControlsService.name,
