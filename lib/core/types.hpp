@@ -25,7 +25,6 @@ struct Trajectory {
 // number of each type of sensors
 static constexpr std::uint8_t kNumAccelerometers = 1;
 static constexpr std::uint8_t kNumAxis           = 3;
-static constexpr std::uint8_t kNumEncoders       = 4;
 static constexpr std::uint8_t kNumKeyence        = 1;
 static constexpr std::uint8_t kNumOptical        = 1;
 
