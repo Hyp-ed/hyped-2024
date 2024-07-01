@@ -135,7 +135,7 @@ void Navigator::requestFailure()
   message_payload->AddMember("transition", message_value, message_payload->GetAllocator());
 
   const core::MqttMessage::Header header{
-    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
     .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
@@ -150,7 +150,7 @@ void Navigator::requestBraking()
   message_value.SetString("kLimBrake", message_payload->GetAllocator());
   message_payload->AddMember("state", message_value, message_payload->GetAllocator());
   const core::MqttMessage::Header header{
-    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
     .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
@@ -170,7 +170,7 @@ core::Result Navigator::publishCurrentTrajectory()
     rapidjson::Value displacement(trajectory->displacement);
     message_payload->AddMember("displacement", displacement, message_payload->GetAllocator());
     const core::MqttMessage::Header header{
-      .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+      .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
       .priority  = core::MqttMessagePriority::kNormal};
     const core::MqttMessage message{topic, header, message_payload};
     mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
@@ -182,7 +182,7 @@ core::Result Navigator::publishCurrentTrajectory()
     rapidjson::Value velocity(trajectory->velocity);
     message_payload->AddMember("velocity", velocity, message_payload->GetAllocator());
     const core::MqttMessage::Header header{
-      .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+      .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
       .priority  = core::MqttMessagePriority::kNormal};
     const core::MqttMessage message{topic, header, message_payload};
     mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
@@ -194,7 +194,7 @@ core::Result Navigator::publishCurrentTrajectory()
     rapidjson::Value acceleration(trajectory->acceleration);
     message_payload->AddMember("acceleration", acceleration, message_payload->GetAllocator());
     const core::MqttMessage::Header header{
-      .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+      .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
       .priority  = core::MqttMessagePriority::kNormal};
     const core::MqttMessage message{topic, header, message_payload};
     mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
@@ -213,7 +213,7 @@ void Navigator::publishStart()
   message_payload->AddMember("message", message_value, message_payload->GetAllocator());
 
   const core::MqttMessage::Header header{
-    .timestamp = static_cast<uint64_t>(time_.now().time_since_epoch().count()),
+    .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
     .priority  = core::MqttMessagePriority::kNormal};
   const core::MqttMessage message{topic, header, message_payload};
   mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
