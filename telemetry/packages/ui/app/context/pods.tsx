@@ -46,7 +46,7 @@ const LATENCY_REQUEST_INTERVAL = 100 as const;
 /**
  * The default pod ID to use
  */
-export const DEFAULT_POD_ID = POD_IDS[1];
+export const DEFAULT_POD_ID = POD_IDS[2];
 
 export type PreviousLatenciesType = {
   index: number;
