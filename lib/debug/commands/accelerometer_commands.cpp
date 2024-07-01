@@ -55,7 +55,7 @@ core::Result AccelerometerCommands::addCommands(core::ILogger &logger,
     logger.log(core::LogLevel::kFatal, "Failed to create accelerometer sensor");
     return core::Result::kFailure;
   }
-  auto accelerometer_sensor                  = *optional_accelerometer_sensor;
+  const auto &accelerometer_sensor           = *optional_accelerometer_sensor;
   const auto *const read_command_name        = "accelerometer read";
   const auto *const read_command_description = "Read from the accelerometer";
   const auto *const read_command_usage       = "accelerometer read";
