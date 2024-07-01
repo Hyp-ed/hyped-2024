@@ -2,11 +2,8 @@
 
 namespace hyped::navigation {
 
-OpticalPreprocessor::OpticalPreprocessor(core::ILogger &logger) : logger_(logger)
-{
-}
-
-std::optional<std::array<core::Float, 2>> processData(const core::OpticalData raw_optical_data)
+std::optional<std::array<core::Float, 2>> OpticalPreprocessor::processData(
+  const core::OpticalData raw_optical_data)
 {
   // Take magnitude
   std::array<core::Float, 2> optical_data;

@@ -1,5 +1,11 @@
 #include "navigator.hpp"
 
+#include "core/mqtt.hpp"
+#include "core/types.hpp"
+#include "core/wall_clock.hpp"
+#include "navigation/filtering/kalman_matrices.hpp"
+#include "preprocessing/preprocess_optical.hpp"
+
 namespace hyped::navigation {
 
 Navigator::Navigator(core::ILogger &logger,
@@ -9,7 +15,6 @@ Navigator::Navigator(core::ILogger &logger,
       time_(time),
       mqtt_(std::move(mqtt)),
       keyence_preprocessor_(logger),
-      optical_preprocessor_(logger),
       accelerometer_preprocessor_(logger, time),
       previous_accelerometer_data_(0.0),
       previous_optical_reading_(0.0),
@@ -82,7 +87,7 @@ core::Result Navigator::keyenceUpdate(const core::KeyenceData &keyence_data)
 core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
 {
   // Run preprocessing on optical
-  const auto clean_optical_data = optical_preprocessor_.processData(optical_data);
+  const auto clean_optical_data = OpticalPreprocessor::processData(optical_data);
 
   // get mean value
   previous_optical_reading_ = 0.0;
@@ -96,21 +101,10 @@ core::Result Navigator::opticalUpdate(const core::OpticalData &optical_data)
   return core::Result::kSuccess;
 }
 
-core::Result Navigator::accelerometerUpdate(
-  const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data)
+core::Result Navigator::accelerometerUpdate(const core::RawAccelerometerData &accelerometer_data)
 {
-  // reformat raw data
-  core::RawAccelerometerData reformatted_data;
-  std::array<core::Float, core::kNumAxis> temp_array;
-  for (std::size_t i = 0; i < core::kNumAccelerometers; ++i) {
-    temp_array.at(0)       = accelerometer_data.at(i).x;
-    temp_array.at(1)       = accelerometer_data.at(i).y;
-    temp_array.at(2)       = accelerometer_data.at(i).z;
-    reformatted_data.at(i) = temp_array;
-  }
-
   // run preprocessing, get filtered acceleration data
-  auto clean_accelerometer_data = accelerometer_preprocessor_.processData(reformatted_data);
+  auto clean_accelerometer_data = accelerometer_preprocessor_.processData(accelerometer_data);
   if (!clean_accelerometer_data) {
     logger_.log(core::LogLevel::kFatal, "Reliability error in accelerometer data");
     return core::Result::kFailure;
@@ -198,10 +192,9 @@ core::Result Navigator::subscribeToTopics()
   return core::Result::kSuccess;
 }
 
-void Navigator::updateSensorData(
-  core::KeyenceData &keyence_data,
-  core::OpticalData &optical_data,
-  std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data)
+void Navigator::updateSensorData(core::KeyenceData &keyence_data,
+                                 core::OpticalData &optical_data,
+                                 core::RawAccelerometerData &accelerometer_data)
 {
   auto keyence_update_result = keyenceUpdate(keyence_data);
   if (keyence_update_result == core::Result::kFailure) {
@@ -234,9 +227,9 @@ void Navigator::run()
   }
 
   // TODOLater: all these are assuming there is only one sensor each
-  std::optional<core::KeyenceData> most_recent_keyence_data               = std::nullopt;
-  std::optional<core::OpticalData> most_recent_optical_data               = std::nullopt;
-  std::optional<core::RawAccelerationData> most_recent_accelerometer_data = {std::nullopt};
+  std::optional<core::KeyenceData> most_recent_keyence_data                = std::nullopt;
+  std::optional<core::OpticalData> most_recent_optical_data                = std::nullopt;
+  std::optional<core::RawAccelerometerData> most_recent_accelerometer_data = {std::nullopt};
 
   while (true) {
     most_recent_keyence_data       = std::nullopt;
@@ -271,10 +264,10 @@ void Navigator::run()
         }
         case core::MqttTopic::kAccelerometer: {
           auto payload                   = message.payload;
-          const auto x                   = (*payload)["x"].GetInt();
-          const auto y                   = (*payload)["y"].GetInt();
-          const auto z                   = (*payload)["z"].GetInt();
-          most_recent_accelerometer_data = core::RawAccelerationData{x, y, z, time_.now(), true};
+          const auto x                   = (*payload)["x"].GetFloat();
+          const auto y                   = (*payload)["y"].GetFloat();
+          const auto z                   = (*payload)["z"].GetFloat();
+          most_recent_accelerometer_data = core::RawAccelerometerData{{x, y, z}};
           break;
         }
         default:
@@ -282,10 +275,27 @@ void Navigator::run()
       }
     }
 
-    auto accelerometer_data = std::array<core::RawAccelerationData, core::kNumAccelerometers>{
-      *most_recent_accelerometer_data};
-    updateSensorData(*most_recent_keyence_data, *most_recent_optical_data, accelerometer_data);
+    updateSensorData(
+      *most_recent_keyence_data, *most_recent_optical_data, *most_recent_accelerometer_data);
     publishCurrentTrajectory();
   }
 }
+
+core::Result Navigator::startNode(toml::v3::node_view<const toml::v3::node> config,
+                                  const std::string &mqtt_ip,
+                                  const std::uint32_t mqtt_port)
+{
+  auto time          = core::WallClock();
+  auto logger        = core::Logger("Navigation", core::LogLevel::kDebug, time);
+  auto optional_mqtt = core::Mqtt::create(logger, "Navigation", mqtt_ip, mqtt_port);
+  if (!optional_mqtt) {
+    logger.log(core::LogLevel::kFatal, "Failed to create MQTT client");
+    return core::Result::kFailure;
+  }
+  auto mqtt = *optional_mqtt;
+  Navigator navigator(logger, time, mqtt);
+  navigator.run();
+  return core::Result::kSuccess;
+}
+
 }  // namespace hyped::navigation

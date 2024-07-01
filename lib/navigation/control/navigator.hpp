@@ -14,6 +14,7 @@
 #include <navigation/preprocessing/preprocess_accelerometer.hpp>
 #include <navigation/preprocessing/preprocess_keyence.hpp>
 #include <navigation/preprocessing/preprocess_optical.hpp>
+#include <toml++/toml.hpp>
 
 namespace hyped::navigation {
 
@@ -22,7 +23,12 @@ class Navigator : public INavigator {
   Navigator(core::ILogger &logger,
             const core::ITimeSource &time,
             std::shared_ptr<core::IMqtt> mqtt);
-  void run();
+
+  // Run the navigator as an mqtt node
+  static core::Result startNode(toml::v3::node_view<const toml::v3::node> config,
+                                const std::string &mqtt_ip,
+                                const std::uint32_t mqtt_port);
+
   /**
    *@brief runs cross checking and returns trajectory
    */
@@ -45,9 +51,10 @@ class Navigator : public INavigator {
    *
    * @param accelerometer_data
    */
-  core::Result accelerometerUpdate(
-    const std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
+  core::Result accelerometerUpdate(const core::RawAccelerometerData &accelerometer_data) override;
 
+ private:
+  void run();
   /**
    * @brief Publishes the current trajectory to the MQTT broker
    */
@@ -75,12 +82,10 @@ class Navigator : public INavigator {
    * @param optical_data
    * @param accelerometer_data
    */
-  void updateSensorData(
-    core::KeyenceData &keyence_data,
-    core::OpticalData &optical_data,
-    std::array<core::RawAccelerationData, core::kNumAccelerometers> &accelerometer_data);
+  void updateSensorData(core::KeyenceData &keyence_data,
+                        core::OpticalData &optical_data,
+                        core::RawAccelerometerData &accelerometer_data);
 
- private:
   core::ILogger &logger_;
   const core::ITimeSource &time_;
 
@@ -91,7 +96,6 @@ class Navigator : public INavigator {
   // navigation functionality
   KeyencePreprocessor keyence_preprocessor_;
   AccelerometerPreprocessor accelerometer_preprocessor_;
-  OpticalPreprocessor optical_preprocessor_;
 
   // previous readings
   core::Float previous_optical_reading_;
