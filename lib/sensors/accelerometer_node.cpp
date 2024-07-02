@@ -1,5 +1,5 @@
-#include "accelerometer.hpp"
 #include "accelerometer_node.hpp"
+#include "i2c_mux.hpp"
 
 #include <utility>
 
@@ -27,8 +27,20 @@ core::Result AccelerometerNode::startNode(toml::v3::node_view<const toml::v3::no
     logger.log(core::LogLevel::kFatal, "Failed to create I2C bus");
     return core::Result::kFailure;
   }
-  auto i2c                    = *optional_i2c;
-  auto optional_accelerometer = Accelerometer::create(logger, i2c, accelerometerAddress::k1D);
+  auto i2c                  = *optional_i2c;
+  auto optional_mux_channel = config["mux_channel"].value<std::uint8_t>();
+  if (!optional_mux_channel) {
+    logger.log(core::LogLevel::kFatal, "No mux channel specified");
+    return core::Result::kFailure;
+  }
+  auto mux_channel      = *optional_mux_channel;
+  auto optional_i2c_mux = I2cMux::create(logger, i2c, kDefaultMuxAddress, mux_channel);
+  if (!optional_i2c_mux) {
+    logger.log(core::LogLevel::kFatal, "Failed to create I2C mux");
+    return core::Result::kFailure;
+  }
+  auto i2c_mux                = *optional_i2c_mux;
+  auto optional_accelerometer = Accelerometer::create(logger, i2c_mux, accelerometerAddress::k1D);
   if (!optional_accelerometer) {
     logger.log(core::LogLevel::kFatal, "Failed to create accelerometer");
     return core::Result::kFailure;
@@ -50,11 +62,32 @@ AccelerometerNode::AccelerometerNode(core::Logger &logger,
 {
 }
 
+void AccelerometerNode::requestFailure()
+{
+  std::string failure_message = "kFailure";
+  const auto topic            = core::MqttTopic::kState;
+  auto message_payload        = std::make_shared<rapidjson::Document>();
+  message_payload->SetObject();
+
+  rapidjson::Value message_value;
+  message_value.SetString(failure_message.c_str(), message_payload->GetAllocator());
+  message_payload->AddMember("state", message_value, message_payload->GetAllocator());
+
+  const core::MqttMessage::Header header{
+    .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),
+    .priority  = core::MqttMessagePriority::kNormal};
+  const core::MqttMessage message{topic, header, message_payload};
+  mqtt_->publish(message, core::MqttMessageQos::kExactlyOnce);
+}
+
 void AccelerometerNode::run()
 {
   while (true) {
     auto result = accelerometer_->isValueReady();
-    if (!result) { continue; }
+    if (!result) {
+      requestFailure();
+      return;
+    }
     if (*result == core::Result::kFailure) { continue; }
     auto optional_acceration = accelerometer_->read();
     if (!optional_acceration) {

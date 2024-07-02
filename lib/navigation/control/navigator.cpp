@@ -132,7 +132,7 @@ void Navigator::requestFailure()
 
   rapidjson::Value message_value;
   message_value.SetString(failure_message.c_str(), message_payload->GetAllocator());
-  message_payload->AddMember("transition", message_value, message_payload->GetAllocator());
+  message_payload->AddMember("state", message_value, message_payload->GetAllocator());
 
   const core::MqttMessage::Header header{
     .timestamp = static_cast<std::uint64_t>(time_.now().time_since_epoch().count()),

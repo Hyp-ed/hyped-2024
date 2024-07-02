@@ -14,5 +14,6 @@ target_link_libraries(
   hyped_navigation_control
   hyped_navigation_filters
   hyped_navigation_preprocessing
+  hyped_sensors
   tomlplusplus::tomlplusplus
 )

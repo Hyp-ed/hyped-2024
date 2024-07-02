@@ -9,23 +9,18 @@ host = "192.168.1.0"
 port = 4556
 
 [raspberry]
-nodes = ["state_machine", "mqtt_broker", "navigator"]
+nodes = ["state_machine", "mqtt_broker", "navigator", "accelerometer", "keyence"]
 
 [state_machine]
 # Possible transition tables are "full_run",
 # "no_levitation", "levitation_only"
 transition_table = "full_run"
 
-[some_sensors]
-[some_sensors.accelerometer]
-count = 5
-upper_limit = 100
-lower_limit = 0
-name = 'Acceleration'
-topic = 'accelerometer'
-format = 'float'
-type = 'acceleration'
-unit = 'm/s²'
-
 [navigator]
 maxVelocity = 10
+
+[accelerometer]
+mux_channel = 3
+
+[keyence]
+pin = 4
