@@ -9,7 +9,7 @@ host = "192.168.1.0"
 port = 4556
 
 [raspberry]
-nodes = ["state_machine", "mqtt_broker", "navigator"]
+nodes = ["state_machine", "mqtt_broker", "navigator", "optical_flow"]
 
 [state_machine]
 # Possible transition tables are "full_run",
