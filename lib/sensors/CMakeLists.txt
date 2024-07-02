@@ -8,4 +8,4 @@ include_directories(
   "${CMAKE_SOURCE_DIR}/lib"
   "${CMAKE_CURRENT_SOURCE_DIR}"
 )
-target_link_libraries(${target} PUBLIC tomlplusplus::tomlplusplus)
+target_link_libraries(${target} PUBLIC tomlplusplus::tomlplusplus hyped_io)

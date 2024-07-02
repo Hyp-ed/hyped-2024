@@ -8,6 +8,8 @@
 #include <core/wall_clock.hpp>
 #include <io/hardware_gpio.hpp>
 #include <navigation/control/navigator.hpp>
+#include <sensors/accelerometer_node.hpp>
+#include <sensors/keyence_node.hpp>
 #include <state_machine/state_machine.hpp>
 #include <state_machine/transition_table.hpp>
 #include <toml++/toml.hpp>
@@ -81,6 +83,12 @@ int main(int argc, char **argv)
         hyped::navigation::Navigator::startNode(navigator_config, mqtt_ip, mqtt_port);
       } else if (node_name == "optical_flow") {
         execl("/usr/bin/python3", "python", "optical_flow.py", nullptr);
+      } else if (node_name == "keyence") {
+        auto keyence_config = config["keyence"];
+        hyped::sensors::KeyenceNode::startNode(keyence_config, mqtt_ip, mqtt_port);
+      } else if (node_name == "accelerometer") {
+        auto accelerometer_config = config["accelerometer"];
+        hyped::sensors::AccelerometerNode::startNode(accelerometer_config, mqtt_ip, mqtt_port);
       } else {
         std::cerr << "Unknown node: " << node_name << "\n";
         return 1;
