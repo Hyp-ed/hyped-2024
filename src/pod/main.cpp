@@ -33,7 +33,6 @@ int main(int argc, char **argv)
     return 1;
   }
   const std::string &ip = *optional_host_ip;
-
   // parse the config file
   const toml::table config = toml::parse_file(config_file);
   const auto optional_ip   = config["hostnames"][hostname].value<std::string>();
@@ -80,6 +79,9 @@ int main(int argc, char **argv)
       } else if (node_name == "navigation") {
         auto navigator_config = config["navigation"];
         hyped::navigation::Navigator::startNode(navigator_config, mqtt_ip, mqtt_port);
+      } else if (node_name == "optical_flow") {
+        execv("/usr/bin/python3",
+              const char *const argv[] = {"/usr/bin/python3", "optical_flow.py", nullptr};)
       } else {
         std::cerr << "Unknown node: " << node_name << "\n";
         return 1;
