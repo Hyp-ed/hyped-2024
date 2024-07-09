@@ -7,6 +7,7 @@
 #include "commands/can_commands.hpp"
 #include "commands/gpio_commands.hpp"
 #include "commands/i2c_commands.hpp"
+#include "commands/inverter_current_commands.hpp"
 #include "commands/keyence_commands.hpp"
 #include "commands/pwm_commands.hpp"
 #include "commands/spi_commands.hpp"
@@ -90,6 +91,15 @@ std::optional<std::shared_ptr<Repl>> Repl::create(core::ILogger &logger,
       return std::nullopt;
     }
   }
+  if (config["sensors"]["inverter_current"]["enabled"].value_or(false)) {
+    const auto result
+      = InverterCurrentCommands::addCommands(logger, repl, config["sensors"]["inverter_current"]);
+    if (result == core::Result::kFailure) {
+      logger.log(core::LogLevel::kFatal, "Error adding inverter current commands");
+      return std::nullopt;
+    }
+  }
+  const auto aliases = config["aliases"].as_table();
   if (config["sensors"]["keyence"]["enabled"].value_or(false)) {
     const auto result
       = KeyenceCommands::addCommands(logger, repl, time, config["sensors"]["keyence"]);
